@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+<!--    <record id="seq_partner_debtor_code" model="ir.sequence">-->
+<!--        <field name="name">Contacts Debtor Code</field>-->
+<!--        <field name="code">contact.debtor.code</field>-->
+<!--        <field name="prefix">DR/</field>-->
+<!--        <field name="padding">3</field>-->
+<!--        &lt;!&ndash; <field name="company_id" eval="1"/> &ndash;&gt;-->
+<!--    </record>-->
+
+    <record id="seq_partner_creditor_code" model="ir.sequence">
+        <field name="name">Contacts Code</field>
+        <field name="code">contact.creditor.code</field>
+        <field name="prefix">CR/</field>
+        <field name="padding">3</field>
+        <!-- <field name="company_id" eval="1"/> -->
+    </record>
+
+</odoo>

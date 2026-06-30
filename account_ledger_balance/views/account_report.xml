@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="account_ledger_balance_report_wizard" model="ir.actions.report">
+            <field name="name">Ledger Balance Report</field>
+            <field name="model">accounting.balance.report</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">account_ledger_balance.report_acc_ledger</field>
+            <field name="report_file">account_ledger_balance.report_acc_ledger</field>
+            <field name="binding_model_id" ref="account_ledger_balance.model_accounting_balance_report"/>
+            <field name="binding_type">report</field>
+        </record>
+        <record id="account_ledger_balance_monthly_report_wizard" model="ir.actions.report">
+            <field name="name">Ledger Balance Monthly Report</field>
+            <field name="model">ledger.monthly.report.lines</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">account_ledger_balance.report_acc_mo_ledger</field>
+            <field name="report_file">account_ledger_balance.report_acc_mo_ledger</field>
+            <field name="binding_model_id" ref="account_ledger_balance.model_ledger_monthly_report_lines"/>
+            <field name="binding_type">report</field>
+        </record>
+
+        <record id="account_ledger_balance_monthly_report_xlsx" model="ir.actions.report">
+            <field name="name">Ledger Balance Report Xlsx</field>
+            <field name="model">accounting.balance.report</field>
+            <field name="report_type">xlsx</field>
+            <field name="report_name">account_ledger_balance.account_ledger_balance_xlsx</field>
+            <field name="report_file">account_ledger_balance.account_ledger_balance_xlsx</field>
+        </record>
+    </data>
+</openerp>

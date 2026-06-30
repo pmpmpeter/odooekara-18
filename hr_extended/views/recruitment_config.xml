@@ -1,0 +1,127 @@
+<?xml version="1.0" ?>
+<odoo>
+
+
+    <!-- Invitation Letter Subject -->
+
+    <record id="recruitment_invitation_letter_config_tree" model="ir.ui.view">
+        <field name="name">recruitment.invitation.letter.config.list</field>
+        <field name="model">recruitment.invitation.letter.config</field>
+        <field name="arch" type="xml">
+            <list string="Invitation Subject">
+                <!--                <field name="stage_id"/>-->
+                <field name="name"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="recruitment_invitation_letter_config_form" model="ir.ui.view">
+        <field name="name">recruitment.invitation.letter.config.form</field>
+        <field name="model">recruitment.invitation.letter.config</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <!--                        <field name="stage_id" options="{'no_quick_create':True,'no_create': True,}"/>-->
+                        <field name="name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_recruitment_invitation_letter_search" model="ir.ui.view">
+        <field name="name">Recruitment Invitation Search</field>
+        <field name="model">recruitment.invitation.letter.config</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                <field name="name" string="Name"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_recruitment_invitation_letter_action" model="ir.actions.act_window">
+        <field name="name">Invitation Letter Subject</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">recruitment.invitation.letter.config</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_recruitment_invitation_letter_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Add Your Details Here!!</p>
+        </field>
+    </record>
+
+    <!-- Document Update Interview Status -->
+
+    <record id="document_update_interview_status_tree" model="ir.ui.view">
+        <field name="name">document.update.interview.status.list</field>
+        <field name="model">document.update.interview.status</field>
+        <field name="arch" type="xml">
+            <list string="Subject">
+                <field name="name"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="document_update_interview_status_form" model="ir.ui.view">
+        <field name="name">document.update.interview.status.form</field>
+        <field name="model">document.update.interview.status</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_document_update_letter_search" model="ir.ui.view">
+        <field name="name">Document Update Letter Search</field>
+        <field name="model">document.update.interview.status</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                <field name="name" string="Name"/>
+            </search>
+        </field>
+    </record>
+
+
+    <record id="action_document_update_interview_action" model="ir.actions.act_window">
+        <field name="name">Document Update Interview Action</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">document.update.interview.status</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_document_update_letter_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Add Your Details Here!!</p>
+        </field>
+    </record>
+
+    <menuitem
+            id="menu_document_update_interview_menu"
+            name="Document Update Interview"
+            parent="hr_recruitment.menu_hr_recruitment_config_applications"
+            action="action_document_update_interview_action"
+            sequence="5"
+            groups="hr_recruitment.group_hr_recruitment_manager"
+    />
+
+    <menuitem
+            id="menu_recruitment_invitation_letter_menu"
+            name="Invitation Letter Subject"
+            parent="hr_recruitment.menu_hr_recruitment_config_applications"
+            action="action_recruitment_invitation_letter_action"
+            sequence="4"
+            groups="hr_recruitment.group_hr_recruitment_manager"
+    />
+
+
+</odoo>

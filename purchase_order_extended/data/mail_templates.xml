@@ -1,0 +1,64 @@
+<?xml version="1.0" ?>
+<odoo>
+    <record id="rfq_vendor_reminder_template" model="mail.template">
+        <field name="name">RFQ Reminder to Vendor</field>
+        <field name="model_id" ref="purchase.model_purchase_order"/>
+        <field name="subject">Reminder: Please respond to RFQ {{object.name}}</field>
+        <field name="email_to">{{ object.partner_id.email }}</field>
+        <field name="email_cc">
+            {{ ','.join(user.email for user in object.env.ref('account.group_account_user').users if user.email) }}
+        </field>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+
+                <p>Dear<t t-out="object.partner_id.name"/>,
+                </p>
+                <p>This is a reminder to respond to the Request for Quotation:
+                    <strong>
+                        <t t-out="object.name"/>
+                    </strong>
+                    from<t t-out="object.company_id.name"/>.
+                </p>
+                <p>To ensure your response is correctly registered in our system,
+                    please log in to our vendor portal.
+                </p>
+                <t t-set="website_url" t-value="object.portal_url()"></t>
+                <p>URL:
+                    <a t-att-href='website_url' t-out="website_url or ''"/>
+                </p>
+                <p>If you’ve already responded through the portal, please ignore this message.</p>
+                <p>Thank you.</p>
+            </div>
+        </field>
+    </record>
+
+    <record id="vendor_password_change_notify_template" model="mail.template">
+        <field name="name">Vendor Password Change Notification</field>
+        <field name="model_id" ref="purchase.model_purchase_order"/>
+        <field name="email_to">
+            {{ ','.join(user.email for user in object.env.ref('account.group_account_user').users if user.email) }}
+        </field>
+        <field name="subject">⚠️ Password Changed for Vendor User: {{ object.partner_id.name }}</field>
+        <field name="body_html" type="html">
+            <div>
+                <p>Hello,</p>
+                <p>The password has been changed for the vendor user
+                    <strong>
+                        <t t-out="object.partner_id.user_ids.name"/>
+                    </strong>
+                    (Vendor:
+                    <strong>
+                        <t t-out="object.partner_id.name"/>
+                    </strong>
+                    ) due to no response on RFQ
+                    <strong>
+                        <t t-out="object.name"/>
+                    </strong>
+                    for over 12 days.
+                </p>
+            </div>
+        </field>
+    </record>
+
+
+</odoo>

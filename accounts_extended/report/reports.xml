@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="action_coa_report_xlsx" model="ir.actions.report">
+            <field name="name">COA Report</field>
+            <field name="model">account.report.wizard</field>
+            <field name="report_type">xlsx</field>
+            <field name="report_name">accounts_extended.account_monthly_xlsx</field>
+            <field name="report_file">accounts_extended.account_monthly_xlsx</field>
+        </record>
+    <!-- Paperformat (optional) -->
+    <record id="paperformat_a4_portrait_custom" model="report.paperformat">
+        <field name="name">A4 Portrait Custom</field>
+        <field name="default">False</field>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+<!--        <field name="page_height">297</field>-->
+<!--        <field name="page_width">210</field>-->
+<!--        <field name="margin_top">15</field>-->
+<!--        <field name="margin_bottom">15</field>-->
+<!--        <field name="margin_left">15</field>-->
+<!--        <field name="margin_right">15</field>-->
+    </record>
+
+    <!-- QWeb report template -->
+    <template id="report_cash_requirement_document">
+    <t t-call="web.html_container">
+        <t t-call="web.basic_layout">
+            <t t-set="doc" t-value="docs[0]"/>
+            <div class="page">
+                <!-- Title -->
+                <h2 t-esc="doc.name or 'Cash Requirement Report'"/>
+                <table class="table table-sm" style="width:100%; margin-bottom:10px;">
+                    <tr>
+                        <td><strong>Created By</strong></td>
+                        <td t-esc="doc.create_uid.name or ''"/>
+                        <td><strong>Requested Date</strong></td>
+                        <td t-esc="doc.requested_date and doc.requested_date.strftime('%d-%m-%Y') or ''"/>
+                    </tr>
+                    <tr>
+                        <td><strong>Created Date</strong></td>
+                        <td t-esc="doc.create_date and doc.create_date.strftime('%d-%m-%Y') or ''"/>
+                        <td><strong>Requested By</strong></td>
+                        <td t-esc="doc.requested_by.name or doc.requested_by or ''"/>
+                    </tr>
+                    <tr>
+                        <td><strong>Company</strong></td>
+                        <td t-esc="doc.company_id.name or ''"/>
+                        <td><strong>Bank</strong></td>
+                        <td t-esc="doc.journal_bank.name"/>
+                    </tr>
+                    <tr>
+                        <td><strong>Start Date</strong></td>
+                        <td t-esc="doc.start_date and doc.start_date.strftime('%d-%m-%Y') or ''"/>
+                        <td><strong>Available Balance</strong></td>
+                        <td t-esc="'{:,}'.format(round(doc.available_balance or 0.0, 2))"/>
+                    </tr>
+                    <tr>
+                        <td><strong>End Date</strong></td>
+                        <td t-esc="doc.end_date and doc.end_date.strftime('%d-%m-%Y') or ''"/>
+                        <td><strong>Budget</strong></td>
+                        <td t-esc="doc.budget_id.name"/>
+                    </tr>
+                </table>
+
+                <!-- Cash Request Lines -->
+                <h4>Cash Request Lines</h4>
+                <table class="table table-sm" style="width:100%; border-collapse:collapse;" border="1">
+                    <thead>
+                        <tr>
+                            <th>Account</th>
+                            <th>Req Month</th>
+                            <th>Amount</th>
+                            <th>Remarks</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="doc.cash_requirement_lines" t-as="line">
+                            <tr>
+                                <td t-esc="line.cash_account.name or ''"/>
+                                <td t-esc="line.requirement_months or ''"/>
+                                <td t-esc="'{:,}'.format(round(line.amount or 0.0, 2))"/>
+                                <td t-esc="line.remarks or ''"/>
+                            </tr>
+                        </t>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td style="text-align:right"><strong>Total</strong></td>
+                            <td t-esc="'{:,}'.format(round(doc.amount_total or 0.0, 2))"/>
+                        </tr>
+                    </tfoot>
+                </table>
+
+                <!-- Contribution lines -->
+                <h4>Contributions</h4>
+                <table class="table table-sm" style="width:100%; border-collapse:collapse;" border="1">
+                    <tbody>
+                        <tr>
+                            <td><strong>Minimum Balance</strong></td>
+                            <td t-esc="'{:,}'.format(round(doc.minimum_balance or 0.0, 2))"/>
+                        </tr>
+                        <tr>
+                            <td><strong>Amount Total</strong></td>
+                            <td t-esc="'{:,}'.format(round(doc.amount_total or 0.0, 2))"/>
+                        </tr>
+                        <tr>
+                            <td><strong>Total Fund Required</strong></td>
+                            <td t-esc="'{:,}'.format(round(doc.total_fund_required or 0.0, 2))"/>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <br/>
+
+                <table class="table table-sm" style="width:100%; border-collapse:collapse;" border="1">
+                    <thead>
+                        <tr>
+                            <th>Entity</th>
+                            <th>TE %</th>
+                            <th>Budget Contribution</th>
+                            <th>CRR Requirement</th>
+                            <th>Actual Contribution</th>
+                            <th>% Actual</th>
+                            <th>Diff</th>
+                            <th>Diff %</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="doc.contribution_ids" t-as="c">
+                            <tr>
+                                <td t-esc="c.tax_entity_id.name or ''"/>
+                                <td t-esc="'{:,}'.format(round(c.te_percentage or 0.0, 2))"/>
+                                <td t-esc="'{:,}'.format(round(c.budget_requirement or 0.0, 2))"/>
+                                <td t-esc="'{:,}'.format(round(c.crr_requirement or 0.0, 2))"/>
+                                <td t-esc="'{:,}'.format(round(c.actual_contribution or 0.0, 2))"/>
+                                <td t-esc="'{:,}'.format(round(c.contribution_percent or 0.0, 2))"/>
+                                <td t-esc="'{:,}'.format(round(c.difference or 0.0, 2))"/>
+                                <td t-esc="'{:,}'.format(round(c.difference_percent or 0.0, 2))"/>
+                            </tr>
+                        </t>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2" style="text-align:right"><strong>Totals:</strong></td>
+                            <td t-esc="'{:,}'.format(round(sum(doc.contribution_ids.mapped('budget_requirement')) or 0.0, 2))"/>
+                            <td t-esc="'{:,}'.format(round(sum(doc.contribution_ids.mapped('crr_requirement')) or 0.0, 2))"/>
+                            <td t-esc="'{:,}'.format(round(sum(doc.contribution_ids.mapped('actual_contribution')) or 0.0, 2))"/>
+                            <td></td>
+                            <td t-esc="'{:,}'.format(round(sum(doc.contribution_ids.mapped('difference')) or 0.0, 2))"/>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </t>
+    </t>
+</template>
+
+
+<!--    &lt;!&ndash; Register the report action &ndash;&gt;-->
+<!--    <record id="report_action_cash_requirement" model="ir.actions.report">-->
+<!--        <field name="name">Cash Requirement Report</field>-->
+<!--        <field name="model">cash.requirement.report</field>-->
+<!--        <field name="report_type">qweb-pdf</field>-->
+<!--        <field name="report_name">accounts_extended.report_cash_requirement_document</field>-->
+<!--        <field name="report_file">accounts_extended.report_cash_requirement_document</field>-->
+<!--        <field name="paperformat_id" ref="paperformat_a4_portrait_custom"/>-->
+<!--        <field name="binding_model_id" ref="accounts_extended.model_cash_requirement_report" eval="False"/>-->
+<!--    </record>-->
+
+    <record id="report_action_cash_requirement" model="ir.actions.report">
+        <field name="name">Cash Requirement Report</field>
+        <field name="model">cash.requirement.report</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">accounts_extended.report_cash_requirement_document</field>
+        <field name="report_file">accounts_extended.report_cash_requirement_document</field>
+        <field name="paperformat_id" ref="accounts_extended.paperformat_a4_portrait_custom"/>
+        <field name="print_report_name">'Cash Requirement Report'</field>
+        <field name="binding_model_id" ref="accounts_extended.model_cash_requirement_report"/>
+        <field name="binding_type">report</field>
+    </record>
+
+</data>
+</odoo>

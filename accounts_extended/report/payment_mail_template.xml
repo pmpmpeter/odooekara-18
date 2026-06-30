@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="mail_template_data_payment_receipt_1" model="mail.template">
+        <field name="name">Payment: Payment Receipt Mail</field>
+        <field name="model_id" ref="account.model_account_payment"/>
+        <field name="subject">{{ object.company_id.name }} Payment Receipt (Ref {{ object.name or 'n/a' }})</field>
+        <field name="partner_to">{{ object.partner_id.id }}</field>
+        <field name="reply_to"></field>
+        <field name="description">Sent manually to customer when clicking on 'Send receipt by email' in payment action
+        </field>
+        <field name="body_html" type="html">
+            <div style="margin: 0; padding: 0;">
+                <p style="box-sizing:border-box;font-size: 13px; margin: 0; padding: 0;">
+
+                    Dear <t t-out="object.partner_id.name or ''"></t>,
+                    <br/>
+                    <br/>
+
+                    We are pleased to inform you that your payment of
+                    <span style="font-weight:bold;">
+                        <t t-out="format_amount(object.amount, object.currency_id)"></t>
+                    </span>
+                    has been successfully processed on
+                    <span style="font-weight:bold;">
+                        <t t-out="format_date(object.date)"></t>
+                    </span>
+                    <br></br>
+                    <t t-if="object.utr_number">
+                                 UTR:
+                                <span style="font-weight:bold;">
+                                    <t t-out="object.utr_number"/>
+                                </span>
+                    </t><br/>
+
+                    <t t-if="object.cheque_number">
+                                 Cheque NO:
+                                <span style="font-weight:bold;">
+                                    <t t-out="object.cheque_number"/>
+                                </span>
+                        </t><br></br>
+                    <t t-if="object.reconciled_bill_ids">
+                    against the following bill(s):
+                    <br/>
+                    <br/>
+
+                        <t t-foreach="object.reconciled_bill_ids" t-as="inv">
+                            Bill Reference:
+                            <span style="font-weight:bold;">
+                                <t t-out="inv.ref"/>
+                            </span>
+                            dated on
+                            <span style="font-weight:bold;">
+                                <t t-out="format_date(inv.invoice_date)"/>
+                            </span>
+
+                            <!-- UTR condition -->
+
+                            <br/>
+                        </t>
+                    </t>
+                    <br/>
+                    If you have any questions, please feel free to contact us.
+                    <br/>
+                    <br/>
+
+                    Best regards,
+                    <br/>
+                    <br/>
+
+                    <t t-if="not is_html_empty(user.signature)">
+                        <t t-out="user.signature">
+                        </t>
+
+                    </t>
+                </p>
+            </div>
+
+        </field>
+        <field name="report_template_ids" eval="[(4, ref('account.action_report_payment_receipt'))]"/>
+        <field name="lang">{{ object.partner_id.lang }}</field>
+        <field name="auto_delete" eval="False"/>
+    </record>
+    <record id="mail_template_data_journal_payment" model="mail.template">
+        <field name="name">Payment: Payment Receipt Mail</field>
+        <field name="model_id" ref="account.model_account_move"/>
+        <field name="subject">{{ object.company_id.name }} Payment Receipt (Ref {{ object.name or 'n/a' }})</field>
+        <field name="partner_to">{{ object.partner_id.id }}</field>
+        <field name="reply_to"></field>
+        <field name="description">Sent manually to customer when clicking on 'Send receipt by email' in payment action
+        </field>
+        <field name="body_html" type="html">
+            <div style="margin: 0; padding: 0;">
+                <p style="box-sizing:border-box;font-size: 13px; margin: 0; padding: 0;">
+
+                    Dear <t t-out="object.partner_id.name or ''"></t>,
+                    <br/>
+                    <br/>
+
+                    We are pleased to inform you that your payment of
+                    <span style="font-weight:bold;">
+                        <t t-out="format_amount(object.check_amount_in_num, object.currency_id)"></t>
+                    </span>
+                    has been successfully processed on
+                    <span style="font-weight:bold;">
+                        <t t-out="format_date(object.date)"></t>
+                    </span>
+                    <br></br>
+                    <t t-if="object.utr_number">
+                                 UTR:
+                                <span style="font-weight:bold;">
+                                    <t t-out="object.utr_number"/>
+                                </span>
+                    </t>
+                    <br/>
+                    If you have any questions, please feel free to contact us.
+                    <br/>
+                    <br/>
+
+                    Best regards,
+                    <br/>
+                    <br/>
+
+                    <t t-if="not is_html_empty(user.signature)">
+                        <t t-out="user.signature">
+                        </t>
+
+                    </t>
+                </p>
+            </div>
+
+        </field>
+        <field name="report_template_ids" eval="[(4, ref('account.action_report_payment_receipt'))]"/>
+        <field name="lang">{{ object.partner_id.lang }}</field>
+        <field name="auto_delete" eval="False"/>
+    </record>
+</odoo>

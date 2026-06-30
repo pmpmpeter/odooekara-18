@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="document_type_local" model="document.type">
+        <field name="name">Local</field>
+        <field name="description">Documents pertaining to local transactions or regulations.</field>
+        <field name="default_validity_period">100</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="document_type_international" model="document.type">
+        <field name="name">International</field>
+        <field name="description">Documents related to international transactions or regulations.</field>
+        <field name="default_validity_period">200</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="document_type_export_import" model="document.type">
+        <field name="name">Export/Import</field>
+        <field name="description">Documents pertaining to export and import transactions and logistics.</field>
+        <field name="default_validity_period">300</field>
+        <field name="active">True</field>
+    </record>
+</odoo>

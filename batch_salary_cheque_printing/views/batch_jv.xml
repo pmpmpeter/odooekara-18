@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <record model="ir.actions.server" id="action_account_create_batch_jv">
+            <field name="name">Create Batch JV</field>
+            <field name="model_id" ref="hr_payroll.model_hr_payslip"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">
+                if records:
+                    action = records.create_batch_jv()
+            </field>
+        </record>
+
+        <record id="view_batch_jv_form" model="ir.ui.view">
+            <field name="name">account.batch.jv.form</field>
+            <field name="model">account.batch.jv</field>
+            <field name="arch" type="xml">
+                <form string="Batch Payment">
+                <header>
+                    <button name="action_export_jv_details_xlsx"
+                        string="Download Excel"
+                        type="object"
+                        class="oe_highlight"/>
+                    <button name="action_print_bank_advice_jv_pdf"
+                        string="Print Bank Advice"
+                        type="object"
+                        class="btn-primary"/>
+                    <button name="action_print_batch_salary_cheque"
+                            string="Print Cheque"
+                            class="btn-primary"
+                            type="object"
+                            icon="fa-print"/>
+                    <field name="id" invisible="1"/>
+                    <button name="action_open_mail_wizard"
+                        string="Send Mail"
+                        type="object"
+                        class="btn-primary"/>
+                    <button name="action_download_salary_jv" string="Batch Salary JV" type="object" invisible="not is_consolidated"/>
+                    <field name="is_consolidated" invisible="1"/>
+                    <button name="create_consolidated_jv" type="object" string="Create Consolidated JV" invisible="is_consolidated"/>
+                    <button name="action_lock" string="Lock" type="object" invisible="is_lock"/>
+<!--                    <button name="action_unlock" atring="Lock" invisible="not is_lock"/>-->
+                    <field name="file_generation_enabled" invisible="1"/>
+<!--                    <button name="print_batch_payment" string="Print" type="object" invisible="state != 'sent'"/>-->
+<!--                    <button name="validate_batch_button" string="Re-generate Export File" type="object" invisible="not file_generation_enabled or state != 'sent' or not payment_ids"/>-->
+<!--                    <button name="validate_batch_button" class="oe_highlight" string="Validate" type="object" invisible="state != 'draft' or not payment_ids"/>-->
+<!--                    <field name="state" widget="statusbar"/>-->
+                </header>
+                <sheet>
+                    <div name="button_box" class="oe_button_box">
+                        <button type="object" name="action_view_salary_jv" string="Journal Entries"
+                            class="oe_stat_button" icon="fa-file"/>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="is_lock" invisible="1"/>
+                            <field name="journal_id" domain="[('type', '=', 'bank')]" options="{'no_open': True, 'no_create': True}" readonly="1"/>
+                            <field name="company_partner" invisible="1"/>
+                            <field name="bank_id" domain="[('partner_id', '=', company_partner)]"/>
+                            <field name="cheque_format_id" readonly="is_lock"/>
+                            <field name="amount" readonly="1"/>
+                            <field name="salary_payable_amount" invisible="1"/>
+                        </group><group>
+                            <field name="date" readonly="1"/>
+                            <field name="name" placeholder="Leave empty to generate automatically..." required="0" readonly="1"/>
+                            <field name="hr_payslip_run_id" readonly="1"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="amount_total_words" invisible="1"/>
+                    </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Consolidated JV" name="consolidated_content">
+                            <field name="consolidated_jv"
+                                   readonly="is_lock"
+                                   widget="many2many"
+                                    options="{'no_open':True,'no_create': True,'no_edit': True}"
+                                    delete="0" create="0" edit="0">
+                                <list string="Consolidated JV" create="false" edit="false" delete="0">
+                                    <field name="name"/>
+                                    <field name="ref"/>
+                                     <field name="payslip_ref"/>
+                                    <field name="amount_total"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Batch Content" name="batch_content" invisible="not journal_ids">
+                            <field name="journal_ids"
+                                   readonly="is_lock"
+                                   force_save="1"
+                                   widget="many2many"
+                                   options="{'no_open':True,'no_create': True,'no_edit': True}"
+                                   delete="0" create="0" edit="0">
+                                <list string="Salary Journals" create="false" edit="false" delete="0">
+                                    <field name="name"/>
+                                    <field name="ref"/>
+                                     <field name="payslip_ref"/>
+                                    <field name="amount_total"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page name="check_details" string="Cheque Details">
+                            <group>
+                                <group>
+                                    <field name="cheque_number" readonly="is_lock"/>
+                                    <field name="authorised_by" readonly="is_lock"/>
+                                    <field name="authorised_date" readonly="is_lock"/>
+                                </group>
+                                <group>
+                                    <field name="towards" readonly="is_lock"/>
+                                    <field name="remarks" readonly="is_lock"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_batch_jv_tree" model="ir.ui.view">
+            <field name="name">account.batch.jv.list</field>
+            <field name="model">account.batch.jv</field>
+            <field name="arch" type="xml">
+                <list decoration-muted="state == 'reconciled'" decoration-info="state == 'draft'" sample="1">
+                    <field name="state" column_invisible="1"/>
+                    <field name="name" readonly="state != 'draft'"/>
+                    <field name="journal_id" readonly="state != 'draft'"/>
+                    <field name="date" readonly="state != 'draft'"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="action_batch_jv_action" model="ir.actions.act_window">
+            <field name="name">Batch Salary JV</field>
+            <field name="res_model">account.batch.jv</field>
+            <field name="view_mode">list,form</field>
+            <field name="view_id" ref="view_batch_jv_tree"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new customer batch payment
+                </p><p>
+                    Batch payments allow you grouping different payments to ease
+                    reconciliation. They are also useful when depositing checks
+                    to the bank.
+                </p>
+            </field>
+        </record>
+
+            <record model="ir.ui.view" id="hr_payslip_view_form_inherit4">
+        <field name="name">hr.payslip.inherit.form.inherit</field>
+        <field name="model">hr.payslip</field>
+        <field name="inherit_id" ref="hr_payroll.view_hr_payslip_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='employee_id']" position="inside">
+                <field name="batch_jv_ref" string="Batch JV" widget="many2many_tags"/>
+            </xpath>
+        </field>
+    </record>
+
+        <menuitem action="action_batch_jv_action" name="Batch Salary JV" id="menu_batch_jv" parent="hr_payroll.menu_hr_payroll_payslips" sequence="18" groups="account.group_account_readonly"/>
+
+</odoo>

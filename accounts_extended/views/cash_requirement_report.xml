@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_cash_requirement_report_form" model="ir.ui.view">
+        <field name="name">cash.requirement.report.form</field>
+        <field name="model">cash.requirement.report</field>
+        <field name="arch" type="xml">
+            <form string="Cash Requirement Report">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,done"/>
+                    <button name="button_done" type="object" string="Done" invisible="1"/>
+                    <button name="reset_to_draft" type="object" string="Reset Draft" invisible="1"/>
+                    <button name="button_cancel" type="object" string="Cancel" invisible="1"/>
+<!--                    <button name="print_crr_pdf" type="object" string="Print" invisible="state not in ('done')"/>-->
+                    <button name="action_print_cash_requirement"
+                    string="Print PDF"
+                    type="object"
+                    class="btn-secondary" invisible="state not in ('done')"/>
+                </header>
+                <sheet>
+                        <div class="oe_title" width="100">
+                        <h1>
+                            <field name="name" placeholder="New"/>
+                        </h1>
+                    </div>
+                        <group>
+                            <group>
+                                <field name="state" invisible="1"/>
+                                <field name="create_uid"/>
+                                <field name="create_date"/>
+                                <field name="company_id" readonly="1"/>
+                                <field name="start_date" required="1" readonly="state in 'done'"/>
+                                <field name="end_date" required="1" readonly="state in 'done'"/>
+                                <field name="active" invisible="1"/>
+                            </group>
+                            <group>
+                                <field name="requested_date" readonly="state in 'done'"/>
+                                <field name="requested_by" options="{'no_quick_create':True,'no_create': True}" readonly="state in 'done'"/>
+                                <field name="bank_balance_date" readonly="state in 'done'"/>
+                                <field name="journal_bank" options="{'no_quick_create':True,'no_create': True}" readonly="state in 'done'"  domain="[('type', '=', 'bank'),('company_id','=',company_id)]" widget="many2many_tags"/>
+                                <field name="available_balance" readonly="1" force_save="1" />
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Cash Request Lines">
+                                <field name="cash_requirement_lines" readonly="state in 'done'">
+                                    <list editable="bottom">
+                                        <field name="cash_account" required="1" options="{'no_quick_create':True,'no_create': True}"/>
+                                        <field name="partner_id" required="0" options="{'no_quick_create':True,'no_create': True}" optional="hide"/>
+                                        <field name="requirement_month" required="0" optional="hide"/>
+                                        <field name="requirement_months"/>
+                                        <field name="amount" required="1"/>
+                                        <field name="remarks"/>
+                                    </list>
+                                </field>
+                                <group >
+                                    <group style="width:25%; float:left; margin-right:10px;">
+                                        <field name="minimum_balance" readonly="state in 'done'"/>
+                                        <field name="amount_total" readonly="1" force_save="1"/>
+                                        <field name="total_fund_required" readonly="1" force_save="1"/>
+                                    </group>
+                                      <group style="width:70%; float:left;">
+                                        <field name="contribution_ids" string=" " >
+                                            <list editable="bottom" create="0" edit="0" delete="0">
+                                                <field name="tax_entity_id" width="320px" string="Entity"/>
+                                                <field name="te_percentage" width="60px"/>
+                                                <field name="budget_requirement" sum="sum"/>
+                                                <field name="crr_requirement" sum="sum"/>
+                                                <field name="actual_contribution" sum="sum"/>
+                                                <field name="contribution_percent" string="%" sum="sum"/>
+                                                <field name="difference" readonly="1" sum="sum"/>
+                                                <field name="difference_percent" string="%" readonly="1" />
+                                            </list>
+                                        </field>
+                                    </group>
+                                </group>
+                            </page>
+                             <page string="Budget Contributions">
+                                 <button name="action_generate_contributions"
+                                    type="object"
+                                    string="Generate Contributions"
+                                    class="btn-primary"/>
+                                <field name="contribution_ids" >
+                                    <list editable="bottom" create="0" edit="0" delete="0">
+                                        <field name="tax_entity_id" width="320px"/>
+                                        <field name="te_percentage" width="60px"/>
+                                        <field name="budget_requirement" sum="sum"/>
+                                        <field name="crr_requirement" sum="sum"/>
+                                        <field name="actual_contribution" sum="sum"/>
+                                        <field name="contribution_percent" sum="sum"/>
+                                        <field name="difference" readonly="1" sum="sum"/>
+                                        <field name="difference_percent" readonly="1" />
+                                    </list>
+                                </field>
+                                  <field name="ytd_contribution_ids" >
+                                    <list editable="bottom" create="0" edit="0" delete="0">
+                                        <field name="tax_entity_id" no_label="1" string="YTD-TE Level"/>
+                                        <field name="te_percentage" />
+                                        <field name="budget_requirement"  sum="sum"/>
+                                        <field name="crr_requirement"  sum="sum"/>
+                                        <field name="actual_contribution"  sum="sum"/>
+                                        <field name="contribution_percent"  sum="sum"/>
+                                        <field name="difference" readonly="1"  sum="sum"/>
+                                        <field name="difference_percent" readonly="1" />
+                                    </list>
+                                </field>
+
+                            </page>
+                            <page string="Revision Remarks" invisible='not revision_reason'>
+                                <field name='revision_reason' force_save='1' readonly="1"/>
+                            </page>
+                        </notebook>
+
+
+
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids" options="{'post_refresh': 'always'}"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+        <record id="action_crr_report1_form_view_search" model="ir.ui.view">
+            <field name="name">cash.requirement.report.search</field>
+            <field name="model">cash.requirement.report</field>
+            <field name="arch" type="xml">
+                <search>
+                    <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                    <field string="Code" name='name'/>
+                    <group expand="0" string="Group By">
+                        <filter string="Requested By" name="groupby_cash_account" context="{'group_by':'requested_by'}"/>
+                        <filter string="Created By" name="groupby_created_by" context="{'group_by':'create_uid'}"/>
+                        <filter string="Status" name="groupby_state" context="{'group_by':'state'}"/>
+                    </group>
+                </search>
+            </field>
+    </record>
+
+    <record id="view_cash_requirement_report_tree" model="ir.ui.view">
+        <field name="name">cash.requirement.report</field>
+        <field name="model">cash.requirement.report</field>
+        <field name="arch" type="xml">
+            <list string="Cash Requirement Request">
+                <field name="name"/>
+                <field name="requested_date"/>
+                <field name="requested_by"/>
+                <field name="journal_bank"/>
+                <field name="available_balance"/>
+                <field name="minimum_balance"/>
+                <field name="amount_total"/>
+                <field name="total_fund_required"/>
+
+            </list>
+        </field>
+    </record>
+
+    <record id="action_cash_requirement" model="ir.actions.act_window">
+        <field name="name">Cash Requirement Request</field>
+        <field name="res_model">cash.requirement.report</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p>
+                Create cash requirement request.
+            </p>
+        </field>
+    </record>
+
+    <record id="view_cash_requirement_report_lines_tree" model="ir.ui.view">
+        <field name="name">cash.requirement.lines</field>
+        <field name="model">cash.requirement.lines</field>
+        <field name="arch" type="xml">
+            <list string="Cash Requirement Report" edit="0" create="0" delete="0">
+                <field name="cash_account"/>
+                <field name="partner_id"/>
+                <field name="requirement_month"/>
+                <field name="requirement_months"/>
+                <field name="amount"/>
+                <field name="company_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_crr_report1_view_search" model="ir.ui.view">
+            <field name="name">cash.requirement.lines.search</field>
+            <field name="model">cash.requirement.lines</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="partner_id" string="Partner"/>
+                    <group expand="0" string="Group By">
+                      <filter string="Account" name="groupby_cash_account" context="{'group_by':'cash_account'}"/>
+                      <filter string="Month" name="groupby_requirement_month" context="{'group_by':'requirement_month'}"/>
+                    </group>
+                </search>
+            </field>
+    </record>
+
+    <record id="action_open_crr_report_consolidation" model="ir.actions.act_window">
+        <field name="name">CRR Report</field>
+        <field name="res_model">cash.requirement.lines</field>
+        <field name="view_mode">list</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="search_view_id" ref="action_crr_report1_view_search"/>
+        <field name="domain">[('cash_req_id.state', '=', 'done')]</field>
+        <field name="context">{'group_by':['requirement_month','cash_account']}</field>
+    </record>
+
+    <menuitem id="menu_cash_requirement"
+              name="Cash Requirement"
+              parent="account.menu_finance_entries"
+              sequence="100"/>
+    <menuitem id="menu_cash_requirement_request"
+              name="Cash Requirement Request"
+              parent="accounts_extended.menu_cash_requirement"
+              action="action_cash_requirement"
+              sequence="100"/>
+    <menuitem id="menu_cash_requirement_report"
+              name="Cash Requirement Report"
+              parent="accounts_extended.menu_cash_requirement"
+              action="action_open_crr_report_consolidation"
+              sequence="100"/>
+</odoo>

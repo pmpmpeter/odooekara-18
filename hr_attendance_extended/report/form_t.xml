@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="form_t_report" model="ir.actions.report">
+        <field name="name">Form - T</field>
+        <field name="model">hr.attendance</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_attendance_extended.print_form_t</field>
+        <field name="report_file">hr_attendance_extended.print_form_t</field>
+        <field name="print_report_name">'Form T'</field>
+        <field name="binding_model_id" ref="hr_attendance.model_hr_attendance"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="print_form_t">
+         <t t-call="web.basic_layout">
+                <t t-set="doc" t-value="doc or None" />
+                <t t-call="web.external_layout">
+                    <div>
+                    </div>
+                </t>
+                <div class="page" style="margin:0;">
+                    <p>
+                        <br/>
+                        <br/>
+                        <t t-set="current_date" t-value="context_timestamp(datetime.datetime.now()).strftime('%B %Y')"/>
+                        <t t-set="company_name" t-value="request.env['res.company'].sudo().search([('id','=',comp_id)])"/>
+                        <b style="font-size: 15px;">COMBINE MUSTER ROLL CUM REGISTER OF WAGES<br/>
+                        FORM - T FOR THE MONTH OF (<t t-esc="current_date"/>)</b><br/><br/>
+                        Location : <t t-esc="company_name.city"/><br/>
+                        Name &amp; Address of the establishment : <br/><br/>
+                        Name &amp; Address of Principal Employer :<br/><br/>
+                        <ol>(See Rule 24 (9-B) of Karnataka Shops &amp; Commercial Establishment Rules, 1963) in Lieu of )
+                            <li>Form I II of Rule 22(4): Form IV of Rule 28(2) Form V &amp; VII of Rule 29(1) &amp; (5) of the Karnataka Minimum Wages Rules , 1958
+                            </li><br/><li>Form I of Rules 3(1) of the Karnataka Payment of Wages Rules 1963
+                            </li><br/><li>Form XIII of Rules 75:, Form XV,XVII,XX,XXI,XXII,XXIII OF Rule 78(1)(a)(i),(ii) &amp; iii of the Contract Labour ( Regulation and Aboliltion) Karnataka Rules 1974
+                            </li><br/><li> Form XIII of Ruel 43: Form XVII,XVII,XIX XX,XXI XXI, XXII of Rule 46(2)(a),© &amp; (d) of Karnataka interstate Migrant Workmen Rules, 1981</li>
+
+                        </ol><br/><br/>
+
+                    </p>
+                    <table style="width:100%; border-collapse: collapse;  font-size: 14px; ">
+
+                        <tr>
+                            <td style="text-align: center; vertical-align: middle; padding: 10px;">Sl no</td>
+                            <td style="text-align: center; vertical-align: middle; padding: 10px;">Emp ID</td>
+                            <td style="text-align: center; vertical-align: middle; padding: 10px;">Emp Type</td>
+                            <td style="text-align: center; vertical-align: middle; padding: 10px;">Name</td>
+                            <td style="text-align: center; vertical-align: middle; padding: 10px;">F/M</td>
+                            <td style="text-align: center; vertical-align: middle; padding: 10px;">Location</td>
+                            <td style="text-align: center; vertical-align: middle; padding: 10px;">Designation</td>
+                            <td style="text-align: center; vertical-align: middle; padding: 10px;">UAN No</td>
+                            <td style="text-align: center; vertical-align: middle; padding: 10px;">PF No</td>
+                            <td t-foreach="range(1, days_in_month + 1)" style="text-align: left; padding: 5px;" t-as="day">
+                                    <t t-esc="str(day)"/>
+                            </td>
+                            <td style="text-align: center; vertical-align: middle; padding: 10px;">Days Payable</td>
+                             <t t-set="count" t-value="1"/>
+                        </tr>
+                            <t t-foreach="employee" t-as="emp">
+                                <t t-set="employee_rec" t-value="request.env['hr.employee'].sudo().search([('id','=',emp)])"/>
+                                <t t-set="leaves" t-value="request.env['hr.leave'].sudo().search([('employee_ids.id', '=', employee_rec.id),('state','=','validate'),('request_date_from','&gt;=',month_start),('request_date_to','&lt;=',month_end)])"/>
+                                <t t-set="attendance" t-value="request.env['hr.attendance'].sudo().search([('employee_id', '=', employee_rec.id)])"/>
+                                <tr>
+                                    <td style="text-align: left; padding: 10px;height: 70px;">
+                                          <t t-esc="count"/>
+                                    </td>
+                                    <td style="text-align: left; padding: 10px;height: 70px;">
+                                        <t t-esc="employee_rec.employee_number"/>
+                                    </td>
+                                    <td style="text-align: left; padding: 10px;height: 70px;">
+                                        <t t-esc="employee_rec.employee_type"/>
+                                    </td>
+                                    <td style="text-align: left; padding: 10px;height: 70px;">
+                                        <t t-esc="employee_rec.name"/>
+                                    </td>
+                                    <td style="text-align: left; padding: 10px;height: 70px;">
+
+                                    </td>
+                                    <td style="text-align: left; padding: 10px;height: 70px;">
+                                          <t t-esc="employee_rec.work_location_id.name"/>
+                                    </td>
+                                    <td style="text-align: left; padding: 10px;height: 70px;">
+                                        <t t-esc="employee_rec.department_id.name"/>
+                                    </td>
+                                    <td style="text-align: left; padding: 10px;height: 70px;">
+<!--                                        <t t-esc="employee_rec.pan_no"/>-->
+                                    </td>
+                                    <td style="text-align: left; padding: 10px;height: 70px;">
+                                        <t t-esc="employee_rec.uan_no"/>
+                                    </td>
+
+                                        <td t-foreach="range(1,days_in_month + 1)" t-as="day">
+                                            <!--<t t-if="attendance">-->
+                                                <t t-foreach="attendance" t-as="att">
+
+                                                <t t-set="date" t-value="att.check_in.strftime('%d')"/>
+                                                <t t-if="str(date) == str(day)">
+                                                   <center><span>P</span></center>
+                                                </t>
+                                                 </t>
+                                                                    <t t-foreach="leaves" t-as="rec">
+                                                                        <t t-set="date" t-value="int(rec.request_date_from.strftime('%d'))"/>
+                                                                            <t t-if="str(date) == str(day)">
+                                                                              <center><t t-esc="rec.holiday_status_id.code"/></center>
+                                                                            </t>
+                                                                    </t>
+
+
+                                    </td>
+
+                                    <td style="text-align: left; padding: 10px;height: 70px;"/>
+
+                                </tr>
+                                <t t-set="count" t-value="count+1"/>
+                            </t>
+
+                    </table>
+                    <t t-set="timeoff_typ" t-value="request.env['hr.leave.type'].sudo().search([])"/>
+                    <table style="width:40%; border-collapse: collapse;  font-size: 14px; ">
+                        <tr>
+                            <td style="text-align: center;  padding: 10px;">Abbreviation</td>
+                            <td style="text-align: center;  padding: 10px;">Expansion</td>
+                            <td style="text-align: left; padding: 10px;"/>
+                            <td style="text-align: left; padding: 10px;"/>
+                            <td style="text-align: left; padding: 10px;"/>
+                            <td style="text-align: left; padding: 10px;"/>
+                            <t t-foreach="timeoff_typ" t-as="rec">
+                                <tr>
+                                     <td style="text-align: left; padding: 10px;"><t t-esc="rec.code"/></td>
+                                    <td style="text-align: left; padding: 10px;"><t t-esc="rec.name"/></td>
+                                    <td style="text-align: left; padding: 10px;"/>
+                                    <td style="text-align: left; padding: 10px;"/>
+                                    <td style="text-align: left; padding: 10px;"/>
+                                    <td style="text-align: left; padding: 10px;"/>
+                                </tr>
+
+                            </t>
+                        </tr>
+                    </table>
+                </div>
+            </t>
+    </template>
+</odoo>

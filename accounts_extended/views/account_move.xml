@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_sale_advance_payment_inv_form_inherit" model="ir.ui.view">
+            <field name="name">sale.advance.payment.inv.form.inherit</field>
+            <field name="model">sale.advance.payment.inv</field>
+            <field name="inherit_id" ref="sale.view_sale_advance_payment_inv"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='advance_payment_method']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+            </field>
+        </record>
+
+    <record id="tds_entry_view_form_inherit_editable" model="ir.ui.view">
+            <field name="name">l10n_in.withhold.wizard.view.form.inherit</field>
+            <field name="model">l10n_in.withhold.wizard</field>
+            <field name="inherit_id" ref="l10n_in_withholding.tds_entry_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='withhold_line_ids']/list/field[@name='amount']" position="replace">
+                    <field name="amount" sum="Total Amount" widget="monetary" 
+                        options="{'currency_field': 'currency_id'}" readonly='1'/>
+                </xpath>
+            </field>
+        </record>
+
+    <record id="account_active_view_account_move1_search" model="ir.ui.view">
+        <field name="name">account.move.active.search</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_account_invoice_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search/filter[@name='cancel']" position="after">
+                <separator/>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                <separator/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- <record id="account_active_view_account_move2_search" model="ir.ui.view">
+        <field name="name">account.move.active.search</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_account_move_filter"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search/filter[@name='misc_filter']" position="after">
+                <separator/>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                <separator/>
+            </xpath>
+        </field>
+    </record> -->
+
+    <!-- <record id="account.view_move_form" model="ir.ui.view"> -->
+        <!-- code completly removed as its overridded -->
+
+    <record id="account_move_view_form_inherit_l10n_in_withholding_inherited" model="ir.ui.view">
+        <field name="name">account_move_view_form_inherit_l10n_in_withholding.inherited</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="l10n_in_withholding.account_move_view_form_inherit_l10n_in_withholding"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='l10n_in_withholding_line_ids']" position="attributes">
+                <attribute name="readonly">state != 'draft'</attribute>
+            </xpath>
+            <xpath expr="//field[@name='l10n_in_withholding_line_ids']/list"
+                   position="attributes">
+                <attribute name="create">0</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='l10n_in_withholding_line_ids']/list/field[@name='tax_ids']"
+                   position="attributes">
+                <attribute name="domain">[('l10n_in_tds_tax_type','=','purchase')]</attribute>
+            </xpath>
+        </field>
+    </record>
+   
+
+    <record id="view_account_journal_form_inherit1" model="ir.ui.view">
+        <field name="name">account.journal.form</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.view_account_journal_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='payment_sequence']" position="after">
+                <field name="is_credit_card_bank" invisible="type not in ['cash','bank']"/>
+                <field name="is_opening_balance" invisible="type not in ['general']"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="sale_account_invoice_form_inherited" model="ir.ui.view">
+        <field name="name">account.move.form</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="sale.account_invoice_form"/>
+        <field name="arch" type="xml">
+            <field name="team_id" position="attributes">
+                <attribute name="options">{'no_quick_create':True,'no_create': True}</attribute>
+            </field>
+            <field name="campaign_id" position="attributes">
+                <attribute name="options">{'no_quick_create':True,'no_create': True}</attribute>
+            </field>
+            <field name="medium_id" position="attributes">
+                <attribute name="options">{'no_quick_create':True,'no_create': True}</attribute>
+            </field>
+            <field name="source_id" position="attributes">
+                <attribute name="options">{'no_quick_create':True,'no_create': True}</attribute>
+            </field>
+
+
+        </field>
+    </record>
+
+    <record id="cash_flow_wizard_form_view" model="ir.ui.view">
+        <field name="name">cash.flow.wizard.form</field>
+        <field name="model">cash.flow.wizard</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form string="Cash Flow Report">
+                <footer>
+                    <button name="print_excel_report" string="Export" type="object" class="oe_highlight"/>
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="cash_flow_report_xlsx" model="ir.actions.act_window">
+        <field name="name">Cash Flow Report</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">cash.flow.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="cash_flow_wizard_form_view"/>
+        <field name="target">new</field>
+    </record>
+
+    <record id="open_create_fund_payment_form" model="ir.actions.act_window">
+        <field name="name">Intra Bank Transfer</field>
+        <field name="res_model">account.payment</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'default_is_fund_requsiting': True,'is_internal_transfer': True,'default_payment_type':'outbound'}</field>
+        <field name="domain">[('is_fund_requsiting', '=', True)]</field>
+    </record>
+
+    <record id="open_create_contra_payment_form" model="ir.actions.act_window">
+        <field name="name">Contra Payment</field>
+        <field name="res_model">account.payment</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'default_is_contra_payment': True,'is_internal_transfer': True,'default_payment_type':'outbound'}</field>
+        <field name="domain">[('is_contra_payment','=',True)]</field>
+    </record>
+
+    <record id="open_create_credit_card_payment_form" model="ir.actions.act_window">
+        <field name="name">Credit Card Payment</field>
+        <field name="res_model">account.payment</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'default_is_credit_payment': True,'is_internal_transfer': True,'default_payment_type':'outbound'}</field>
+        <field name="domain">[('is_credit_payment','=', True),('payment_type','=','outbound')]</field>
+    </record>
+
+    <record id="open_create_credit_card_expense_form" model="ir.actions.act_window">
+        <field name="name">Credit Card Expense</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'default_move_type':'entry','default_is_payment_approval':True}</field>
+        <field name="domain">[('move_type','=','entry'),('is_payment_approval','=',True)]</field>
+    </record>
+
+    <record id="account.action_move_in_refund_type" model="ir.actions.act_window">
+        <field name="name">Debit Notes</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">list,kanban,form,activity</field>
+        <field name="view_id" ref="account.view_in_invoice_refund_tree"/>
+        <field name="search_view_id" ref="account.view_account_invoice_filter"/>
+        <field name="domain">[('move_type', '=', 'in_refund')]</field>
+        <field name="context">{'default_move_type': 'in_refund', 'default_approval_status': 'submit'}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a debit note
+            </p>
+            <p>
+                Note that the easiest way to create a vendor debit note is to do it directly from the vendor bill.
+            </p>
+        </field>
+    </record>
+
+
+<!--    <menuitem-->
+<!--            id="menu_fund_requisting"-->
+<!--            action="open_create_fund_payment_form"-->
+<!--            sequence="2"-->
+<!--            parent="account.menu_finance_entries"/>-->
+    <menuitem
+            id="menu_contra_payment"
+            action="open_create_contra_payment_form"
+            parent="account.menu_finance_entries"
+            sequence="3"/>
+    <menuitem
+            id="menu_credit_payment"
+            name="Credit Card"
+            parent="account.menu_finance_entries"
+            sequence="3"/>
+
+    <menuitem
+            id="menu_credit_card_payments"
+            name="Credit Card Payments"
+            action="open_create_credit_card_payment_form"
+            parent="accounts_extended.menu_credit_payment"
+            sequence="3"/>
+
+    <menuitem
+            id="menu_credit_card_expenses"
+            name="Credit Card Expenses"
+            action="open_create_credit_card_expense_form"
+            parent="accounts_extended.menu_credit_payment"
+            sequence="4"/>
+    <menuitem id="account.menu_action_move_in_refund_type" action="account.action_move_in_refund_type"
+              name="Debit Notes" parent="account.menu_finance_payables" sequence="2"/>
+
+    <!-- <record id="account_move_form_extend_inherit1" model="ir.ui.view">
+        <field name="name">account.move.inherit</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_register_payment']" position="replace">
+            </xpath>
+        </field>
+    </record> -->
+
+    <record id="account_analytic_plan_form_extend_inherit1" model="ir.ui.view">
+        <field name="name">account.analytic.plan.inherit</field>
+        <field name="model">account.analytic.plan</field>
+        <field name="inherit_id" ref="analytic.account_analytic_plan_form_view"/>
+        <field name="arch" type="xml">
+            <field name="name" position="after">
+                <field name="active" invisible="1"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_account_analytic_plan_search" model="ir.ui.view">
+        <field name="name">account.analytic.plan.search</field>
+        <field name="model">account.analytic.plan</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_update__budget_actual_cur_figure" model="ir.actions.server">
+        <field name="name">Update Budget CUR</field>
+        <field name="model_id" ref="model_account_move"/>
+        <field name="binding_model_id" ref="model_account_move"/>
+        <field name="state">code</field>
+        <field name="code">action = model.update_actual_cur_figure_server_action()</field>
+    </record>
+
+    <record id="action_update_aml_budget_actual_cur_figure" model="ir.actions.server">
+        <field name="name">Update Budget CUR - Journal Items</field>
+        <field name="model_id" ref="account.model_account_move_line"/>
+        <field name="binding_model_id" ref="account.model_account_move_line"/>
+        <field name="state">code</field>
+        <field name="code">action = model.update_actual_aml_cur_figure_server_action()</field>
+    </record>
+
+    <record id="action_update_tax_grids_account_entries" model="ir.actions.server">
+        <field name="name">Update Tax Grids</field>
+        <field name="model_id" ref="model_account_move"/>
+        <field name="binding_model_id" ref="model_account_move"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_update_account_move_tax_grids()</field>
+    </record>
+
+  
+
+  
+
+    <menuitem id="account.menu_action_account_payments_receivable" name="Receipts" parent="account.menu_finance_receivables" action="account.action_account_payments" sequence="15"/>
+
+    <record id="account.action_account_payments" model="ir.actions.act_window">
+            <field name="name">Customer Receipts</field>
+            <field name="res_model">account.payment</field>
+            <field name="view_mode">list,kanban,form,graph,activity</field>
+            <field name="context">{
+                'default_payment_type': 'inbound',
+                'default_partner_type': 'customer',
+                'search_default_inbound_filter': 1,
+                'default_move_journal_types': ('bank', 'cash'),
+                'display_account_trust': True,
+            }</field>
+            <field name="view_id" ref="account.view_account_payment_tree"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                  Register a payment
+                </p><p>
+                  Payments are used to register liquidity movements. You can process those payments by your own means or by using installed facilities.
+                </p>
+            </field>
+        </record>
+
+</odoo>

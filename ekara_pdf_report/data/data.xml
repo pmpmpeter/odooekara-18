@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<record id="balance_confirmtaion_share_email_template" model="mail.template">
+        <field name="name">Balance Confirmation</field>
+        <field name="model_id" ref="ekara_pdf_report.model_generate_pdf_report"/>
+        <field name="subject">Balance Confirmation</field>
+        <field name="email_from">{{user.email or ''}}</field>
+        <field name="email_to">{{','.join([p.email for p in object.partner_ids if p.email])}}</field>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p>Hello,</p>
+                <p>Please find attached Balance Confirmation Report<strong><t t-out="object.file_name"/></strong>.
+                </p>
+            </div>
+        </field>
+    </record>
+</odoo>

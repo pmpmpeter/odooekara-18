@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="survey_category_view_tree" model="ir.ui.view">
+            <field name="model">survey.category</field>
+            <field name="arch" type="xml">
+                <list string="Survey Category" editable="bottom" duplicate="0">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="company_id" options="{'no_open':True,'no_quick_create':True,'no_create': True,}"/>
+                    <field name="active"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="survey_category_view_form" model="ir.ui.view">
+            <field name="model">survey.category</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="company_id"
+                                   options="{'no_open':True,'no_quick_create':True,'no_create': True,}"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_survey_category_search" model="ir.ui.view">
+            <field name="name">Survey Category Search</field>
+            <field name="model">survey.category</field>
+            <field name="arch" type="xml">
+                <search>
+                    <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                    <field name="name" string="Name"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="survey_category_action" model="ir.actions.act_window">
+            <field name="name">Survey Category</field>
+            <field name="res_model">survey.category</field>
+            <field name="view_mode">list</field>
+            <field name="search_view_id" ref="view_survey_category_search"/>
+            <field name="target">current</field>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new Survey Category
+                </p>
+            </field>
+        </record>
+
+        <menuitem
+                id="menu_survey_configuration"
+                name="Configuration"
+                parent="survey.menu_surveys"
+                groups="survey.group_survey_user"
+                sequence="100"/>
+
+        <menuitem
+                id="menu_survey_category_config"
+                name="Survey Category"
+                parent="survey_export_xlsx.menu_survey_configuration"
+                groups="survey.group_survey_user"
+                action="survey_category_action"
+                sequence="10"/>
+
+    </data>
+</odoo>

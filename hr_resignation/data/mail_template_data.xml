@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Resignation Confirmation Template -->
+    <record id="email_template_resignation_confirm" model="mail.template">
+        <field name="name">Separation Confirmation</field>
+        <field name="model_id" ref="model_hr_resignation"/>
+        <field name="subject">Separation Submitted</field>
+        <!--        <field name="email_from">{{ user.email_formatted }}</field>-->
+        <field name="email_to">{{object.employee_parent_id.work_email}}</field>
+        <field name="email_cc">{{object.coach_id.work_email}}</field>
+        <field name="body_html">
+            <![CDATA[
+            <p>Dear <t t-esc="object.employee_parent_id.name"/>,</p>
+            <p>This is to inform you that <strong><t t-esc="object.employee_id.name"/></strong>, from the <t t-esc="object.department_id.name"/> department, has submitted a resignation.</p>
+            <p><strong>Details:</strong></p>
+            <ul>
+                <li><strong>Reason for Separation:</strong> <t t-esc="object.reason"/></li>
+            </ul>
+            <p>We kindly request you to review and take the necessary actions regarding this resignation.</p>
+            <p>Thank you,</p>
+            <p><strong><t t-esc="object.employee_id.name"/></strong></p>
+            ]]>
+        </field>
+    </record>
+
+    <!-- Resignation Approval Template -->
+    <record id="email_template_resignation_approve" model="mail.template">
+        <field name="name">Separation Approval</field>
+        <field name="model_id" ref="model_hr_resignation"/>
+        <field name="subject">Separation Approved</field>
+        <field name="email_from">{{ user.email_formatted }}</field>
+        <field name="email_to">${{ object.employee_id.work_email }}</field>
+        <field name="email_cc">${{ object.coach_id.work_email }},${{ object.employee_parent_id.work_email }}</field>
+        <field name="body_html">
+            <![CDATA[
+            <p>Dear <t t-esc="object.employee_id.name"/>,</p>
+            <p>Your resignation request has been approved by manager. Below are the details:</p>
+            <ul>
+                <li><strong>Last Working Day:</strong> <t t-esc="object.manager_approved_date"/></li>
+                <li><strong>Reason for Separation:</strong> <t t-esc="object.reason"/></li>
+            </ul>
+            <p>Please ensure all your tasks are handed over and settled before your last working day.</p>
+            <p>We appreciate your contributions to the organization and wish you success in your future endeavors.</p>
+            <p>Best regards,</p>
+            <p><t t-esc="object.employee_parent_id.name"/> (Manager)</p>
+            ]]>
+        </field>
+    </record>
+
+    <!-- Resignation Approval Template -->
+    <record id="email_template_resignation_approve_hr" model="mail.template">
+        <field name="name">Separation Approval by HR</field>
+        <field name="model_id" ref="model_hr_resignation"/>
+        <field name="subject">Separation Approved by HR</field>
+        <field name="email_from">{{ user.email_formatted }}</field>
+        <field name="email_to">${{ object.employee_id.work_email }}</field>
+        <field name="email_cc">${{ object.coach_id.work_email }},${{ object.employee_parent_id.work_email }}</field>
+        <field name="body_html">
+            <![CDATA[
+            <p>Dear <t t-esc="object.employee_id.name"/>,</p>
+            <p>Your resignation request has been approved by HR. Below are the details:</p>
+            <ul>
+                <li><strong>Last Working Day:</strong> <t t-esc="object.hr_approved_reliving_date"/></li>
+                <li><strong>Reason for Separation:</strong> <t t-esc="object.reason"/></li>
+            </ul>
+            <p>Please ensure all your tasks are handed over and settled before your last working day.</p>
+            <p>We appreciate your contributions to the organization and wish you success in your future endeavors.</p>
+            <p>Best regards,</p>
+            <p><t t-esc="object.coach_id.name"/> (HR)</p>
+            ]]>
+        </field>
+    </record>
+
+    <!-- Resignation Rejection Template -->
+    <record id="email_template_resignation_reject" model="mail.template">
+        <field name="name">Separation Rejection</field>
+        <field name="model_id" ref="model_hr_resignation"/>
+        <field name="subject">Separation Rejected</field>
+        <field name="email_from">{{ user.email_formatted }}</field>
+        <field name="email_to">{{ object.employee_id.work_email }}</field>
+        <field name="email_cc">{{ object.coach_id.work_email }},{{ object.employee_parent_id.work_email }}</field>
+        <field name="body_html">
+            <![CDATA[
+            <p>Dear <t t-esc="object.employee_id.name"/>,</p>
+            <p>We regret to inform you that your resignation request has been rejected. For further clarification, please contact HR.</p>
+            <p>If you need any additional details or have any concerns, feel free to discuss with your reporting manager or the HR team.</p>
+            <p>Thank you,</p>
+            <p><t t-esc="object.coach_id.name"/> (HR)</p>
+            ]]>
+        </field>
+    </record>
+
+    <record id="email_template_reliving_letter" model="mail.template">
+        <field name="name">Relieving Letter</field>
+        <field name="model_id" ref="model_hr_resignation"/>
+        <field name="subject">Relieving Letter</field>
+        <!--        <field name="email_from">{{ user.email_formatted }}</field>-->
+        <field name="email_to">{{ object.employee_id.private_email }}</field>
+        <field name="body_html">
+            <![CDATA[
+            <p>Dear <t t-esc="object.employee_id.name"/>,</p>
+            <p>Please find attached your relieving letter.</p>
+            <p>Best regards,</p>
+            <p><t t-esc="object.coach_id.name"/> (HR)</p>
+            ]]>
+        </field>
+        <field name="report_template_ids" eval="[(4, ref('hr_resignation.report_experience_relieving_letter'))]"/>
+    </record>
+
+</odoo>

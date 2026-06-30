@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_contract_form_inherit_applicant" model="ir.ui.view">
+        <field name="name">hr.contract.form.inherit.applicant</field>
+        <field name="model">hr.contract</field>
+        <field name="inherit_id" ref="hr_contract.hr_contract_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook" position="inside">
+                <page string="Salary Breakup">
+                    <group>
+                        <group string="Compensation Details">
+                            <field name="monthly_fixed_salary"/>
+                            <label for="statutory_bonus_applicable"/>
+                            <div class="o_row">
+                                <field name="statutory_bonus_applicable"/>
+                            </div>
+                            <label for="provident_fund_applicable"/>
+                            <div class="o_row">
+                                <field name="provident_fund_applicable"/>
+                            </div>
+                            <label for="esi_applicable"/>
+                            <div class="o_row">
+                                <field name="esi_applicable"/>
+                            </div>
+                        </group>
+                        <group string="Compensation Details">
+                            <field name="grade"/>
+                            <field name="location_id" options="{'no_quick_create':True,'no_create': True,}"/>
+                            <field name="annual_store_performance_incentive" invisible="1"/>
+                            <field name="annual_performance_linked_pay" invisible="1"/>
+                            <field name="monthly_performance_incentive" invisible="1"/>
+                            <field name="health_benefit_plan"/>
+                            <field name="indicative_take_home_salary" readonly="1" force_save="1"/>
+                        </group>
+                        <group string="Salary Break-up (Per Annum)">
+                            <field name="basic_da_per_annum" readonly="0" force_save="1"/>
+                            <field name="hra_per_annum" readonly="0" force_save="1"/>
+                            <field name="special_allowance_per_annum" readonly="0" force_save="1"/>
+                            <field name="food_coupon_per_annum" readonly="0" force_save="1"/>
+                            <field name="lta_per_annum" readonly="0" force_save="1"/>
+                            <field name="conveyances_per_annum" readonly="0" force_save="1"/>
+                            <field name="sub_total_a_per_annum" readonly="0" force_save="1" invisible="0"/>
+                            <field name="statutory_bonus_per_annum" readonly="0" force_save="1"/>
+                            <field name="pf_employee_per_annum" readonly="0" force_save="1"/>
+                            <field name="esic_employer_per_annum" readonly="0" force_save="1"/>
+                            <field name="sub_total_b_per_annum" readonly="0" force_save="1" invisible="0"/>
+                            <field name="store_performance_incentive_annum" invisible="0" readonly="0" force_save="1"/>
+                            <field name="monthly_performance_incentive_annum" invisible="0" readonly="0"
+                                   force_save="1"/>
+                            <field name="performance_linked_pay_annum" invisible="0" readonly="0" force_save="1"/>
+                            <field name="sub_total_c_per_annum" readonly="0" force_save="1" invisible="0"/>
+                            <field name="total_salary_per_annum" readonly="0" force_save="1"/>
+                            <field name="medical_insurances" readonly="0" force_save="1"/>
+                            <field name="group_personal_acc_insurance" readonly="0" force_save="1"/>
+                            <field name="health_ben_plan" readonly="0" force_save="1"/>
+                            <field name="sub_total_d" readonly="0" force_save="1" invisible="0"/>
+
+                        </group>
+                        <group string="Salary Break-up (Per Month)">
+                            <field name="basic_da_per_month" readonly="0" force_save="1"/>
+                            <field name="hra_per_month" readonly="0" force_save="1"/>
+                            <field name="special_allowance_per_month" readonly="0" force_save="1"/>
+                            <field name="food_coupon_per_month" readonly="0" force_save="1"/>
+                            <field name="lta_per_month" readonly="0" force_save="1"/>
+                            <field name="conveyances_per_month" readonly="0" force_save="1"/>
+                            <field name="sub_total_a_per_month" readonly="0" force_save="1" invisible="0"/>
+                            <field name="statutory_bonus_per_month" readonly="0" force_save="1"/>
+                            <field name="pf_employee_per_month" readonly="0" force_save="1"/>
+                            <field name="esic_employer_per_month" readonly="0" force_save="1"/>
+                            <field name="sub_total_b_per_month" readonly="0" force_save="1" invisible="0"/>
+                            <field name="store_performance_incentive_month" invisible="0" readonly="0" force_save="1"/>
+                            <field name="monthly_performance_incentive_month" invisible="0" readonly="0" force_save="1"/>
+                            <field name="performance_linked_pay_month" invisible="0" readonly="0" force_save="1"/>
+                            <field name="sub_total_c_per_month" readonly="0" force_save="1" invisible="0"/>
+                            <field name="total_salary_per_month" readonly="0" force_save="1"/>
+                        </group>
+                        <group>
+                            <field name="total_ctc_annum" readonly="0" force_save="1"/>
+                        </group>
+                        <group>
+                            <field name="total_ctc_month" readonly="0" force_save="1"/>
+                        </group>
+                    </group>
+                    <!--                    <group>-->
+                    <!--                        <group string="Compensation Details">-->
+                    <!--                            <field name="basic_da"/>-->
+                    <!--                            <field name="house_rent_allowance"/>-->
+                    <!--                            <field name="special_allowance"/>-->
+                    <!--                            <field name="monthly_fixed_salary"/>-->
+                    <!--                            <label for="statutory_bonus_applicable"/>-->
+                    <!--                            <div class="o_row">-->
+                    <!--                                <field name="statutory_bonus_applicable"/>-->
+                    <!--                                <field name="stat_bonus_amount" invisible="statutory_bonus_applicable != 'yes'"-->
+                    <!--                                       force_save="1"/>-->
+                    <!--                            </div>-->
+                    <!--                            <label for="provident_fund_applicable"/>-->
+                    <!--                            <div class="o_row">-->
+                    <!--                                <field name="provident_fund_applicable"/>-->
+                    <!--                                <field name="provident_fund" invisible="provident_fund_applicable != 'yes'"-->
+                    <!--                                       force_save="1"/>-->
+                    <!--                            </div>-->
+                    <!--                            <label for="esi_applicable"/>-->
+                    <!--                            <div class="o_row">-->
+                    <!--                                <field name="esi_applicable"/>-->
+                    <!--                                <field name="esi_amount" invisible="esi_applicable != 'yes'" force_save="1"/>-->
+                    <!--                            </div>-->
+                    <!--                            <label for="variable_pay_percentage"/>-->
+                    <!--                            <div class="o_row">-->
+                    <!--                                <field name="variable_pay_percentage"/>-->
+                    <!--                                <field name="variable_pay_amount"/>-->
+                    <!--                            </div>-->
+                    <!--                            <field name="fixed_pay" invisible="1"/>-->
+                    <!--                        </group>-->
+                    <!--                        <group string="Incentives and Benefits">-->
+                    <!--                            <field name="annual_store_performance_incentive"/>-->
+                    <!--                            <field name="annual_performance_linked_pay"/>-->
+                    <!--                            <field name="monthly_performance_incentive"/>-->
+                    <!--                            <field name="medical_insurance"/>-->
+                    <!--                            <field name="group_personal_accident_insurance"/>-->
+                    <!--                            <field name="solis_health_benefit_beacon_plan"/>-->
+                    <!--                            <field name="indicative_take_home_salary"/>-->
+                    <!--                        </group>-->
+                    <!--                    </group>-->
+                </page>
+                <page string="Accounting Components" groups="hr_extended.group_view_own_accounting_comp">
+                    <group string="Accounting Components">
+
+                         <group string="Basic Components">
+                            <field name="standard_deduction"/>
+                             <field name="medical_insurance"/>
+                            <field name="group_personal_accident_insurance"/>
+                            <field name="income_tax_applicable" invisible="0"/>
+                            <field name="provident_fund_applicable"/>
+                            <field name="nps_applicable"/>
+                            <field name="nps_cal_perc" invisible="nps_applicable == 'no'"/>
+                            <field name="nps_applicable_from" invisible="nps_applicable == 'no'"/>
+                            <field name="cess_applicable"/>
+                            <field name="cess_percentage" invisible="cess_applicable == 'no'"/>
+                            <label for="variable_pay_percentage"/>
+                            <div class="o_row">
+                                <field name="variable_pay_percentage"/>
+                            </div>
+                            <field name="is_pf_contribution"/>
+                            <field name="employee_pf_contribution" invisible="not is_pf_contribution"/>
+                            <field name="is_parental_insurance"/>
+                            <field name="insurance_amount" invisible="not is_parental_insurance" required="is_parental_insurance == True"/>
+                            <label for="applicable_from_date" />
+                            <div class="o_row">
+                                <field name="applicable_from_date" invisible="not is_parental_insurance" required="is_parental_insurance == True"/>
+                                <field name="applicable_to_date" nolabel="1" invisible="not is_parental_insurance" required="is_parental_insurance == True"/>
+                            </div>
+                              <field name="recovery_of_advances" />
+                            <field name="recovery_of_advances_amount" invisible="not recovery_of_advances"/>
+                            <label for="recovery_from_date" invisible="not recovery_of_advances"/>
+                             <div class="o_row">
+                                <field name="recovery_from_date" invisible="not recovery_of_advances" required="recovery_of_advances"/>
+                                <field name="recovery_to_date" nolabel="1" invisible="not recovery_of_advances" required="recovery_of_advances"/>
+                            </div>
+                        </group>
+                        <group string="Tax Slab">
+                            <field name="tax_slab_1" readonly="1" force_save="1" invisible="income_tax_applicable == 'no'"/>
+                            <field name="tax_slab_2" readonly="1" force_save="1" invisible="income_tax_applicable == 'no'"/>
+                            <field name="tax_slab_3" readonly="1" force_save="1" invisible="income_tax_applicable == 'no'"/>
+                            <field name="tax_slab_4" readonly="1" force_save="1" invisible="income_tax_applicable == 'no'"/>
+                            <field name="tax_slab_5" readonly="1" force_save="1" invisible="income_tax_applicable == 'no'"/>
+                            <field name="tax_slab_6" readonly="1" force_save="1" invisible="income_tax_applicable == 'no'"/>
+                            <field name="tax_slab_7" readonly="1" force_save="1" invisible="income_tax_applicable == 'no'"/>
+                        </group>
+                        <group string="Annual">
+                            <field name="total_ctc_annum" readonly="1" force_save="1"/>
+                            <field name="pf_employer_per_annum" readonly="0" force_save="1" invisible="provident_fund_applicable == 'no'"/>
+                            <field name="income_tax_annual" invisible="income_tax_applicable == 'no'"/>
+                            <field name="nps_employer_per_annum" invisible="nps_applicable == 'no'"/>
+                            <field name="cess_annum" invisible="cess_applicable == 'no'"/>
+                            <field name="variable_pay_per_annum" readonly="0" force_save="1"/>
+                            <field name="total_ctc_annum_exc"/>
+                            <field name="net_taxable_income" force_save="1"/>
+                        </group>
+                        <group string="Monthly">
+                            <field name="total_ctc_month" readonly="1" force_save="1"/>
+                            <field name="pf_employer_per_month" readonly="0" force_save="1" invisible="provident_fund_applicable == 'no'"/>
+                            <field name="income_tax_month" invisible="income_tax_applicable == 'no'"/>
+                            <field name="nps_employer_per_month" invisible="nps_applicable == 'no'"/>
+                            <field name="cess_month" invisible="cess_applicable == 'no'"/>
+                            <field name="variable_pay_per_month" readonly="0" force_save="1"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

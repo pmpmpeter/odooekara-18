@@ -1,0 +1,68 @@
+<odoo>
+
+    <record id='custom_hr_expense_inherited_tree' model='ir.ui.view'>
+        <field name="name">custom.hr.expense.inherited.list</field>
+        <field name="model">hr.expense</field>
+        <field name="inherit_id" ref="hr_expense.hr_expense_view_expenses_analysis_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="is_payment_approval" column_invisible="1"/>
+            </xpath>
+            <!-- <xpath expr="//field[@name='payment_mode']" position="replace">
+                <field name="payment_mode" optional="show" readonly="not is_editable" 
+                    column_invisible="not is_payment_approval"/>
+           </xpath> -->
+        </field>
+    </record>
+
+    <record id="hr_expense.hr_expense_actions_my_all" model="ir.actions.act_window">
+        <field name="name">My Expenses</field>
+        <field name="res_model">hr.expense</field>
+        <field name="view_mode">list,kanban,form,graph,pivot,activity</field>
+        <field name="search_view_id" ref="hr_expense.hr_expense_view_search"/>
+        <field name="context">{'search_default_my_expenses': 1}</field>
+        <field name="domain">[('is_payment_approval', '=', False)]</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_expense_receipt">
+                <h2 class="d-none d-md-block">
+                    Drag and drop files to create expenses
+                </h2>
+                <p class="d-none d-md-block">
+                    Or
+                </p>
+                <h2 class="d-none d-md-block">
+                    Did you try the mobile app?
+                </h2>
+            </p>
+            <p>Snap pictures of your receipts and let Odoo
+                <br/>
+                automatically create expenses for you.
+            </p>
+            <p class="d-none d-md-block">
+                <a href="https://apps.apple.com/be/app/odoo/id1272543640" target="_blank" class="o_expense_mobile_app">
+                    <img alt="Apple App Store" class="img img-fluid h-100 o_expense_apple_store"
+                         src="/hr_expense/static/img/app_store.png"/>
+                </a>
+                <a href="https://play.google.com/store/apps/details?id=com.odoo.mobile" target="_blank"
+                   class="o_expense_mobile_app">
+                    <img alt="Google Play Store" class="img img-fluid h-100 o_expense_google_store"
+                         src="/hr_expense/static/img/play_store.png"/>
+                </a>
+            </p>
+        </field>
+    </record>
+
+    
+
+    <record id="payment_approval_action_extend" model="ir.actions.act_window">
+        <field name="name">Expense</field>
+        <field name="res_model">hr.expense</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'is_payment_approval_option': True}</field>
+        <field name="domain">[('is_payment_approval', '=', True)]</field>
+    </record>
+
+    
+
+
+</odoo>

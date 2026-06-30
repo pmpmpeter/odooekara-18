@@ -1,0 +1,565 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="self_rating_tree_view" model="ir.ui.view">
+        <field name="name">self.rating.list</field>
+        <field name="model">self.rating</field>
+        <field name="arch" type="xml">
+            <list string="Performance Review">
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="date_of_joining"/>
+                <field name="reporting_to_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="self_rating_view" model="ir.ui.view">
+        <field name="name">self.rating.form</field>
+        <field name="model">self.rating</field>
+        <field name="arch" type="xml">
+            <form string="Performance Review">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="preparation,preparation_clarification,half_year_pending,
+                    half_year_clarification,full_year_pending,full_year_clarification,review_completed" nolabel="1"/>
+                    <button name="send_increment_letter_job_level_approved" string="Send Increment Letter" type="object"
+                           groups="hr_extended.group_hr_recruitment_director,hr_extended.group_hr_payslip_admin"
+                            class="oe_highlight"/>
+                    <button name="send_appraisal_letter" string="Send Appraisal Letter" type="object"
+                            groups="hr_extended.group_hr_recruitment_director,hr_extended.group_hr_payslip_admin"
+                            class="oe_highlight"/>
+                    <button name="send_annual_increment_promotion_letter" string="Send Annual Promotion Letter"
+                           groups="hr_extended.group_hr_recruitment_director,hr_extended.group_hr_payslip_admin"
+                            type="object" class="oe_highlight"/>
+                    <button name="send_increment_redesignation_letter" string="Send Increment Redesignation Letter"
+                            groups="hr_extended.group_hr_recruitment_director,hr_extended.group_hr_payslip_admin"
+                            type="object" class="oe_highlight"/>
+                     <button name="send_variable_pay_letter" string="Send Variable Pay Letter"
+                           groups="hr_extended.group_hr_recruitment_director,hr_extended.group_hr_payslip_admin"
+                            type="object" class="oe_highlight"/>
+                    <button string="Request Appraisal" type="object"
+                            name="action_request_appraisal"
+                            groups="hr.group_hr_user"
+                            invisible="state not in ('request_appraisal')"
+                            class="oe_highlight"/>
+
+                    <button string="Submit" type="object"
+                            name="action_submit_performance_review"
+                            invisible="state not in ('preparation')"
+                            class="oe_highlight"/>
+
+                    <button string="Manager Review Submit" type="object"
+                            name="action_manager_review"
+                            groups="hr_recruitment.group_hr_recruitment_user"
+                            class="oe_highlight"
+                            invisible="state != 'preparation_clarification'"/>
+
+                    <button string="BU Head or HOD Review Submit" type="object"
+                            name="action_hod_review"
+                            groups="hr_extended.group_hr_recruitment_bu_head"
+                            class="oe_highlight"
+                            invisible="state != 'half_year_pending'"/>
+
+                    <button string="Director Review Submit" type="object"
+                            name="action_director_review"
+                            groups="hr_extended.group_hr_recruitment_director"
+                            class="oe_highlight"
+                            invisible="state != 'full_year_pending'"/>
+
+                    <button string="Send Back for Clarification" type="object"
+                            name="action_refuse_request"
+                            groups="hr_extended.group_hr_recruitment_director,hr_extended.group_hr_recruitment_bu_head,hr_recruitment.group_hr_recruitment_user"
+                            class="oe_highlight"
+                            invisible="state in ('preparation','request_appraisal','review_completed')"/>
+                    <button name="action_create_new_contract" type="object"
+                           groups="hr_extended.group_hr_recruitment_director,hr_extended.group_hr_payslip_admin"
+                            class="oe_highlight new-compensation-btn" invisible="state != 'review_completed'"
+                            string="Update Compensation" />
+
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_contract_self_rating"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-book"
+                                invisible="contract_self_rating_count == 0"
+                                groups="hr_extended.group_hr_recruitment_director">
+                            <field name="contract_self_rating_count" widget="statinfo" string="Compensation Master"/>
+                        </button>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="company_id" invisible="1"/>
+                            <field name="employee_id" readonly="not is_appraisal_manager"
+                                   options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                   required="True"/>
+                            <field name="department_id"
+                                   options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                   required="True"/>
+                            <field name="date_of_joining"/>
+                            <field name="current_running_contract"/>
+                            <field name="reporting_to_id"
+                                   options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"/>
+                            <field name="is_employee" invisible="1"/>
+                            <field name="is_performance_record" invisible="1"/>
+                            <field name="create_date" invisible="1"/>
+                            <field name="create_uid" invisible="1"
+                                   options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"/>
+                        </group>
+                        <group>
+                            <field name="is_appraisal_manager" invisible="1"/>
+                            <field name="designation_id" required="True"
+                                   options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                   readonly="not is_appraisal_manager"/>
+                            <field name="grade" readonly="not is_appraisal_manager" invisible="1"/>
+                            <field name="job_level" readonly="not is_appraisal_manager" />
+                            <field name="location_id" readonly="not is_appraisal_manager"
+                                   options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"/>
+                            <field name="appraisal_date" required="True" readonly="not is_appraisal_manager"/>
+                            <field name="reviewer_id" readonly="not is_appraisal_manager"
+                                   options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"/>
+                            <field name="write_date"/>
+                            <field name="write_uid"
+                                   options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"/>
+                        </group>
+                        <group string="Appraisal Meeting">
+                            <field name="appraisal_meeting_confirmation" readonly="not is_appraisal_manager"/>
+                            <field name="meeting_date_time" invisible="not appraisal_meeting_confirmation"
+                                   required="appraisal_meeting_confirmation" readonly="not is_appraisal_manager"/>
+                        </group>
+                    </group>
+                    <separator string="Refuse Reason"></separator>
+                    <group>
+                        <field name="refuse_reason" readonly="1"/>
+                    </group>
+                    <separator></separator>
+                    <notebook>
+                        <page string="Goals">
+                            <field name="goal_sets_kras">
+                                <list editable="bottom" create="0" delete="0">
+                                    <field name="category" readonly="1"/>
+                                    <field name="kra" readonly="1"/>
+                                    <field name="goal_description" readonly="1"/>
+                                    <field name="weightage" string="Weightage (%)" readonly="1"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Self Rating">
+                            <field name="kra_ids">
+                                <list editable="bottom" create="0" delete="0">
+                                    <field name="name" string="KRA" required="1" readonly="1"/>
+                                    <field name="goal_description" readonly="1"/>
+                                    <field name="weightage" string="Weightage (%)" readonly="1"/>
+                                    <field name="achieved_percentage" string="Achieved Percentage (%)"/>
+                                    <field name="self_rating" string="Weighted Score"/>
+                                    <field name="employee_weighted_score" column_invisible="1"/>
+                                    <field name="employee_response" string="Employee's Justification"/>
+                                    <field name="appraiser_remarks" string="Appraiser's Remarks"
+                                           readonly="not parent.is_appraisal_manager"/>
+                                </list>
+                                <form>
+                                    <group>
+                                        <field name="goal_description"/>
+                                        <field name="name"/>
+                                        <field name="weightage" string="Weightage (%)" readonly="1"/>
+                                        <field name="achieved_percentage" string="Achieved Percentage (%)"/>
+                                        <field name="self_rating"/>
+                                        <field name="employee_weighted_score"/>
+                                        <field name="employee_response"/>
+                                        <field name="appraiser_remarks"/>
+                                    </group>
+                                </form>
+                            </field>
+                            <group>
+                                <group string="Scores">
+                                    <field name="total_score_employee" readonly="1" force_save="1"/>
+                                    <field name="total_employee_weighted_score" readonly="1" force_save="1"
+                                           invisible="1"/>
+                                    <field name="employee_final_score" readonly="1" force_save="1" invisible="1"/>
+                                    <!--   invisible="is_employee == True"/>-->
+                                </group>
+                                <!-- <group string="Appraisal Meeting">-->
+                                <!--      <field name="appraisal_meeting_confirmation"/>-->
+                                <!--      <field name="meeting_date_time" invisible="not appraisal_meeting_confirmation"-->
+                                <!--             required="appraisal_meeting_confirmation"/>-->
+                                <!-- </group>-->
+                            </group>
+                        </page>
+                        <page string="Manager Review" invisible="is_employee == True"
+                              groups="hr_recruitment.group_hr_recruitment_user">
+                            <field name="manager_rating_ids">
+                                <list editable="bottom" create="0" delete="0">
+                                    <field name="name" readonly="1"/>
+                                    <field name="weightage" string="Weightage (%)" readonly="1"/>
+                                    <field name="achieved_percentage" string="Achieved Percentage (%)"/>
+                                    <field name="manager_rating" string="Weighted Score"/>
+                                    <field name="manager_weighted_score" column_invisible="1"/>
+                                    <field name="manager_remark"/>
+                                </list>
+                            </field>
+                            <group colspan="2">
+                                <group>
+                                    <field name="total_score_manager" readonly="1" force_save="1"/>
+                                    <field name="total_manager_weighted_score" readonly="1" force_save="1"
+                                           invisible="1"/>
+                                    <field name="manager_final_score" readonly="1" force_save="1" invisible="1"
+                                           groups="hr_extended.group_hr_recruitment_director"/>
+                                    <field name="pbvp_payout" readonly="1" force_save="1" invisible="1"/>
+                                    <field name="manager_remark"/>
+                                </group>
+                                <group>
+                                    <field name="manager_eligible_for_promotion"/>
+                                    <field name="manager_new_designation"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="BU Head or HOD Remarks" invisible="is_employee == True"
+                              groups="hr_extended.group_hr_recruitment_bu_head">
+                            <group>
+                                <group string="Self Rating Score">
+                                    <field name="total_employee_weighted_score" readonly="1" force_save="1"/>
+                                    <field name="employee_final_score" readonly="1" force_save="1"/>
+                                </group>
+                                <group string="Manager Rating Score">
+                                    <field name="total_manager_weighted_score" readonly="1" force_save="1"/>
+                                    <field name="manager_final_score" readonly="1" force_save="1"/>
+                                </group>
+                            </group>
+                            <group>
+                                <field name="remark" string="Remark (please specify)"/>
+                            </group>
+                        </page>
+                        <page string="Director Ratings" invisible="is_employee == True"
+                              groups="hr_extended.group_hr_recruitment_director,hr_extended.group_hr_payslip_admin">
+                            <!--                            <field name="director_rating_ids">-->
+                            <!--                                <list editable="bottom">-->
+                            <!--                                    <field name="name"/>-->
+                            <!--                                    <field name="weightage"/>-->
+                            <!--                                    <field name="overall_final_rating"/>-->
+                            <!--                                    <field name="director_remark"/>-->
+                            <!--                                </list>-->
+                            <!--                            </field>-->
+                            <group>
+                                <field name="director_remark"/>
+                            </group>
+                            <group>
+                                <group>
+                                    <field name="manager_final_score" readonly="1" force_save="1"/>
+                                    <label for="recommended_increment"/>
+                                    <div class="o_row" name="recommended_increment">
+                                        <field name="recommended_increment" style="max-width: 50px"/>
+                                        <span>%</span>
+                                    </div>
+<!--                                     <label for="revised_increment_per"/>-->
+<!--                                    <div class="o_row" name="revised_increment_per">-->
+<!--                                        <field name="revised_increment_per" style="max-width: 50px"/>-->
+<!--                                        <span>%</span>-->
+<!--                                    </div>-->
+                                    <label for="recommended_pbvp_payout"/>
+                                    <div class="o_row" name="recommended_pbvp_payout">
+                                        <field name="recommended_pbvp_payout" style="max-width: 50px" readonly="1"
+                                               force_save="1"/>
+                                        <span>%</span>
+                                    </div>
+                                </group>
+                                <group>
+                                    <field name="eligible_for_promotion"/>
+                                    <field name="new_job_level" invisible="1"/>
+                                    <field name="new_designation"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Salary Breakup" groups="hr_extended.group_hr_recruitment_director,hr_extended.group_hr_payslip_admin">
+                            <group>
+                                <group string="Compensation Details">
+                                    <field name="monthly_fixed_salary"/>
+                                    <label for="statutory_bonus_applicable"/>
+                                    <div class="o_row">
+                                        <field name="statutory_bonus_applicable"/>
+                                    </div>
+                                    <label for="provident_fund_applicable"/>
+                                    <div class="o_row">
+                                        <field name="provident_fund_applicable"/>
+                                    </div>
+                                    <label for="esi_applicable"/>
+                                    <div class="o_row">
+                                        <field name="esi_applicable"/>
+                                    </div>
+                                    <label for="variable_pay_percentage"/>
+                                    <div class="o_row">
+                                        <field name="variable_pay_percentage"/>
+                                    </div>
+                                </group>
+                                <group string="Compensation Details">
+                                    <field name="annual_store_performance_incentive" invisible="1"/>
+                                    <field name="annual_performance_linked_pay" invisible="1"/>
+                                    <field name="monthly_performance_incentive" invisible="1"/>
+                                    <field name="medical_insurance"/>
+                                    <field name="group_personal_accident_insurance"/>
+                                    <field name="health_benefit_plan" invisible="1"/>
+                                    <field name="indicative_take_home_salary" readonly="1" force_save="1"/>
+                                </group>
+                                <group string="Salary Break-up (Per Annum)">
+                                    <field name="basic_da_per_annum" readonly="1" force_save="1"/>
+                                    <field name="hra_per_annum" readonly="1" force_save="1"/>
+                                    <field name="special_allowance_per_annum" readonly="1" force_save="1"/>
+                                    <field name="sub_total_a_per_annum" readonly="1" force_save="1" invisible="1"/>
+                                    <field name="statutory_bonus_per_annum" readonly="1" force_save="1"/>
+                                    <field name="pf_employer_per_annum" readonly="1" force_save="1"/>
+                                    <field name="esic_employer_per_annum" readonly="1" force_save="1"/>
+                                    <field name="sub_total_b_per_annum" readonly="1" force_save="1" invisible="1"/>
+                                    <field name="store_performance_incentive_annum" readonly="1" force_save="1"
+                                           invisible="1"/>
+                                    <field name="monthly_performance_incentive_annum" readonly="1" force_save="1"
+                                           invisible="1"/>
+                                    <field name="variable_pay_per_annum" readonly="1" force_save="1"/>
+                                    <field name="performance_linked_pay_annum" readonly="1" force_save="1"
+                                           invisible="1"/>
+                                    <field name="sub_total_c_per_annum" readonly="1" force_save="1" invisible="1"/>
+                                    <field name="total_salary_per_annum" readonly="1" force_save="1"/>
+                                    <field name="medical_insurances" readonly="1" force_save="1"/>
+                                    <field name="group_personal_acc_insurance" readonly="1" force_save="1"/>
+                                    <field name="health_ben_plan" invisible="1" readonly="1" force_save="1"/>
+                                    <field name="sub_total_d" readonly="1" force_save="1" invisible="1"/>
+
+                                </group>
+                                <group string="Salary Break-up (Per Month)">
+                                    <field name="basic_da_per_month" readonly="1" force_save="1"/>
+                                    <field name="hra_per_month" readonly="1" force_save="1"/>
+                                    <field name="special_allowance_per_month" readonly="1" force_save="1"/>
+                                    <field name="sub_total_a_per_month" readonly="1" force_save="1" invisible="1"/>
+                                    <field name="statutory_bonus_per_month" readonly="1" force_save="1"/>
+                                    <field name="pf_employer_per_month" readonly="1" force_save="1"/>
+                                    <field name="esic_employer_per_month" readonly="1" force_save="1"/>
+                                    <field name="sub_total_b_per_month" readonly="1" force_save="1" invisible="1"/>
+                                    <field name="store_performance_incentive_month" readonly="1" force_save="1"
+                                           invisible="1"/>
+                                    <field name="monthly_performance_incentive_month" readonly="1" force_save="1"
+                                           invisible="1"/>
+                                    <field name="variable_pay_per_month" readonly="1" force_save="1"/>
+                                    <field name="performance_linked_pay_month" readonly="1" force_save="1"
+                                           invisible="1"/>
+                                    <field name="sub_total_c_per_month" readonly="1" force_save="1" invisible="1"/>
+                                    <field name="total_salary_per_month" readonly="1" force_save="1"/>
+                                </group>
+                                <group>
+                                    <field name="total_ctc_annum" readonly="1" force_save="1"/>
+                                </group>
+                                <group>
+                                    <field name="total_ctc_month" readonly="1" force_save="1"/>
+                                </group>
+                                <!--                                <br/><br/>-->
+                                <!--                                <button name="action_create_new_contract" type="object"-->
+                                <!--                                        class="oe_highlight new-compensation-btn"-->
+                                <!--                                        string="New Compensation"/>-->
+                                <!--                                <style>-->
+                                <!--                                    .new-compensation-btn{-->
+                                <!--                                    width:150px;-->
+                                <!--                                    margin-left: 15px;-->
+                                <!--                                    }-->
+                                <!--                                </style>-->
+                            </group>
+                        </page>
+                        <page string="Review Comments" groups="hr_extended.group_hr_recruitment_director,hr_extended.group_hr_payslip_admin" invisible="is_employee == True">
+                            <field name="goal_review_comments">
+                                <list editable="bottom">
+                                    <field name="commented_by"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"/>
+                                    <field name="comments"/>
+                                    <field name="commented_date"/>
+                                    <field name="need_response_from"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Assessment KRA" groups="hr_extended.group_hr_recruitment_director,hr_extended.group_hr_payslip_admin">
+                            <field name="assessment_kra_ids">
+                                <list editable="bottom" create="0" delete="0">
+                                    <field name="name" string="KRA" readonly="1"/>
+                                    <field name="weightage" string="Weightage (%)" readonly="1"/>
+                                    <field name="employee_rating" string="Employee's Rating"/>
+                                    <field name="appraiser_rating" string="Appraiser's Rating"
+                                           readonly="not parent.is_appraisal_manager"/>
+                                </list>
+                            </field>
+                            <group>
+                                <group>
+                                    <field name="appraiser_overall_rating" string="Appraiser’s Overall Rating"
+                                           groups="hr_extended.group_hr_recruitment_director"/>
+                                    <field name="appraiser_remarks" string="Appraiser’s Remarks"
+                                           readonly="not is_appraisal_manager"/>
+                                </group>
+                                <group>
+                                    <field name="employee_signature"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                           string="Employee’s Signature"/>
+                                    <field name="reporting_manager_signature" readonly="not is_appraisal_manager"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                           string="Reporting Manager’s Signature"/>
+                                    <field name="reviewer_signature" readonly="not is_appraisal_manager"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                           string="Reviewer’s Signature"/>
+                                </group>
+                            </group>
+                        </page>
+                        <!--                        <page string="Annual Performance Review">-->
+                        <!--                            <field name="review_line_ids">-->
+                        <!--                                <list editable="bottom">-->
+                        <!--                                    <field name="kra"/>-->
+                        <!--                                    <field name="description"/>-->
+                        <!--                                    <field name="weightage"/>-->
+                        <!--                                    <field name="employee_score"/>-->
+                        <!--                                    <field name="employee_weighted_score" readonly="1" force_save="1"/>-->
+                        <!--                                    <field name="manager_weightage"/>-->
+                        <!--                                    <field name="manager_score"/>-->
+                        <!--                                    <field name="manager_weighted_score" readonly="1" force_save="1"/>-->
+                        <!--                                </list>-->
+                        <!--                            </field>-->
+                        <!--                            <group colspan="2">-->
+                        <!--                                <group>-->
+                        <!--                                    <field name="total_score_employee" readonly="1" force_save="1"/>-->
+                        <!--                                    <field name="total_employee_weighted_score" readonly="1" force_save="1"/>-->
+                        <!--                                    <field name="employee_final_score" readonly="1" force_save="1"/>-->
+                        <!--                                </group>-->
+                        <!--                                <group>-->
+                        <!--                                    <field name="total_score_manager" readonly="1" force_save="1"/>-->
+                        <!--                                    <field name="total_manager_weighted_score" readonly="1" force_save="1"/>-->
+                        <!--                                    <field name="manager_final_score" readonly="1" force_save="1"/>-->
+                        <!--                                </group>-->
+                        <!--                            </group>-->
+                        <!--                        </page>-->
+                        <page string="Employee Development Plan" groups="hr_extended.group_hr_recruitment_director,hr_extended.group_hr_payslip_admin">
+                            <field name="development_plan_ids">
+                                <list editable="bottom">
+                                    <field name="action" string="Action"/>
+                                    <field name="timeline" string="Time Line"/>
+                                    <field name="by_whom" string="By Whom"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"/>
+                                    <field name="remarks" string="Remarks"/>
+                                </list>
+                                <form>
+                                    <group>
+                                        <field name="action" string="Action"/>
+                                        <field name="timeline" string="Time Line"/>
+                                        <field name="by_whom" string="By Whom"
+                                               options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"/>
+                                        <field name="remarks" string="Remarks"/>
+                                    </group>
+                                </form>
+                            </field>
+                            <group>
+                                <field name="employee_signature_dev"
+                                       options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                       string="Employee’s Signature"/>
+                                <field name="reporting_manager_signature_dev"
+                                       options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                       string="Reporting Manager’s Signature"/>
+                            </group>
+                        </page>
+                        <page string="Others" groups="hr_extended.group_hr_recruitment_director,hr_extended.group_hr_payslip_admin">
+                            <group>
+                                <field name="supporting_document"/>
+                            </group>
+                            <group>
+                                <field name="action_needed"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="self_rating_action" model="ir.actions.act_window">
+        <field name="name">Performance Review</field>
+        <field name="res_model">self.rating</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Performance Review!
+            </p>
+        </field>
+    </record>
+
+    <record id="view_salary_master_form" model="ir.ui.view">
+        <field name="name">view.salary.master.form</field>
+        <field name="model">salary.master</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" required="True"/>
+                            <field name="location_id" required="True"
+                                   options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"/>
+                            <field name="grade" required="True"/>
+                        </group>
+                        <group>
+                            <field name="monthly_salary" required="True"/>
+                            <field name="annual_salary" required="True"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_salary_master_tree" model="ir.ui.view">
+        <field name="name">view.salary.master.list</field>
+        <field name="model">salary.master</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="location_id"/>
+                <field name="grade"/>
+                <field name="monthly_salary"/>
+                <field name="annual_salary"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_salary_master_search" model="ir.ui.view">
+        <field name="name">view.salary.master.form.search</field>
+        <field name="model">salary.master</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Name"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_view_salary_master" model="ir.actions.act_window">
+        <field name="name">Salary Master</field>
+        <field name="res_model">salary.master</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_salary_master_tree"/>
+        <field name="search_view_id" ref="view_salary_master_search"/>
+        <field name="target">current</field>
+    </record>
+
+    <menuitem id="menu_config_salary_master" name="Salary Breakup Master"
+              parent="hr_recruitment.menu_hr_recruitment_config_jobs"
+              action="action_view_salary_master" sequence="7"/>
+
+    <menuitem id="performance_review_main"
+              parent="hr_appraisal.menu_hr_appraisal_root"
+              name="Performance Review"
+              sequence="1"
+    />
+    <menuitem id="self_rating_menu"
+              parent="hr_appraisal_extended.performance_review_main"
+              name="Performance Review"
+              action="self_rating_action"
+              sequence="2"
+    />
+</odoo>
+
+
+

@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<odoo>
+    <record id="view_kra_master_form" model="ir.ui.view">
+        <field name="name">view.kra.master.form</field>
+        <field name="model">kra.master</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" required="True"/>
+                            <field name="company_id"
+                                   options="{'no_open': True, 'no_quick_create':True,'no_create': True}"
+                                   required="True"/>
+                        </group>
+                        <group>
+                            <field name="active" invisible="1"/>
+                            <field name="overall_weightage" widget="progressbar" class="d-block"/>
+                            <field name="remaining" no_label="1" string=""/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="KRA Details">
+                            <field name="details_ids">
+                                <list editable="bottom">
+                                    <field name="category"/>
+                                    <field name="business_unit_id" options="{'no_open': True, 'no_quick_create':True,'no_create': True}"/>
+                                    <field name="kra_type"/>
+                                    <field name="goal_description"/>
+                                    <field name="weightage"/>
+                                </list>
+                            </field>
+                            <div class="float-end fs-6">
+                                         <label for="overall_weightage"/>
+                                          <field name="overall_weightage" string="" readonly="1" style="text-align:right;padding-left:20px;"/>
+                                    </div>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_kra_master_tree" model="ir.ui.view">
+        <field name="name">view.kra.master.list</field>
+        <field name="model">kra.master</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="details_ids"/>
+                <field name="company_id"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_kra_master_form_search" model="ir.ui.view">
+        <field name="name">view.kra.master.form.search</field>
+        <field name="model">kra.master</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" string="Name"/>
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_view_kra_master" model="ir.actions.act_window">
+        <field name="name">KRA Master</field>
+        <field name="res_model">kra.master</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_kra_master_tree"/>
+        <field name="search_view_id" ref="view_kra_master_form_search"/>
+        <field name="target">current</field>
+    </record>
+
+    <menuitem id="menu_hr_recruitment_config_kra" name="KRA" parent="hr.menu_config_recruitment"
+              action="action_view_kra_master" sequence="11" groups="hr.group_hr_manager"/>
+</odoo>

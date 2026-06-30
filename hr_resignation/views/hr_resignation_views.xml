@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!--Tree view for the 'hr.resignation' model.-->
+    <record id="hr_resignation_view_tree" model="ir.ui.view">
+        <field name="name">hr.resignation.view.list</field>
+        <field name="model">hr.resignation</field>
+        <field name="priority" eval="8"/>
+        <field name="arch" type="xml">
+            <list string="Employee Separation" decoration-danger="state in ('cancel')">
+                <!--                <field name="status_boolean" column_invisible="1"/>-->
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="employee_contract"/>
+                <field name="joined_date" readonly="1"/>
+                <field name="expected_revealing_date"/>
+                <field name="hr_approved_reliving_date"/>
+                <field name="resignation_type"/>
+                <field name="notice_period"/>
+                <field name="state" column_invisible="1"/>
+                <!--                <field name="state" widget='badge' decoration-info="state in ('confirm','manager_approved')"-->
+                <!--                       decoration-success="state =='hr_approved'" decoration-danger="state == 'cancel'"/>-->
+            </list>
+        </field>
+    </record>
+    <!--Form view for the 'hr.resignation' model.-->
+    <record id="hr_resignation_view_form" model="ir.ui.view">
+        <field name="name">hr.resignation.view.form</field>
+        <field name="model">hr.resignation</field>
+        <field name="priority" eval="8"/>
+        <field name="arch" type="xml">
+            <form string="Employee Separation">
+                <header>
+                    <button string="Confirm" type="object"
+                            name="action_confirm_resignation"
+                            groups="hr.group_hr_user"
+                            class="oe_highlight"/>
+                            <!-- invisible="state in ('manager_approved','hr_approved','confirm','cancel')"
+                            removed code from above -->
+                    <button string="Cancel" type="object"
+                            name="action_cancel_resignation"
+                            invisible="state in ('manager_approved','hr_approved','confirm','cancel')"
+                            groups="hr.group_hr_user"
+                            class="oe_highlight"/>
+                    <button string="Reject" type="object"
+                            groups="hr.group_hr_user"
+                            name="action_reject_resignation"
+                            invisible="state in ('draft','confirm','hr_approved','cancel')"
+                            class="oe_highlight"/>
+                    <button string="Send Relieving Letter" type="object"
+                            groups="hr.group_hr_user"
+                            name="action_send_reliving_letter"
+                            invisible="state in ('draft','confirm','manager_approved','cancel')"
+                            class="oe_highlight"/>
+                    <button string="Set to Draft" type="object"
+                            groups="hr.group_hr_manager"
+                            name="action_reset_to_draft"
+                            invisible="state in ('draft','confirm','manager_approved')"/>
+                    <field name="state" widget="statusbar" invisible="status_boolean"
+                           statusbar_visible="draft,confirm,manager_approved,hr_approved"/>
+                    <field name="state_manager" widget="statusbar" invisible="not status_boolean"
+                           statusbar_visible="draft,confirm,manager_approved,hr_approved"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Employee Details">
+                            <field name="company_id" invisible="1"/>
+                            <field name="status_boolean" invisible="1"/>
+                            <field name="change_employee" invisible="1"/>
+                            <field name="employee_id" required="True"
+                                   options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                   readonly="change_employee == False or state not in ('draft','cancel')"/>
+                            <field name="department_id" readonly="1"
+                                   options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"/>
+                            <field name="employee_contract" groups="hr.group_hr_user" readonly="1" force_save="1"/>
+                            <field name="employee_parent_id" readonly="1"
+                                   options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"/>
+                            <field name="coach_id" readonly="1"
+                                   options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"/>
+                        </group>
+                        <group string="Dates">
+                            <field name="is_employee" invisible="1"/>
+                            <field name="joined_date" readonly="1" force_save="1"/>
+                            <field name="resign_confirm_date"
+                                   readonly="1"
+                                   invisible="resign_confirm_date == False"/>
+                            <field name="expected_revealing_date"
+                                   readonly="state not in ('draft','cancel')"/>
+                            <field name="manager_approved_date" readonly="1"
+                                   invisible="manager_approved_date == False"/>
+                            <field name="hr_approved_date" readonly="1" invisible="hr_approved_date == False"/>
+                            <field name="hr_approved_reliving_date" readonly="is_employee == True or state in ('draft','hr_approved')"/>
+                                   <!--invisible="manager_approved_date == False"/>-->
+                            <field name="notice_period" readonly="is_employee == True or state in ('hr_approved')" force_save="1"/>
+                        </group>
+                        <group string="Separation Details">
+                            <field name="resignation_type" string="Type"
+                                   groups="hr.group_hr_user"
+                                   readonly="state == 'hr_approved'"/>
+                            <field name="reason"
+                                   readonly="state == 'hr_approved'"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"
+                           widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <!--Action for the 'hr.resignation' model.-->
+    <record id="hr_resignation_action" model="ir.actions.act_window">
+        <field name="name">Employee Separation</field>
+        <field name="res_model">hr.resignation</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', 'in', ('draft',
+            'confirm', 'manager_approved', 'cancel'))]
+        </field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">Create the First Separation
+            </p>
+        </field>
+    </record>
+    <!--Action for the 'hr.resignation' model, specifically for viewing approved resignations.-->
+    <record id="hr_resignation_approved_action" model="ir.actions.act_window">
+        <field name="name">Approved Separation</field>
+        <field name="res_model">hr.resignation</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', '=', 'hr_approved')]</field>
+        <field name="help" type="html">
+            <p class="oe_view_nocontent_create">Approved Separation
+            </p>
+        </field>
+    </record>
+    <!--    Root menu item for Resignation -->
+    <menuitem id="hr_resignation_menu_root" name="Separation"
+              groups="base.group_user" parent="hr.menu_hr_employee_payroll"
+              sequence="9"/>
+    <!-- Menu item for Resignation Request -->
+    <menuitem id="hr_resignation_menu_request"
+              parent="hr_resignation_menu_root" name="Separation Request"
+              action="hr_resignation_action" groups="base.group_user"
+              sequence="1"/>
+    <!-- Menu item for Approved Resignation -->
+    <menuitem id="hr_resignation_menu_approved_request"
+              parent="hr_resignation_menu_root"
+              name="Approved Separation"
+              action="hr_resignation_approved_action"
+              groups="hr.group_hr_user"
+              sequence="2"/>
+
+</odoo>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_hr_leave_subcategory_form_inherit" model="ir.ui.view">
+        <field name="name">hr.leave.view.subcategory.form.inherit</field>
+        <field name="model">hr.leave</field>
+        <field name="inherit_id" ref="hr_holidays.hr_leave_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='holiday_status_id']" position="after">
+                <field name="company_id" invisible="1"/>
+                <field name="leave_subtype_id" options="{'no_open':True,'no_quick_create':True,'no_create': True,}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="edit_holiday_status_subcategory_form_inherit" model="ir.ui.view">
+        <field name="name">edit.holiday.status.subcategory.form.inherit</field>
+        <field name="model">hr.leave.type</field>
+        <field name="inherit_id" ref="hr_holidays.edit_holiday_status_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@id='visual']" position="after">
+                <h3><label for="sub_type_ids" string="LEAVE SUBCATEGORY"/></h3>
+                <hr/>
+                <field name="sub_type_ids" editable="bottom">
+                    <list>
+                        <field name="name"/>
+                        <field name="days"/>
+                        <field name="company_id"/>
+                    </list>
+                </field>
+            </xpath>
+        </field>
+    </record>
+
+
+    <menuitem
+            name="Leaves"
+            id="hr_holidays.menu_hr_holidays_root"
+            sequence="225"
+            web_icon="hr_holidays,static/description/icon.png"
+            groups="hr_holiday_extended.group_leave_access_view"/>
+</odoo>

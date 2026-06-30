@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="exit_interview_tree_view" model="ir.ui.view">
+        <field name="name">exit.interview.list</field>
+        <field name="model">exit.interview</field>
+        <field name="arch" type="xml">
+            <list string="Exit Interview">
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="date_of_joining"/>
+                <field name="email"/>
+                <field name="mobile"/>
+                <field name="state" widget='badge' decoration-info="state == 'submitted'"
+                       decoration-success="state =='completed'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="exit_interview_form_view" model="ir.ui.view">
+        <field name="name">exit.interview.form</field>
+        <field name="model">exit.interview</field>
+        <field name="arch" type="xml">
+            <form string="Exit Interview">
+                <header>
+                    <button string="Print" type="action" groups="hr.group_hr_user"
+                            name="%(hr_resignation.exit_interview_form_report)d" class="btn-primary"
+                            invisible="state != 'completed'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,completed" nolabel="1"/>
+                    <button name="exit_interview_submit" string="Submit" type="object" groups="base.group_user"
+                            class="oe_highlight" invisible="state != 'draft'"
+                    />
+                    <button name="exit_interview_complete" string="Complete" type="object" groups="hr.group_hr_user"
+                            class="oe_highlight" invisible="state != 'submitted'"
+                    />
+                    <button name="exit_interview_draft" string="Reset to Draft" type="object" groups="hr.group_hr_user"
+                            class="btn-secondary" invisible="state == 'draft'"
+                    />
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="company_id" invisible="1"/>
+                            <field name="employee_id"
+                                   options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                   readonly="state not in ('draft')"/>
+                            <field name="department_id"
+                                   options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                   readonly="state not in ('draft')"/>
+                            <field name="date_of_joining" readonly="state not in ('draft')"/>
+                            <field name="email" readonly="state not in ('draft')"/>
+                            <field name="mobile" readonly="state not in ('draft')"/>
+                        </group>
+                        <group>
+                            <field name="employee_code" readonly="state not in ('draft')"/>
+                            <field name="designation_id"
+                                   options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                   readonly="state not in ('draft')"/>
+                            <field name="date_of_exit" readonly="state not in ('draft')"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="reason_for_separation" readonly="state not in ('draft')"/>
+                        <field name="please_specify" placeholder="Enter the reason here..."
+                               invisible="reason_for_separation != 'any_other'"
+                               required="reason_for_separation == 'any_other'" readonly="state not in ('draft')"/>
+                    </group>
+                    <notebook>
+                        <page string="Exit details">
+                            <label for="reason_for_looking_job"/>
+                            <field name="reason_for_looking_job"
+                                   placeholder="Enter the reason here..."
+                                   no_label="1" readonly="state not in ('draft')"/>
+                            <label for="inform_manager"/>
+                            <field name="inform_manager" readonly="state not in ('draft')"/>
+                            <div>
+                                <field name="inform_manager_reason" placeholder="Enter the response here..."
+                                       invisible="inform_manager == 'no'" readonly="state not in ('draft')"/>
+                            </div>
+                            <label for="retain_effort"/>
+                            <field name="retain_effort" readonly="state not in ('draft')"/>
+                            <div>
+                                <field name="retain_effort_response" placeholder="Enter the response here..."
+                                       invisible="retain_effort == 'no'" readonly="state not in ('draft')"/>
+                            </div>
+
+                        </page>
+                        <page string="Feedback">
+                            <group>
+                                <field name="company_policies_explained" readonly="state not in ('draft')"
+                                       placeholder="Company Policies Explained"/>
+                                <field name="rules_regulations_explained" readonly="state not in ('draft')"
+                                       placeholder="Rules &amp; Regulations Explained"/>
+                                <field name="entitlements_benefits_explained" readonly="state not in ('draft')"
+                                       placeholder="Entitlements &amp; Benefits Explained"/>
+                                <field name="nature_of_work_explained" readonly="state not in ('draft')"
+                                       placeholder="Nature of Work Explained"/>
+                                <field name="work_like" readonly="state not in ('draft')"
+                                       placeholder="Do you like the work you were doing?"/>
+                                <field name="career_progress_feedback" readonly="state not in ('draft')"
+                                       placeholder="Your career progress with the company"/>
+                                <field name="training_development_feedback" readonly="state not in ('draft')"
+                                       placeholder="Training and Development inputs received by you"/>
+                                <field name="compensation_policy_feedback" readonly="state not in ('draft')"
+                                       placeholder="Compensation policy &amp; levels in the company"/>
+                                <field name="hr_policies_feedback" readonly="state not in ('draft')"
+                                       placeholder="HR Policies and Systems"/>
+                                <field name="suggestions_work_improvement" readonly="state not in ('draft')"
+                                       placeholder="Suggestions to improve the work you were doing"/>
+                                <field name="suggestions_training_improvement" readonly="state not in ('draft')"
+                                       placeholder="Suggestions to improve Training &amp; Development activities"/>
+                                <field name="suggestions_hr_improvement" readonly="state not in ('draft')"
+                                       placeholder="Suggestions to improve HR policies and systems"/>
+                                <field name="working_environment_company" readonly="state not in ('draft')"
+                                       placeholder="How was the working environment in the company?"/>
+                                <field name="working_environment_department" readonly="state not in ('draft')"
+                                       placeholder="How was the working environment in the department?"/>
+                                <field name="communication_feedback" readonly="state not in ('draft')"
+                                       placeholder="Feedback on communication channels in the company"/>
+                                <field name="approachability_feedback" readonly="state not in ('draft')"
+                                       placeholder="Feedback on approachability of higher authorities"/>
+                                <field name="superior_feedback" readonly="state not in ('draft')"
+                                       placeholder="Feedback on your superior"/>
+                                <field name="colleagues_feedback" readonly="state not in ('draft')"
+                                       placeholder="Feedback on your colleagues"/>
+                                <field name="coordination_feedback" readonly="state not in ('draft')"
+                                       placeholder="Feedback on coordination between departments"/>
+                                <field name="welfare_activities_feedback" readonly="state not in ('draft')"
+                                       placeholder="Feedback on welfare activities"/>
+                                <field name="staff_facilities_feedback" readonly="state not in ('draft')"
+                                       placeholder="Feedback on staff facilities"/>
+                                <field name="general_suggestions" readonly="state not in ('draft')"
+                                       placeholder="General suggestions to improve the organization"/>
+                            </group>
+                        </page>
+                        <page string="New Employment Details">
+                            <group>
+                                <group>
+                                    <field name="new_employment_organization" readonly="state not in ('draft')"
+                                           placeholder="New Employment Organization"/>
+                                    <field name="new_employment_designation" readonly="state not in ('draft')"
+                                           placeholder="New Employment Designation"/>
+                                    <field name="new_employment_compensation_monthly" readonly="state not in ('draft')"
+                                           placeholder="New Employment Compensation (Monthly)"/>
+                                    <field name="new_employment_compensation_annual" readonly="state not in ('draft')"
+                                           placeholder="New Employment Compensation (Annual)"/>
+                                    <field name="new_employment_working_conditions" readonly="state not in ('draft')"
+                                           placeholder="New Employment Working Conditions"/>
+                                    <field name="other_details" readonly="state not in ('draft')"
+                                           placeholder="Other Details"/>
+                                </group>
+                                <group>
+                                    <field name="signature_employee" readonly="state not in ('draft')"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                           placeholder="Employee's Signature"/>
+                                    <field name="conducted_by" readonly="state not in ('draft')"
+                                           placeholder="Exit Interview Conducted By"/>
+                                    <field name="conducted_by_signature" readonly="state not in ('draft')"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                           placeholder="Exit Interview Conducted Signature"/>
+                                    <field name="interview_date" readonly="state not in ('draft')"/>
+                                </group>
+                                <group string="Comments">
+                                    <field name="supervisor_response" readonly="state not in ('draft')"
+                                           placeholder="Supervisor's Response"/>
+                                    <field name="hod_comments" readonly="state not in ('draft')"
+                                           placeholder="H.O.D. Comments"/>
+                                    <field name="hod_signature" readonly="state not in ('draft')"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                           placeholder="H.O.D Signature"/>
+                                    <field name="gm_comments" readonly="state not in ('draft')"
+                                           placeholder="GM/BU Head Comments"/>
+                                    <field name="gm_signature" readonly="state not in ('draft')"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                           placeholder="GM/BU Head Signature"/>
+                                    <field name="hr_received_date" readonly="state not in ('draft')"
+                                           placeholder="HRD (Date)"/>
+                                    <field name="hr_signature"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                           placeholder="HR Responsible Signature"
+                                           readonly="state not in ('draft')"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="exit_interview_form_action" model="ir.actions.act_window">
+        <field name="name">Exit Interview</field>
+        <field name="res_model">exit.interview</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Exit Interview!
+            </p>
+        </field>
+    </record>
+    <menuitem id="exit_interview_menu"
+              parent="hr_resignation.hr_resignation_menu_root"
+              name="Exit Interview"
+              action="exit_interview_form_action"
+              sequence="8"
+    />
+</odoo>
+
+
+

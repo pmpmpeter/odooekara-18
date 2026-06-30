@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="hr_salary_advance_form_view" model="ir.ui.view">
+        <field name="name">Hr Salary Advance View Form</field>
+        <field name="model">hr.salary.advance</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_request" type="object" class="oe_highlight" string="Request Approval" invisible="state != 'draft'"/>
+                    <button name="action_approve" type="object" class="oe_highlight" string="Approve" invisible="state != 'waiting_for_approval' or not is_approver"/>
+                    <button name="action_reject" type="object" class="oe_highlight" string="Reject" invisible="state != 'waiting_for_approval' or not is_approver"/>
+                    <button name="action_disburse_amount" type="object" class="oe_highlight" string="Disburse Amount" invisible="state != 'approved'"/>
+                    <field name="is_approver" invisible="1"/>
+                    <field name="state" string="Status" widget="statusbar" readonly="1" statusbar_visible="draft,waiting_for_approval,approved,in_progress,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object" name="action_view_journal_entry"
+                                invisible="move_id == False">
+                            <div class="o_stat_info">
+                                <span class="o_stat_text">Journal Entry</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h3><field name="name" readonly="1"/></h3>
+                    </div>
+                    <group col="2" string="EMPLOYEE DETAILS">
+                        <group>
+                            <field name="employee_id"/>
+                            <field name="department_id"/>
+                            <field name="job_id"/>
+                            <field name="job_level_id"/>
+                        </group>
+                        <group>
+                            <field name="parent_id"/>
+                            <field name="hr_id"/>
+                            <field name="company_id" invisible="1"/>
+                            <field name="move_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="amount"/>
+                            <field name="approved_amount"/>
+                            <field name="reason" required="1"/>
+                        </group>
+                        <group>
+                            <field name="requested_date"/>
+                            <field name="approved_date"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="installment_details" string="Installment Details">
+                            <field name="salary_advance_line_ids" nolabel="1">
+                                <list create="0" edit="0" delete="0">
+                                    <field name="installment_date"/>
+                                    <field name="installment_amount"/>
+<!--                                    <field name="paid_date"/>-->
+<!--                                    <field name="installment_state" widget="badge"/>-->
+                                </list>
+                            </field>
+                        </page>
+                        <page name="approval_history" string="Approval History">
+                            <field name="approval_history_line_ids" nolabel="1">
+                                <list create="0" edit="0" delete="0">
+                                    <field name="approval_user_ids" widget="many2many_tags"/>
+                                    <field name="approved_user_id"/>
+                                    <field name="approved_date"/>
+                                    <field name="approval_state" widget="badge"/>
+                                </list>
+                                <form>
+                                    <group>
+                                        <group>
+                                            <field name="approved_user_id"/>
+                                            <field name="approved_date"/>
+                                            <field name="rejected_user_id" invisible="not rejected_user_id"/>
+                                            <field name="rejected_date" invisible="not rejected_date"/>
+                                        </group>
+                                        <group>
+                                            <field name="approval_state" widget="badge"/>
+                                            <field name="reject_reason"/>
+                                        </group>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="hr_salary_advance_tree_view" model="ir.ui.view">
+        <field name="name">Hr Salary Advance View Tree</field>
+        <field name="model">hr.salary.advance</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="requested_date"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_hr_salary_advance" model="ir.actions.act_window">
+        <field name="name">Salary Advance</field>
+        <field name="res_model">hr.salary.advance</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+    </record>
+
+    <menuitem
+            id="menu_salary_advance_root"
+            name="Salary Advance"
+            parent="hr.menu_hr_employee_payroll"
+            sequence="120"
+    />
+    <menuitem id="menu_salary_advance"
+              parent="menu_salary_advance_root"
+              name="Salary Advance"
+              action="action_hr_salary_advance"
+              sequence="1"
+    />
+    <!-- <record id="view_res_config_settings_hr_salary_advance" model="ir.ui.view">
+        <field name="name">res.config.settings.hr.salary.advance</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="hr.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+              <xpath expr="//block[@name='employee_rights_setting_container']" position="after">
+                   <div>
+                        <h2>Salary Advance</h2>
+                        <div class="row mt16 o_settings_container">
+                            <div class="col-12 col-lg-6 o_setting_box" title="Salary Advance">
+                                <div class="o_setting_right_pane">
+                                    <div class="row">
+                                        <label for="advance_journal_id" class="col-lg-3 o_light_label"/>
+                                        <field name="advance_journal_id" string="Advance Journal"/>
+                                    </div>
+                                    <div class="row">
+                                        <label for="finance_head_id" class="col-lg-3 o_light_label"/>
+                                        <field name="finance_head_id" string="Finance Head"/>
+                                    </div>
+                                </div>
+                            </div>
+                             <div class="col-12 col-lg-6 o_setting_box" title="Salary Advance">
+                                <div class="o_setting_right_pane">
+                                    <div class="row">
+                                        <label for="advance_debit_account_id" class="col-lg-3 o_light_label"/>
+                                        <field name="advance_debit_account_id" string="Advance Debit Account"/>
+                                    </div>
+                                    <div class="row">
+                                        <label for="advance_credit_account_id" class="col-lg-3 o_light_label"/>
+                                        <field name="advance_credit_account_id" string="Advance Credit Account"/>
+                                    </div>
+                                </div>
+                             </div>
+                        </div>
+                   </div>
+              </xpath>
+        </field>
+    </record> -->
+</odoo>

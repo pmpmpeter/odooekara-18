@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_purchase_orders_type,purchase.orders.type,model_purchase_orders_type,base.group_user,1,1,1,0
+access_purchase_order_approval_wizard,access_purchase_order_approval_wizard,model_purchase_order_approval_wizard,base.group_user,1,1,1,1

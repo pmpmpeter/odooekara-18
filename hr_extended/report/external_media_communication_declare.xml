@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="media_declare_form_template" model="ir.actions.report">
+        <field name="name">External Media Declaration Form</field>
+        <field name="model">hr.employee</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_extended.print_media_declare_form</field>
+        <field name="report_file">hr_extended.print_media_declare_form</field>
+        <field name="print_report_name">'External Media Declaration'</field>
+        <!--        <field name="binding_model_id" ref="hr_extended.model_hr_employee"/>-->
+        <field name="binding_model_id" eval="False"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="print_media_declare_form">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="hr_extended.print_media_declare_report" t-lang="o.user_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <template id="print_media_declare_report">
+        <t t-call="web.external_layout">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="doc" t-value="doc.with_context(lang=lang)"/>
+                <t t-set="company" t-value="doc.company_id"/>
+                <div style="margin-left: 25px; margin-right: 25px;">
+                    <h3 style="text-align: center; font-weight: bold;">
+                        COMMUNICATION WITH EXTERNAL MEDIA
+                    </h3>
+
+                    <h4 style="text-align: center; font-weight: bold;">
+                        SELF DECLARATION
+                    </h4>
+                    <br/>
+                    <p>
+                        I, ______________________ s/o/d/o _____________________ residing at
+                        _________________________________________________________________________________ hereby declare
+                        that I understand the External media communication policy of the company.
+                        All inquiries seeking an official response or statement specific to Ekara Partnership should be
+                        directed to the Director or any other person authorized by the Director for communications.
+                    </p>
+                    <p>
+                        Authorization to speak on behalf of the Ekara Partnership may only be given by the Director for
+                        Communications.
+                        No staff member may make official statements on behalf of the organization without consultation
+                        with, and express authorization from, the Director.
+                    </p>
+                    <p>
+                        I understand the Company maintains the right to monitor company-related employee activity in
+                        social networks.
+                        Employees are prohibited from disclosing or discussing any of the company’s confidential or
+                        proprietary information, or any information regarding the company’s clients or business
+                        partners, or details of a particular client engagement, in any online social networking and
+                        blogging activities.
+                        The fact that a particular entity or person is a client or business partner of the company must
+                        be treated as confidential and should not be mentioned in any online social networking and
+                        blogging activities.
+                    </p>
+                    <p>
+                        Employees are prohibited from using the trademarks, logos, other identifying marks or
+                        copyright-protected material of the company or its clients in any online social networking and
+                        blogging activities.
+                    </p>
+                    <p>
+                        Employees also are prohibited from including their company email address in their personal
+                        profiles on social networking sites.
+                    </p>
+                    <p>
+                        I understand that violation of these guidelines is grounds for disciplinary action up to and
+                        including dismissal from employment.
+                    </p>
+                    <br/>
+                    <div>
+                        <span style="display: inline-block; width: 45%; text-align: left;">
+                            Signature: ___________________________
+                        </span>
+                        <span style="display: inline-block; width: 45%; text-align: right;">
+                            Name: _________________________
+                        </span>
+                    </div>
+
+                    <div style="margin-top: 20px;">
+                        <span style="display: inline-block; width: 45%; text-align: left;">
+                            Company/Dept: ___________________________
+                        </span>
+                        <span style="display: inline-block; width: 45%; text-align: right;">
+                            Date: _________________________
+                        </span>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,454 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="paperformat_360_performance_review_pdf_A4" model="report.paperformat">
+        <field name="name">360 Performance Review</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">50</field>
+        <field name="margin_bottom">25</field>
+        <field name="margin_left">15</field>
+        <field name="margin_right">15</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">48</field>
+        <field name="dpi">90</field>
+    </record>
+    <record id="360_performance_review_report" model="ir.actions.report">
+        <field name="name">360 Performance Review</field>
+        <field name="model">threeperformance.review</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_appraisal_extended.print_360_performance_review</field>
+        <field name="report_file">hr_appraisal_extended.print_360_performance_review</field>
+        <field name="paperformat_id" ref="hr_appraisal_extended.paperformat_360_performance_review_pdf_A4"/>
+        <field name="print_report_name">'360_performace_review'</field>
+        <field name="binding_model_id" ref="hr_appraisal_extended.model_threeperformance_review"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="print_360_performance_review">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <t t-foreach="docs" t-as="doc">
+                    <div class="page" style="margin:0;">
+
+
+                        <table style="width:100%; border-collapse: collapse;">
+                            <t t-set="overall_total_marks" t-value="0"/>
+                            <t t-set="overall_question_count" t-value="0"/>
+
+                            <t t-foreach="doc.review_line_ids" t-as="line">
+                                <t t-set="overall_total_marks" t-value="overall_total_marks + (line.rating_marks or 0)"/>
+                                <t t-set="overall_question_count" t-value="overall_question_count + 1"/>
+                            </t>
+                            <tr>
+                                <td style="text-align: center;  padding: 10px;">Who are you leaving feedback for?
+                                    (Employee
+                                    Name)
+                                </td>
+                                <td style="text-align: center;  padding: 10px;">
+                                    <t t-esc="doc.employee_id.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center;  padding: 10px;">What is their job title:</td>
+                                <td style="text-align: center;  padding: 10px;">
+                                    <t t-esc="doc.job_id.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center;  padding: 10px;">Grade (if applicable):</td>
+                                <td style="text-align: center;  padding: 10px;">
+                                    <t t-esc="doc.grade"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="text-align: center;  padding: 10px;">Please rate the above
+                                    Employee in
+                                    accordance with the criteria below:
+                                </td>
+
+                            </tr>
+                        </table>
+
+                        <table style="width:100%; table-layout: fixed; border-collapse: collapse;">
+                            <tr>
+                                <!-- Left column for first competency -->
+                                <td style="width: 50%; padding: 10px;">
+                                    <table style="width:100%; border-collapse: collapse;">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align: center; padding: 10px; background-color: #0073b7;">
+                                                    Communication
+                                                </th>
+                                                <th style="text-align: center; padding: 10px; background-color: #0073b7;">
+                                                    Rating
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-set="total_marks" t-value="0"/>
+                                            <t t-set="question_count" t-value="0"/>
+                                            <t t-foreach="doc.review_line_ids" t-as="competency">
+                                                <t t-if="competency.review_type == 'communication'">
+                                                    <t t-set="total_marks" t-value="total_marks + competency.rating_marks"/>
+                                                    <t t-set="question_count" t-value="question_count + 1"/>
+                                                    <tr>
+                                                        <td style="text-align: left; padding: 10px;">
+                                                            <t t-esc="competency.config_id.name"/>
+                                                        </td>
+                                                        <td style="text-align: left; padding: 10px;">
+                                                            <t t-esc="competency.rating"/>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </t>
+                                             <tr>
+                                                <td style="text-align: left; padding: 10px; font-weight: bold;">
+                                                </td>
+                                                <td style="text-align: left; padding: 10px;">
+                                                    <t t-esc="str(round(question_count and ((total_marks / question_count) / 5.0) * 100 or 0, 2)) + ' %'"/>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+
+                                <!-- Right column for second competency -->
+                                <td style="width: 50%; padding: 10px;">
+                                    <table style="width:100%; border-collapse: collapse;">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align: center; padding: 10px; background-color: #0073b7;">
+                                                    Team Working
+                                                </th>
+                                                <th style="text-align: center; padding: 10px; background-color: #0073b7;">
+                                                    Rating
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                             <t t-set="total_marks" t-value="0"/>
+                                            <t t-set="question_count" t-value="0"/>
+                                            <t t-foreach="doc.review_line_ids" t-as="competency">
+                                                <t t-if="competency.review_type == 'team_working'">
+                                                     <t t-set="total_marks" t-value="total_marks + competency.rating_marks"/>
+                                                    <t t-set="question_count" t-value="question_count + 1"/>
+                                                    <tr>
+                                                        <td style="text-align: left; padding: 10px;">
+                                                            <t t-esc="competency.config_id.name"/>
+                                                        </td>
+                                                        <td style="text-align: left; padding: 10px;">
+                                                            <t t-esc="competency.rating"/>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </t>
+                                             <tr>
+                                                <td style="text-align: left; padding: 10px; font-weight: bold;">
+                                                </td>
+                                                <td style="text-align: left; padding: 10px;">
+                                                    <t t-esc="str(round(question_count and ((total_marks / question_count) / 5.0) * 100 or 0, 2)) + ' %'"/>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <!-- Left column for problem-solving -->
+                                <td style="width: 50%; padding: 10px;">
+                                    <table style="width:100%; border-collapse: collapse;">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align: center; padding: 10px; background-color: #de541d;">
+                                                    Problem-solving and Decision-Making
+                                                </th>
+                                                <th style="text-align: center; padding: 10px; background-color: #de541d;">
+                                                    Rating
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                             <t t-set="total_marks" t-value="0"/>
+                                            <t t-set="question_count" t-value="0"/>
+                                            <t t-foreach="doc.review_line_ids" t-as="competency">
+                                                <t t-if="competency.review_type == 'problem_solving'">
+                                                    <t t-set="total_marks" t-value="total_marks + competency.rating_marks"/>
+                                                    <t t-set="question_count" t-value="question_count + 1"/>
+                                                    <tr>
+                                                        <td style="text-align: left; padding: 10px;">
+                                                            <t t-esc="competency.config_id.name"/>
+                                                        </td>
+                                                        <td style="text-align: left; padding: 10px;">
+                                                            <t t-esc="competency.rating"/>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </t>
+                                             <tr>
+                                                <td style="text-align: left; padding: 10px; font-weight: bold;">
+                                                </td>
+                                                <td style="text-align: left; padding: 10px;">
+                                                    <t t-esc="str(round(question_count and ((total_marks / question_count) / 5.0) * 100 or 0, 2)) + ' %'"/>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+
+                                <!-- Right column for continuous improvement -->
+                                <td style="width: 50%; padding: 10px;">
+                                    <table style="width:100%; border-collapse: collapse;">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align: center; padding: 10px; background-color: #449110;">
+                                                    Continuous Improvement
+                                                </th>
+                                                <th style="text-align: center; padding: 10px; background-color: #449110;">
+                                                    Rating
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                             <t t-set="total_marks" t-value="0"/>
+                                            <t t-set="question_count" t-value="0"/>
+                                            <t t-foreach="doc.review_line_ids" t-as="competency">
+                                                <t t-if="competency.review_type == 'continuous'">
+                                                     <t t-set="total_marks" t-value="total_marks + competency.rating_marks"/>
+                                                    <t t-set="question_count" t-value="question_count + 1"/>
+                                                    <tr>
+                                                        <td style="text-align: left; padding: 10px;">
+                                                            <t t-esc="competency.config_id.name"/>
+                                                        </td>
+                                                        <td style="text-align: left; padding: 10px;">
+                                                            <t t-esc="competency.rating"/>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </t>
+                                             <tr>
+                                                <td style="text-align: left; padding: 10px; font-weight: bold;">
+                                                </td>
+                                                <td style="text-align: left; padding: 10px;">
+                                                    <t t-esc="str(round(question_count and ((total_marks / question_count) / 5.0) * 100 or 0, 2)) + ' %'"/>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <!-- Left column for problem-solving -->
+                                <td style="width: 50%; padding: 10px;">
+                                    <table style="width:100%; border-collapse: collapse;">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align: center; padding: 10px; background-color: #dedede;">
+                                                    Organisation and Time Management
+                                                </th>
+                                                <th style="text-align: center; padding: 10px; background-color: #dedede;">
+                                                    Rating
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                             <t t-set="total_marks" t-value="0"/>
+                                            <t t-set="question_count" t-value="0"/>
+                                            <t t-foreach="doc.review_line_ids" t-as="competency">
+                                                <t t-if="competency.review_type == 'organisation_time'">
+                                                     <t t-set="total_marks" t-value="total_marks + competency.rating_marks"/>
+                                                    <t t-set="question_count" t-value="question_count + 1"/>
+                                                    <tr>
+                                                        <td style="text-align: left; padding: 10px;">
+                                                            <t t-esc="competency.config_id.name"/>
+                                                        </td>
+                                                        <td style="text-align: left; padding: 10px;">
+                                                            <t t-esc="competency.rating"/>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </t>
+                                             <tr>
+                                                <td style="text-align: left; padding: 10px; font-weight: bold;">
+                                                </td>
+                                                <td style="text-align: left; padding: 10px;">
+                                                    <t t-esc="str(round(question_count and ((total_marks / question_count) / 5.0) * 100 or 0, 2)) + ' %'"/>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+
+                                <!-- Right column for continuous improvement -->
+                                <td style="width: 50%; padding: 10px;">
+                                    <table style="width:100%; border-collapse: collapse;">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align: center; padding: 10px; background-color: #0073b7;">
+                                                    Customer Focus
+                                                </th>
+                                                <th style="text-align: center; padding: 10px; background-color: #0073b7;">
+                                                    Rating
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                             <t t-set="total_marks" t-value="0"/>
+                                            <t t-set="question_count" t-value="0"/>
+                                            <t t-foreach="doc.review_line_ids" t-as="competency">
+                                                <t t-if="competency.review_type == 'customer_focus'">
+                                                     <t t-set="total_marks" t-value="total_marks + competency.rating_marks"/>
+                                                    <t t-set="question_count" t-value="question_count + 1"/>
+                                                    <tr>
+                                                        <td style="text-align: left; padding: 10px;">
+                                                            <t t-esc="competency.config_id.name"/>
+                                                        </td>
+                                                        <td style="text-align: left; padding: 10px;">
+                                                            <t t-esc="competency.rating"/>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </t>
+                                             <tr>
+                                                <td style="text-align: left; padding: 10px; font-weight: bold;">
+                                                </td>
+                                                <td style="text-align: left; padding: 10px;">
+                                                    <t t-esc="str(round(question_count and ((total_marks / question_count) / 5.0) * 100 or 0, 2)) + ' %'"/>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <!-- Left column for problem-solving -->
+                                <td style="width: 50%; padding: 10px;">
+                                    <table style="width:100%; border-collapse: collapse;">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align: center; padding: 10px; background-color: #f5ea25;">
+                                                    Interpersonal Skills
+                                                </th>
+                                                <th style="text-align: center; padding: 10px; background-color: #f5ea25;">
+                                                    Rating
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                             <t t-set="total_marks" t-value="0"/>
+                                            <t t-set="question_count" t-value="0"/>
+                                            <t t-foreach="doc.review_line_ids" t-as="competency">
+                                                <t t-if="competency.review_type == 'interpersonal_skills'">
+                                                    <t t-set="total_marks" t-value="total_marks + competency.rating_marks"/>
+                                                    <t t-set="question_count" t-value="question_count + 1"/>
+                                                    <tr>
+                                                        <td style="text-align: left; padding: 10px;">
+                                                            <t t-esc="competency.config_id.name"/>
+                                                        </td>
+                                                        <td style="text-align: left; padding: 10px;">
+                                                            <t t-esc="competency.rating"/>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </t>
+                                             <tr>
+                                                <td style="text-align: left; padding: 10px; font-weight: bold;">
+                                                </td>
+                                                <td style="text-align: left; padding: 10px;">
+                                                    <t t-esc="str(round(question_count and ((total_marks / question_count) / 5.0) * 100 or 0, 2)) + ' %'"/>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+
+                                <!-- Right column for continuous improvement -->
+                                <td style="width: 50%; padding: 10px;">
+                                    <table style="width:100%; border-collapse: collapse;">
+                                        <thead>
+                                            <tr>
+                                                <th style="text-align: center; padding: 10px; background-color: #f7caac;">
+                                                    Motivation
+                                                </th>
+                                                <th style="text-align: center; padding: 10px; background-color: #f7caac;">
+                                                    Rating
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                             <t t-set="total_marks" t-value="0"/>
+                                            <t t-set="question_count" t-value="0"/>
+                                            <t t-foreach="doc.review_line_ids" t-as="competency">
+                                                <t t-if="competency.review_type == 'motivation'">
+                                                     <t t-set="total_marks" t-value="total_marks + competency.rating_marks"/>
+                                                    <t t-set="question_count" t-value="question_count + 1"/>
+                                                    <tr>
+                                                        <td style="text-align: left; padding: 10px;">
+                                                            <t t-esc="competency.config_id.name"/>
+                                                        </td>
+                                                        <td style="text-align: left; padding: 10px;">
+                                                            <t t-esc="competency.rating"/>
+                                                        </td>
+                                                    </tr>
+                                                </t>
+                                            </t>
+                                             <tr>
+                                                <td style="text-align: left; padding: 10px; font-weight: bold;">
+                                                </td>
+                                                <td style="text-align: left; padding: 10px;">
+                                                    <t t-esc="str(round(question_count and ((total_marks / question_count) / 5.0) * 100 or 0, 2)) + ' %'"/>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="text-align: left; padding: 10px; font-weight: bold; width: 40%;">
+                                    Overall Performance Score (%)
+                                </td>
+                                <td style="text-align: left; padding: 10px;">
+                                    <t t-esc="str(round(overall_question_count and ((overall_total_marks / overall_question_count) / 5.0) * 100 or 0, 2)) + ' %'"/>
+                                </td>
+                            </tr>
+                        </table>
+
+
+                        <table style="width:100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="text-align: left;  padding: 10px; width:40%;">Review submitted by (Employee
+                                    Name,
+                                    Designation , Department , BU)
+                                </td>
+                                <td style="text-align: left;  padding: 10px;"><t t-esc="doc.review_submitted_by.name"/>,
+                                    <t
+                                            t-esc="doc.review_designation.name"/>,<t
+                                            t-esc="doc.review_department.name"/>,
+                                    <t t-esc="','.join(doc.review_bu_ids.mapped('name'))"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left;  padding: 10px; width:40%;">Date and Time</td>
+                                <td style="text-align: left;  padding: 10px;">
+                                    <t t-esc="doc.review_date_time_prob and doc.review_date_time_prob.strftime('%m/%d/%Y %H:%M:%S') or ''"/>
+                                </td>
+                            </tr>
+                        </table>
+
+
+                    </div>
+
+
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>
+

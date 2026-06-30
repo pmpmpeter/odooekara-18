@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_budget_department_tree" model="ir.ui.view">
+        <field name="name">budget.department.list</field>
+        <field name="model">budget.department</field>
+        <field name="arch" type="xml">
+            <list string="Department Budget">
+                <field name="name"/>
+                <field name="department_id"/>
+                <field name="analytic_account_id"/>
+                <field name="create_date"/>
+                <field name="user_id"/>
+                <field name="company_id"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'"
+                       decoration-muted="state == 'cancel'" decoration-success="state == 'submit'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_budget_department_form" model="ir.ui.view">
+        <field name="name">budget.department.form</field>
+        <field name="model">budget.department</field>
+        <field name="arch" type="xml">
+            <form string="Department Budget">
+                <header>
+                    <button name="action_submit" string="Submit" type="object"
+                            class="btn-primary" invisible="state not in ('draft')"/>
+                    <!--                    <button name="action_cancel" string="Cancel" type="object"-->
+                    <!--                            invisible="state in ('cancel')"/>-->
+                    <button name="action_draft" string="Reset to Draft" type="object"
+                            class="btn-primary" invisible="state not in ('cancel')"/>
+
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,submit"/>
+                </header>
+                <sheet>
+                    <div class="oe_title" width="100">
+                        <label for="name"/>
+                        <h1>
+
+                            <field name="name" placeholder="e.g. Budget 2025: Finance Department" required="1"
+                                   readonly="state != 'draft'"
+                                   options="{'no_quick_create':True,'no_create': True,'no_open': True}"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <!--                            <field name="department_id"/>-->
+
+                            <field name="department_id" placeholder="Finance and Accounts" required="1"
+                                   readonly="state != 'draft'"  domain="[('company_id','=',company_id)]"
+                                   options="{'no_quick_create':True,'no_create': True,'no_open': True}"/>
+
+                            <field name="analytic_account_id" readonly="state != 'draft'"  domain="[('company_id','=',company_id)]"
+                                   options="{'no_quick_create':True,'no_create': True,'no_open': True}"/>
+                            <field name="company_id" readonly="1"
+                                   options="{'no_quick_create':True,'no_create': True,'no_open': True}"/>
+                        </group>
+                        <group>
+                            <field name="user_id" readonly="state != 'draft'"
+                                   options="{'no_quick_create':True,'no_create': True,'no_open': True}"/>
+
+                            <field name="cash_type" width='800'
+                                   invisible='1'
+                                   force_save='1'/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="CRR Monthly Breakup">
+                            
+
+                        </page>
+                    </notebook>
+
+
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids" options="{'post_refresh': 'always'}"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_budget_department" model="ir.actions.act_window">
+        <field name="name">Department Budget</field>
+        <field name="res_model">budget.department</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_budget_department"
+              name="Department Budget Odoo"
+              parent="account.menu_finance_entries"
+              action="action_budget_department"
+              sequence="96"/>
+</odoo>

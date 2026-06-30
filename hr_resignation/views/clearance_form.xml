@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="clearance_form_tree_view" model="ir.ui.view">
+        <field name="name">clearance.form.list</field>
+        <field name="model">clearance.form</field>
+        <field name="arch" type="xml">
+            <list string="Clearance Form">
+                <field name="employee_id"/>
+                <field name="designation_id"/>
+                <field name="date_of_joining"/>
+                <field name="last_working_day"/>
+                <field name="state" widget='badge' decoration-info="state == 'submitted'"
+                       decoration-success="state =='completed'"/>
+            </list>
+        </field>
+    </record>
+    <record id="clearance_form_view" model="ir.ui.view">
+        <field name="name">clearance.form.form</field>
+        <field name="model">clearance.form</field>
+        <field name="arch" type="xml">
+            <form string="Clearance Form">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,submitted,completed" nolabel="1"/>
+                    <button name="clearance_form_submit" string="Submit" type="object"
+                            class="oe_highlight" invisible="state != 'draft'"
+                    />
+                    <button name="clearance_form_complete" string="Complete" type="object"
+                            class="oe_highlight" invisible="state != 'submitted'"
+                    />
+                    <button name="clearance_form_draft" string="Reset to Draft" type="object"
+                            class="btn-secondary" invisible="state != 'completed'"
+                    />
+                    <button string="Print" type="action"
+                            name="%(hr_resignation.clearance_form_report)d" class="btn-primary"
+                            invisible="state != 'completed'"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="company_id" invisible="1"/>
+                            <field name="employee_id" readonly="state not in ('draft')"
+                                   options="{'no_open': True,'no_quick_create':True,'no_create': True,}"/>
+                            <field name="designation_id" readonly="state not in ('draft')"
+                                   options="{'no_open': True,'no_quick_create':True,'no_create': True,}"/>
+                            <field name="date_of_joining" readonly="state not in ('draft')"/>
+                        </group>
+                        <group>
+                            <field name="department_id" readonly="state not in ('draft')"
+                                   options="{'no_open': True,'no_quick_create':True,'no_create': True,}"/>
+                            <field name="last_working_day" readonly="state not in ('draft')"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Handing Over Assets">
+                            <field name="asset_ids" readonly="state not in ('draft')">
+                                <list editable="bottom">
+                                    <!--<field name="asset_type"/>-->
+                                    <field name="company_id" column_invisible="1"/>
+                                    <field name="asset_category_id"
+                                           options="{'no_open': True,'no_quick_create':True,'no_create': True,}"/>
+                                    <field name="returned_to"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"/>
+                                    <field name="remarks"/>
+                                    <field name="signature"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Clearance by Function Heads">
+                            <field name="function_head_ids" readonly="state not in ('draft')">
+                                <list editable="bottom">
+                                    <field name="function"/>
+                                    <field name="remarks"/>
+                                    <field name="signature"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+    <record id="clearance_form_action" model="ir.actions.act_window">
+        <field name="name">Clearance Form</field>
+        <field name="res_model">clearance.form</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No Probation Review!
+            </p>
+        </field>
+    </record>
+    <menuitem id="clearance_form_menu"
+              parent="hr_resignation.hr_resignation_menu_root"
+              name="Clearance Form"
+              action="clearance_form_action"
+              sequence="8" groups="hr.group_hr_user"
+    />
+</odoo>
+
+
+

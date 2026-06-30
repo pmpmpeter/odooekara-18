@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+
+        <record id="email_template_budget_revision_email" model="mail.template">
+            <field name="name">Budget Revision:{{object.budget_id.name}}</field>
+            <field name="model_id" ref="model_budget_revision_wizard"/>
+            <field name="subject">Budget Revision</field>
+            <field name="body_html" type="html">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Hi,
+                    <br/>
+                    <br/>
+                    Your Budget <t t-out="object.budget_id.name"/> has been revised because of below reason.
+                    <br/>
+                    <p>Reason:<t t-out="object.reason"/></p>
+                    <br/>
+                    <p>Thank You.</p>
+                </p>
+            </field>
+        </record>
+
+        <record id="crr_reminder_email_template" model="mail.template">
+            <field name="name">CRR and CUR Monthly Reminder</field>
+            <field name="email_from">{{object.company_id.email or 'no-reply@yourcompany.com'}}</field>
+            <field name="email_to">{{object.login or ''}}</field>
+            <field name="model_id" ref="base.model_res_users"/>
+            <field name="subject">[Reminder] Monthly CRR andCUR Submission</field>
+            <field name="body_html" type="html">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    <p>Hello <t t-out="object.name"/></p>
+                    <p>This is a reminder that the Monthly CRR and CUR submission is due.</p>
+                    <p>Please ensure your reports are submitted before the deadline.</p>
+                    <p>Best Regards,<br/>
+                    <t t-out="object.company_id.name"/>
+                    </p>
+                </p>
+            </field>
+        </record>
+
+        <record id="cash_pool_manager_email_template" model="mail.template">
+            <field name="name">Cash Pool - Manager Notification</field>
+            <field name="model_id" ref="accounts_extended.model_cash_pool"/>
+            <field name="email_from">{{object.company_id.email}}</field>
+            <field name="email_to">{{object.manager_id.email or ''}}</field>
+            <field name="subject">Fund Added to Cash Pool: {{object.name}}</field>
+            <field name="body_html" type="html">
+                <p>Dear <t t-out="object.manager_id.name"/>,</p>
+
+                <p>We would like to inform you that the following fund has been added to the cash pool:</p>
+
+                <p><strong>Cash Pool Name: </strong> <t t-out="object.name"/></p>
+                <p><strong>Current Balance: </strong><t t-out="object.current_balance"/></p>
+
+                <p><strong>Fund Lines Approved:</strong></p>
+                <ul>
+                    <t t-foreach="object.fund_line_ids.filtered(lambda l: l.state == 'approved')" t-as="line">
+                        <li><strong><t t-out="line.added_by_id.name"/> : </strong><t t-out="line.amount"/></li>
+                    </t>
+                </ul>
+
+                <p>Best regards,</p>
+                <p>The Cash Pool Team</p>
+            </field>
+        </record>
+    </data>
+</odoo>

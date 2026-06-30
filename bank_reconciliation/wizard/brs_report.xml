@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+
+        <record id="view_bank_reconciliation_form_wizard" model="ir.ui.view">
+            <field name="name">bank.reconciliation.statement.report.form</field>
+            <field name="model">bank.reconciliation.statement.report</field>
+            <field name="type">form</field>
+            <field name="arch" type="xml">
+                <form string="BRS Report">
+                    <field name="report_printed" invisible="1"/>
+                    <group invisible="report_printed == False">
+                        <field name="file_name" invisible="1"/>
+                        <field name="summary_file" readonly="1" filename="file_name"/>
+                    </group>
+                    <footer>
+                        <button string='Print' name="action_get_bank_reconciliation_report"
+                                type="object" class="btn-primary" invisible="report_printed == True"/>
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_view_bank_reconciliation_form_wizard" model="ir.actions.act_window">
+            <field name="name">Bank Reconciliation Report</field>
+            <field name="res_model">bank.reconciliation.statement.report</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</openerp>

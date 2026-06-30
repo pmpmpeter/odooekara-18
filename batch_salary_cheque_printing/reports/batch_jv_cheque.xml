@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="paperformat_jv_cheque" model="report.paperformat">
+        <field name="name">Salary Cheque</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="header_line" eval="False"/>
+        <field name="margin_top">1</field>
+        <field name="margin_bottom">20</field>
+        <field name="margin_left">10</field>
+        <field name="margin_right">10</field>
+        <field name="header_spacing" eval="False"/>
+        <field name="dpi">90</field>
+    </record>
+
+    <record id="print_cheque_jv_batch" model="ir.actions.report">
+        <field name="name">Cheque Batch JV</field>
+        <field name="model">account.batch.jv</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">batch_salary_cheque_printing.cheque_batch_jv_document</field>
+        <field name="report_file">batch_salary_cheque_printing.cheque_batch_jv_document</field>
+        <field name="paperformat_id" ref="batch_salary_cheque_printing.paperformat_jv_cheque"/>
+        <field name="binding_model_id" ref="model_account_batch_jv"/>
+        <field name="binding_type">report</field>
+    </record>
+
+
+</odoo>

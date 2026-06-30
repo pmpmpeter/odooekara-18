@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_balance_confirmation_pdf">
+        <t t-foreach="docs" t-as="doc">
+            <t t-set="data" t-value="doc.get_invoice_data()"/>
+            <t t-call="web.basic_layout">
+                <div class="page" style="font-size: 16px;">
+                    <div style="width: 100%;">
+
+                        <!-- To section (left side) -->
+                        <div style="width: 48%; display: inline-block; vertical-align: top; text-align: left;">
+                            <p>
+                                To :
+                                <strong>
+                                    <t t-esc="doc.vendor_id.name"/>
+                                </strong>
+                                    <br/>
+                                    <t t-esc="doc.vendor_id.street"/>
+                                    <br/>
+                                    <t t-esc="doc.company_id.city"/>
+                                    -
+                                    <t t-esc="doc.company_id.zip"/>
+                                    <br/>
+                                    Email:
+                                    <t t-esc="doc.company_id.email"/>
+
+                            </p>
+                        </div>
+
+                        <!-- From section (right side) -->
+                        <div style="width: 48%; display: inline-block; vertical-align: top; text-align: left;">
+                            <p>
+                                From:
+                                <strong>
+                                    <t t-esc="doc.company_id.name"/>
+                                </strong>
+                                <br/>
+                                <t t-esc="doc.company_id.street"/>
+                                <br/>
+                                <t t-esc="doc.company_id.city"/>
+                                -
+                                <t t-esc="doc.company_id.zip"/>
+                                <br/>
+                                Email:
+                                <t t-esc="doc.company_id.email"/>
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div style="width: 100%;">
+                        <div style="width: 48%; display: inline-block; vertical-align: top; text-align: left;">
+                            <span>Dear Sir/Madam,</span>
+                        </div>
+                        <div style="width: 48%; display: inline-block; vertical-align: top; text-align: right;">
+                            <span>Date:
+                                <t t-esc="datetime.datetime.now().strftime('%d-%m-%Y')"/>
+                            </span>
+                        </div>
+                    </div>
+                    <p style="text-align: center;">
+                        <strong>Sub: Confirmation of Accounts</strong>
+                        <br></br>
+                        <t t-esc="doc.from_date.strftime('%d-%m-%Y')"/>
+                        to
+                        <t t-esc="doc.to_date.strftime('%d-%m-%Y')"/>
+                    </p>
+                    <p>
+                        Given below are the details of your Accounts as standing in our Books of Accounts
+                        for the above-mentioned period.
+                    </p>
+
+                    <p>
+                        Kindly return 3 copies stating your I.T. Permanent A/c No., duly signed and sealed,
+                        in confirmation of the same.
+                        Please note that if no reply is received from you within a fortnight,
+                        it will be assumed that you have accepted the balance shown below.
+                    </p>
+
+                    <table class="table table-sm mt-3 table-borderless" style="width: 100%; margin-top: 20px;">
+                        <thead style="border-top: 2px solid black;">
+                            <tr>
+                                <th style="color:black;">Date</th>
+                                <th style="color:black;">Particulars</th>
+                                <th style="border-right: 1px solid black;color:black;">Debit Amount</th>
+                                <th style="color:black;">Date</th>
+                                <th style="color:black;">Particulars</th>
+                                <th style="color:black;">Credit Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody style="border-top: 2px solid black;">
+                            <t t-set="values" t-value="data['rows']"/>
+                            <t t-foreach="values" t-as="line">
+                                <tr>
+                                    <!-- Debit -->
+                                    <td style="width:12%;">
+                                        <t t-if="line['debit_date']">
+                                            <t t-esc="line['debit_date']"/>
+                                        </t>
+                                    </td>
+                                    <td style="width:32%;">
+                                        <t t-if="line['debit_label']">
+                                            <t t-esc="line['debit_label']"/>
+                                        </t>
+                                    </td>
+                                    <td class="text-right" style="border-right: 1px solid black; text-align:right; width:8%;">
+                                        <t t-if="line['debit_amount'] &gt; 0">
+                                            <t t-esc="line['debit_amount']" t-options='{"widget": "monetary", "display_currency": doc.company_id.currency_id}'/>
+                                        </t>
+                                    </td>
+                                    <!-- Credit -->
+                                    <td style="width:12%;">
+                                        <t t-if="line['credit_date']">
+                                            <t t-esc="line['credit_date']"/>
+                                        </t>
+                                    </td>
+                                    <td style="width:28%;">
+                                        <t t-if="line['credit_label']">
+                                            <t t-esc="line['credit_label']"/>
+                                        </t>
+                                    </td>
+                                    <td class="text-right" style="text-align:right; width:8%;">
+                                        <t t-if="line['credit_amount'] &gt; 0">
+                                            <t t-esc="line['credit_amount']" t-options='{"widget": "monetary", "display_currency": doc.company_id.currency_id}'/>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                        <t t-if="values">
+                            <tfoot>
+                                <!-- Spacer row with only right border on 3rd column -->
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td style="height: 350px; border-right: 1px solid black;">&#160;</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+
+                                <!-- Closing Balance Labels -->
+                                 <tr>
+                                    <td>
+                                    </td>
+                                    <td class="text-right">
+                                    </td>
+                                    <td class="text-right" style="border-right: 1px solid black;">
+                                        <strong><t t-esc="data['total_debit']" t-options='{"widget": "monetary", "display_currency": doc.company_id.currency_id}'/></strong>
+                                    </td>
+                                    <td></td>
+                                    <td class="text-right">
+                                        <strong></strong>
+                                    </td>
+                                    <td class="text-right">
+                                        <strong><t t-esc="data['total_credit']" t-options='{"widget": "monetary", "display_currency": doc.company_id.currency_id}'/></strong>
+                                    </td>
+                                </tr>
+                                <t t-if="data['closing_balance_debit'] &gt; 0">
+                                    <tr>
+                                        <td>
+                                        </td>
+                                        <td class="text-right">
+                                            <strong>Closing Balance</strong>
+                                        </td>
+                                        <td class="text-right" style="border-right: 1px solid black;">
+                                            <strong><t t-esc="data['closing_balance_debit']" t-options='{"widget": "monetary", "display_currency": doc.company_id.currency_id}'/></strong>
+                                        </td>
+                                        <td></td>
+                                        <td class="text-right">
+                                            <strong></strong>
+                                        </td>
+                                        <td class="text-right">
+                                        </td>
+                                    </tr>
+                                </t>
+                                 <t t-if="data['closing_balance_credit'] &gt; 0">
+                                    <tr>
+                                        <td></td>
+                                        <td class="text-right">
+                                            <strong></strong>
+                                        </td>
+                                        <td class="text-right">
+                                        </td>
+                                        <td class="text-right">
+                                            <strong>Closing Balance</strong>
+                                        </td>
+                                        <td class="text-right" style="border-right: 1px solid black;">
+                                            <strong><t t-esc="data['closing_balance_credit']" t-options='{"widget": "monetary", "display_currency": doc.company_id.currency_id}'/></strong>
+                                        </td>
+                                    </tr>
+                                </t>
+
+                                <!-- Closing Amount Row -->
+                                <tr>
+                                    <td style="border-top: 1px solid black; border-bottom: 1px solid black;"></td>
+                                    <td style="border-top: 1px solid black; border-bottom: 1px solid black;"></td>
+                                    <td class="text-right"
+                                        style="border-right: 1px solid black; border-top: 1px solid black; border-bottom: 1px solid black;">
+                                        <strong><t t-esc="data['total_credit']+ data['closing_balance_credit']" t-options='{"widget": "monetary", "display_currency": doc.company_id.currency_id}'/></strong>
+                                    </td>
+                                    <td style="border-top: 1px solid black; border-bottom: 1px solid black;"></td>
+                                    <td style="border-top: 1px solid black; border-bottom: 1px solid black;"></td>
+                                    <td class="text-right"
+                                        style="border-top: 1px solid black; border-bottom: 1px solid black;">
+                                        <strong>
+                                            <t t-esc="data['total_debit'] + data['closing_balance_debit'] " t-options='{"widget": "monetary", "display_currency": doc.company_id.currency_id}'/>
+                                        </strong>
+                                    </td>
+                                </tr>
+
+                            </tfoot>
+                        </t>
+
+                    </table>
+                    <div style="width:100%;">
+                        <div style="width: 48%; display: inline-block; vertical-align: top; text-align: left;">
+                            I/We hereby cofirm the above
+                        </div>
+                        <div style="width: 48%; display: inline-block; vertical-align: top; text-align: right;">
+                            Yours faithfully
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

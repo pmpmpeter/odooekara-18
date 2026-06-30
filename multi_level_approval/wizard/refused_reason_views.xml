@@ -1,0 +1,70 @@
+<?xml version="1.0" ?>
+<odoo>
+        <record id="refused_reason_view_form" model="ir.ui.view">
+            <field name="name">refused_reason_view_form</field>
+            <field name="model">refused.reason</field>
+            <field name="arch" type="xml">
+                <form string="Refuse Reason">
+                    <group class="oe_title">
+                        <field name="reason" />
+                    </group>
+                    <footer>
+                        <button
+                        name="action_reason_apply"
+                        string="Refuse"
+                        type="object"
+                        class="btn-primary"
+                    />
+                        <button
+                        string="Cancel"
+                        class="btn-secondary"
+                        special="cancel"
+                    />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="refused_reason_action" model="ir.actions.act_window">
+            <field name="name">Refuse Reason</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">refused.reason</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="refused_reason_view_form" />
+            <field name="target">new</field>
+        </record>
+
+        <record id="approve_reason_view_form" model="ir.ui.view">
+            <field name="name">approve_reason_view_form</field>
+            <field name="model">approve.reason</field>
+            <field name="arch" type="xml">
+                <form string="Approve Reason">
+                    <group class="oe_title">
+                        <field name="reason" />
+                    </group>
+                    <footer>
+                        <button
+                        name="action_approve_reason_apply"
+                        string="Approve"
+                        type="object"
+                        class="btn-primary"
+                    />
+                        <button
+                        string="Cancel"
+                        class="btn-secondary"
+                        special="cancel"
+                    />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="approve_reason_action" model="ir.actions.act_window">
+            <field name="name">Approve Reason</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">approve.reason</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="approve_reason_view_form" />
+            <field name="target">new</field>
+        </record>
+</odoo>

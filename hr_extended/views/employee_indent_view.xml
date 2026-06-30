@@ -1,0 +1,265 @@
+<odoo>
+    <record id="view_employee_indent_form" model="ir.ui.view">
+        <field name="name">employee.indent.form</field>
+        <field name="model">employee.indent</field>
+        <field name="arch" type="xml">
+            <form string="Employee Indent">
+                <header>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,waiting_approval,open,job_created"/>
+                    <button name="action_approve" type="object" string="Submit for Approval" class="btn-primary"
+                            invisible="state not in 'draft'"/>
+                    <button name="action_open" type="object" string="Open" class="btn-secondary"
+                            invisible="state not in 'waiting_approval'"/>
+                    <button name="action_create_job_position" type="object" string="Create a Job Position"
+                            class="btn-info"
+                            invisible="state not in 'open'"/>
+                    <button name="action_reset" type="object" string="Reset To Draft"
+                            invisible="state not in ('waiting_approval','open')"
+                            groups="hr_recruitment.group_hr_recruitment_manager"/>
+                    <button string="Print Job Description" type="action"
+                            name="%(hr_extended.action_employee_indent_report)d"
+                            invisible="state in ('cancel')"
+                            groups="hr_recruitment.group_hr_recruitment_manager,hr_recruitment.group_hr_recruitment_user,hr_extended.group_hr_admin_recuitment"
+                            class="btn-primary"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box" invisible="state not in ('job_created')">
+                        <button class="oe_stat_button" type="object" string="Job Position"
+                                name="action_open_related_jobs" icon="fa-user">
+                        </button>
+                        <button name="action_view_document"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-file-text"
+                                string="View Document"
+                                invisible="not document_id"/>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" options="{'line_breaks': False}" widget="text"
+                                   placeholder="Name"
+                                   readonly="state not in ('draft','cancel')"/>
+                        </h1>
+                        <field name="document_id" invisible="1"/>
+                    </div>
+                    <notebook>
+                        <page string="General Info">
+                            <group>
+                                <group>
+                                    <field name="tax_entity" string="Tax Entity"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                           readonly="state not in ('draft','cancel')"/>
+                                    <field name="organization" string="Organization" required="1"
+                                           readonly="state not in ('draft','cancel')"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"/>
+                                    <field name="locations_id" string="Location" required="1"
+                                           readonly="state not in ('draft','cancel')"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"/>
+                                    <field name="department" string="Department" required="1"
+                                           readonly="state not in ('draft','cancel')"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"/>
+                                    <field name="grade_job_level" string="Grade/ Job Level" required="1"
+                                           readonly="state not in ('draft','cancel')"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"/>
+                                    <field name="position_name" string="Position Name / Designations" required="1"
+                                           readonly="state not in ('draft','cancel')"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"/>
+                                </group>
+                                <group>
+                                    <field name="is_recruitment_manager" invisible="1"/>
+                                    <field name="request_date" string="Request Date"
+                                           readonly="1"/>
+                                    <field name="submit_date" string="Submit Date"
+                                           readonly="1"/>
+                                    <field name="reporting_to" string="Reporting To"
+                                           readonly="state not in ('draft','cancel')"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"/>
+                                    <field name="employment_type" string="Employment Type" required="1"
+                                           readonly="state not in ('draft','cancel')"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"/>
+                                    <field name="target" string="No. of Vacancies" required="1"
+                                           readonly="state not in ('draft','cancel')"/>
+                                    <field name="is_replacement" string="Is Replacement?"
+                                           readonly="state not in ('draft','cancel')"/>
+                                    <field name="replacement_employee_id" string="Replacement Employee Name"
+                                           invisible="not is_replacement"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                           readonly="state not in ('draft','cancel')"/>
+                                    <field name="expected_indent_closure_date" string="Expected Indent Closure Date"
+                                           required="1" readonly="not is_recruitment_manager or state not in ('draft','cancel')"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Other Details">
+                            <group>
+                                <group string="Budget Details">
+                                    <field name="currency_id" required="1"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                           readonly="state not in ('draft','cancel')"/>
+                                    <field name="budgeting_unit_id" string="Budgeting Units" required="1"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                           readonly="state not in ('draft','cancel')"/>
+                                    <field name="is_budgeted" string="Is Budgeted?"
+                                           readonly="state not in ('draft','cancel')"/>
+                                    <field name="start_date" widget="daterange" options="{'end_date_field': 'end_date'}"
+                                           invisible="not is_budgeted"
+                                           readonly="state not in ('draft','cancel')"/>
+                                    <field name="approved_budget" string="BU/Department Total Approved Budget"
+                                           invisible="not is_budgeted"
+                                           readonly="state not in ('draft','cancel')"/>
+                                    <field name="budgeted_amount" string="Budgeted Amount for Position"
+                                           invisible="not is_budgeted"
+                                           readonly="state not in ('draft','cancel')"/>
+                                    <field name="proposed_annual_ctc"
+                                           readonly="state not in ('draft','cancel')"/>
+                                    <field name="utilized_budget" string="Utilized Budget" invisible="not is_budgeted"
+                                           readonly="1"/>
+                                    <field name="balance_budget" string="Balance Budget" invisible="not is_budgeted"
+                                           readonly="1"/>
+                                </group>
+
+                                <group string="Lead Details">
+                                    <field name="unit_head_id" string="1st approval / HOD"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                           readonly="state not in ('draft','cancel')"/>
+                                    <field name="recruitment_spoc_mgr_id" string="2nd approval / Recruitment SPOC / Mgr"
+                                           readonly="state not in ('draft','cancel')"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"/>
+                                    <field name="director_approval_id" string="3rd approval / Director"
+                                           readonly="state not in ('draft','cancel')"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"/>
+                                </group>
+
+                                <group string="Review">
+                                    <field name="preferences" string="Preferences"
+                                           readonly="state not in ('draft','cancel')"/>
+                                    <field name="notes" string="Notes"
+                                           readonly="state not in ('draft','cancel')"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Job Description Details">
+                            <group>
+                                <group>
+                                    <field name="business_unit_id" required="1"
+                                           readonly="state not in ('draft','cancel')"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"/>
+                                    <!--<field name="source"/>-->
+                                </group>
+                                <group>
+                                    <field name="priority" readonly="state not in ('draft','cancel')"/>
+<!--                                    <field name="no_of_vacancy" readonly="state not in ('draft','cancel')"/>-->
+                                </group>
+                            </group>
+                            <group>
+                                <group>
+                                    <field name="purpose_of_job" readonly="state not in ('draft','cancel')"/>
+                                    <field name="job_description" readonly="state not in ('draft','cancel')"/>
+                                    <field name="technical_qualification" readonly="state not in ('draft','cancel')"/>
+                                    <field name="work_experience" readonly="state not in ('draft','cancel')"/>
+                                    <field name="industry_preferences" readonly="state not in ('draft','cancel')"/>
+                                </group>
+                                <group>
+                                    <field name="mandatory_skills" readonly="state not in ('draft','cancel')"/>
+                                    <field name="job_responsibility" readonly="state not in ('draft','cancel')"/>
+                                    <field name="professional_requirements" readonly="state not in ('draft','cancel')"/>
+                                    <field name="educational_requirements" readonly="state not in ('draft','cancel')"/>
+                                    <field name="desirable" readonly="state not in ('draft','cancel')"/>
+                                    <field name="kra_document" filename="kra_document_filename" />
+                                </group>
+                            </group>
+                            <group>
+                                <field name="approved_by_hod" readonly="1"/>
+                                <field name="approved_by_director" readonly="1"/>
+                                <!--<field name="approved_by_hod_id"/>-->
+                                <!--<field name="approved_by_director_id"/>-->
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_employee_indent_tree" model="ir.ui.view">
+        <field name="name">employee.indent.list</field>
+        <field name="model">employee.indent</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="currency_id" column_invisible="1"/>
+                <field name="name"/>
+                <field name="organization"/>
+                <field name="locations_id"/>
+                <field name="department"/>
+                <field name="employment_type"/>
+                <field name="target" sum="Total"/>
+                <field name="expected_indent_closure_date"/>
+                <field name="budgeted_amount" widget="monetary" options="{'currency_field': 'currency_id'}"
+                       sum="Total"/>
+                <field name="utilized_budget" widget="monetary" options="{'currency_field': 'currency_id'}"
+                       sum="Total"/>
+                <field name="balance_budget" widget="monetary" options="{'currency_field': 'currency_id'}" sum="Total"/>
+                <field name="state" widget='badge' decoration-info="state == 'open'"
+                       decoration-success="state =='job_created'" decoration-danger="state == 'cancel'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_employee_indent_search" model="ir.ui.view">
+        <field name="name">employee.indent.search</field>
+        <field name="model">employee.indent</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Waiting Approval" name="waiting_approval"
+                        domain="[('state', '=', 'waiting_approval')]"/>
+                <filter string="Open" name="open" domain="[('state', '=', 'open')]"/>
+                <filter string="Created Job Position" name="created_job_position"
+                        domain="[('state', '=', 'job_created')]"/>
+
+                <group expand="0" string="Group By">
+                    <filter string="Department" name="group_by_department" context="{'group_by':'department'}"/>
+                    <filter string="Job Position" name="group_by_position_name" context="{'group_by':'position_name'}"/>
+                    <filter string="Job Level" name="group_by_grade_job_level"
+                            context="{'group_by':'grade_job_level'}"/>
+                    <filter string="Status" name="group_by_state" context="{'group_by':'state'}"/>
+                </group>
+
+                <field name="name" string="Name"/>
+                <field name="position_name" string="Job Position"/>
+                <field name="grade_job_level" string="Job Level"/>
+            </search>
+        </field>
+    </record>
+
+
+    <record id="action_employee_indent" model="ir.actions.act_window">
+        <field name="name">Employee Indent</field>
+        <field name="res_model">employee.indent</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_employee_indent_tree"/>
+        <field name="search_view_id" ref="view_employee_indent_search"/>
+        <field name="target">current</field>
+        <field name="context">
+            {
+            'search_default_created_job_position': 1
+            }
+        </field>
+    </record>
+
+    <menuitem
+            name="Employee Indent"
+            parent="hr_recruitment.menu_crm_case_categ0_act_job"
+            id="menu_employee_indent"
+            sequence="0"
+            groups="hr_recruitment.group_hr_recruitment_interviewer"
+            action="action_employee_indent"/>
+</odoo>
+

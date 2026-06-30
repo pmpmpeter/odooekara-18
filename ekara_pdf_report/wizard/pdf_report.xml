@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="wizard_form_view" model="ir.ui.view">
+        <field name="name">generate.pdf.report.form</field>
+        <field name="model">generate.pdf.report</field>
+        <field name="arch" type="xml">
+            <form string="Balance Confirmation">
+                <sheet>
+                    <group>
+                        <!-- First row: Vendor -->
+                        <group>
+                            <field name="vendor_id"/>
+                            <field name="from_date"/>
+                            <field name="partner_ids" widget="many2many_tags"/>
+                        </group>
+
+                        <!-- Second row: Company -->
+                        <group>
+                            <field name="company_id" readonly="1"/>
+                            <field name="to_date"/>
+                        </group>
+
+                    </group>
+                    <footer>
+                        <button name="action_generate_pdf" string="Generate PDF" type="object" class="btn-primary"/>
+                        <button name="action_send_balance_confirmation_report_mail" string="Send Mail" type="object" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="account_action_balance_confirmation" model="ir.actions.act_window">
+        <field name="name">Balance Confirmation</field>
+        <field name="res_model">generate.pdf.report</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_account_balance_confirmation"
+              name="Balance Confirmation"
+              parent="account.menu_finance_payables"
+              action="account_action_balance_confirmation"
+              sequence="220"/>
+
+</odoo>

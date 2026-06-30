@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<record id="get_cmg_and_gpa_details" model="ir.actions.report">
+    <field name="name">GMC And GPA Details</field>
+    <field name="model">joining.documents</field>
+    <field name="report_type">xlsx</field>
+    <field name="report_name">hr_extended.report_cmg_and_gpa_details</field>
+    <field name="report_file">hr_extended.report_cmg_and_gpa_details</field>
+    <field name="binding_model_id" ref="hr_extended.model_joining_documents"/>
+    <field name="binding_type">report</field>
+</record>
+</odoo>

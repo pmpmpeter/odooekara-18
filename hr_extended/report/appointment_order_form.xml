@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="appointment_order_form_template" model="ir.actions.report">
+        <field name="name">Appointment Order Form</field>
+        <field name="model">hr.employee</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_extended.print_appointment_order_form</field>
+        <field name="report_file">hr_extended.print_appointment_order_form</field>
+        <field name="print_report_name">'Appointment Order Form'</field>
+        <!-- <field name="binding_model_id" ref="hr_extended.model_hr_employee"/>-->
+        <field name="binding_model_id" eval="False"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="print_appointment_order_form">
+        <t t-call="web.basic_layout">
+            <t t-foreach="docs" t-as="doc">
+                <div style="margin-left: 25px; margin-right: 25px;">
+                    <h3 style="text-align: center; font-weight: bold; margin-bottom: 0;">
+                        FORM Q
+                    </h3>
+                    <p style="text-align: center; margin: 0;">
+                        (See Rule 24(9-A))
+                    </p>
+                    <br/>
+                    <h3 style="text-align: center; font-weight: bold; margin-top: 0;">
+                        Appointment Order
+                    </h3>
+                    <ol style="padding-left: 20px; margin-top: 40px;">
+                        <li style="margin-bottom: 25px;">Name and address of the Establishment:</li>
+                        <li style="margin-bottom: 25px;">Name and address of the Employer:</li>
+                        <li style="margin-bottom: 25px;">Name of the Employee:</li>
+                        <li style="margin-bottom: 25px;">His/Her Postal Address:</li>
+                        <li style="margin-bottom: 25px;">His/Her Permanent Address:</li>
+                        <li style="margin-bottom: 10px;">Father’s/Husband’s Name:</li>
+                        <li style="margin-bottom: 10px;">Date of Birth:</li>
+                        <li style="margin-bottom: 10px;">Date of entry in to employment:</li>
+                        <li style="margin-bottom: 10px;">Designation:</li>
+                        <li style="margin-bottom: 10px;">Nature of work entrusted to him:</li>
+                        <li style="margin-bottom: 10px;">His/Her serial number in the Register of employment:</li>
+                        <li style="margin-bottom: 10px;">Rate of wages payable to Him/Her:</li>
+                        <ol type="i"
+                            style="text-align: justify; padding-left: 30px; margin-top: 0; margin-bottom: 10px;">
+                            <li style="margin-bottom: 10px;">Basic</li>
+                            <li style="margin-bottom: 10px;">V D A</li>
+                            <li style="margin-bottom: 10px;">Other allowances if any</li>
+                            <p style="padding-left:125px">Total:</p>
+                        </ol>
+                    </ol>
+                    <br/>
+                    <br/>
+                    <p>Place:</p>
+                    <p>Date:</p>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <div>
+                        <span style="display: inline-block; width: 45%; text-align: left;">
+                            Signature of the Employee
+                        </span>
+                        <span style="display: inline-block; width: 45%; text-align: right;">
+                            Signature of the Employer
+                        </span>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

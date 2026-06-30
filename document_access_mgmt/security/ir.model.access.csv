@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_document_item,document.item,model_document_item,base.group_user,1,1,1,1
+access_document_request,document.request,model_document_request,base.group_user,1,1,1,1
+access_download_reason_wizard,access_download_reason_wizard,model_download_reason_wizard,base.group_user,1,1,1,1

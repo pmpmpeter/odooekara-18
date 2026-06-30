@@ -1,0 +1,208 @@
+<odoo>
+    <record id="view_hr_pip_form" model="ir.ui.view">
+        <field name="name">hr.pip.form</field>
+        <field name="model">hr.pip</field>
+        <field name="arch" type="xml">
+            <form string="Performance Improvement Plan">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,completed" nolabel="1"/>
+                    <button name="action_submit" type="object" string="Submit" class="oe_highlight"
+                            invisible="state in ('in_progress','completed','cancel')"/>
+                    <button name="action_mark_completed" type="object" string="Mark as Completed" class="oe_highlight"
+                            invisible="state in ('draft','completed','cancel')"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state not in ('in_progress','completed')"/>
+                    <button name="action_set_to_draft" type="object" string="Reset to Draft"
+                            invisible="state not in ('cancel', 'completed')"/>
+                    <button string="Print" type="action"
+                            name="%(hr_appraisal_extended.performance_impvmt_report)d" class="btn-primary"
+                            invisible="state in ('draft', 'in_progress', 'cancel')"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="company_id" invisible="1"/>
+                            <field name="employee_id"
+                                   options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                   readonly="state not in ('draft')"/>
+                            <field name="supervisor_id"
+                                   options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                   readonly="state not in ('draft')"/>
+                            <field name="hod_id" options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                   readonly="state not in ('draft')"/>
+                            <field name="hr_head_id"
+                                   options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                   readonly="state not in ('draft')"/>
+                        </group>
+                        <group>
+                            <field name="start_date" readonly="state not in ('draft')"/>
+                            <field name="end_date" readonly="state not in ('draft')"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Improvement Goals">
+                            <field name="improvement_goal_ids" readonly="state not in ('draft')">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Activity Goals">
+                            <field name="activity_goal_ids" readonly="state not in ('draft')">
+                                <list editable="bottom">
+                                    <field name="goal"/>
+                                    <field name="activity"/>
+                                    <field name="how_to"/>
+                                    <field name="start_date"/>
+                                    <field name="completion_date"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Resources">
+                            <field name="resource_ids" readonly="state not in ('draft')">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Expectations">
+                            <field name="expectation_ids" readonly="state not in ('draft')">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Progress Checkpoints">
+                            <field name="progress_checkpoint_ids" readonly="state not in ('draft')">
+                                <list editable="bottom">
+                                    <field name="goal"/>
+                                    <field name="activity"/>
+                                    <field name="checkpoint_date"/>
+                                    <field name="followup_type"/>
+                                    <field name="progress_expected"/>
+                                    <field name="notes"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Memo Updates">
+                            <field name="activities_ids" readonly="state not in ('draft')">
+                                <list editable="bottom">
+                                    <field name="date_schedule"/>
+                                    <field name="activity_memo"/>
+                                    <field name="conducted_by"/>
+                                    <field name="completion_date"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Observations">
+                            <group>
+                                <field name="observations" readonly="state not in ('draft')"/>
+                                <field name="areas_of_concern" readonly="state not in ('draft')"/>
+                            </group>
+                        </page>
+                        <page string="Signatures">
+                            <group>
+                                <group>
+                                    <field name="employee_sign_id"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                           readonly="state not in ('draft')"/>
+                                    <field name="employee_signature" widget="image" class="oe_avatar"
+                                           readonly="state not in ('draft')"/>
+                                    <field name="employee_signature_date" readonly="state not in ('draft')"/>
+                                </group>
+                                <group>
+                                    <field name="supervisor_sign_id"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                           readonly="state not in ('draft')"/>
+                                    <field name="supervisor_signature" widget="image" class="oe_avatar"
+                                           readonly="state not in ('draft')"/>
+                                    <field name="supervisor_signature_date" readonly="state not in ('draft')"/>
+                                </group>
+                            </group>
+                            <group>
+                                <group>
+                                    <field name="hod_sign_id"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                           readonly="state not in ('draft')"/>
+                                    <field name="hod_signature" widget="image" class="oe_avatar"
+                                           readonly="state not in ('draft')"/>
+                                    <field name="hod_signature_date" readonly="state not in ('draft')"/>
+                                </group>
+                                <group>
+                                    <field name="hr_head_sign_id"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                           readonly="state not in ('draft')"/>
+                                    <field name="hr_head_signature" widget="image" class="oe_avatar"
+                                           readonly="state not in ('draft')"/>
+                                    <field name="hr_head_signature_date" readonly="state not in ('draft')"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Tree View -->
+    <record id="view_hr_pip_tree" model="ir.ui.view">
+        <field name="name">hr.pip.list</field>
+        <field name="model">hr.pip</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="employee_id"/>
+                <field name="supervisor_id"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="state" widget='badge' decoration-info="state in ('in_progress')"
+                       decoration-success="state =='completed'" decoration-danger="state =='cancel'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pip_search" model="ir.ui.view">
+        <field name="name">Performance Improvement search</field>
+        <field name="model">hr.pip</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter string="Completed" name="completed" domain="[('state', '=', 'completed')]"/>
+                <filter string="Canceled" name="cancel" domain="[('state', '=', 'cancel')]"/>
+
+                <group expand="0" string="Group By">
+                    <filter string="Employee" name="group_by_employee_id" context="{'group_by':'employee_id'}"/>
+                    <filter string="Supervisor" name="group_by_supervisor" context="{'group_by':'supervisor_id'}"/>
+                    <filter string="HOD" name="group_by_hod" context="{'group_by':'hod_id'}"/>
+                    <filter string="Status" name="group_by_state" context="{'group_by':'state'}"/>
+                </group>
+
+                <field name="employee_id" string="Employee Name"/>
+                <field name="supervisor_id" string="Supervisor Name"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_hr_pip" model="ir.actions.act_window">
+        <field name="name">Performance Improvement Plan</field>
+        <field name="res_model">hr.pip</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_pip_search"/>
+        <field name="context">{ 'search_default_draft': 1 }</field>
+        <field name="help" type="html">
+            <p>Create and manage performance improvement plans for employees.</p>
+        </field>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_hr_pip" name="Performance Improvement Plan"
+              parent="hr_appraisal_extended.performance_review_main"
+              groups="hr_appraisal.group_hr_appraisal_manager"
+              sequence="4" action="action_hr_pip"/>
+</odoo>

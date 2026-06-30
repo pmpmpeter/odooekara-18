@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_employee_grievance_form" model="ir.ui.view">
+        <field name="name">view.employee.grievance.form.inherit</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button class="oe_stat_button"
+                        type="object"
+                        icon="fa-comments"
+                        string="Grievance"
+                        name="action_get_employee_grievance"
+                        groups="hr.group_hr_user"
+                        invisible="employee_grievance_count == 0">
+                    <field name="employee_grievance_count" widget="statinfo" string="Grievance"/>
+                </button>
+            </div>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_employee_kra_form" model="ir.ui.view">
+        <field name="name">view.employee.kra.form</field>
+        <field name="model">employee.kra</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_fetch_kra_details" string="Load Questions" type="object"
+                            class="btn-primary" invisible="state not in ('draft')"/>
+                    <button name="action_submit_to_supervisor" string="SUBMIT TO SUPERVISOR" type="object"
+                            class="btn-primary" invisible="state not in ('draft')"/>
+                    <button name="send_email" string="Send Email" type="object"
+                            class="btn-primary" invisible="state not in ('draft')"/>
+                    <button name="action_reset" string="Reset to Draft" type="object"
+                            invisible="state in ('draft','done','cancel')"/>
+                    <button name="action_approve" string="Approve" type="object" class="btn-primary"
+                            invisible="state not in ('submit_to_supervisor')"
+                            groups="hr_recruitment.group_hr_recruitment_manager"/>
+                    <button name="action_cancel" string="Cancel" type="object"
+                            invisible="state not in ('submit_to_supervisor')"/>
+                    <button name="%(hr_extended.employee_kra_template_pdf)d" string="Print"
+                            class="btn-primary" type="action" invisible="state in ('draft','cancel')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,submit_to_supervisor,done"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="employee_id" required="True"
+                                   options="{'no_quick_create':True,'no_create': True,'no_open': True}"
+                                   readonly="state not in ('draft', 'cancel')"/>
+                            <field name="employee_parent_id" readonly="1" force_save="1"
+                                   options="{'no_quick_create':True,'no_create': True,'no_open': True}"/>
+                            <field name="kra_date" required="True" readonly="state not in ('draft', 'cancel')"/>
+                            <field name="company_id" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="emp_job_id" readonly="1" force_save="1"
+                                   options="{'no_quick_create':True,'no_create': True,'no_open': True}"/>
+                            <field name="kra_master" readonly="1" force_save="1"
+                                   options="{'no_quick_create':True,'no_create': True,'no_open': True}"/>
+                            <field name="overall_weightage" widget="progressbar" class="d-block"/>
+                            <field name="remaining" no_label="1" string=""/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="KRA">
+                            <field name="kra_details_ids" readonly="state not in ('draft', 'cancel')">
+                                <list editable="bottom">
+                                    <field name="company_id"/>
+                                    <field name="category" readonly="parent.state not in ('draft', 'cancel')"
+                                           required="True"/>
+                                    <field name="business_unit_id"
+                                           options="{'no_quick_create':True,'no_create': True,'no_open': True}"
+                                           readonly="parent.state not in ('draft', 'cancel')" required="True"/>
+                                    <field name="kra_type" readonly="parent.state not in ('draft', 'cancel')"
+                                           required="True"/>
+                                    <field name="goal_description" readonly="parent.state not in ('draft', 'cancel')"
+                                           required="True"/>
+                                    <field name="weightage" readonly="parent.state not in ('draft', 'cancel')"/>
+                                    <!-- <field name="employee_rating" readonly="parent.state not in ('draft')"/>-->
+                                    <!-- <field name="employee_remark" readonly="parent.state not in ('draft')"/>-->
+                                    <!-- <field name="manager_rating" readonly="parent.state not in ('draft', 'submit_to_supervisor')" groups="hr_recruitment.group_hr_recruitment_user"/>-->
+                                    <!-- <field name="manager_remark" readonly="parent.state not in ('draft', 'submit_to_supervisor')" groups="hr_recruitment.group_hr_recruitment_user"/>-->
+
+                                    <!-- <field name="bu_head_rating" readonly="parent.state not in ('draft', 'submit_to_supervisor')" groups="hr_extended.group_hr_recruitment_bu_head"/>-->
+                                    <!-- <field name="bu_head_remark" readonly="parent.state not in ('draft', 'submit_to_supervisor')" groups="hr_extended.group_hr_recruitment_bu_head"/>-->
+
+                                    <!-- <field name="director_hr_rating" readonly="parent.state not in ('draft', 'submit_to_supervisor')" groups="hr_recruitment.group_hr_recruitment_manager"/>-->
+                                    <!-- <field name="director_hr_remark" readonly="parent.state not in ('draft', 'submit_to_supervisor')" groups="hr_recruitment.group_hr_recruitment_manager"/>-->
+                                    <!-- <field name="final_score" sum="Total" readonly="1" force_save="1" groups="hr_recruitment.group_hr_recruitment_manager"/>-->
+                                </list>
+                            </field>
+                            <div class="float-end fs-6">
+                                <label for="overall_weightage"/>
+                                <field name="overall_weightage" string="" readonly="1"
+                                       style="text-align:right;padding-left:20px;"/>
+                            </div>
+                            <group>
+                                <field name="remarks" placeholder="Please give the Remarks here...."
+                                       groups="hr_recruitment.group_hr_recruitment_user"
+                                       readonly="state not in ('draft', 'submit_to_supervisor')"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_employee_kra_tree" model="ir.ui.view">
+        <field name="name">view.employee.kra.list</field>
+        <field name="model">employee.kra</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="employee_id"/>
+                <field name="emp_job_id"/>
+                <field name="kra_date"/>
+                <field name="kra_master"/>
+                <field name="state" widget='badge' decoration-info="state == 'submit_to_supervisor'"
+                       decoration-success="state =='done'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_employee_kra_form_search" model="ir.ui.view">
+        <field name="name">view.employee.kra.form.search</field>
+        <field name="model">employee.kra</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter string="My KRA" name="my_kra"
+                        domain="[('employee_id.user_id','=',uid)]"/>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Submitted" name="submit_to_supervisor"
+                        domain="[('state', '=', 'submit_to_supervisor')]"/>
+                <filter string="Done" name="done" domain="[('state', '=', 'done')]"/>
+
+                <group expand="0" string="Group By">
+                    <filter string="KRA" name="group_by_kra_master" context="{'group_by':'kra_master'}"/>
+                    <filter string="Date" name="group_by_kra_date" context="{'group_by':'kra_date'}"/>
+                    <filter string="State" name="group_by_state" context="{'group_by':'state'}"/>
+                </group>
+
+                <field name="employee_id" string="Employee Name"/>
+                <field name="emp_job_id" string="Job Position"/>
+                <field name="kra_master" string="KRA"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_view_employee_kra" model="ir.actions.act_window">
+        <field name="name">Employee KRA</field>
+        <field name="res_model">employee.kra</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_employee_kra_tree"/>
+        <field name="search_view_id" ref="view_employee_kra_form_search"/>
+        <field name="target">current</field>
+        <field name="context">
+            {
+            'search_default_my_kra': 1
+            }
+        </field>
+    </record>
+
+    <menuitem
+            id="menu_employee_kra"
+            name="Employee KRA"
+            action="action_view_employee_kra"
+            groups="base.group_user"
+            parent="hr.menu_hr_employee_payroll"
+            sequence="7"
+    />
+</odoo>

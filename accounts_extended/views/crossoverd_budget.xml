@@ -1,0 +1,1327 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="crossover_budget_form_extend" model="ir.ui.view">
+            <field name="name">crossovered.budget.inherit</field>
+            <field name="model">crossovered.budget</field>
+            <field name="inherit_id" ref="account_budget.crossovered_budget_view_form"/>
+            <field name="arch" type="xml">
+                <field name="user_id" position="attributes">
+                    <attribute name="options">{'no_quick_create':True,'no_create': True}</attribute>
+                </field>
+                <field name="date_from" position="attributes">
+                    <attribute name="required">1</attribute>
+                </field>
+                <field name="date_to" position="attributes">
+                    <attribute name="required">1</attribute>
+                </field>
+                <xpath expr="//group/group[2]//field[@name='company_id']" position="attributes">
+                    <attribute name="readonly">1</attribute>
+                </xpath>
+                <xpath expr="//group/group[2]//field[@name='company_id']" position="before">
+                    <field name="version" force_save="1"/>
+                    <field name="fy_crr_budget_total"/>
+                    <field name="fy_cur_budget_total"/>
+                    <field name="revision_date" invisible="version == 1" readonly="1" force_save="1"/>
+                </xpath>
+                <xpath expr="//field[@name='user_id']" position="after">
+                    <field name="approval_state"/>
+                    <field name="user_type" readonly='1'/>
+<!--                    <field name="partner_id" options="{'no_quick_create':True,'no_create': True}"-->
+<!--                           invisible="user_type != 'non_odoo'" readonly="approval_state == 'Approved'"/>-->
+                     <field name="partner_id" options="{'no_quick_create':True,'no_create': True}"
+                           invisible="user_type != 'non_odoo'" readonly="approval_state == 'Approved'" domain="[('is_nonodoo_company', '=', True),('state','=','approve')]"/>
+                    <field name="x_has_request_approval" invisible="1"/>
+                    <field name="x_review_result" invisible="1"/>
+                    <field name="is_budget_consolidate" invisible="1"/>
+                    <field name="show_budget_sum" invisible="1"/>
+                </xpath>
+                <xpath expr="//button[@name='action_budget_confirm']" position="attributes">
+                    <attribute name="invisible">approval_state != 'Not Applicable'</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_budget_validate']" position="attributes">
+                    <attribute name="invisible">approval_state != 'Not Applicable'</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_budget_draft']" position="attributes">
+                    <attribute name="invisible">state != 'cancel' or x_has_request_approval</attribute>
+                </xpath>
+                <xpath expr="//button[@name='action_budget_cancel']" position="attributes">
+                    <attribute name="invisible">approval_state != 'Not Applicable'</attribute>
+                </xpath>
+                <xpath expr="//header" position="inside">
+                    <button name="action_revise" type="object" string="Revise" class="btn-primary"
+                            invisible="state not in 'done'" groups="account.group_account_manager"/>
+                    <!-- <button name="consolidate_crr" type="object" string="Consolidate CRR"
+                            invisible="state in ('done','cancel','validated') or show_budget_sum == False"
+                            class="btn-primary"/> -->
+                    <button name="action_share_revise" type="object" string="Share Revision" class="btn-primary"
+                            groups="account.group_account_manager" invisible="is_share_revised or state not in 'done'"/>
+<!--                    <button name="action_share_revise" type="object" string="Update Revision" class="btn-primary"-->
+<!--                            groups="account.group_account_manager" invisible="is_share_revised"/>-->
+                    <button name="consolidate_crr" type="object" string="Consolidate CRR"
+                            invisible="1"
+                            class="btn-primary"/>
+                    <button name="update_cash_balance_apr" type="object" string="Update Cash Balance"
+                            invisible="state in ('done','cancel','validated') or not is_budget_consolidate"
+                            class="btn-primary"/>
+                    <button name="action_draft" type="object" string="Reset to Draft"
+                            invisible="state != 'to approve' or version != 1"
+                            groups="multi_level_approval.group_approval_manager"
+                            class="btn-primary"/>
+                    <button name="action_draft" type="object" string="Reset to Revision"
+                            invisible="state != 'to approve' or version == 1"
+                            groups="multi_level_approval.group_approval_manager"
+                            class="btn-primary"/>
+                </xpath>
+                <xpath expr="//page[@name='budget_lines']/field[@name='crossovered_budget_line']/tree"
+                       position="attributes">
+                    <attribute name="create">false</attribute>
+                </xpath>
+                <xpath expr="//page[@name='budget_lines']" position="attributes">
+                    <attribute name="string">Consolidated Budget Lines</attribute>
+                </xpath>
+                <xpath expr="//page[@name='budget_lines']/field[@name='crossovered_budget_line']/list/field[@name='percentage']"
+                       position="attributes">
+                    <attribute name="optional">hide</attribute>
+                </xpath>
+                <xpath expr="//page[@name='budget_lines']/field[@name='crossovered_budget_line']/list/field[@name='general_budget_id']"
+                       position="after">
+                    <field name="budget_code" readonly="1"/>
+                </xpath>
+                <xpath expr="//page[@name='budget_lines']/field[@name='crossovered_budget_line']/list/field[@name='general_budget_id']"
+                       position="attributes">
+                    <attribute name="options">{"no_open": True, "no_create": True}</attribute>
+                </xpath>
+                <xpath expr="//page[@name='budget_lines']/field[@name='crossovered_budget_line']/list/field[@name='analytic_account_id']"
+                       position="attributes">
+                    <attribute name="options">{"no_open": True, "no_create": True}</attribute>
+                    <attribute name="column_invisible">parent.user_type != 'odoo'</attribute>
+                </xpath>
+                <xpath expr="//page[@name='budget_lines']/field[@name='crossovered_budget_line']/list/field[@name='paid_date']"
+                       position="attributes">
+                    <attribute name="column_invisible">parent.user_type == 'non_odoo'</attribute>
+                </xpath>
+                <xpath expr="//page[@name='budget_lines']/field[@name='crossovered_budget_line']/list/field[@name='practical_amount']"
+                       position="replace">
+                       <field name="practical_amount" string="Utilised Amount"/>
+                </xpath>
+                <xpath expr="//page[@name='budget_lines']/field[@name='crossovered_budget_line']/list/field[@name='theoritical_amount']"
+                       position="replace">
+                       <field name="theoritical_amount" string="Theoretical Amount" optional='hide'/>
+                </xpath>
+                <xpath expr="//page[@name='budget_lines']/field[@name='crossovered_budget_line']/list/field[@name='planned_amount']"
+                       position="replace">
+                       <field name="planned_amount" string="Planned Amount" 
+                        readonly="parent.state =='revision'"/>
+                </xpath>
+                <xpath expr="//page[@name='budget_lines']/field[@name='crossovered_budget_line']/list/field[@name='practical_amount']"
+                       position="after">
+                    <field name='additional_amount' column_invisible="1"/>
+                    <field name='reserved_amount' readonly='1' optional='hide'/>
+                    <field name='under_revision' column_invisible='1'/>
+                    <field name='balance_amount' optional='hide'/>
+                </xpath>
+                <xpath expr="//page[@name='budget_lines']/field[@name='crossovered_budget_line']/list/field[@name='analytic_account_id']"
+                       position="after">
+                    <field name='user_type' column_invisible="1"/>
+
+                    <field name='department_id' column_invisible="parent.user_type == 'non_odoo'" optional='hide'
+                           options='{"no_open": True, "no_create": True}'/>
+                    <field name='capex_opex' string="Budget Type"/>
+                </xpath>
+                <field name='crossovered_budget_line' position="attributes">
+                    <attribute name="readonly">1</attribute>
+                    <!--                    <attribute name="readonly">state not in ('draft','revision')</attribute>-->
+                </field>
+                <xpath expr="//sheet" position="inside">
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_crr_lines" invisible="show_budget_sum != True"
+                                string="CRR Monthly Breakup" type="object" class="oe_stat_button"/>
+                        <button name="action_consolidate_crr_lines"
+                                invisible="show_budget_sum != True or user_type == 'non_odoo'" string="Consolidate CRR"
+                                type="object" class="oe_stat_button"/>
+                        <button name="action_open_share_lines" string="Share Amount" type="object"
+                                class="oe_stat_button" invisible="not share_line_count">
+                            <field name="share_line_count" invisible="1" widget="statinfo"/>
+                        </button>
+                        <button name="action_open_forecast_lines"
+                                invisible="show_budget_sum != True"
+                                string="Rolling Forecast" type="object" class="oe_stat_button"/>
+                        <button name="action_open_budget_vs_actual"
+                                invisible="show_budget_sum != True"
+                                string="Budget Vs Actual" type="object" class="oe_stat_button"/>
+                        <button name="action_consolidate_crr_lines_total"
+                                invisible="show_budget_sum != True or user_type == 'non_odoo'"
+                                string="Department Wise Consolidation" type="object" class="oe_stat_button"/>
+
+                    </div>
+                </xpath>
+                <xpath expr="//list" position="attributes">
+                    <attribute name="decoration-danger">is_above_budget and planned_amount &lt; 0 or under_revision
+                    </attribute>
+                </xpath>
+                <page name='budget_lines' position='after'>
+                    <page string="CRR Monthly Breakup">
+                        <button name="get_cash_outflow_inflow_calculation" type="object"
+                                invisible="not cash_payment_ids or show_budget_sum or state == 'done'"
+                                string="Get Cash Outflow/Inflow"
+                                class="btn-primary"/>
+                        <button name="update_cash_outflow_inflow_calculation" type="object"
+                                invisible="not show_budget_sum or state == 'done'"
+                                string="Update Cash Outflow/Inflow"
+                                class="btn-primary"/>
+                        <group string="Cash Outflow/Cash Inflow"/>
+                        <!--                            <field name="cash_payment_ids" string='' readonly="state not in ('draft','revision')">-->
+                        <field name="cash_payment_ids" no_label='1' readonly="approval_state == 'Approved'">
+                            <form>
+                                <field name="is_budget_out_sum_line" invisible='1'/>
+                                <field name="is_budget_in_sum_line" invisible='1'/>
+                                <field name="is_budget_surples_sum_line" invisible='1'/>
+                                <field name="is_budget_total" invisible='1'/>
+                                <field name="is_buget_categ" invisible='1'/>
+                                <field name="company_id" invisible='1'/>
+
+                                <group>
+                                    <group>
+                                        <field name="analytic_account_id" options='{"no_open": True, "no_create": True}'
+                                               width='800' invisible="parent.user_type != 'odoo'" required="1"
+                                               readonly="parent.state in ('done','cancel','validated') or is_budget_total or is_buget_categ or is_budget_out_sum_line or is_budget_in_sum_line or is_budget_surples_sum_line or parent.freez_may_month"/>
+                                    </group>
+                                    <group invisible="is_budget_total or is_buget_categ or is_budget_out_sum_line or is_budget_in_sum_line or is_budget_surples_sum_line or parent.freez_may_month">
+                                        <field name="department_id" options='{"no_open": True, "no_create": True}'
+                                               width='800' invisible="parent.user_type != 'odoo'"
+                                               required="parent.user_type == 'odoo' and not is_budget_total"
+                                               readonly="parent.state in ('done','cancel','validated')"/>
+                                    </group>
+
+                                    <group invisible="is_budget_total or is_buget_categ or is_budget_out_sum_line or is_budget_in_sum_line or is_budget_surples_sum_line or parent.freez_may_month">
+                                        <field name="cash_type" width='800'
+                                               invisible='1' readonly='0'
+                                               force_save='1'/>
+                                        <field name="budget_position_id" options='{"no_open": True, "no_create": True}'
+                                               width='800' required="1"
+                                               readonly="parent.state in ('done','cancel','validated')"/>
+                                    </group>
+                                    <group invisible="is_budget_total or is_buget_categ or is_budget_out_sum_line or is_budget_in_sum_line or is_budget_surples_sum_line or parent.freez_may_month">
+                                        <field name="budget_type" width='800' force_save="1" readonly="1"/>
+                                        <!--                                               readonly="parent.state in ('done','cancel','validated')"/>-->
+                                    </group>
+                                    <group invisible="is_budget_total or is_buget_categ or is_budget_out_sum_line or is_budget_in_sum_line or is_budget_surples_sum_line or parent.freez_may_month">
+                                        <field name="sequence" string="Sequence" width='800' force_save="1"/>
+                                        <!--                                               readonly="parent.state in ('done','cancel','validated')"/>-->
+                                    </group>
+                                </group>
+                                <group string="Monthly Breakup">
+                                    <group>
+                                        <group>
+                                            <field name="april_crr_budget_plan" width='350' force_save="1"
+                                                   readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True or parent.freez_april_month == True"/>
+
+                                        </group>
+                                        <group>
+                                            <field name="may_crr_budget_plan" width='350'
+                                                   readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True or parent.freez_may_month == True"/>
+
+                                        </group>
+                                        <group>
+                                            <field name="july_crr_budget_plan" width='350'
+                                                   readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True or parent.freez_july_month == True"/>
+
+                                        </group>
+                                        <group>
+                                            <field name="august_crr_budget_plan" width='350'
+                                                   readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True or parent.freez_august_month == True"/>
+                                        </group>
+                                        <group>
+                                            <field name="october_crr_budget_plan" width='350'
+                                                   readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True or parent.freez_october_month == True"/>
+
+                                        </group>
+                                        <group>
+                                            <field name="november_crr_budget_plan" width='350'
+                                                   readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True or parent.freez_november_month == True"/>
+
+                                        </group>
+                                        <group>
+                                            <field name="january_crr_budget_plan" width='350'
+                                                   readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True or parent.freez_january_month == True"/>
+
+                                        </group>
+                                        <group>
+                                            <field name="febuary_crr_budget_plan" width='350'
+                                                   readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True or parent.freez_february_month == True"/>
+
+                                        </group>
+
+                                    </group>
+                                    <group>
+                                        <group>
+                                            <field name="june_crr_budget_plan" width='350'
+                                                   readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True  or parent.freez_june_month == True"/>
+
+                                        </group>
+                                        <group>
+                                            <field name="quarter_1_crr_budget_plan"
+                                                   decoration-success="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == False and is_budget_in_sum_line == False and is_budget_surples_sum_line == False"
+                                                   width='450'/>
+                                        </group>
+                                        <group>
+                                            <field name="september_crr_budget_plan" width='350'
+                                                   readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True or parent.freez_september_month == True"/>
+
+                                        </group>
+                                        <group>
+                                            <field name="quarter_2_crr_budget_plan"
+                                                   decoration-success="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == False and is_budget_in_sum_line == False and is_budget_surples_sum_line == False"
+                                                   width='450'/>
+                                        </group>
+                                        <group>
+                                            <field name="december_crr_budget_plan" width='350'
+                                                   readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True or parent.freez_december_month == True"/>
+
+                                        </group>
+                                        <group>
+                                            <field name="quarter_3_crr_budget_plan"
+                                                   decoration-success="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == False and is_budget_in_sum_line == False and is_budget_surples_sum_line == False"
+                                                   width='450'/>
+                                        </group>
+                                        <group>
+                                            <field name="march_crr_budget_plan" width='350'
+                                                   readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True or parent.freez_march_month == True"/>
+
+                                        </group>
+                                        <group>
+                                            <field name="quarter_4_crr_budget_plan"
+                                                   decoration-success="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == False and is_budget_in_sum_line == False and is_budget_surples_sum_line == False"
+                                                   width='450'/>
+                                        </group>
+
+                                    </group>
+                                </group>
+                                <group>
+                                    <field name="crr_budget_total" width='450'/>
+                                </group>
+                            </form>
+                            <list delete='0' default_order='sequence' create='1'
+                                  decoration-bf="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True ">
+                                <field name="is_consolidated" column_invisible='1'/>
+                                <field name="is_budget_out_sum_line" column_invisible='1'/>
+                                <field name="is_budget_in_sum_line" column_invisible='1'/>
+                                <field name="is_budget_surples_sum_line" column_invisible='1'/>
+                                <field name="is_budget_total" column_invisible='1'/>
+                                <field name="is_buget_categ" column_invisible='1'/>
+                                <field name="company_id" column_invisible='1'/>
+                                <field name="sequence" string="Sequence" optional="hide"/>
+
+
+                                <field name="analytic_account_id" options='{"no_open": True, "no_create": True}'
+                                       width='800' column_invisible="parent.user_type != 'odoo'"
+                                       readonly="parent.state in ('done','cancel','validated')"/>
+                                <field name="cash_type" width='800' optional="hide"
+                                       column_invisible='1' readonly='0'
+                                       force_save='1'/>
+                                <field name='version' column_invisible="0" optional='hide' force_save="1"/>
+                                <field name="department_id" options='{"no_open": True, "no_create": True}'
+                                       column_invisible="parent.user_type != 'odoo'" optional="hide"
+                                       readonly="parent.state in ('done','cancel','validated')"/>
+                                <field name="budget_name" width='1600' force_save='1' readonly='1'
+                                       column_invisible="parent.show_budget_sum == False"/>
+                                <field name="budget_position_id" options='{"no_open": True, "no_create": True}'
+                                       width='800' column_invisible="parent.show_budget_sum == True"
+                                       readonly="parent.state in ('done','cancel','validated')"/>
+                                <field name="budget_type" width='800'
+                                       readonly="parent.state in ('done','cancel','validated')"/>
+                                <field name="crr_budget_total" width='450'/>
+                                <field name="april_crr_budget_plan" width='350' force_save="1"
+                                       readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True or parent.freez_april_month == True"/>
+                                <field name="may_crr_budget_plan" width='350'
+                                       readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True or parent.freez_may_month == True"/>
+                                <field name="june_crr_budget_plan" width='350'
+                                       readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True  or parent.freez_june_month == True"/>
+                                <field name="quarter_1_crr_budget_plan"
+                                       decoration-success="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == False and is_budget_in_sum_line == False and is_budget_surples_sum_line == False"
+                                       width='450'/>
+                                <field name="july_crr_budget_plan" width='350'
+                                       readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True or parent.freez_july_month == True"/>
+                                <field name="august_crr_budget_plan" width='350'
+                                       readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True or parent.freez_august_month == True"/>
+                                <field name="september_crr_budget_plan" width='350'
+                                       readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True or parent.freez_september_month == True"/>
+                                <field name="quarter_2_crr_budget_plan"
+                                       decoration-success="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == False and is_budget_in_sum_line == False and is_budget_surples_sum_line == False"
+                                       width='450'/>
+                                <field name="october_crr_budget_plan" width='350'
+                                       readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True or parent.freez_october_month == True"/>
+                                <field name="november_crr_budget_plan" width='350'
+                                       readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True or parent.freez_november_month == True"/>
+                                <field name="december_crr_budget_plan" width='350'
+                                       readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True or parent.freez_december_month == True"/>
+                                <field name="quarter_3_crr_budget_plan"
+                                       decoration-success="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == False and is_budget_in_sum_line == False and is_budget_surples_sum_line == False"
+                                       width='450'/>
+                                <field name="january_crr_budget_plan" width='350'
+                                       readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True or parent.freez_january_month == True"/>
+                                <field name="febuary_crr_budget_plan" width='350'
+                                       readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True or parent.freez_february_month == True"/>
+                                <field name="march_crr_budget_plan" width='350'
+                                       readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True or parent.freez_march_month == True"/>
+                                <field name="quarter_4_crr_budget_plan"
+                                       decoration-success="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == False and is_budget_in_sum_line == False and is_budget_surples_sum_line == False"
+                                       width='450'/>
+                            </list>
+                        </field>
+                    </page>
+                    <page string="Share Amount" invisible="0">
+                        <button name="split_share_amount" string="Split Share Amount" type="object"
+                                class="btn-primary" invisible="approval_state =='Approved' or not show_budget_sum"/>
+
+
+                        <group>
+
+                            <group>
+                                    <field name="is_share_revised" invisible="1"/>
+                                    <field name="cash_balance_apr" readonly="approval_state =='Approved'"/>
+                                    <field name="share_rev_effective_from" invisible="version == 1 or is_share_revised"
+                                           readonly="approval_state =='Approved'"/>
+                                    <field name="share_rev_effective_from" invisible="version == 1 or not is_share_revised"/>
+
+                                    <button name="get_cash_balance" string="Get Balance" type="object"
+                                            class="btn-primary" invisible="approval_state =='Approved'"/>
+
+                                <button name="split_share_amount" string="Split Share Amount" type="object"
+                                        class="btn-primary" invisible="not is_share_revised"/>
+                            </group>
+                            <group>
+                                 <field name="tax_entity_ids" context="{'default_company_id': active_id}">
+                                        <list editable="bottom" create="0" delete="0">
+                                            <field name="sequence" readonly="1" force_save="1" string="No"/>
+                                            <field name="entity_id" options='{"no_open": True, "no_create": True}' readonly="1" force_save="1"/>
+                                            <field name="share"/>
+                                            <field name="loan_account_id" column_invisible="1"/>
+                                        </list>
+                                    </field>
+                            </group>
+                        </group>
+                        <group string="Share Amount">
+                           
+                            <field name="crr_share_ids" string=''>
+                                <list editable="bottom" edit="0" create="0" delete='0'>
+                                    <field name="company_id" column_invisible="1"
+                                           options='{"no_open": True, "no_create": True}'/>
+                                    <field name="revision_date"/>
+                                    <field name="entity"/>
+                                    <field name="tax_entity_percentage" force_save="1"/>
+                                    <!--                                    <field name="id"/>-->
+                                    <field name="crr_share_april" sum="Total"/>
+                                    <field name="crr_share_may" sum="Total"/>
+                                    <field name="crr_share_june" sum="Total"/>
+                                    <field name="crr_share_q1" sum="Total"/>
+                                    <field name="crr_share_july" sum="Total"/>
+                                    <field name="crr_share_august" sum="Total"/>
+                                    <field name="crr_share_september" sum="Total"/>
+                                    <field name="crr_share_q2" sum="Total"/>
+                                    <field name="crr_share_october" sum="Total"/>
+                                    <field name="crr_share_november" sum="Total"/>
+                                    <field name="crr_share_december" sum="Total"/>
+                                    <field name="crr_share_q3" sum="Total"/>
+                                    <field name="crr_share_january" sum="Total"/>
+                                    <field name="crr_share_february" sum="Total"/>
+                                    <field name="crr_share_march" sum="Total"/>
+                                    <field name="crr_share_q4" sum="Total"/>
+                                </list>
+                            </field>
+                        </group>
+                    </page>
+                    <page string="Freeze Months" invisible="state == 'done'">
+                        <field name="freez_april_month" invisible='1'/>
+                        <field name="freez_may_month" invisible='1'/>
+                        <field name="freez_june_month" invisible='1'/>
+                        <field name="freez_july_month" invisible='1'/>
+                        <field name="freez_august_month" invisible='1'/>
+                        <field name="freez_september_month" invisible='1'/>
+                        <field name="freez_october_month" invisible='1'/>
+                        <field name="freez_november_month" invisible='1'/>
+                        <field name="freez_december_month" invisible='1'/>
+                        <field name="freez_january_month" invisible='1'/>
+                        <field name="freez_february_month" invisible='1'/>
+                        <field name="freez_march_month" invisible='1'/>
+                        <div style="display: flex; flex-wrap: wrap;">
+                            <div style="flex: 1 1 50%; padding: 10px;">
+                                <button name="freeze_april_month" string="Freeze April Month" width='500' type="object"
+                                        class="btn-primary"
+                                        invisible="freez_april_month == True"/>
+                                <label for='freez_april_month' string="April Month Froze" width='500'
+                                       invisible="freez_april_month == False"/>
+                            </div>
+                            <div style="flex: 1 1 50%; padding: 10px;">
+                                <button name="freeze_october_month" string="Freeze October Month" type="object"
+                                        class="btn-primary"
+                                        invisible="freez_october_month == True"/>
+                                <label for='freez_october_month' string="October Month Froze"
+                                       invisible="freez_october_month == False"/>
+                            </div>
+                            <div style="flex: 1 1 50%; padding: 10px;">
+                                <button name="freeze_may_month" string="Freeze May Month" type="object"
+                                        class="btn-primary"
+                                        invisible="freez_may_month == True"/>
+                                <label for='freez_may_month' string="May Month Froze"
+                                       invisible="freez_may_month == False"/>
+                            </div>
+                            <div style="flex: 1 1 50%; padding: 10px;">
+                                <button name="freeze_november_month" string="Freeze November Month" type="object"
+                                        class="btn-primary"
+                                        invisible="freez_november_month == True"/>
+                                <label for='freez_november_month' string="November Month Froze"
+                                       invisible="freez_november_month == False"/>
+                            </div>
+                            <div style="flex: 1 1 50%; padding: 10px;">
+                                <button name="freeze_june_month" string="Freeze June Month" type="object"
+                                        class="btn-primary"
+                                        invisible="freez_june_month == True"/>
+                                <label for='freez_june_month' string="June Month Froze"
+                                       invisible="freez_june_month == False"/>
+                            </div>
+                            <div style="flex: 1 1 50%; padding: 10px;">
+                                <button name="freeze_december_month" string="Freeze December Month" type="object"
+                                        class="btn-primary"
+                                        invisible="freez_december_month == True"/>
+                                <label for='freez_december_month' string="December Month Froze"
+                                       invisible="freez_december_month == False"/>
+                            </div>
+                            <div style="flex: 1 1 50%; padding: 10px;">
+                                <button name="freeze_july_month" string="Freeze July Month" type="object"
+                                        class="btn-primary"
+                                        invisible="freez_july_month == True"/>
+                                <label for='freez_july_month' string="July Month Froze"
+                                       invisible="freez_july_month == False"/>
+                            </div>
+                            <div style="flex: 1 1 50%; padding: 10px;">
+                                <button name="freeze_january_month" string="Freeze January Month" type="object"
+                                        class="btn-primary"
+                                        invisible="freez_january_month == True"/>
+                                <label for='freez_january_month' string="January Month Froze"
+                                       invisible="freez_january_month == False"/>
+                            </div>
+                            <div style="flex: 1 1 50%; padding: 10px;">
+                                <button name="freeze_august_month" string="Freeze August Month" type="object"
+                                        class="btn-primary"
+                                        invisible="freez_august_month == True"/>
+                                <label for='freez_august_month' string="August Month Froze"
+                                       invisible="freez_august_month == False"/>
+                            </div>
+                            <div style="flex: 1 1 50%; padding: 10px;">
+                                <button name="freeze_february_month" string="Freeze February Month" type="object"
+                                        class="btn-primary"
+                                        invisible="freez_february_month == True"/>
+                                <label for='freez_february_month' string="February Month Froze"
+                                       invisible="freez_february_month == False"/>
+                            </div>
+                            <div style="flex: 1 1 50%; padding: 10px;">
+                                <button name="freeze_september_month" string="Freeze September Month" type="object"
+                                        class="btn-primary"
+                                        invisible="freez_september_month == True"/>
+                                <label for='freez_september_month' string="September Month Froze"
+                                       invisible="freez_september_month == False"/>
+                            </div>
+                            <div style="flex: 1 1 50%; padding: 10px;">
+                                <button name="freeze_march_month" string="Freeze March Month" type="object"
+                                        class="btn-primary"
+                                        invisible="freez_march_month == True"/>
+                                <label for='freez_march_month' string="March Month Froze"
+                                       invisible="freez_march_month == False"/>
+                            </div>
+                        </div>
+                    </page>
+                    <page string="Freeze CUR Months in Rolling Forecast"
+                          invisible="user_type != 'non_odoo' or state != 'done'">
+                        <field name="rf_freez_april_month" invisible='1'/>
+                        <field name="rf_freez_may_month" invisible='1'/>
+                        <field name="rf_freez_june_month" invisible='1'/>
+                        <field name="rf_freez_july_month" invisible='1'/>
+                        <field name="rf_freez_august_month" invisible='1'/>
+                        <field name="rf_freez_september_month" invisible='1'/>
+                        <field name="rf_freez_october_month" invisible='1'/>
+                        <field name="rf_freez_november_month" invisible='1'/>
+                        <field name="rf_freez_december_month" invisible='1'/>
+                        <field name="rf_freez_january_month" invisible='1'/>
+                        <field name="rf_freez_february_month" invisible='1'/>
+                        <field name="rf_freez_march_month" invisible='1'/>
+                        <div style="display: flex; flex-wrap: wrap;">
+                            <div style="flex: 1 1 50%; padding: 10px;">
+                                <button name="action_rf_freez_april_month" string="Freeze April Month" width='500'
+                                        type="object"
+                                        class="btn-primary"
+                                        invisible="rf_freez_april_month"/>
+                                <span invisible="not rf_freez_april_month">April Month Froze
+
+                                    <button name="action_rf_freez_april_month" type="object"
+                                            class="oe_highlight" title="Unfreeze">
+                                        <i class="fa fa-undo"/>
+                                    </button>
+                                </span>
+                            </div>
+                            <div style="flex: 1 1 50%; padding: 10px;">
+                                <button name="action_rf_freez_october_month" string="Freeze October Month" type="object"
+                                        class="btn-primary"
+                                        invisible="rf_freez_october_month"/>
+                                <span invisible="not rf_freez_october_month">October Month Froze
+
+                                    <button name="action_rf_freez_october_month" type="object"
+                                            class="oe_highlight" title="Unfreeze"
+                                            invisible="not rf_freez_october_month">
+                                        <i class="fa fa-undo"/>
+                                    </button>
+                                </span>
+                            </div>
+                            <div style="flex: 1 1 50%; padding: 10px;">
+                                <button name="action_rf_freez_may_month" string="Freeze May Month" type="object"
+                                        class="btn-primary"
+                                        invisible="rf_freez_may_month"/>
+                                <span invisible="not rf_freez_may_month">May Month Froze
+
+                                    <button name="action_rf_freez_may_month" type="object"
+                                            class="oe_highlight" title="Unfreeze"
+                                            invisible="not rf_freez_may_month">
+                                        <i class="fa fa-undo"/>
+                                    </button>
+                                </span>
+                            </div>
+                            <div style="flex: 1 1 50%; padding: 10px;">
+                                <button name="action_rf_freez_november_month" string="Freeze November Month"
+                                        type="object"
+                                        class="btn-primary"
+                                        invisible="rf_freez_november_month"/>
+                                <span invisible="not rf_freez_november_month">November Month Froze
+
+                                    <button name="action_rf_freez_november_month" type="object"
+                                            class="oe_highlight" title="Unfreeze"
+                                            invisible="not rf_freez_november_month">
+                                        <i class="fa fa-undo"/>
+                                    </button>
+                                </span>
+                            </div>
+                            <div style="flex: 1 1 50%; padding: 10px;">
+                                <button name="action_rf_freez_june_month" string="Freeze June Month" type="object"
+                                        class="btn-primary"
+                                        invisible="rf_freez_june_month"/>
+                                <span invisible="not rf_freez_june_month">June Month Froze
+
+                                    <button name="action_rf_freez_june_month" type="object"
+                                            class="oe_highlight" title="Unfreeze"
+                                            invisible="not rf_freez_june_month">
+                                        <i class="fa fa-undo"/>
+                                    </button>
+                                </span>
+                            </div>
+                            <div style="flex: 1 1 50%; padding: 10px;">
+                                <button name="action_rf_freez_december_month" string="Freeze December Month"
+                                        type="object"
+                                        class="btn-primary"
+                                        invisible="rf_freez_december_month"/>
+                                <span invisible="not rf_freez_december_month">December Month Froze
+
+                                    <button name="action_rf_freez_december_month" type="object"
+                                            class="oe_highlight" title="Unfreeze"
+                                            invisible="not rf_freez_december_month">
+                                        <i class="fa fa-undo"/>
+                                    </button>
+                                </span>
+                            </div>
+                            <div style="flex: 1 1 50%; padding: 10px;">
+                                <button name="action_rf_freez_july_month" string="Freeze July Month" type="object"
+                                        class="btn-primary"
+                                        invisible="rf_freez_july_month"/>
+                                <span invisible="not rf_freez_july_month">July Month Froze
+
+                                    <button name="action_rf_freez_july_month" type="object"
+                                            class="oe_highlight" title="Unfreeze"
+                                            invisible="not rf_freez_july_month">
+                                        <i class="fa fa-undo"/>
+                                    </button>
+                                </span>
+                            </div>
+                            <div style="flex: 1 1 50%; padding: 10px;">
+                                <button name="action_rf_freez_january_month" string="Freeze January Month" type="object"
+                                        class="btn-primary"
+                                        invisible="rf_freez_january_month"/>
+                                <span invisible="not rf_freez_january_month">January Month Froze
+
+                                    <button name="action_rf_freez_january_month" type="object"
+                                            class="oe_highlight" title="Unfreeze"
+                                            invisible="not rf_freez_january_month">
+                                        <i class="fa fa-undo"/>
+                                    </button>
+                                </span>
+                            </div>
+                            <div style="flex: 1 1 50%; padding: 10px;">
+                                <button name="action_rf_freez_august_month" string="Freeze August Month" type="object"
+                                        class="btn-primary"
+                                        invisible="rf_freez_august_month"/>
+                                <span invisible="not rf_freez_august_month">August Month Froze
+
+                                    <button name="action_rf_freez_august_month" type="object"
+                                            class="oe_highlight" title="Unfreeze"
+                                            invisible="not rf_freez_august_month">
+                                        <i class="fa fa-undo"/>
+                                    </button>
+                                </span>
+                            </div>
+                            <div style="flex: 1 1 50%; padding: 10px;">
+                                <button name="action_rf_freez_february_month" string="Freeze February Month"
+                                        type="object"
+                                        class="btn-primary"
+                                        invisible="rf_freez_february_month"/>
+                                <span invisible="not rf_freez_february_month">February Month Froze
+
+                                    <button name="action_rf_freez_february_month" type="object"
+                                            class="oe_highlight" title="Unfreeze"
+                                            invisible="not rf_freez_february_month">
+                                        <i class="fa fa-undo"/>
+                                    </button>
+                                </span>
+                            </div>
+                            <div style="flex: 1 1 50%; padding: 10px;">
+                                <button name="action_rf_freez_september_month" string="Freeze September Month"
+                                        type="object"
+                                        class="btn-primary"
+                                        invisible="rf_freez_september_month"/>
+                                <span invisible="not rf_freez_september_month">September Month Froze
+
+                                    <button name="action_rf_freez_september_month" type="object"
+                                            class="oe_highlight" title="Unfreeze"
+                                            invisible="not rf_freez_september_month">
+                                        <i class="fa fa-undo"/>
+                                    </button>
+                                </span>
+                            </div>
+                            <div style="flex: 1 1 50%; padding: 10px;">
+                                <button name="action_rf_freez_march_month" type="object"
+                                        class="btn-primary" string="Freeze March Month"
+                                        invisible="rf_freez_march_month"/>
+                                <span invisible="not rf_freez_march_month">March Month Froze
+
+                                    <button name="action_rf_freez_march_month" type="object"
+                                            class="oe_highlight" title="Unfreeze"
+                                            invisible="not rf_freez_march_month">
+                                        <i class="fa fa-undo"/>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    </page>
+                    <page string="Revision Reason" invisible='not revision_reason'>
+                        <field name='revision_reason'/>
+                    </page>
+                    <page string="Revision History" invisible='not revision_history_ids'>
+                        <field name='revision_history_ids' readonly='1'>
+                            <list editable='bottom'>
+                                <field name="name"/>
+                                <field name="budget_post_id"/>
+                                <field name="budget_code"/>
+                                <field name="analytic_account_id"/>
+                                <field name="initial_allocate"/>
+                                <field name="additional_amount"/>
+                                <field name="revision_date"/>
+                            </list>
+                        </field>
+                    </page>
+                    <page string="Confidential" groups="accounts_extended.group_budget_doc_access">
+                        <group>
+                            <field name="doc_attachment" string="Attachments">
+                                <list editable="bottom">
+                                    <field name="doc_name"/>
+                                    <field name="doc_attach" widget="binary" width="500"/>
+                                </list>
+                            </field>
+                        </group>
+                    </page>
+                </page>
+                <xpath expr="//sheet" position="inside">
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_crr_lines" string="CRR Monthly Breakup" type="object"
+                                class="oe_stat_button" invisible="crr_line_count == 0">
+                            <field name="crr_line_count" string="CRR Monthly Breakup" widget="statinfo"/>
+                        </button>
+
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="crossover_budget_tree_view_extend" model="ir.ui.view">
+            <field name="name">crossovered.budget.list.view.inherit</field>
+            <field name="model">crossovered.budget</field>
+            <field name="inherit_id" ref="account_budget.crossovered_budget_view_tree"/>
+            <field name="arch" type="xml">
+                <field name="date_from" position="before">
+                    <field name="create_date" optional="show"/>
+                </field>
+
+            </field>
+        </record>
+
+        <record id="crr_budget_line_extend1" model="ir.ui.view">
+            <field name="name">crr.budget.line.inherit</field>
+            <field name="model">crr.budget.line</field>
+            <field name="arch" type="xml">
+                <list create="0" delete='0' default_order='sequence'
+                      decoration-bf="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True ">
+                    <field name="is_budget_out_sum_line" column_invisible='1'/>
+                    <field name="is_budget_in_sum_line" column_invisible='1'/>
+                    <field name="is_budget_surples_sum_line" column_invisible='1'/>
+                    <field name="show_budget_sum" column_invisible='1'/>
+                    <field name="user_type" column_invisible='1'/>
+                    <field name="budget_id" column_invisible='1'/>
+                    <field name="company_id" column_invisible='1'/>
+                    <field name="sequence" column_invisible='1'/>
+                    <field name="budget_name" force_save='1'/>
+                    <field name="analytic_account_id"/>
+                    <field name="budget_type"/>
+                    <field name="crr_budget_total"/>
+                    <field name="april_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="may_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="june_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="quarter_1_crr_budget_plan"
+                           decoration-success="is_budget_out_sum_line == False and is_budget_in_sum_line == False and is_budget_surples_sum_line == False"
+                    />
+                    <field name="july_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="august_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="september_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="quarter_2_crr_budget_plan"
+                           decoration-success="is_budget_out_sum_line == False and is_budget_in_sum_line == False and is_budget_surples_sum_line == False"
+                    />
+                    <field name="october_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="november_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="december_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="quarter_3_crr_budget_plan"
+                           decoration-success="is_budget_out_sum_line == False and is_budget_in_sum_line == False and is_budget_surples_sum_line == False"
+                    />
+                    <field name="january_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="febuary_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="march_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="quarter_4_crr_budget_plan"
+                           decoration-success="is_budget_out_sum_line == False and is_budget_in_sum_line == False and is_budget_surples_sum_line == False"
+                    />
+                </list>
+            </field>
+        </record>
+        <record id="crr_budget_line_extend2" model="ir.ui.view">
+            <field name="name">crr.budget.line.inherit2</field>
+            <field name="model">crr.budget.line</field>
+            <field name="arch" type="xml">
+                <list create="0" delete='0' default_order='sequence'
+                      decoration-bf="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True ">
+                    <field name="is_budget_out_sum_line" column_invisible='1'/>
+                    <field name="is_budget_in_sum_line" column_invisible='1'/>
+                    <field name="is_budget_surples_sum_line" column_invisible='1'/>
+                    <field name="show_budget_sum" column_invisible='1'/>
+                    <field name="user_type" column_invisible='1'/>
+                    <field name="budget_id" column_invisible='1'/>
+                    <field name="company_id" column_invisible='1'/>
+                    <field name="sequence" column_invisible='1'/>
+                    <field name="budget_name" force_save='1'/>
+                    <field name="analytic_account_id" column_invisible='1'/>
+                    <field name="budget_type"/>
+                    <field name="crr_budget_total"/>
+                    <field name="april_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="may_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="june_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="quarter_1_crr_budget_plan"
+                           decoration-success="is_budget_out_sum_line == False and is_budget_in_sum_line == False and is_budget_surples_sum_line == False"
+                    />
+                    <field name="july_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="august_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="september_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="quarter_2_crr_budget_plan"
+                           decoration-success="is_budget_out_sum_line == False and is_budget_in_sum_line == False and is_budget_surples_sum_line == False"
+                    />
+                    <field name="october_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="november_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="december_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="quarter_3_crr_budget_plan"
+                           decoration-success="is_budget_out_sum_line == False and is_budget_in_sum_line == False and is_budget_surples_sum_line == False"
+                    />
+                    <field name="january_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="febuary_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="march_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="quarter_4_crr_budget_plan"
+                           decoration-success="is_budget_out_sum_line == False and is_budget_in_sum_line == False and is_budget_surples_sum_line == False"
+                    />
+                </list>
+            </field>
+        </record>
+
+        <record id="view_crr_budget_line_tree" model="ir.ui.view">
+            <field name="name">crr.budget.line.list</field>
+            <field name="model">crr.budget.line</field>
+            <field name="arch" type="xml">
+                <list string="CRR Budget Lines" create='0' delete='0' edit='0'
+                      default_order="version desc, sequence asc"
+                      decoration-bf="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True ">
+                    <field name="is_budget_out_sum_line" column_invisible='1'/>
+                    <field name="is_budget_in_sum_line" column_invisible='1'/>
+                    <field name="is_budget_surples_sum_line" column_invisible='1'/>
+                    <field name="is_budget_total" column_invisible="1"/>
+                    <field name="show_budget_sum" column_invisible='1'/>
+                    <field name="user_type" column_invisible='1'/>
+                    <field name="budget_id" column_invisible='1'/>
+                    <field name="version" column_invisible='1' force_save="1"/>
+                    <field name="company_id" column_invisible='1'/>
+                    <field name="sequence" column_invisible='1'/>
+                    <field name="version_name" column_invisible='1' force_save="1"/>
+                    <field name="analytic_account_id"/>
+                    <field name="budget_name" string="Budget Position" width="900"/>
+                    <field name="budget_type"/>
+                    <field name="april_crr_budget_plan"/>
+                    <field name="april_cur_budget" decoration-success='1'/>
+                    <field name="april_var_budget" decoration-danger='1'/>
+                    <field name="may_crr_budget_plan"/>
+                    <field name="may_cur_budget" decoration-success='1'/>
+                    <field name="may_var_budget" decoration-danger='1'/>
+                    <field name="june_crr_budget_plan"/>
+                    <field name="june_cur_budget" decoration-success='1'/>
+                    <field name="june_var_budget" decoration-danger='1'/>
+                    <field name="quarter_1_crr_budget_plan"/>
+                    <field name="quarter_1_cur_budget" decoration-success='1'/>
+                    <field name="quarter_1_var_budget" decoration-danger='1'/>
+                    <field name="july_crr_budget_plan"/>
+                    <field name="july_cur_budget" decoration-success='1'/>
+                    <field name="july_var_budget" decoration-danger='1'/>
+                    <field name="august_crr_budget_plan"/>
+                    <field name="august_cur_budget" decoration-success='1'/>
+                    <field name="august_var_budget" decoration-danger='1'/>
+                    <field name="september_crr_budget_plan"/>
+                    <field name="september_cur_budget" decoration-success='1'/>
+                    <field name="september_var_budget" decoration-danger='1'/>
+                    <field name="quarter_2_crr_budget_plan"/>
+                    <field name="quarter_2_cur_budget" decoration-success='1'/>
+                    <field name="quarter_2_var_budget" decoration-danger='1'/>
+                    <field name="october_crr_budget_plan"/>
+                    <field name="october_cur_budget" decoration-success='1'/>
+                    <field name="october_var_budget" decoration-danger='1'/>
+                    <field name="november_crr_budget_plan"/>
+                    <field name="november_cur_budget" decoration-success='1'/>
+                    <field name="november_var_budget" decoration-danger='1'/>
+                    <field name="december_crr_budget_plan"/>
+                    <field name="december_cur_budget" decoration-success='1'/>
+                    <field name="december_var_budget" decoration-danger='1'/>
+                    <field name="quarter_3_crr_budget_plan"/>
+                    <field name="quarter_3_cur_budget" decoration-success='1'/>
+                    <field name="quarter_3_var_budget" decoration-danger='1'/>
+                    <field name="january_crr_budget_plan"/>
+                    <field name="january_cur_budget" decoration-success='1'/>
+                    <field name="january_var_budget" decoration-danger='1'/>
+                    <field name="febuary_crr_budget_plan"/>
+                    <field name="february_cur_budget" decoration-success='1'/>
+                    <field name="february_var_budget" decoration-danger='1'/>
+                    <field name="march_crr_budget_plan"/>
+                    <field name="march_cur_budget" decoration-success='1'/>
+                    <field name="march_var_budget" decoration-danger='1'/>
+                    <field name="quarter_4_crr_budget_plan"/>
+                    <field name="quarter_4_cur_budget" decoration-success='1'/>
+                    <field name="quarter_4_var_budget" decoration-danger='1'/>
+                    <field name="crr_budget_total"/>
+                    <field name="cur_budget_total" decoration-success='1'/>
+                    <field name="var_budget_total" decoration-danger='1'/>
+                </list>
+            </field>
+        </record>
+        <record id="view_crr_budget_line_tree2" model="ir.ui.view">
+            <field name="name">crr.budget.line.list</field>
+            <field name="model">crr.budget.line</field>
+            <field name="arch" type="xml">
+                <list string="Rolling Forecast" editable="bottom" create='0' delete='0'
+                      default_order="version desc, sequence asc"
+                      decoration-bf="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True ">
+                    <field name="is_budget_out_sum_line" column_invisible='1'/>
+                    <field name="is_budget_in_sum_line" column_invisible='1'/>
+                    <field name="is_budget_surples_sum_line" column_invisible='1'/>
+                    <field name="is_actual_surples" column_invisible='1'/>
+                    <field name="show_budget_sum" column_invisible='1'/>
+                    <field name="user_type" column_invisible='1'/>
+                    <field name="budget_id" column_invisible='1'/>
+                    <field name="company_id" column_invisible='1'/>
+                    <field name="sequence" column_invisible='1'/>
+
+                    <field name="rf_freez_april_month" column_invisible="1"/>
+                    <field name="rf_freez_may_month" column_invisible="1"/>
+                    <field name="rf_freez_june_month" column_invisible="1"/>
+                    <field name="rf_freez_july_month" column_invisible="1"/>
+                    <field name="rf_freez_august_month" column_invisible="1"/>
+                    <field name="rf_freez_september_month" column_invisible="1"/>
+                    <field name="rf_freez_october_month" column_invisible="1"/>
+                    <field name="rf_freez_november_month" column_invisible="1"/>
+                    <field name="rf_freez_december_month" column_invisible="1"/>
+                    <field name="rf_freez_january_month" column_invisible="1"/>
+                    <field name="rf_freez_february_month" column_invisible="1"/>
+                    <field name="rf_freez_march_month" column_invisible="1"/>
+
+                    <field name="version_name" column_invisible="1" force_save="1"/>
+                    <field name="budget_name" string="Budget Position" readonly="1"/>
+                    <field name="budget_type" readonly="1"/>
+                    <field name="analytic_account_id" column_invisible="1"/>
+                    <field name="april_crr_budget_plan" readonly="1"/>
+                    <field name="april_cur_budget"
+                           readonly="rf_freez_april_month or is_budget_out_sum_line or is_budget_in_sum_line or is_budget_surples_sum_line or is_actual_surples"
+                           decoration-success='1'/>
+                    <field name="april_var_budget" decoration-danger='1'/>
+                    <field name="may_crr_budget_plan" readonly="1"/>
+                    <field name="may_cur_budget"
+                           readonly="rf_freez_may_month or is_budget_out_sum_line or is_budget_in_sum_line or is_budget_surples_sum_line or is_actual_surples"
+                           decoration-success='1'/>
+                    <field name="may_var_budget" decoration-danger='1'/>
+                    <field name="june_crr_budget_plan" readonly="1"/>
+                    <field name="june_cur_budget"
+                           readonly="rf_freez_june_month or is_budget_out_sum_line or is_budget_in_sum_line or is_budget_surples_sum_line or is_actual_surples"
+                           decoration-success='1'/>
+                    <field name="june_var_budget" decoration-danger='1'/>
+                    <field name="quarter_1_crr_budget_plan"/>
+                    <field name="quarter_1_cur_budget" decoration-success='1'/>
+                    <field name="quarter_1_var_budget" decoration-danger='1'/>
+                    <field name="july_crr_budget_plan" readonly="1"/>
+                    <field name="july_cur_budget"
+                           readonly="rf_freez_july_month or is_budget_out_sum_line or is_budget_in_sum_line or is_budget_surples_sum_line or is_actual_surples"
+                           decoration-success='1'/>
+                    <field name="july_var_budget" decoration-danger='1'/>
+                    <field name="august_crr_budget_plan" readonly="1"/>
+                    <field name="august_cur_budget"
+                           readonly="rf_freez_august_month or is_budget_out_sum_line or is_budget_in_sum_line or is_budget_surples_sum_line or is_actual_surples"
+                           decoration-success='1'/>
+                    <field name="august_var_budget" decoration-danger='1'/>
+                    <field name="september_crr_budget_plan" readonly="1"/>
+                    <field name="september_cur_budget"
+                           readonly="rf_freez_september_month or is_budget_out_sum_line or is_budget_in_sum_line or is_budget_surples_sum_line or is_actual_surples"
+                           decoration-success='1'/>
+                    <field name="september_var_budget" decoration-danger='1'/>
+                    <field name="quarter_2_crr_budget_plan"/>
+                    <field name="quarter_2_cur_budget" decoration-success='1'/>
+                    <field name="quarter_2_var_budget" decoration-danger='1'/>
+                    <field name="october_crr_budget_plan" readonly="1"/>
+                    <field name="october_cur_budget"
+                           readonly="rf_freez_october_month or is_budget_out_sum_line or is_budget_in_sum_line or is_budget_surples_sum_line or is_actual_surples"
+                           decoration-success='1'/>
+                    <field name="october_var_budget" decoration-danger='1'/>
+                    <field name="november_crr_budget_plan" readonly="1"/>
+                    <field name="november_cur_budget"
+                           readonly="rf_freez_november_month or is_budget_out_sum_line or is_budget_in_sum_line or is_budget_surples_sum_line or is_actual_surples"
+                           decoration-success='1'/>
+                    <field name="november_var_budget" decoration-danger='1'/>
+                    <field name="december_crr_budget_plan" readonly="1"/>
+                    <field name="december_cur_budget"
+                           readonly="rf_freez_december_month or is_budget_out_sum_line or is_budget_in_sum_line or is_budget_surples_sum_line or is_actual_surples"
+                           decoration-success='1'/>
+                    <field name="december_var_budget" decoration-danger='1'/>
+                    <field name="quarter_3_crr_budget_plan"/>
+                    <field name="quarter_3_cur_budget" decoration-success='1'/>
+                    <field name="quarter_3_var_budget" decoration-danger='1'/>
+                    <field name="january_crr_budget_plan" readonly="1"/>
+                    <field name="january_cur_budget"
+                           readonly="rf_freez_january_month or is_budget_out_sum_line or is_budget_in_sum_line or is_budget_surples_sum_line or is_actual_surples"
+                           decoration-success='1'/>
+                    <field name="january_var_budget" decoration-danger='1'/>
+                    <field name="febuary_crr_budget_plan" readonly="1"/>
+                    <field name="february_cur_budget"
+                           readonly="rf_freez_february_month or is_budget_out_sum_line or is_budget_in_sum_line or is_budget_surples_sum_line or is_actual_surples"
+                           decoration-success='1'/>
+                    <field name="february_var_budget" decoration-danger='1'/>
+                    <field name="march_crr_budget_plan" readonly="1"/>
+                    <field name="march_cur_budget"
+                           readonly="rf_freez_march_month or is_budget_out_sum_line or is_budget_in_sum_line or is_budget_surples_sum_line or is_actual_surples"
+                           decoration-success='1'/>
+                    <field name="march_var_budget" decoration-danger='1'/>
+                    <field name="quarter_4_crr_budget_plan"/>
+                    <field name="quarter_4_cur_budget" decoration-success='1'/>
+                    <field name="quarter_4_var_budget" decoration-danger='1'/>
+                    <field name="crr_budget_total"/>
+                    <field name="cur_budget_total" decoration-success='1'/>
+                    <field name="var_budget_total" decoration-danger='1'/>
+                    
+                </list>
+            </field>
+        </record>
+        <record id="action_forecast_view_search" model="ir.ui.view">
+            <field name="name">crr.budget.line.search</field>
+            <field name="model">crr.budget.line</field>
+            <field name="arch" type="xml">
+                <search>
+                    <group>
+                        <filter string="Version" name="version" context="{'group_by':'version_name'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <record id="action_open_rolling_forecast_odoo" model="ir.actions.act_window">
+            <field name="name">Rolling Forecast</field>
+            <field name="res_model">crr.budget.line</field>
+            <field name="view_mode">list</field>
+            <field name="view_id" ref="view_crr_budget_line_tree"/>
+            <field name="search_view_id" ref="action_forecast_view_search"/>
+            <field name="context">{'group_by':['version_name']}</field>
+            <field name="domain">['|',('revision_budget_id', '=', active_id),('budget_id', '=', active_id)]</field>
+        </record>
+        <record id="action_open_rolling_forecast_non_odoo" model="ir.actions.act_window">
+            <field name="name">Rolling Forecast</field>
+            <field name="res_model">crr.budget.line</field>
+            <field name="view_mode">list</field>
+            <field name="view_id" ref="view_crr_budget_line_tree2"/>
+            <field name="search_view_id" ref="action_forecast_view_search"/>
+            <field name="context">{'group_by':['version_name']}</field>
+            <field name="domain">['|',('revision_budget_id', '=', active_id),('budget_id', '=', active_id)]</field>
+        </record>
+
+        <record id="action_open_budget_vs_actual_odoo" model="ir.actions.act_window">
+            <field name="name">Budget Vs Actual</field>
+            <field name="res_model">crr.budget.line</field>
+            <field name="view_mode">list</field>
+            <field name="view_id" ref="view_crr_budget_line_tree"/>
+            <field name="search_view_id" ref="action_forecast_view_search"/>
+            <field name="context">{'group_by':False}</field>
+            <field name="domain">[('budget_id', '=', active_id)]</field>
+        </record>
+
+        <record id="action_open_budget_vs_actual_non_odoo" model="ir.actions.act_window">
+            <field name="name">Budget Vs Actual</field>
+            <field name="res_model">crr.budget.line</field>
+            <field name="view_mode">list</field>
+            <field name="view_id" ref="view_crr_budget_line_tree2"/>
+            <field name="search_view_id" ref="action_forecast_view_search"/>
+            <field name="context">{'group_by':False}</field>
+            <field name="domain">[('budget_id', '=', active_id)]</field>
+        </record>
+
+        <record id="crossover_budget_search_extend" model="ir.ui.view">
+            <field name="name">crossovered.budget.search.inherit</field>
+            <field name="model">crossovered.budget</field>
+            <field name="inherit_id" ref="account_budget.view_crossovered_budget_search"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search" position="inside">
+                    <field name="approval_state" string="Approval State"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="account_budget_position_tree_view_extend" model="ir.ui.view">
+            <field name="name">account.budget.post.inherit</field>
+            <field name="model">account.budget.post</field>
+            <field name="inherit_id" ref="account_budget.view_budget_post_tree"/>
+            <field name="arch" type="xml">
+                <field name="company_id" position="after">
+                    <field name="state" string="Status" invisible="state != 'locked'" widget="badge"/>
+                </field>
+            </field>
+        </record>
+        <record id="account_budget_position_extend" model="ir.ui.view">
+            <field name="name">account.budget.post.inherit</field>
+            <field name="model">account.budget.post</field>
+            <field name="inherit_id" ref="account_budget.view_budget_post_form"/>
+            <field name="arch" type="xml">
+                <form position="replace">
+                    <form string="Budgetary Position">
+                        <header>
+                            <button name="action_lock" string="Lock" type="object" class="oe_highlight"
+                                    invisible="state == 'locked'"/>
+                            <button name="action_unlock" string="Unlock" type="object" class="oe_highlight"
+                                    invisible="state != 'locked'"/>
+                            <field name="state" widget="statusbar" statusbar_visible="locked"
+                                   invisible="state != 'locked'"/>
+                        </header>
+                        <field name="company_id" invisible="1"/>
+                        <sheet>
+                            <group>
+                                <group col="4">
+                                    <field name="name" readonly="state == 'locked'"/>
+                                    <field name="company_id" groups="base.group_multi_company"
+                                           options="{'no_create': True}" readonly="1" force_save="1"/>
+                                    <!--                                           options="{'no_create': True}" readonly="state == 'locked'"/>-->
+                                </group>
+                                <group col="4">
+                                    <field name="sequence" string="Sequence" readonly="state == 'locked'"/>
+                                    <field name="budget_type" readonly="state == 'locked'"/>
+                                    <field name="budget_category" readonly="state == 'locked'"/>
+                                </group>
+                            </group>
+
+                            <notebook>
+                                <page string="Accounts" name="accounts">
+                                    <field name="account_ids" readonly="state == 'locked'">
+                                        <list>
+                                            <field name="code"/>
+                                            <field name="name"/>
+                                        </list>
+                                    </field>
+                                </page>
+                            </notebook>
+                        </sheet>
+                    </form>
+                </form>
+
+                <xpath expr="//sheet" position="after">
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" groups="base.group_user"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids" options="{'post_refresh': 'always'}"/>
+                    </div>
+                </xpath>
+
+
+            </field>
+        </record>
+
+        <record id="seq_revision_history" model="ir.sequence">
+            <field name="name">Revision History</field>
+            <field name="code">revision.history</field>
+            <field name="prefix">REV/</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+
+        <record id="open_budget_odoo" model="ir.actions.act_window">
+            <field name="name">Budget Odoo</field>
+            <field name="res_model">crossovered.budget</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{'default_user_type': 'odoo'}</field>
+            <field name="domain">[('user_type', '=', 'odoo')]</field>
+        </record>
+        <record id="open_budget_nonodoo" model="ir.actions.act_window">
+            <field name="name">Budget Non-Odoo</field>
+            <field name="res_model">crossovered.budget</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{'default_user_type': 'non_odoo'}</field>
+            <field name="domain">[('user_type', '=', 'non_odoo')]</field>
+        </record>
+
+        <record id="account_budget.menu_act_crossovered_budget_view" model="ir.ui.menu">
+            <field name="active" eval="False"></field>
+        </record>
+
+        <menuitem id="menu_open_budget_odoo"
+                  name="Budget Odoo"
+                  parent="account.menu_finance_entries"
+                  action="open_budget_odoo"
+                  sequence="97"/>
+
+        <menuitem id="menu_open_budget_nonodoo"
+                  name="Budget Non-Odoo"
+                  parent="account.menu_finance_entries"
+                  action="open_budget_nonodoo"
+                  sequence="98"/>
+
+        <record id="view_crr_consolidate_line_tree" model="ir.ui.view">
+            <field name="name">crr.budget.line.consolidate.list</field>
+            <field name="model">crr.budget.line.consolidate</field>
+            <field name="arch" type="xml">
+                <list editable="bottom" create="0" edit="0" delete='0' default_order='sequence'
+                      decoration-bf="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True ">
+                    <field name="is_budget_out_sum_line" column_invisible='1'/>
+                    <field name="is_budget_in_sum_line" column_invisible='1'/>
+                    <field name="is_budget_surples_sum_line" column_invisible='1'/>
+                    <field name="company_id" column_invisible='1'/>
+                    <field name="sequence" column_invisible='1'/>
+                    <field name="budget_name" force_save='1'/>
+                    <field name="budget_position_id" column_invisible="1"/>
+                    <field name="budget_type"/>
+                    <field name="crr_budget_total"/>
+                    <field name="april_crr_budget_plan" force_save='1'
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="may_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="june_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="quarter_1_crr_budget_plan"
+                           decoration-success="is_budget_out_sum_line == False and is_budget_in_sum_line == False and is_budget_surples_sum_line == False"/>
+                    <field name="july_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="august_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="september_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="quarter_2_crr_budget_plan"
+                           decoration-success="is_budget_out_sum_line == False and is_budget_in_sum_line == False and is_budget_surples_sum_line == False"/>
+                    <field name="october_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="november_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="december_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="quarter_3_crr_budget_plan"
+                           decoration-success="is_budget_out_sum_line == False and is_budget_in_sum_line == False and is_budget_surples_sum_line == False"/>
+                    <field name="january_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="febuary_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="march_crr_budget_plan"
+                           readonly="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                    <field name="quarter_4_crr_budget_plan"
+                           decoration-success="is_budget_out_sum_line == False and is_budget_in_sum_line == False and is_budget_surples_sum_line == False"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="open_share_crr" model="ir.actions.act_window">
+            <field name="name">CRR Share</field>
+            <field name="res_model">crr.share.line</field>
+            <field name="view_mode">list</field>
+        </record>
+
+        <record id="view_crr_share_line_tree" model="ir.ui.view">
+            <field name="name">crr.share.line.list</field>
+            <field name="model">crr.share.line</field>
+            <field name="arch" type="xml">
+                <list editable="bottom" create="0" edit="0" delete='0' default_order="version">
+                    <field name="company_id" column_invisible="1"/>
+                    <field name="version_name" column_invisible="1"/>
+                    <field name="tax_entity_percentage" force_save="1" width="500"/>
+                    <field name="entity" width="500"/>
+                    <field name="share_rev_effective_from" width="500"/>
+                    <field name="revision_date" width="500"/>
+                    <field name="crr_share_april"/>
+                    <field name="crr_share_may"/>
+                    <field name="crr_share_june"/>
+                    <field name="crr_share_q1"/>
+                    <field name="crr_share_july"/>
+                    <field name="crr_share_august"/>
+                    <field name="crr_share_september"/>
+                    <field name="crr_share_q2"/>
+                    <field name="crr_share_october"/>
+                    <field name="crr_share_november"/>
+                    <field name="crr_share_december"/>
+                    <field name="crr_share_q3"/>
+                    <field name="crr_share_january"/>
+                    <field name="crr_share_february"/>
+                    <field name="crr_share_march"/>
+                    <field name="crr_share_q4"/>
+
+                </list>
+            </field>
+        </record>
+
+
+
+    </data>
+</odoo>

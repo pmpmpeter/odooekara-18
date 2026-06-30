@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+
+	 <record id="ir_cron_vendor_review" model="ir.cron">
+            <field name="name">Vendor Review Scheduler</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="state">code</field>
+            <field name="code">model.review_vendor()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">months</field>
+            <field name="nextcall" eval="datetime.today().replace(day=1, hour=0, minute=0, second=0, microsecond=0)"/>
+        </record>
+
+        <record id="ir_cron_vendor_review_reminder" model="ir.cron">
+            <field name="name">Vendor Review Reminder Scheduler</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="state">code</field>
+            <field name="code">model.schedule_activities_vendor_review()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+        </record>
+
+        <record id="ir_cron_check_expired_contacts" model="ir.cron">
+            <field name="name">Check Expired Contact Validity</field>
+            <field name="model_id" ref="model_contact_creation"/>
+            <field name="state">code</field>
+            <field name="code">model._check_expired_contacts()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active">True</field>
+        </record>
+
+        <record id="ir_cron_vendor_review_expired" model="ir.cron">
+            <field name="name">Vendor Review Expiration Scheduler</field>
+            <field name="model_id" ref="model_review_lines"/>
+            <field name="state">code</field>
+            <field name="code">model.review_expired()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">months</field>
+            <field name="nextcall" eval="datetime.today().replace(day=1, hour=0, minute=0, second=0, microsecond=0)"/>
+        </record>
+
+        <record model="ir.rule" id="base.res_partner_rule">
+        <field name="name">Contacts Multi-Company Rule</field>
+        <!-- We exclude partners that have internal users (`partner_share` field) from
+        the multi-company rule because it might interfere with the user's company rule
+        and make some users unselectable in relational fields. This means that partners
+        of internal users are always visible, not matter the company setting. -->
+        <!--        Rule rewritten as the rule will work based on Multiple companies given in the partner form not based on-->
+        <!--        'company_id'-->
+        <field name="domain_force">['|','|',('partner_share', '=', False),('company_ids', 'in',
+            company_ids),('company_ids', '=', False)]
+        </field>
+    </record>
+
+
+	
+    </data>
+</odoo>

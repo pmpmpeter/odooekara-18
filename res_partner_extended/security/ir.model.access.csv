@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_contact_creation,contact_creation_name,model_contact_creation,base.group_user,1,1,1,0
+access_contact_creation_admin,contact_creation_admin,model_contact_creation,base.group_system,1,1,1,1
+access_review_lines,review_lines_name,model_review_lines,base.group_user,1,1,1,0
+access_res_partner_approval,access_res_partner_approval,model_res_partner_approval,base.group_user,1,1,1,1
+access_reject_wizard,partner.approval.reject.wizard,model_partner_approval_reject_wizard,base.group_user,1,1,1,1

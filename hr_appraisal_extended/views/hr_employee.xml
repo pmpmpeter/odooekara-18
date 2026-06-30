@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+<record id="view_employee_form" model="ir.ui.view">
+        <field name="name">view.employee.form.inherit</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button class="oe_stat_button"
+                        type="object"
+                        icon="fa-user-plus"
+                        string="360 Performance"
+                        name="action_get_employee_three60_performance"
+                        groups="hr_appraisal.group_hr_appraisal_user"
+                        invisible="employee_three60_performance_count == 0">
+                    <field name="employee_three60_performance_count" widget="statinfo" string="360 Performance"/>
+                </button>
+            </div>
+        </field>
+    </record>
+</odoo>

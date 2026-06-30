@@ -1,0 +1,122 @@
+<?xml version="1.0" ?>
+<odoo>
+    <record id="applicant_invitation_letter_filter_view" model="ir.ui.view">
+        <field name="name">applicant.invitation.letter.search</field>
+        <field name="model">applicant.invitation.letter</field>
+        <field name="arch" type="xml">
+            <search string="Applicant Invitation Letter">
+                <field name="name" string="Reference" filter_domain="[('name', 'ilike', self)]"/>
+                <field name="applicant_id" string="Applicant" filter_domain="[('applicant_id', 'ilike', self)]"/>
+                <separator/>
+                <filter string="Active" name="active" domain="[('active','=', True)]"/>
+                <filter string="Archived" name="inactive" domain="[('active','=', False)]"/>
+                <separator/>
+                <group expand="1" string="Group By">
+                    <filter string="Job Position" name="job_id" context="{'group_by':'job_id'}"/>
+                </group>
+           </search>
+        </field>
+    </record>
+
+    <record id="applicant_invitation_letter_tree_view" model="ir.ui.view">
+        <field name="name">applicant.invitation.letter.list</field>
+        <field name="model">applicant.invitation.letter</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="job_id"/>
+                <field name="interviewer_ids" widget="many2many_avatar_user"/>
+                <field name="applicant_id"/>
+                <field name="company_id"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="applicant_invitation_letter_form_view" model="ir.ui.view">
+        <field name="name">applicant.invitation.letter.form</field>
+        <field name="model">applicant.invitation.letter</field>
+        <field name="arch" type="xml">
+            <form create='1' delete='0'>
+                <header>
+                    <button name="action_send_by_email" type="object" class="oe_highlight"
+                            invisible="state not in ('draft')"
+                            string="Send by Email"/>
+                    <button name="action_set_as_accepted" type="object" class="oe_highlight"
+                            invisible="state not in ('sent')"
+                            string="Accept"/>
+                    <button name="action_cancel" type="object" class="oe_highlight"
+                            invisible="state not in ('sent')"
+                            string="Cancel"/>
+                    <button name="action_draft" type="object" class="oe_highlight"
+                            invisible="state in ('draft','active')"
+                            string="Reset to Draft"/>
+                    <!-- <button name="action_send_by_email" type="object" class="oe_highlight" string="Send by Email"/> -->
+                    <field name="state" widget="statusbar" statusbar_visible="draft,active,expired" readonly="1"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <!-- <span class="o_form_label" invisible="state in ('draft', 'expired')">Active </span>
+                        <span class="o_form_label" invisible="state in ('draft', 'active')">Expired </span>
+                        <span class="o_form_label" invisible="state in ('expired', 'active')">Draft </span> -->
+                        <h1 class="d-flex">
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="applicant_name" readonly="True" required="1"/>
+<!--                            <field name="stage_id"/>-->
+<!--                            <field name="applicant_id" -->
+<!--                                options="{'no_quick_create':True,'no_create': True,}" required='1'-->
+<!--                                readonly="state in ('active', 'expired')"/> -->
+                            <field name="job_id" 
+                                options="{'no_open':True,'no_quick_create':True,'no_create': True,}"/>
+                            <field name="invitation_date" readonly="state in ('active', 'expired')"/>
+                            <field name="letter_heading" readonly="state in ('active', 'expired')"/>
+                        </group>
+                       <group>
+                            <field name="user_id" 
+                                options="{'no_open':True, 'no_quick_create':True,'no_create': True,}" required='1'
+                                readonly="state in ('active', 'expired')"/>
+                            <field name="interviewer_ids" widget="many2many_avatar_user"
+                                options="{'no_open':True,'no_quick_create':True,'no_create': True,}" required='1'
+                                readonly="state in ('active', 'expired')"/>
+                            <field name="active" invisible="0"/>
+                            <field name="company_id" options="{'no_open':True,'no_open': True, 'no_quick_create':True,'no_create': True,}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Subject" name="subject">
+                            <field name="letter_subject" widget="html" readonly="state in ('active', 'expired')"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="applicant_invitation_letter_action" model="ir.actions.act_window">
+        <field name="name">Applicant Invitation Letter</field>
+        <field name="res_model">applicant.invitation.letter</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{}</field>
+        <field name="domain">[]</field>
+    </record>
+
+    <menuitem 
+        id="menu_applicant_invitation_letter_config" 
+        name="Applicant Invitation Letter" 
+        parent="hr_recruitment.menu_crm_case_categ0_act_job" 
+        action="applicant_invitation_letter_action"
+        sequence='4'
+        groups='hr_recruitment.group_hr_recruitment_manager'/>
+
+
+
+</odoo>

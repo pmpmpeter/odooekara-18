@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- not using-->
+    <record id="employee_probation_pdf" model="ir.actions.report">
+        <field name="name">Employee Probation Report</field>
+        <field name="model">employee.probation</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">emp_prob_extended.report_employee_probation_pdf</field>
+        <field name="report_file">emp_prob_extended.report_employee_probation_pdf</field>
+    </record>
+
+    <template id="report_employee_probation_pdf">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <t t-foreach="docs" t-as="o">
+                    <div class="page">
+                        <center>
+                            <h4>
+                                <span t-field="o.name"/>
+                            </h4>
+                        </center>
+                        <!--                    </div>-->
+                        <div class="abr-tax-inv-div"
+                             style="display: flex; display: -webkit-box; -webkit-box-pack: center; justify-content: center;">
+                            <div style="width:55%; border-radius:12px; flex: 1; -webkit-flex: 1;padding:5px;">
+                                <table>
+                                    <tr>
+                                        <th width="15%"></th>
+                                        <th width="1%"></th>
+                                        <th width="84%"></th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>Employee</b>
+                                        </td>
+                                        <td style="padding: 0 13px;">:</td>
+                                        <td>
+                                            <span t-field="o.employee_id"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>Email</b>
+
+                                        </td>
+                                        <td style="padding: 0 13px;">:</td>
+                                        <td>
+                                            <span t-field="o.email"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>Department</b>
+                                        </td>
+                                        <td style="padding: 0 13px;">:</td>
+                                        <td>
+                                            <span t-field="o.department_id"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>Manager</b>
+                                        </td>
+                                        <td style="padding: 0 13px;">:</td>
+                                        <td>
+                                            <span t-field="o.parent_id"></span>
+                                        </td>
+                                    </tr>
+
+
+                                </table>
+                            </div>
+
+                            <div style="width:45%; border-radius:12px; flex: 1; -webkit-box-flex: 1; -webkit-flex: 1; margin-right: 0; padding:5px; margin-left: 5px;">
+                                <table>
+                                    <tr>
+                                        <th width="38%"></th>
+                                        <th width="1%"></th>
+                                        <th width="61%"></th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>Probation Start Date</b>
+                                        </td>
+                                        <td style="padding:0 13px;">:</td>
+                                        <td>
+                                            <span t-field="o.start_date"></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>Probation End Date</b>
+                                        </td>
+                                        <td style="padding:0 13px;">:</td>
+                                        <td>
+                                            <span t-esc="o.end_date"></span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <br/>
+                        <div class="oe_structure"/>
+                        <h5>
+                            <strong>Employee Details</strong>
+                        </h5>
+                        <br/>
+                        <div class="row">
+                            <table class="table table-condenced"
+                                   style="width:100%;">
+                                <thead>
+                                    <tr>
+                                        <th class="text-right"
+                                            style="border-top: solid;border-bottom: solid; border-down: solid;">
+                                            Date
+                                        </th>
+                                        <th class="text-center"
+                                            style="border-top: solid;border-bottom: solid; border-down: solid;">
+                                            Reviewer
+                                        </th>
+                                        <th class="text-center"
+                                            style="border-top: solid;border-bottom: solid; border-down: solid;">
+                                            Review Details
+                                        </th>
+                                        <th class="text-center"
+                                            style="border-top: solid;border-bottom: solid; border-down: solid;">
+                                            Performance
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="sale_tdbody"
+                                       style="border-top: solid; border-down: solid;">
+                                    <t t-foreach="docs.employee_reviews_ids"
+                                       t-as="employee_probation">
+                                        <tr>
+                                            <td>
+                                                <span t-field="employee_probation.date"/>
+                                            </td>
+                                            <td style="text-align:center;">
+                                                <span t-field="employee_probation.reviewer"/>
+                                            </td>
+                                            <td style="text-align:center;">
+                                                <span t-field="employee_probation.review_details"/>
+                                            </td>
+                                            <td style="text-align:center;">
+                                                <span t-field="employee_probation.performance"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

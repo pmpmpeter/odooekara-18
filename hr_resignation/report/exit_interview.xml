@@ -1,0 +1,620 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="paperformat_exit_interview_form_pdf_A4" model="report.paperformat">
+        <field name="name">Exit Interview - Separation</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">50</field>
+        <field name="margin_bottom">25</field>
+        <field name="margin_left">15</field>
+        <field name="margin_right">15</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">48</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <record id="exit_interview_form_report" model="ir.actions.report">
+        <field name="name">Exit Interview Print</field>
+        <field name="model">exit.interview</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_resignation.print_exit_interview_form</field>
+        <field name="report_file">hr_resignation.print_exit_interview_form</field>
+        <field name="paperformat_id" ref="hr_resignation.paperformat_exit_interview_form_pdf_A4"/>
+        <field name="print_report_name">'Exit Interview - %s' % (object.employee_id.name)</field>
+        <field name="binding_model_id" ref="hr_resignation.model_exit_interview"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="print_exit_interview_form">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <t t-foreach="docs" t-as="doc">
+                    <div class="page">
+                        <p>
+                            <!--                            <table align="right"-->
+                            <!--                                   style="width: 50%; border-collapse: collapse;  font-size: 14px; ">-->
+                            <!--                                <tr>-->
+                            <!--                                    <th style="text-align: center; font-weight: bold; padding: 10px;">Solis/HR/PROCESS-->
+                            <!--                                        /7.5-->
+                            <!--                                    </th>-->
+                            <!--                                    <th style="text-align: center; font-weight: bold; padding: 10px;">Separation Process-->
+                            <!--                                    </th>-->
+                            <!--                                </tr>-->
+                            <!--                                <tr>-->
+                            <!--                                    <td style="text-align: center;  padding: 10px;">Solis/HR/SP/Exit interview Form/1.1-->
+                            <!--                                    </td>-->
+                            <!--                                    <td style="text-align: center;  padding: 10px;">Exit interview Form</td>-->
+                            <!--                                </tr>-->
+
+                            <!--                            </table>-->
+                            <!--                            <br/>-->
+                            <!--                            <br/>-->
+                            <!--                            <br/>-->
+                            <!--                            <br/>-->
+                            <!--                            <br/>-->
+
+                            <!--                         <div style="align-item:center;margin-left:250px;">
+                                                        <img t-if="res_company.logo" t-att-src="image_data_uri(res_company.logo)" alt="Logo"
+                                                             style="width:50%;height:75px;  "/>
+                                                    </div> -->
+                            <!--                            <br/>-->
+                            <!--                            <br/>-->
+                            <!--                            <br/>-->
+                            <p>
+                                <b>Note:</b>
+                                <br/>
+                                Original form to be filed in the personal file with a copy of the same updated in GPM
+                                Separation task.
+                            </p>
+                            <br/>
+                            <br/>
+                            <h4>
+                                <u>Exit Interview Form</u>
+                            </h4>
+                            <br/>
+                            <br/>
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <tr>
+                                    <td style="text-align: left;  padding: 10px; ">
+                                        <b>Name:</b>
+                                    </td>
+                                    <td style="text-align: left;  padding: 10px; ">
+                                        <t t-esc="doc.employee_id.name"/>
+                                    </td>
+                                    <td style="text-align: left;  padding: 10px; ">
+                                        <b>Employee Code:</b>
+                                    </td>
+                                    <td style="text-align: left;  padding: 10px; ">
+                                        <t t-esc="doc.employee_code"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;  padding: 10px; ">
+                                        <b>Department</b>
+                                    </td>
+                                    <td style="text-align: left;  padding: 10px; ">
+                                        <t t-esc="doc.department_id.name"/>
+                                    </td>
+                                    <td style="text-align: left;  padding: 10px; ">
+                                        <b>Designation</b>
+                                    </td>
+                                    <td style="text-align: left;  padding: 10px; ">
+                                        <t t-esc="doc.designation_id.name"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;  padding: 10px; ">
+                                        <b>Date of Joining:</b>
+                                    </td>
+                                    <td style="text-align: left;  padding: 10px; ">
+                                        <t t-esc="doc.date_of_joining"/>
+                                    </td>
+                                    <td style="text-align: left;  padding: 10px; ">
+                                        <b>Date of Exit:</b>
+                                    </td>
+                                    <td style="text-align: left;  padding: 10px; ">
+                                        <t t-esc="doc.date_of_exit"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;  padding: 10px; ">
+                                        <b>Personal
+                                            Email ID:
+                                        </b>
+                                    </td>
+                                    <td style="text-align: left;  padding: 10px; ">
+                                        <t t-esc="doc.email"/>
+                                    </td>
+                                    <td style="text-align: left;  padding: 10px; ">
+                                        <b>Mob #:</b>
+                                    </td>
+                                    <td style="text-align: left;  padding: 10px; ">
+                                        <t t-esc="doc.mobile"/>
+                                    </td>
+                                </tr>
+
+                            </table>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <span>The objective of this questionnaire is to elicit your honest feedback using which the
+                                organization can learn from its shortcomings. All information provided by you will be
+                                kept
+                                confidential and used only for the purpose of organizational improvement.
+                            </span>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <tr>
+                                    <td style="text-align: left;  padding: 10px; ">
+                                        <b>Reasons for separation</b>
+                                    </td>
+                                    <td style="text-align: left;  padding: 10px; ">
+                                        <t t-esc="dict(doc._fields['reason_for_separation'].selection).get(doc.reason_for_separation, '')"/>
+                                    </td>
+                                </tr>
+                            </table>
+                            <br/>
+                            <br/>
+                            <br/>
+
+                            <!--                            <table align="right"-->
+                            <!--                                   style="width: 50%; border-collapse: collapse;  font-size: 14px; ">-->
+                            <!--                                <tr>-->
+                            <!--                                    <th style="text-align: center; font-weight: bold; padding: 10px;">Solis/HR/PROCESS-->
+                            <!--                                        /7.5-->
+                            <!--                                    </th>-->
+                            <!--                                    <th style="text-align: center; font-weight: bold; padding: 10px;">Separation Process-->
+                            <!--                                    </th>-->
+                            <!--                                </tr>-->
+                            <!--                                <tr>-->
+                            <!--                                    <td style="text-align: center;  padding: 10px;">Solis/HR/SP/Exit interview Form/1.1-->
+                            <!--                                    </td>-->
+                            <!--                                    <td style="text-align: center;  padding: 10px;">Exit interview Form</td>-->
+                            <!--                                </tr>-->
+
+                            <!--                            </table>-->
+                            <!--                            <br/>-->
+                            <!--                            <br/>-->
+                            <!--                            <br/>-->
+                            <!--                            <br/>-->
+                            <!--                            <br/>-->
+
+                            <!--                            <div style="align-item:center;margin-left:250px;">-->
+                            <!--                                <img t-if="res_company.logo" t-att-src="image_data_uri(res_company.logo)" alt="Logo"-->
+                            <!--                                     style="width:50%;height:75px;  "/>-->
+                            <!--                            </div>-->
+                            <!--                            <br/>-->
+                            <!--                            <br/>-->
+                            <b>Kindly elaborate the reasons:</b>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <ol>
+                                <li style="page-break-inside: avoid;">
+                                    <b>Reason for looking for a Job Outside?</b>
+                                    <t t-esc="doc.reason_for_looking_job"/>
+                                    <br/>
+                                </li>
+                                <br/>
+                                <li style="page-break-inside: avoid;">
+                                    <b>Did you inform your superior/HR Manager that you were planning to leave?</b>
+                                    <br/>
+                                    <br/>
+                                    <table style="width: 100%; border-collapse: collapse; border:1px solid white;">
+                                        <td>
+                                            <t t-esc="dict(doc._fields['inform_manager'].selection).get(doc.inform_manager, '')"/>
+                                        </td>
+                                    </table>
+                                    <br/>
+                                    <span>
+                                        <b>If yes, what was the response?</b>
+                                    </span>
+                                    <br/>
+                                    <td>
+                                        <t t-esc="doc.inform_manager_reason"/>
+                                    </td>
+                                </li>
+                                <br/>
+                                <li style="page-break-inside: avoid;">
+                                    <b>Did they make any efforts to retain you?</b>
+                                    <br/>
+                                    <br/>
+                                    <table style="width: 100%; border-collapse: collapse; border:1px solid white;">
+                                        <td>
+                                            <t t-esc="dict(doc._fields['retain_effort'].selection).get(doc.retain_effort, '')"/>
+                                        </td>
+                                    </table>
+                                    <br/>
+                                    <span>
+                                        <b>If yes, what was the response?</b>
+                                    </span>
+                                    <br/>
+                                    <td>
+                                        <t t-esc="doc.retain_effort_response"/>
+                                    </td>
+                                </li>
+                                <br/>
+                                <li style="page-break-inside: avoid;">
+                                    <b>When you joined, did you feel the following were satisfactorily explained to
+                                        you?
+                                    </b>
+                                    <br/>
+                                    <br/>
+                                    <ol type="a">
+                                        <li style="page-break-inside: avoid;">
+                                            <b>Company Policies :</b>
+                                            <td></td>
+                                            <t t-esc="doc.company_policies_explained"/>
+                                        </li>
+                                        <br/>
+                                        <li style="page-break-inside: avoid;">
+                                            <b>Rules &amp; Regulations :</b>
+                                            <td></td>
+                                            <t t-esc="doc.rules_regulations_explained"/>
+                                        </li>
+                                        <br/>
+                                        <li style="page-break-inside: avoid;">
+                                            <b>Entitlements &amp; Benefits :</b>
+                                            <td></td>
+                                            <t t-esc="doc.entitlements_benefits_explained"/>
+                                        </li>
+                                        <br/>
+                                        <li style="page-break-inside: avoid;">
+                                            <b>Nature of work :</b>
+                                            <td></td>
+                                            <t t-esc="doc.nature_of_work_explained"/>
+                                        </li>
+                                    </ol>
+                                </li>
+                                <br/>
+                                <li style="page-break-inside: avoid;">
+                                    <b>Do you like the work you were doing?</b>
+                                    <br/>
+                                    <br/>
+                                    <t t-esc="doc.work_like"/>
+                                    <br/>
+                                </li>
+                                <br/>
+                                <li style="page-break-inside: avoid;">
+                                    <b>How do you feel about the following?</b>
+                                    <br/>
+                                    <br/>
+                                    <ol type="a">
+                                        <li style="page-break-inside: avoid;">
+                                            <b>Your career progress with the company :</b>
+                                            <br/>
+                                            <br/>
+                                            <t t-esc="doc.career_progress_feedback"/>
+                                        </li>
+                                        <br/>
+                                        <li style="page-break-inside: avoid;">
+                                            <b>Training and Development inputs received by you :</b>
+                                            <br/>
+                                            <br/>
+                                            <t t-esc="doc.training_development_feedback"/>
+                                        </li>
+                                        <br/>
+                                        <li style="page-break-inside: avoid;">
+                                            <b>Compensation policy &amp; levels in the company :</b>
+                                            <br/>
+                                            <br/>
+                                            <t t-esc="doc.compensation_policy_feedback"/>
+                                        </li>
+                                        <br/>
+                                        <li style="page-break-inside: avoid;">
+                                            <b>HR Policies and Systems :</b>
+                                            <br/>
+                                            <br/>
+                                            <t t-esc="doc.hr_policies_feedback"/>
+                                        </li>
+                                        <br/>
+
+                                    </ol>
+                                </li>
+                                <br/>
+                                <li style="page-break-inside: avoid;">
+                                    <b>What are your suggestions to improve:</b>
+                                    <br/>
+                                    <br/>
+                                    <ol type="a">
+                                        <li style="page-break-inside: avoid;">
+                                            <b>The work you were doing :</b>
+                                            <br/>
+                                            <br/>
+                                            <t t-esc="doc.suggestions_work_improvement"/>
+                                        </li>
+                                        <br/>
+                                        <li style="page-break-inside: avoid;">
+                                            <b>Training &amp; Development activities :</b>
+                                            <br/>
+                                            <br/>
+                                            <t t-esc="doc.suggestions_training_improvement"/>
+                                        </li>
+                                        <br/>
+                                        <li style="page-break-inside: avoid;">
+                                            <b>H.R. policies and systems :</b>
+                                            <br/>
+                                            <br/>
+                                            <t t-esc="doc.suggestions_hr_improvement"/>
+                                        </li>
+                                        <br/>
+                                    </ol>
+                                </li>
+                                <br/>
+                                <li style="page-break-inside: avoid;">
+                                    <b>How was the working environment?</b>
+                                    <br/>
+                                    <br/>
+                                    <ol type="a">
+                                        <li style="page-break-inside: avoid;">
+                                            <b>In the company :</b>
+                                            <t t-esc="doc.working_environment_company"/>
+                                        </li>
+                                        <br/>
+                                        <li style="page-break-inside: avoid;">
+                                            <b>In the department:</b>
+                                            <t t-esc="doc.working_environment_department"/>
+                                        </li>
+                                    </ol>
+
+                                </li>
+                                <br/>
+                                <li style="page-break-inside: avoid;">
+                                    <b>How do you feel about the communication channels in the company – Were you
+                                        briefed from
+                                        time to time regarding the development pertaining the organisation – changes in
+                                        policies, rules &amp; regulations?
+                                    </b>
+                                    <br/>
+                                    <br/>
+                                    <t t-esc="doc.communication_feedback"/>
+                                </li>
+                                <br/>
+                                <li style="page-break-inside: avoid;">
+                                    <b>Were the higher authorities easily approachable? How do you feel about the
+                                        communication
+                                        within your department?
+                                    </b>
+                                    <br/>
+                                    <br/>
+                                    <t t-esc="doc.approachability_feedback"/>
+                                </li>
+                                <br/>
+                                <li style="page-break-inside: avoid;">
+                                    <b>Do you get along with your superior? Was he helpful and accessible? How did he
+                                        handle
+                                        grievances / complaints?
+                                    </b>
+                                    <br/>
+                                    <br/>
+                                    <t t-esc="doc.superior_feedback"/>
+                                </li>
+                                <br/>
+                                <li style="page-break-inside: avoid;">
+                                    <b>Did you enjoy working with your colleagues? Were they helpful?</b>
+                                    <br/>
+                                    <br/>
+                                    <t t-esc="doc.colleagues_feedback"/>
+                                </li>
+                                <br/>
+                                <li style="page-break-inside: avoid;">
+                                    <b>Any suggestion to improvement?</b>
+                                    <br/>
+                                    <br/>
+                                    <t t-esc="doc.colleagues_improvement"/>
+                                </li>
+                                <li style="page-break-inside: avoid;">
+                                    <b>How do you feel regarding the co-ordination between your department and other
+                                        departments? Any suggestions for improvement?
+                                    </b>
+                                    <br/>
+                                    <br/>
+                                    <t t-esc="doc.coordination_feedback"/>
+                                </li>
+                                <li style="page-break-inside: avoid;">
+                                    <b>How were</b>
+                                    <br/>
+                                    <br/>
+                                    <ol type="a">
+                                        <li style="page-break-inside: avoid;">
+                                            <b>The welfare activities :</b>
+                                            <t t-esc="doc.welfare_activities_feedback"/>
+                                        </li>
+                                        <br/>
+                                        <li style="page-break-inside: avoid;">
+                                            <b>The staff facilities:</b>
+                                            <t t-esc="doc.staff_facilities_feedback"/>
+                                        </li>
+                                    </ol>
+                                </li>
+                                <br/>
+                                <li style="page-break-inside: avoid;">
+                                    <b>Your suggestions for improvement</b>
+                                    <br/>
+                                    <br/>
+                                    <t t-esc="doc.suggestions"/>
+                                </li>
+                                <li style="page-break-inside: avoid;">
+                                    <b>Do you have any suggestions in general to make this company a better organisation
+                                        to
+                                        work for &amp; for the benefit of other colleagues?
+                                    </b>
+                                    <br/>
+                                    <br/>
+                                    <t t-esc="doc.general_suggestions"/>
+                                </li>
+
+                            </ol>
+
+
+                            <table style="width: 100%; border-collapse: collapse; border:1px solid white;">
+                                <tr>
+                                    <td colspan="2" style="text-align: left;  padding: 10px;">
+                                        <b>
+                                            <b>New Employment Details:</b>
+                                        </b>
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;  padding: 10px;">
+                                        <b>Organisation:</b>
+                                        <t t-esc="doc.new_employment_organization"/>
+                                    </td>
+                                    <td style="text-align: left;  padding: 10px;">
+                                        <b>Designation:</b>
+                                        <t t-esc="doc.new_employment_designation"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;  padding: 10px;">
+                                        <b>Compensation Package:
+                                            (Monthly):
+                                        </b>
+                                        <t t-esc="doc.new_employment_compensation_monthly"/>
+                                    </td>
+                                    <td style="text-align: left;  padding: 10px;">
+                                        <b>(Annual)</b>
+                                        <t t-esc="doc.new_employment_compensation_annual"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="text-align: left;  padding: 10px;">
+                                        <b>Working Conditions
+                                            :
+                                        </b>
+                                        <t t-esc="doc.new_employment_working_conditions"/>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="text-align: left;  padding: 10px;">
+                                        <b>Other Details
+                                            :
+                                        </b>
+                                        <t t-esc="doc.other_details"/>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;  padding: 10px;"></td>
+                                    <td style="text-align: left;  padding: 10px;"></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="text-align: left;  padding: 10px;">
+                                        <b>Signature of Employee:</b>
+                                        <t t-esc="doc.signature_employee.name"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: left;  padding: 10px;">
+                                        <b>Exit interview conducted by:</b>
+                                        <t t-esc="doc.conducted_by"/>
+                                    </td>
+                                    <td style="text-align: left;  padding: 10px;">
+                                        <b>Signature:</b>
+                                        <t t-esc="doc.conducted_by_signature.name"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2" style="text-align: left;  padding: 10px;">
+                                        <b>Date:</b>
+                                        <t t-esc="doc.interview_date"/>
+                                    </td>
+                                </tr>
+                            </table>
+                            <br/>
+                            <br/>
+                            <div style="page-break-before: always;"></div>
+                            <br/>
+                            <br/>
+                            This section of the Form needs to be filled immediately after the exit interview.
+                            <br/>
+                            <br/>
+                            <b>
+                                <b>Comments by the H.O.D.:</b>
+                            </b>
+                            <br/>
+                            <br/>
+                            (Kindly discuss the contents with the immediate supervisor. Yours &amp; the supervisor’s
+                            responses to be recorded. Form to be sent to the General Manager/ BU Head within two days
+                            from the date of receipt)
+                            <br/>
+                            <br/>
+                            <b>
+                                <b>Supervisor’s response:</b>
+                            </b>
+                            <br/>
+                            <t t-esc="doc.supervisor_response"/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <b>
+                                <b>HODs comments:</b>
+                            </b>
+                            <br/>
+                            <t t-esc="doc.hod_comments"/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <div style="text-align:right;">
+                                <div>
+                                    <t t-esc="doc.hod_signature.name"/>
+                                </div>
+                                <div style="border-top:1px solid black; display:inline-block; margin-top:5px; width:200px;">
+                                    <b>Signature of the HOD</b>
+                                </div>
+                            </div>
+                            <br/>
+                            <div>
+                                <text>
+                                    <b>Comments by the General Manager/ BU Head:</b>
+                                    <br/>
+                                    (Kindly record your comments &amp; forward the form to the H.R. Manager after
+                                    discussing with the concerned H.O.D.)
+                                    <div>
+                                        <t t-esc="doc.gm_comments"/>
+                                    </div>
+                                </text>
+                            </div>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <div style="text-align:right;">
+                                <div>
+                                    <t t-esc="doc.gm_signature.name"/>
+                                </div>
+                                <div style="border-top:1px solid black; display:inline-block; margin-top:5px; width:200px;">
+                                    <b>Signature of the GM/BU Head</b>
+                                </div>
+                            </div>
+                            <br/>
+                            <br/>
+                            <div style="text-align:left;">
+                                <text>
+                                    <b>Received by HRD (Date):</b>
+                                    <t t-esc="doc.hr_received_date"/>
+                                </text>
+                            </div>
+                            <br/>
+                            <div style="text-align:right;">
+                                <div>
+                                    <t t-esc="doc.hr_signature.name"/>
+                                </div>
+                                <div style="border-top:1px solid black; display:inline-block; margin-top:5px; width:200px;">
+                                    <b>Signature of the HR Responsible</b>
+                                </div>
+                            </div>
+                            <br/>
+                        </p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

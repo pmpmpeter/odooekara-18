@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="paperformat_clearance_form_pdf_A4" model="report.paperformat">
+        <field name="name">Clearance Form - Separation</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">50</field>
+        <field name="margin_bottom">25</field>
+        <field name="margin_left">15</field>
+        <field name="margin_right">15</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">48</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <record id="clearance_form_report" model="ir.actions.report">
+        <field name="name">Clearance form Report</field>
+        <field name="model">clearance.form</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_resignation.print_clearance_form</field>
+        <field name="report_file">hr_resignation.print_clearance_form</field>
+        <field name="paperformat_id" ref="hr_resignation.paperformat_clearance_form_pdf_A4"/>
+        <field name="print_report_name">'%s - Clearance Form' % (object.employee_id.name)</field>
+        <field name="binding_model_id" ref="hr_resignation.model_clearance_form"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="print_clearance_form">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <t t-foreach="docs" t-as="doc">
+                    <!--                    <div class="header" style="width:100%;height:20%; float:left;">-->
+                    <!--                        <div style="width:100%; float:left;">-->
+                    <!--                            <br/>-->
+                    <!--                            <img t-if="res_company.logo"-->
+                    <!--                                 style="max-width:100px;max-height:100px; float:left;"-->
+                    <!--                                 t-att-src="image_data_uri(res_company.logo)"-->
+                    <!--                                 alt="Logo"/>-->
+                    <!--                        </div>-->
+                    <!--                    </div>-->
+                    <div class="page">
+                        <!--                    <table align="right"-->
+                        <!--                           style="width: 50%; border-collapse: collapse;  font-size: 14px; ">-->
+                        <!--                        <tr>-->
+                        <!--                            <th style="text-align: center; font-weight: bold; padding: 10px;">Solis/HR/PROCESS /7.5</th>-->
+                        <!--                            <th style="text-align: center; font-weight: bold; padding: 10px;">Separation Process</th>-->
+                        <!--                        </tr>-->
+                        <!--                        <tr>-->
+                        <!--                            <td style="text-align: center;  padding: 10px;">Solis/HR/SP/Clearance-->
+                        <!--                                Form/1.1-->
+                        <!--                            </td>-->
+                        <!--                            <td style="text-align: center;  padding: 10px;">Clearance Form</td>-->
+                        <!--                        </tr>-->
+
+                        <!--                    </table>-->
+                        <!--                        <br/>-->
+                        <!--                        <br/>-->
+                        <!--                        <br/>-->
+                        <!--                        <br/>-->
+                        <!--                        <br/>-->
+
+                        <!--                    <div style="align-item:center;margin-left:250px;">-->
+                        <!--                        <img t-if="res_company.logo" t-att-src="image_data_uri(res_company.logo)" alt="Logo"-->
+                        <!--                             style="width:50%;height:75px;  "/>-->
+                        <!--                    </div>-->
+                        <!--                        <br/>-->
+                        <!--                        <br/>-->
+                        <!--                        <br/>-->
+
+                        <h4 style="text-align: center; font-weight: bold;">CLEARANCE FORM</h4>
+                        <br/>
+                        <br/>
+                        <!--                        <br/>-->
+                        <div>
+                            <table style="width: 100%; font-size: 16px; border-collapse: collapse; border:1px solid white;">
+                                <tr>
+                                    <td style="vertical-align: top; width: 50%; padding-right: 10px;">
+                                        <p>
+                                            <b>Name of Employee:</b>
+                                            <span style="margin-left: 10px;">
+                                                <t t-esc="doc.employee_id.name"/>
+                                            </span>
+                                        </p>
+                                        <p>
+                                            <b>Designation:</b>
+                                            <span style="margin-left: 10px;">
+                                                <t t-esc="doc.designation_id.name"/>
+                                            </span>
+                                        </p>
+                                        <p>
+                                            <b>Date of Joining:</b>
+                                            <span style="margin-left: 10px;">
+                                                <t t-esc="doc.date_of_joining"/>
+                                            </span>
+                                        </p>
+                                    </td>
+                                    <td style="vertical-align: top; width: 50%; padding-left: 10px;">
+                                        <p>
+                                            <b>Department:</b>
+                                            <span style="margin-left: 10px;">
+                                                <t t-esc="doc.department_id.name"/>
+                                            </span>
+                                        </p>
+                                        <p>
+                                            <b>Last Working Day:</b>
+                                            <span style="margin-left: 10px;">
+                                                <t t-esc="doc.last_working_day"/>
+                                            </span>
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <br/>
+                        <!--                        <br/>-->
+                        <!--                        <br/>-->
+
+
+                        <h5 style="text-align: center; font-weight: bold;">Handing Over Assets</h5>
+                        <br/>
+                        <br/>
+                        <t t-name="hr_resignation.report_asset_return_template">
+                            <table style="width: 100%; border-collapse: collapse; border: 1px solid black;">
+                                <tr style="border: 1px solid black;">
+                                    <td style="text-align: center; font-weight: bold; padding: 10px; width: 20%; border: 1px solid black;">
+                                        <b>Asset</b>
+                                    </td>
+                                    <td style="text-align: center; font-weight: bold; padding: 10px; width: 20%; border: 1px solid black;">
+                                        <b>Returned To</b>
+                                    </td>
+                                    <td style="text-align: center; font-weight: bold; padding: 10px; width: 40%; border: 1px solid black;">
+                                        <b>Remarks</b>
+                                    </td>
+                                    <td style="text-align: center; font-weight: bold; padding: 10px; width: 20%; border: 1px solid black;">
+                                        <b>Signature</b>
+                                    </td>
+                                </tr>
+                                <t t-foreach="doc.asset_ids" t-as="asset">
+                                    <tr style="border: 1px solid black;">
+                                        <td style="text-align: center; padding: 5px; border: 1px solid black;">
+                                            <t t-esc="dict({
+                        'laptop': 'Laptop',
+                        'sim_card': 'SIM Card',
+                        'mobile_handset': 'Mobile Handset',
+                        'ipad': 'iPad',
+                        'data_card': 'Data Card/Dongle',
+                        'access_card': 'Access Card',
+                        'photo_id': 'Photo ID',
+                        'system': 'System',
+                        'email_gpm': 'Email &amp; GPM - ID/PW',
+                        'library_books': 'Library Books'
+                    })[asset.asset_type]"/>
+                                        </td>
+                                        <td style="text-align: center; padding: 5px; border: 1px solid black;">
+                                            <t t-esc="asset.returned_to.name"/>
+                                        </td>
+                                        <td style="text-align: center; padding: 5px; border: 1px solid black;">
+                                            <t t-esc="asset.remarks"/>
+                                        </td>
+                                        <td style="text-align: center; padding: 5px; border: 1px solid black;">
+                                            <t t-if="asset.signature">
+                                                <img t-att-src="'data:image/png;base64,' + asset.signature.decode('utf-8')"
+                                                     style="max-width: 125px;"/>
+                                            </t>
+                                            <t t-else="">
+                                                <span>No signature available</span>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </table>
+                        </t>
+
+                        <br/>
+                        <br/>
+                        <br/>
+                        Any additional details required as per function can be attached with this format on a plain
+                        sheet.
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+
+                        <!--                    <table align="right"-->
+                        <!--                           style="width: 50%; border-collapse: collapse;  font-size: 14px; ">-->
+                        <!--                        <tr>-->
+                        <!--                            <th style="text-align: center; font-weight: bold; padding: 10px;">Solis/HR/PROCESS /7.5</th>-->
+                        <!--                            <th style="text-align: center; font-weight: bold; padding: 10px;">Separation Process</th>-->
+                        <!--                        </tr>-->
+                        <!--                        <tr>-->
+                        <!--                            <td style="text-align: center;  padding: 10px;">Solis/HR/SP/Clearance-->
+                        <!--                                Form/1.1-->
+                        <!--                            </td>-->
+                        <!--                            <td style="text-align: center;  padding: 10px;">Clearance Form</td>-->
+                        <!--                        </tr>-->
+
+                        <!--                    </table>-->
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <!--                    <div style="align-item:center;margin-left:250px;">-->
+                        <!--                        <img t-if="res_company.logo" t-att-src="image_data_uri(res_company.logo)" alt="Logo"-->
+                        <!--                             style="width:50%;height:75px;  "/>-->
+                        <!--                    </div>-->
+
+                        <br/>
+                        <br/>
+                        <div style="page-break-before: always;"></div>
+                        <h4 style="text-align: center; font-weight: bold;">Clearance by Function Heads</h4>
+                        <br/>
+                        <br/>
+                        <t t-name="hr_resignation.report_clearance_form_template">
+                            <table style="width: 100%; border-collapse: collapse; border: 1px solid black;">
+                                <tr style="border: 1px solid black;">
+                                    <th style="text-align: center; font-weight: bold; padding: 10px; width: 25%; border: 1px solid black;">
+                                        <b>Function</b>
+                                    </th>
+                                    <th style="text-align: center; font-weight: bold; padding: 10px; width: 50%; border: 1px solid black;">
+                                        <b>Remarks</b>
+                                    </th>
+                                    <th style="text-align: center; font-weight: bold; padding: 10px; width: 25%; border: 1px solid black;">
+                                        <b>Signature</b>
+                                    </th>
+                                </tr>
+                                <t t-foreach="doc.function_head_ids" t-as="item">
+                                    <tr style="border: 1px solid black;">
+                                        <td style="text-align: center; padding: 10px; border: 1px solid black;">
+                                            <t t-esc="dict({
+                        'business_head': 'Business Head',
+                        'reporting_manager': 'Reporting Manager',
+                        'admin': 'Admin',
+                        'it': 'IT',
+                        'accounts': 'Accounts',
+                        'corporate_hr': 'Corporate HR',
+                    })[item.function]"/>
+                                        </td>
+                                        <td style="text-align: center; padding: 10px; border: 1px solid black;">
+                                            <t t-esc="item.remarks"/>
+                                        </td>
+                                        <td style="text-align: center; padding: 10px; border: 1px solid black;">
+                                            <t t-if="item.signature">
+                                                <img t-att-src="'data:image/png;base64,' + item.signature.decode('utf-8')"
+                                                     style="max-width: 125px;"/>
+                                            </t>
+                                            <t t-else="">
+                                                <span>No signature available</span>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </table>
+                        </t>
+
+
+                        <br/>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <span>
+                            <t t-esc="doc.employee_id.name"/>
+                        </span>
+                        <br/>
+                        <span>
+                            <b>Employee Signature</b>
+                        </span>
+                        <br/>
+                        <br/>
+                        <br/>
+                        <b>This form has to be submitted to Corporate HR on last working obtaining clearance from all
+                            departments with signature
+                        </b>
+
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

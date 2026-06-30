@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="joining_documents_tree_view" model="ir.ui.view">
+        <field name="name">joining.documents.list</field>
+        <field name="model">joining.documents</field>
+        <field name="arch" type="xml">
+            <list string="Employee Joining Document" default_order="sequence">
+                <field name="join_doc_id" column_invisible="True"/>
+                <field name="sequence" column_invisible="True"/>
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="job_position_id"/>
+                <field name="joining_date"/>
+                <field name="state" widget='badge' decoration-info="state == 'waiting_confirmation'"
+                       decoration-success="state =='done'" decoration-danger="state == 'reject'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_joining_documents_form" model="ir.ui.view">
+        <field name="name">view.joining.documents.form</field>
+        <field name="model">joining.documents</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,waiting_confirmation,done"/>
+                    <button name="action_submit" type="object" class="oe_highlight"
+                            invisible="state not in ('draft')"
+                            string="Submit"/>
+                    <button name="action_confirm" type="object" class="oe_highlight"
+                            invisible="state not in ('waiting_confirmation')" groups="hr.group_hr_manager"
+                            string="Confirm"/>
+                    <button name="action_reset" type="object" groups="hr.group_hr_user"
+                            invisible="state not in ('done','reject')"
+                            string="Reset to Draft"/>
+                    <button name="action_reject" type="object" groups="hr.group_hr_manager"
+                            invisible="state not in ('waiting_confirmation')"
+                            string="Reject"/>
+                    <button name="action_send_document_by_email" type="object"
+                            invisible="document_type not in ('bgv','it_declaration','ebp_claim','epf')"
+                            string="Send Mail"/>
+                    <!--                    <button name="action_send_it_declaration_by_email" type="object"-->
+                    <!--                            invisible="document_type not in ('it_declaration')"-->
+                    <!--                            string="Send Mail"/>-->
+                    <!--                    <button name="action_send_ebp_claim_form_by_email" type="object"-->
+                    <!--                            invisible="document_type not in ('ebp_claim')"-->
+                    <!--                            string="Send Mail"/>-->
+                    <button name="action_print_document"
+                            type="object"
+                            string="Print"
+                            class="btn-primary" groups="hr.group_hr_manager"
+                            invisible="state not in ('waiting_confirmation','done') or document_type in ('bgv','it_declaration','ebp_claim','epf')"
+                    />
+                </header>
+                <sheet>
+                    <!--                    <div class="oe_button_box" name="button_box">-->
+                    <!--                        <button class="oe_stat_button" type="object" string="Referral Form"-->
+                    <!--                                invisible="document_type not in ('emp_ref_check')"-->
+                    <!--                                name="action_open_related_candidate" icon="fa-user-plus">-->
+                    <!--                        </button>-->
+                    <!--                    </div>-->
+                    <group>
+                        <group>
+                            <field name="is_manager" invisible="1"/>
+                            <field name="name"
+                                   readonly="not is_manager or state not in ('draft')"/>
+                            <field name="employee_id" options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                   readonly="not is_manager or state not in ('draft')"/>
+                            <field name="document_type" readonly="not is_manager or state not in ('draft')"/>
+                            <field name="reference_filename" invisible="1"/>
+                            <field name="reference_file" filename="reference_filename"
+                                   invisible="document_type not in ('it_declaration','gmc','ebp_claim','epf')"
+                                   readonly="not is_manager or state not in ('draft')"/>
+                            <field name="submitted_file" filename="submitted_filename"
+                                   invisible="document_type not in ('it_declaration','bgv','ebp_claim','epf')"
+                                   readonly="state not in ('draft')"/>
+                            <field name="submitted_filename" invisible="1"/>
+                            <field name="join_doc_id" invisible="1"/>
+                            <field name="sequence" invisible="1"/>
+                        </group>
+                        <group>
+                            <field name="department_id" options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                   readonly="not is_manager or state not in ('draft')"/>
+                            <field name="job_position_id" options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                   readonly="not is_manager or state not in ('draft')"/>
+                            <field name="company_id" options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                   readonly="1"/>
+                            <field name="contact_id"
+                                   invisible="document_type not in ('it_declaration','ebp_claim','bgv','epf')"
+                                   readonly="not is_manager or state not in ('draft')"
+                                   options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"/>
+                            <field name="joining_date" readonly="not is_manager or state not in ('draft')" groups="hr.group_hr_user"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Subject" name="subject">
+                            <field name="subject" widget="html" readonly="state not in ('draft')"/>
+                        </page>
+                        <page string="GMC GPA Details" invisible="document_type not in ('gmc')">
+                            <group>
+                                <group>
+                                    <field name="emp_code" required="document_type in ('gmc')"
+                                           readonly="state not in ('draft')"/>
+                                    <field name="dependent_name" required="document_type in ('gmc')"
+                                           readonly="state not in ('draft')"/>
+                                    <field name="relationship" required="document_type in ('gmc')"
+                                           readonly="state not in ('draft')"/>
+                                    <field name="dob" required="document_type in ('gmc')"
+                                           readonly="state not in ('draft')"/>
+                                    <field name="age" required="document_type in ('gmc')"
+                                           readonly="state not in ('draft')"/>
+                                    <field name="gender" required="document_type in ('gmc')"
+                                           readonly="state not in ('draft')"/>
+                                    <field name="tax_entity" options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                           required="document_type in ('gmc')" readonly="state not in ('draft')"/>
+                                    <field name="location" required="document_type in ('gmc')"
+                                           readonly="state not in ('draft')"/>
+                                </group>
+                                <group>
+                                    <field name="email" widget="email" required="document_type in ('gmc')"
+                                           readonly="state not in ('draft')"/>
+                                    <field name="contact_no" widget="phone" required="document_type in ('gmc')"
+                                           readonly="state not in ('draft')"/>
+                                    <field name="doj" required="document_type in ('gmc')"
+                                           readonly="state not in ('draft')"/>
+                                    <field name="insurance_type" required="document_type in ('gmc')"
+                                           readonly="state not in ('draft')"/>
+                                    <field name="sum_insured_gmc" required="document_type in ('gmc')"
+                                           readonly="state not in ('draft')"/>
+                                    <field name="sum_insured_gpa" required="document_type in ('gmc')"
+                                           readonly="state not in ('draft')"/>
+                                    <field name="insurance_status" required="document_type in ('gmc')"
+                                           readonly="state not in ('draft')"/>
+                                </group>
+                            </group>
+                            <group>
+                                <field name="remarks" readonly="state not in ('draft')"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="joining_documents_search_view" model="ir.ui.view">
+        <field name="name">joining.documents.search</field>
+        <field name="model">joining.documents</field>
+        <field name="arch" type="xml">
+            <search string="Employee Joining Documents">
+                <!-- Filters -->
+                <filter string="My Documents" name="my_documents"
+                        domain="[('employee_id.user_id','=',uid)]"/>
+                <filter string="Waiting Confirmation" name="waiting_confirmation"
+                        domain="[('state', '=', 'waiting_confirmation')]"/>
+                <filter string="Done" name="done_filter"
+                        domain="[('state', '=', 'done')]"/>
+                <filter string="Rejected" name="rejected_filter"
+                        domain="[('state', '=', 'reject')]"/>
+
+                <!-- Group By -->
+                <group expand="1" string="Group By">
+                    <filter string="Employee" name="group_by_state"
+                            context="{'group_by': 'employee_id'}"/>
+                    <filter string="State" name="group_by_state"
+                            context="{'group_by': 'state'}"/>
+                    <filter string="Department" name="group_by_department"
+                            context="{'group_by': 'department_id'}"/>
+                    <filter string="Job Position" name="group_by_job_position"
+                            context="{'group_by': 'job_position_id'}"/>
+                </group>
+
+                <!-- Search Fields -->
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="department_id"/>
+                <field name="job_position_id"/>
+                <field name="joining_date"/>
+                <field name="state"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_joining_documents" model="ir.actions.act_window">
+        <field name="name">Joining Documents</field>
+        <field name="res_model">joining.documents</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">
+            {
+            'search_default_my_documents': 1
+            }
+        </field>
+        <field name="domain">[]</field>
+    </record>
+
+    <menuitem
+            id="menu_joining_documents_new"
+            name="Joining Documents"
+            parent="hr.menu_hr_employee_payroll"
+            action="action_joining_documents"
+            sequence='7'/>
+
+
+</odoo>

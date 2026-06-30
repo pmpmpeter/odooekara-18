@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="paperformat_interview_assessment_pdf_A4" model="report.paperformat">
+        <field name="name">Interview Assessment - Applicant</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">50</field>
+        <field name="margin_bottom">25</field>
+        <field name="margin_left">15</field>
+        <field name="margin_right">15</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">48</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <template id="interview_assessment_report">
+        <t t-call="web.external_layout">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="doc" t-value="doc.with_context(lang=lang)"/>
+                <t t-set="company" t-value="doc.company_id"/>
+                <div class="page">
+                    <!-- Title -->
+                    <h4 style="text-align: center;font-weight: bold; text-decoration: underline;">INTERVIEW ASSESSMENT
+                        SHEET
+                    </h4>
+                    <br/>
+                    <br/>
+
+                    <!-- Candidate Details -->
+                    <table style="width: 100%; border-collapse: collapse; border: 1px solid black;">
+                        <tbody>
+                            <tr>
+                                <td style="border: 1px solid black; padding: 5px;">
+                                    <strong>Name of Candidate:</strong>
+                                    <t t-esc="doc.name"/>
+                                </td>
+                                <td style="border: 1px solid black; padding: 5px;">
+                                    <strong>Position Interviewed for:</strong>
+                                    <t t-esc="doc.position_interviewed_for"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black; padding: 5px;">
+                                    <strong>Date of Interview:</strong>
+                                    <t t-esc="doc.date_of_interview"/>
+                                </td>
+                                <td style="border: 1px solid black; padding: 5px;">
+                                    <strong>Nature of Employment:</strong>
+                                    <t t-esc="doc.nature_of_employment.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black; padding: 5px;">
+                                    <strong>Present Company:</strong>
+                                    <t t-esc="doc.present_company"/>
+                                </td>
+                                <td style="border: 1px solid black; padding: 5px;">
+                                    <strong>Present Designation:</strong>
+                                    <t t-esc="doc.present_designation"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black; padding: 5px;">
+                                    <strong>Total Experience:</strong>
+                                    <t t-esc="doc.total_experience"/>
+                                </td>
+                                <td style="border: 1px solid black; padding: 5px;">
+                                    <strong>Relevant Experience:</strong>
+                                    <t t-esc="doc.relevant_experience"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black; padding: 5px;">
+                                    <strong>Educational Qualifications:</strong>
+                                    <t t-esc="doc.education_qualifications"/>
+                                </td>
+                                <td style="border: 1px solid black; padding: 5px;">
+                                    <strong>Notice Period:</strong>
+                                    <t t-esc="doc.notice_period"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black; padding: 5px;">
+                                    <strong>Current CTC:</strong>
+                                    <t t-esc="'{:,}'.format(doc.current_ctc)"/>
+                                </td>
+                                <td style="border: 1px solid black; padding: 5px;">
+                                    <strong>Expected CTC:</strong>
+                                    <t t-esc="'{:,}'.format(doc.expected_ctc)"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black; padding: 5px;">
+                                    <strong>Start Time:</strong>
+                                    <t t-esc="doc.adjusted_time_start.strftime('%d-%m-%Y  %H:%M') if doc.adjusted_time_start else ''"/>
+                                </td>
+                                <td style="border: 1px solid black; padding: 5px;">
+                                    <strong>End Time:</strong>
+                                    <t t-esc="doc.adjusted_time_end.strftime('%d-%m-%Y  %H:%M') if doc.adjusted_time_end else ''"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br/>
+
+                    <!-- Assessment Details -->
+                    <h4 style="font-weight: bold; text-decoration: underline;">Assessment Details</h4>
+                    <p>
+                        <strong>Rating Scale:</strong>
+                        (1 – Poor, 2 – Average, 3 – Good, 4 – Excellent, 5 – Outstanding)
+                    </p>
+
+                    <table style="width: 100%; border-collapse: collapse; border: 1px solid black;">
+                        <thead>
+                            <tr>
+                                <th style="border: 1px solid black; padding: 5px;">Soft Skills</th>
+                                <th style="border: 1px solid black; padding: 5px;">Rating</th>
+                                <th style="border: 1px solid black; padding: 5px;">Functional / Technical Skills (List
+                                    the Skills)
+                                </th>
+                                <th style="border: 1px solid black; padding: 5px;">Rating</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td style="border: 1px solid black; padding: 5px;">Education Qualifications</td>
+                                <td style="border: 1px solid black; padding: 5px;">
+                                    <t t-esc="doc.education_qualification_skills"/>
+                                </td>
+                                <td style="border: 1px solid black; padding: 5px;">Relevance of Previous Experience</td>
+                                <td style="border: 1px solid black; padding: 5px;">
+                                    <t t-esc="doc.relevance_of_experience"/>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black; padding: 5px;">Interpersonal Skills/Attitude</td>
+                                <td style="border: 1px solid black; padding: 5px;">
+                                    <t t-esc="doc.interpersonal_skills"/>
+                                </td>
+                                <td style="border: 1px solid black; padding: 5px;">Job / Product / Technical Knowledge
+                                </td>
+                                <td style="border: 1px solid black; padding: 5px;">
+                                    <t t-esc="doc.job_product_technical_knowledge"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black; padding: 5px;">Personality (Individualistic/ Team
+                                    player)
+                                </td>
+                                <td style="border: 1px solid black; padding: 5px;">
+                                    <t t-esc="doc.personality"/>
+                                </td>
+                                <td style="border: 1px solid black; padding: 5px;"></td>
+                                <td style="border: 1px solid black; padding: 5px;"></td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black; padding: 5px;">Comprehension, Analytical &amp;
+                                    Mental Ability
+                                </td>
+                                <td style="border: 1px solid black; padding: 5px;">
+                                    <t t-esc="doc.comprehension_analytical_ability"/>
+                                </td>
+                                <td style="border: 1px solid black; padding: 5px;"></td>
+                                <td style="border: 1px solid black; padding: 5px;"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br/>
+
+                    <!-- Interviewer Comments -->
+                    <h4 style="font-weight: bold; text-decoration: underline;">Interviewer’s Comments</h4>
+                    <table style="width: 100%; border-collapse: collapse; border: 1px solid black;">
+                        <tbody>
+                            <tr>
+                                <td style="border: 1px solid black; padding: 5px; height: 70px;">
+                                    <strong>Functional:</strong>
+                                    <t t-esc="doc.functional_comments"/>
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black; padding: 5px; height: 70px;">
+                                    <strong>HR:</strong>
+                                    <t t-esc="doc.hr_comments"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br/>
+
+                    <!-- Interview Result -->
+                    <h4 style="font-weight: bold; text-decoration: underline;">Interview Result / Feedback</h4>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <p style="margin: 0;">
+                            Select / Reject / On Hold
+                        </p>
+                        <p style="margin: 0; text-align: right;">
+                            <strong>
+                                <t t-esc="doc.interview_result"/>
+                            </strong>
+                        </p>
+                    </div>
+
+                    <h4 style="font-weight: bold; text-decoration: underline;">Candidates:</h4>
+                    <br/>
+                    <table style="width: 100%; border-collapse: collapse; border: 1px solid black;">
+                        <tbody>
+                            <tr>
+                                <td style="border: 1px solid black; padding: 5px;">
+                                    <strong>Designation / Position to be
+                                        Offered:
+                                    </strong>
+                                </td>
+                                <td style="border: 1px solid black; padding: 5px;">
+                                    <strong>Division / Business Unit</strong>
+                                </td>
+                                <td style="border: 1px solid black; padding: 5px;">
+                                    <strong>Grade / Level:</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black; padding: 5px; height: 50px;">
+                                    <t t-esc="doc.position_offered.name"/>
+                                </td>
+                                <td style="border: 1px solid black; padding: 5px; height: 50px;">
+                                    <t t-esc="doc.division"/>
+                                </td>
+                                <td style="border: 1px solid black; padding: 5px; height: 50px;">
+                                    <t t-esc="doc.grade_level"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br/>
+                    <table style="width: 100%; border-collapse: collapse; border: 1px solid black;">
+                        <tbody>
+                            <tr>
+                                <td style="border: 1px solid black; padding: 5px;">
+                                    <strong>Notice Period:</strong>
+                                </td>
+                                <td style="border: 1px solid black; padding: 5px;">
+                                    <strong>CTC Recommended:</strong>
+                                </td>
+                                <td style="border: 1px solid black; padding: 5px;">
+                                    <strong>Expected Date of Joining:</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black; padding: 5px; height: 50px;">
+                                    <t t-esc="doc.notice_period"/>
+                                </td>
+                                <td style="border: 1px solid black; padding: 5px; height: 50px;">
+                                    <t t-esc="'{:,}'.format(doc.ctc_recommended)"/>
+                                </td>
+                                <td style="border: 1px solid black; padding: 5px; height: 50px;">
+                                    <t t-esc="doc.expected_date_of_joining"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br/>
+                    <!-- Final Comments -->
+                    <h4 style="font-weight: bold; text-decoration: underline;">Final Comments by the Panel</h4>
+                    <table style="width: 100%; border-collapse: collapse; border: 1px solid black;">
+                        <thead>
+                            <tr>
+                                <th style="border: 1px solid black; padding: 5px;">Name of Panel Member</th>
+                                <th style="border: 1px solid black; padding: 5px;">Designation &amp; Department</th>
+                                <th style="border: 1px solid black; padding: 5px;">Final Comments</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Loop through panel_comment_ids (One2many field) -->
+                            <tr t-foreach="doc.panel_comments_ids" t-as="line">
+                                <td style="border: 1px solid black; padding: 5px; height: 50px;">
+                                    <span t-field="line.panel_member_name"/>
+                                </td>
+                                <td style="border: 1px solid black; padding: 5px; height: 50px;">
+                                    <span t-field="line.panel_member_designation"/> &amp;
+                                    <span t-field="line.panel_member_department"/>
+
+                                </td>
+                                <td style="border: 1px solid black; padding: 5px; height: 50px;">
+                                    <span t-field="line.final_comments"/>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="interview_assessment_form">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t
+                        t-call="hr_extended.interview_assessment_report"
+                        t-lang="o.user_id.lang"
+                />
+            </t>
+        </t>
+    </template>
+    <record id="interview_assessment_template" model="ir.actions.report">
+        <field name="name">Interview Assessment</field>
+        <field name="model">interview.assessment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_extended.interview_assessment_form</field>
+        <field name="report_file">hr_extended.interview_assessment_form</field>
+        <field name="paperformat_id" ref="hr_extended.paperformat_interview_assessment_pdf_A4"/>
+        <field name="print_report_name">'Interview Assessment'</field>
+        <field name="binding_model_id" ref="hr_extended.model_interview_assessment"/>
+        <field name="binding_type">report</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="extend_portal_my_details_fields" inherit_id="portal.portal_my_details_fields">
+        <xpath expr="//div[@class='clearfix']" position="after">
+            <t t-set="contact_creation" t-value="request.env['contact.creation'].sudo().search([('partner_id','=',partner.id)])"/>
+            <div t-attf-class="mb-3 #{error.get('attachment') and 'o_has_error' or ''} col-xl-6">
+                <label class="col-form-label" for="attachment">Agreements</label><br/>
+            <input type="file" name="attachment" id="attachment" enctype="multipart/form-data" multiple="true" accept="image/*,application/pdf,video/*"/>
+
+            </div>
+            <div t-attf-class="mb-3 #{error.get('attachment') and 'o_has_error' or ''} col-xl-6">
+                <label class="col-form-label" for="attachment1">MSME certificate</label><br/>
+            <input type="file" name="attachment1" id="attachment" enctype="multipart/form-data" multiple="true" accept="image/*,application/pdf,video/*"/>
+
+            </div>
+            <div t-attf-class="mb-3 #{error.get('attachment') and 'o_has_error' or ''} col-xl-6">
+                <label class="col-form-label" for="attachment2">GST Certificate/declaration</label><br/>
+            <input type="file" name="attachment2" id="attachment" enctype="multipart/form-data" multiple="true" accept="image/*,application/pdf,video/*"/>
+            </div>
+             <div t-attf-class="mb-3 #{error.get('attachment') and 'o_has_error' or ''} col-xl-6">
+                <label class="col-form-label" for="attachment3">PAN*</label><br/>
+            <input type="file" name="attachment3" id="attachment" enctype="multipart/form-data" multiple="true" t-att-required="contact_creation.is_vendor or contact_creation.is_customer" accept="image/*,application/pdf,video/*"/>
+            </div>
+            <div t-attf-class="mb-3 #{error.get('attachment') and 'o_has_error' or ''} col-xl-6">
+                <label class="col-form-label" for="attachment4">Cancelled Cheque*</label><br/>
+            <input type="file" name="attachment4" id="attachment" enctype="multipart/form-data" multiple="true" t-att-required="contact_creation.is_vendor" accept="image/*,application/pdf,video/*"/>
+<!--            <small class="form-text text-muted">You can upload multiple attachments here (e.g., PDF, image).</small>-->
+            </div>
+             <div t-attf-class="mb-3 #{error.get('attachment') and 'o_has_error' or ''} col-xl-6">
+                <label class="col-form-label" for="attachment5">LDC Certificate</label><br/>
+            <input type="file" name="attachment5" id="attachment" enctype="multipart/form-data" multiple="true" accept="image/*,application/pdf,video/*"/>
+            </div>
+             <div t-attf-class="mb-3 #{error.get('attachment') and 'o_has_error' or ''} col-xl-6">
+                <label class="col-form-label" for="attachment6">Add. Attachment 1</label><br/>
+            <input type="file" name="attachment6" id="attachment" enctype="multipart/form-data" multiple="true" accept="image/*,application/pdf,video/*"/>
+            </div>
+             <div t-attf-class="mb-3 #{error.get('attachment') and 'o_has_error' or ''} col-xl-6">
+                <label class="col-form-label" for="attachment7">Add. Attachment 2</label><br/>
+            <input type="file" name="attachment7" id="attachment" enctype="multipart/form-data" multiple="true" accept="image/*,application/pdf,video/*"/>
+            </div>
+             <div t-attf-class="mb-3 #{error.get('attachment') and 'o_has_error' or ''} col-xl-6">
+                <label class="col-form-label" for="attachment8">Add. Attachment 3</label><br/>
+            <input type="file" name="attachment8" id="attachment" enctype="multipart/form-data" multiple="true" accept="image/*,application/pdf,video/*"/>
+            </div>
+             <div t-attf-class="mb-3 #{error.get('attachment') and 'o_has_error' or ''} col-xl-6">
+                <label class="col-form-label" for="attachment9">Add. Attachment 4</label><br/>
+            <input type="file" name="attachment9" id="attachment" enctype="multipart/form-data" multiple="true" accept="image/*,application/pdf,video/*"/>
+            </div>
+        </xpath>
+        <xpath expr="//label[@for='vat']" position="replace">
+            <label class="col-form-label label-optional" for="vat">Tax ID</label>
+        </xpath>
+    </template>
+
+    <template id="extended_portal_my_details" inherit_id="portal.portal_my_details">
+<!--        <xpath expr="//button[@type='submit']" position="after">-->
+
+<!--            <button type="submit" formaction="/my/send_email" formmethod="post" class="btn btn-secondary">-->
+<!--                Submit-->
+<!--            </button>-->
+
+<!--        </xpath>-->
+         <xpath expr="//form" position="attributes">
+            <attribute name="enctype">multipart/form-data</attribute>
+        </xpath>
+    </template>
+
+</odoo>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem
+            id="menu_document_access_mgmt"
+            name="Document Access Management"
+            sequence="185"
+            web_icon="document_access_mgmt,static/description/icon.png"
+            groups="document_access_mgmt.group_document_user"
+    />
+
+        <menuitem
+            id="menu_document_request"
+            name="Document Requests"
+            parent="menu_document_access_mgmt"
+            action="document_request_action"
+            sequence="0"/>
+
+    	<menuitem
+            id="menu_document_item"
+            name="Documents"
+            parent="menu_document_access_mgmt"
+            action="document_items_action"
+            groups="document_access_mgmt.group_document_manager"
+            sequence="2"/>
+</odoo>

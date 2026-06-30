@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_manpower_budget_tree" model="ir.ui.view">
+        <field name="name">manpower.budget.list</field>
+        <field name="model">manpower.budget</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="create_date"/>
+                <field name="tax_entity_id"/>
+                <field name="category_id"/>
+                <field name="manpower_request_type"/>
+                <field name="business_unit_id"/>
+                <field name="department_id"/>
+                <field name="job_id"/>
+                <field name="job_level_id"/>
+                <field name="ctc_annual"/>
+                <field name="ctc_monthly"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_manpower_budget_form" model="ir.ui.view">
+        <field name="name">manpower.budget.form</field>
+        <field name="model">manpower.budget</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_assign_user" type="object" string="Assign" invisible="state != 'draft'"
+                            class="btn-primary" groups="hr_extended.group_manpower_budget_manager,hr_extended.group_hr_recruitment_bu_head"/>
+                    <button name="action_submit_record" type="object" string="Submit" invisible="state != 'assigned'"
+                            class="btn-success"/>
+                    <button name="action_hr_approve" type="object" string="Approve" invisible="state != 'submitted'"
+                            class="btn-success" groups="hr_extended.group_manpower_budget_manager,hr_extended.group_hr_recruitment_bu_head"/>
+                    <button name="action_set_done" type="object" string="Set Done" invisible="state != 'hr_approved'"
+                            class="btn-success" groups="hr_extended.group_manpower_budget_manager,hr_extended.group_hr_recruitment_director"/>
+                    <button name="action_reset_to_draft" type="object" string="Reset to Draft"
+                            invisible="state != 'done'" class="btn-secondary"
+                            groups="hr_extended.group_manpower_budget_manager,hr_extended.group_hr_recruitment_bu_head"/>
+                    <button name="schedule_activity" type="object" string="Send Notification" class="btn-secondary"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,assigned,submitted,hr_approved,done"/>
+                </header>
+                <sheet>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" invisible="name == 'New'" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="user_id" readonly="1" invisible='1'/>
+                            <field name="company_id" readonly="1" invisible='1'/>
+
+                            <field name="assigned_user_id" required="state == 'draft'" readonly="state != 'draft'"
+                                   options="{'no_create': True, 'no_open': True}"/>
+                            <field name="hr_id" required="state == 'draft'" readonly="state != 'draft'"
+                                   options="{'no_create': True, 'no_open': True}"/>
+                            <field name="director_id" required="state == 'draft'" readonly="state != 'draft'"
+                                   options="{'no_create': True, 'no_open': True}"/>
+                            <field name="tax_entity_id" required="state == 'assigned'" readonly="state != 'assigned'"
+                                   options="{'no_create': True, 'no_open': True}"/>
+                            <field name="category_id" required="state == 'assigned'" readonly="state != 'assigned'"
+                                   options="{'no_create': True, 'no_open': True}"/>
+                            <field name="manpower_request_type" required="state == 'assigned'"
+                                   readonly="state != 'assigned'"/>
+                        </group>
+                        <group>
+                            <field name="business_unit_id" required="state == 'assigned'" readonly="state != 'assigned'"
+                                   options="{'no_create': True, 'no_open': True}"/>
+                            <field name="department_id" required="state == 'assigned'" readonly="state != 'assigned'"
+                                   options="{'no_create': True, 'no_open': True}"/>
+                            <field name="position_id" required="state == 'assigned'" readonly="state != 'assigned'"
+                                   options="{'no_create': True, 'no_open': True}"/>
+                            <field name="job_id" invisible='1'/>
+                            <field name="job_level_id" required="state == 'assigned'" readonly="state != 'assigned'"
+                                   options="{'no_create': True, 'no_open': True}"/>
+                            <field name="justification" required="state == 'assigned'" readonly="state != 'assigned'"/>
+                            <field name="ctc_annual"/>
+                            <field name="ctc_monthly"/>
+                            <field name="create_date" required="state == 'assigned'" readonly='1' force_save='1'/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Employee Monthly Count">
+                            <field name="employee_monthly_ids" widget="one2many_list" mode="tree"
+                                   required="state == 'assigned'" readonly="state != 'assigned'">
+                                <list editable='bottom' create='false' delete='false'>
+                                    <field name="month" readonly='1' force_save='1'/>
+                                    <field name="ctc_month"/>
+                                    <field name="employee_count"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_ids" widget="mail_thread"/>
+                    <field name="activity_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_manpower_budget" model="ir.actions.act_window">
+        <field name="name">Manpower Budget</field>
+        <field name="res_model">manpower.budget</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p>
+                Manage your manpower budgets here.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_manpower_employee" name="Manpower"
+              parent="hr.menu_hr_employee_payroll"
+              groups="hr_extended.group_manpower_budget_manager,hr_extended.group_manpower_budget_user,hr_extended.group_hr_recruitment_bu_head" sequence="9"/>
+
+    <menuitem id="menu_manpower_budget" name="Manpower Budget" parent="hr_extended.menu_manpower_employee"
+              action="action_manpower_budget" sequence="9"
+              groups="hr_extended.group_manpower_budget_manager,hr_extended.group_manpower_budget_user,hr_extended.group_hr_recruitment_bu_head"/>
+
+    <record id="action_export_excel" model="ir.actions.server">
+        <field name="name">Export to Excel</field>
+        <field name="model_id" ref="model_manpower_budget"/>
+        <field name="binding_model_id" ref="model_manpower_budget"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_export_excel()</field>
+    </record>
+    <record id="action_send_export_excel_for_approval" model="ir.actions.server">
+        <field name="name">Send Mail to Director</field>
+        <field name="model_id" ref="model_manpower_budget"/>
+        <field name="binding_model_id" ref="model_manpower_budget"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_send_export_excel_for_approval()</field>
+    </record>
+
+    <!-- Tree/List View -->
+    <record id="view_director_approve_manpower_tree" model="ir.ui.view">
+        <field name="name">director.approve.manpower.list</field>
+        <field name="model">director.approve.manpower</field>
+        <field name="arch" type="xml">
+            <list edit='0' create='0'>
+                <field name="from_date"/>
+                <field name="to_date"/>
+                <field name="company_id"/>
+                <field name="report_name" invisible='1' force_save='1'/>
+                <field name="report" filename="report_name" force_save='1' invisible='1'/>
+                <field name="state"/>
+
+                <button name="action_approve"
+                        string="Approve"
+                        type="object"
+                        class="btn-success"
+                        invisible="state == 'approved'"/>
+                <button name="action_reject"
+                        string="Reject"
+                        type="object"
+                        class="btn-danger"
+                        invisible="state == 'rejected'"/>
+                <button name="get_attachment_url" string="Download Attachment" type="object"
+                        invisible="report == False"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_director_approve_manpower" model="ir.actions.act_window">
+        <field name="name">Manpower Approval</field>
+        <field name="res_model">director.approve.manpower</field>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_director_approve_manpower_tree"/>
+    </record>
+    <!-- Menu -->
+    <menuitem id="menu_director_approve_manpower"
+              name="Director Manpower Approvals"
+              parent="hr_extended.menu_manpower_employee"
+              sequence="9"
+              action="action_director_approve_manpower"
+              groups="hr_extended.group_manpower_budget_manager,hr_extended.group_manpower_budget_user,hr_extended.group_hr_recruitment_director"/>
+
+
+</odoo>

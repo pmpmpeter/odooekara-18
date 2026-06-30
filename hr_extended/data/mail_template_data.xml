@@ -1,0 +1,439 @@
+<?xml version="1.0" ?>
+<odoo noupdate="0">
+    <template id="applicant_document_upload_template" name="Applicant Document Upload">
+    <t t-call="website.layout">
+        <div class="container mt-5">
+            <h2>Upload Documents for <t t-esc="applicant.partner_name or applicant.partner_id.name"/></h2>
+            <form action="/applicant/upload/submit" method="post" enctype="multipart/form-data">
+                <input type="hidden" name="applicant_id" t-att-value="applicant.id"/>
+                <div class="form-group">
+                    <label>Select Documents</label>
+                    <input type="file" name="documents" multiple="multiple" class="form-control"/>
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Upload</button>
+            </form>
+        </div>
+    </t>
+</template>
+
+    <!--Email template -->
+
+    <!--Pre-Employment Reference form notification-->
+    <record id="reference_check_form_template" model="mail.template">
+        <field name="name">Reference Check Form Template</field>
+        <field name="model_id" ref="hr_extended.model_hr_applicant"/>
+        <field name="email_to">{{object.referred_by.email}}</field>
+        <field name="subject">Check the Pre Employment Reference Form for {{object.partner_name}}
+        </field>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Dear
+                    <t t-out="object.referred_by.name or 'Referrer'"/>,
+                    <br/>
+                    <br/>
+                    Please review the pre-employment reference form for
+                    <strong>
+                        <t t-out="object.partner_name"/>
+                    </strong>
+                    <br/>
+                    <br/>
+                </p>
+            </div>
+        </field>
+        <field name="lang">{{ object.referred_by.lang }}</field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <!--    Pre employment reference pdf mail -->
+    <record id="reference_check_pdf_form_template" model="mail.template">
+        <field name="name">Reference Check Form Pdf Template</field>
+        <field name="model_id" ref="hr_extended.model_preemp_check"/>
+        <field name="email_to">{{object.recruiter_id.email}}</field>
+        <field name="subject">Check the Pre Employment Reference PDF for {{object.candidate_name}}
+        </field>
+        <field name="report_template_ids" eval="[(4, ref('hr_extended.pre_employment_referral_report'))]"/>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Dear
+                    <t t-out="object.recruiter_id.name or 'Recruiting Manager'"/>,
+                    <br/>
+                    <br/>
+                    Please review the pre-employment reference form for
+                    <strong>
+                        <t t-out="object.candidate_name"/>
+                    </strong>
+                    <br/>
+                    <br/>
+                </p>
+            </div>
+        </field>
+        <field name="lang">{{ object.referee_id.lang }}</field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+
+    <record id="employee_indent_approval_request_email" model="mail.template">
+        <field name="name">Approval Request - Employee Indent</field>
+        <field name="model_id" ref="hr_extended.model_employee_indent"/> <!-- Update to your model -->
+        <field name="subject">Approval Request for the Employee Indent of {{ object.name }}</field>
+        <field name="email_to">{{ object.unit_head_id.login }}</field>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <t>
+                    <p>Dear Team,</p>
+                    <p>Kindly approve the submitted Employee Indent</p>
+                    <p>
+                        For more details, kindly
+
+                        <!--                        <a t-att-href="object.get_indent_url()"-->
+                        <!--                           target="_blank">Click here-->
+                        <!--                        </a>-->
+
+
+                        to navigate to the Employee Indent.
+                    </p>
+
+                    <p>
+                        <strong>Employee Indent Name:</strong>
+                        <span t-out="object.name"/>
+                    </p>
+                    <p>
+                        <strong>Job Positions:</strong>
+                        <span t-out="object.position_name.name or 'N/A'"/>
+                    </p>
+                    <p>
+                        <strong>Target Employees:</strong>
+                        <span t-out="object.target or 'N/A'"/>
+                    </p>
+                    <p>
+                        <strong>Approver Name:</strong>
+                        <span t-out="object.unit_head_id.name"/>
+                    </p>
+
+                    <p>Thank you,</p>
+                    <p>System Administrator</p>
+                </t>
+            </div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+        <field name="lang">{{ object.unit_head_id.lang }}</field>
+    </record>
+
+    <record id="recruitement_first_invitiation_email_template" model="mail.template">
+        <field name="name">Recruitment First Invitation Letter</field>
+        <field name="model_id" ref="hr_extended.model_applicant_invitation_letter"/>
+        <field name="email_to">{{object.applicant_id.email_from}}</field>
+        <field name="email_cc">{{ ','.join(object.interviewer_ids.mapped('email')) }}</field>
+        <!--        <field name="partner_to">{{ ','.join(map(str, object.interviewer_ids.partner_id.ids)) }}</field>-->
+        <field name="subject">{{object.letter_heading}}
+        </field>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Dear
+                    <t t-out="object.applicant_name "></t>
+                    <br/>
+                    <!--                        You are invited for the First Level of Interview. Kindly confirm.-->
+                    You are invited for the
+                    <strong>
+                        <t t-esc="object.get_next_stage_name()"/>
+                    </strong>
+                    . Kindly confirm.
+                    <br/>
+                    <br/>
+                    <t t-out="object.letter_subject"></t>
+
+                    Regards
+                    <br/>
+                    HR Team.
+                </p>
+            </div>
+        </field>
+        <field name="lang">{{object.user_id.lang}}</field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <record id="document_update_interview_status_mail" model="mail.template">
+        <field name="name">Document Update Interview</field>
+        <field name="model_id" ref="hr_extended.model_hr_applicant"/>
+        <field name="email_to">{{object.email_from}}</field>
+        <field name="subject">Document Update Interview Status
+        </field>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Dear
+                    <t t-out="object.partner_name "></t>
+                    <br/>
+                    <t t-out="object.get_document_update_interview_subject()"></t>
+                    <br/>
+                    <br/>
+                </p>
+            </div>
+        </field>
+        <field name="lang">{{object.user_id.lang}}</field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+
+    <record id="offer_letter_mail" model="mail.template">
+        <field name="name">Offer Letter Mail</field>
+        <field name="model_id" ref="hr_extended.model_hr_applicant"/>
+        <field name="email_to">{{object.email_from}}</field>
+        <field name="subject">Offer Letter Mail
+        </field>
+        <field name="report_template_ids" eval="[(4, ref('hr_extended.salary_breakup_report'))]"/>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Dear
+                    <t t-out="object.partner_name "></t>
+                    <br/>
+                    <br/>
+                    <br/>
+                    We are pleased to inform you that your offer letter has been generated and is attached to this
+                    email.
+                    <br/>
+                    Please review the attached offer letter document for further details regarding your employment with
+                    <b>
+                        <t t-out="object.company_id.name"/>
+                    </b>
+                    .
+                    <br/>
+                    <br/>
+                    If you have any questions or require any clarifications, feel free to contact us.
+                    <br/>
+                    <br/>
+                    <b>Best regards,</b>
+                    <br/>
+                    <t t-out="object.user_id.name"/>
+                </p>
+            </div>
+        </field>
+        <field name="lang">{{object.user_id.lang}}</field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <!--    <record id="email_template_interview_assessment" model="mail.template">-->
+    <!--        <field name="name">Interview Assessment - PDF</field>-->
+    <!--        <field name="model_id" ref="hr_extended.model_hr_applicant"/>-->
+    <!--        <field name="email_from">{{object.user_id.partner_id.email}}</field>-->
+    <!--        <field name="email_to">{{object.email_from}}</field>-->
+    <!--        <field name="subject">Interview Assessment</field>-->
+    <!--        <field name="body_html">-->
+    <!--            <![CDATA[-->
+    <!--            <p>Hello,</p>-->
+    <!--            <p>Please find the attached interview assessment report</p>-->
+    <!--            <p>Regards,<br/> HR Team</p>-->
+    <!--            ]]>-->
+    <!--        </field>-->
+    <!--        <field name="report_template_ids" eval="[(4, ref('hr_extended.interview_assessment_template'))]"/>-->
+    <!--    </record>-->
+
+    <!-- Refuse reason Template-->
+    <record id="email_template_rejection_ekara" model="mail.template">
+        <field name="name">Recruitment: Ekara Rejection Template</field>
+        <field name="model_id" ref="hr_recruitment.model_hr_applicant"/>
+        <field name="subject">Status update on your recent Job application at {{ object.job_id.name }}</field>
+        <field name="email_to">{{ (not object.partner_id and object.email_from or '') }}</field>
+        <field name="partner_to">{{ object.partner_id.id or '' }}</field>
+        <field name="description">When you refuse an application, you can choose this template</field>
+        <field name="body_html" type="html">
+            <table border="0" cellpadding="0" cellspacing="0" width="590"
+                   style="min-width: 590px; background-color: white; padding: 0px 8px 0px 8px; border-collapse:separate;">
+                <tr>
+                    <td valign="top">
+                        <div style="font-size: 13px; margin: 0px; padding: 0px;">
+                            Dear
+                            <t t-out="object.partner_name or ''">Marc Demo</t>,
+                            <br/>
+                            <br/>
+                            We thank you for your interest and the time you devoted to the interview process
+                            <br/>
+                            We would like to inform you that we have chosen to move forward with a different candidate
+                            for the role.
+                            <br/>
+                            <br/>
+                            Our team was impressed by your expertise and accomplishments. We believe you could be a good
+                            fit for any future suitable openings. The concerned team will keep you informed on any such
+                            opportunities in future.
+                            <br/>
+                            <br/>
+                            We wish you the best in your job search and future professional endeavours.
+                            <br/>
+                            <br/>
+                            Regards
+                            <br/>
+                            Team Human Resources
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </field>
+        <field name="auto_delete" eval="True"/>
+        <field name="lang">{{ object.partner_id.lang or '' }}</field>
+    </record>
+
+    <record id="email_template_kra_submit" model="mail.template">
+        <field name="name">KRA Submit</field>
+        <field name="model_id" ref="model_employee_kra"/>
+        <field name="subject">KRA Submit To Supervisor</field>
+        <field name="email_from">{{ user.email_formatted }}</field>
+        <field name="email_to">{{ object.employee_parent_id.work_email }}</field>
+        <!--        <field name="partner_to">{{ object.employee_parent_id.id }}</field>-->
+        <field name="body_html">
+            <![CDATA[
+        <p>Dear <t t-esc="object.employee_parent_id.name"/>,</p>
+        <p>This is to notify you that <t t-esc="object.employee_id.name"/> has submitted their KRA for review.</p>
+        <p><strong>Submission Date:</strong> <t t-esc="object.kra_date"/></p>
+        <p><strong>Job Position:</strong> <t t-esc="object.emp_job_id.name"/></p>
+        <p>Please review the submitted KRA and take the necessary action.</p>
+        <p>Best regards,</p>
+        <p><t t-esc="object.employee_id.name"/></p>
+        ]]>
+        </field>
+    </record>
+
+    <record id="mail_template_bgv" model="mail.template">
+        <field name="name">BGV Email Template</field>
+        <field name="model_id" ref="hr_extended.model_joining_documents"/>
+        <!--        <field name="email_from">{{object.employee_id.work_email}}</field>-->
+        <field name="email_to">{{object.contact_id.email}}</field>
+        <field name="subject">Background Verification Email</field>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    <t t-out="object.subject"/>
+                </p>
+            </div>
+
+        </field>
+    </record>
+
+    <record id="mail_template_it_declaration" model="mail.template">
+        <field name="name">IT declaration Email Template</field>
+        <field name="model_id" ref="hr_extended.model_joining_documents"/>
+        <field name="email_from">{{object.employee_id.work_email}}</field>
+        <field name="email_to">{{object.contact_id.email}}</field>
+        <field name="subject">IT Declaration Submission Email</field>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+
+                    Dear
+                    <t t-out="object.contact_id.name"/>,
+                    <br/>
+
+                    Please find attached the filled IT Declaration form for your review and approval. Kindly let me know
+                    if any further information is required.
+                    <br/>
+
+                    Thank you,
+                    <br/>
+                    <t t-out="object.employee_id.name"/>
+                </p>
+            </div>
+
+        </field>
+    </record>
+
+    <record id="mail_template_epf_11" model="mail.template">
+        <field name="name">EPF Form 11 Declaration Email Template</field>
+        <field name="model_id" ref="hr_extended.model_joining_documents"/>
+        <field name="email_from">{{object.employee_id.work_email}}</field>
+        <field name="email_to">{{object.contact_id.email}}</field>
+        <field name="subject">EPF Form 11 Declaration Submission Email</field>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+
+                    Dear
+                    <t t-out="object.contact_id.name"/>,
+                    <br/>
+
+                    Please find attached the filled EPF Form 11 Declaration form for your review and approval. Kindly
+                    let me know
+                    if any further information is required.
+                    <br/>
+
+                    Thank you,
+                    <br/>
+                    <t t-out="object.employee_id.name"/>
+                </p>
+            </div>
+
+        </field>
+    </record>
+
+    <record id="mail_template_ebp_claim_form" model="mail.template">
+        <field name="name">EBP claim form Email Template</field>
+        <field name="model_id" ref="hr_extended.model_joining_documents"/>
+        <field name="email_from">{{object.employee_id.work_email or user.email}}</field>
+        <field name="email_to">{{object.contact_id.email}}</field>
+        <field name="subject">EBP Claim Form Submission Email</field>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+
+                    Dear
+                    <t t-out="object.contact_id.name"/>,
+                    <br/>
+
+                    Please find attached the filled EBP Claim form for your review and approval. Kindly let me know
+                    if any further information is required.
+                    <br/>
+
+                    Thank you,
+                    <br/>
+                    <t t-out="object.employee_id.name"/>
+                </p>
+            </div>
+
+        </field>
+    </record>
+
+    <record id="mail_appointment_letter_employee" model="mail.template">
+        <field name="name">Appointment Letter Email Template</field>
+        <field name="model_id" ref="hr_extended.model_hr_employee"/>
+        <!--        <field name="email_from">{{user.email}}</field>-->
+        <field name="email_to">{{ object.private_email }}</field>
+        <field name="subject">Appointment Letter</field>
+        <field name="report_template_ids" eval="[(4, ref('hr_extended.appointment_letter_emp_template'))]"/>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Dear
+                    <t t-out="object.name"/>
+                    ,
+                    <br/>
+                    Please find the attachment of your Appointment Letter for your reference.
+                    <br/>
+                    This letter outlines the terms and
+                    conditions of your employment with
+                    <t t-out="object.company_id.name"/>
+                    <br/>
+                </p>
+            </div>
+
+        </field>
+    </record>
+
+    <!-- payroll attachment mail -->
+    <record id="payroll_report_share_email_template" model="mail.template">
+        <field name="name">Payroll Report Sharing</field>
+        <field name="model_id" ref="hr_extended.model_payroll_report_wizard"/>
+        <field name="subject">Payroll Report</field>
+        <field name="email_from">{{user.email or ''}}</field>
+        <field name="email_to">{{','.join([p.email for p in object.partner_ids if p.email])}}</field>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p>Hello,</p>
+                <p>Please find attached the payroll report: <strong><t t-out="object.file_name"/></strong>.
+                </p>
+            </div>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2018-2019 ForgeFlow, S.L.
+     License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl-3.0) -->
+<odoo>
+    <record id="group_contact_admin" model="res.groups">
+        <field name="name">Contacts Admin</field>
+    </record>
+    <!--Can Validate-->
+    <record model="res.groups" id="can_validate_partner">
+        <field name="name">Allow Validate Partner</field>
+        <field name="category_id" ref="base.module_category_hidden"/>
+    </record>
+    <!--Can Approve-->
+    <record model="res.groups" id="can_approve_partner">
+        <field name="name">Allow Approve Partner</field>
+<!--        <field name="category_id" ref="base.module_category_hidden"/>-->
+    </record>
+
+    <record id="group_managing_technical_admin_access" model="res.groups">
+        <field name="name">Apps Admin</field>
+    </record>
+    <record id="group_contact_admin_access" model="res.groups">
+        <field name="name">Allow contact changes</field>
+    </record>
+</odoo>

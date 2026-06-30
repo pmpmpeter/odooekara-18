@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_grievance_management,grievance_management.employee_grievance,model_grievance_management,base.group_user,1,1,1,1
+access_grievance_type_names,grievance.type.names,model_grievance_type_names,base.group_user,1,1,1,1
+

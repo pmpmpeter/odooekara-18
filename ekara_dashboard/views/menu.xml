@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="menu_ekara_dashboard_root" name="Ekara Dashboard" sequence="1" web_icon="ekara_dashboard,static/description/icon.png" groups="hr.group_hr_manager">
+	    <menuitem id="menu_ekara_dashboard" name="HR Dashboard" action="action_ekara_dashboard" sequence="1"/>
+	    <menuitem id="survey_dashboard_menu" name="Survey Dashboard" sequence="2" action="survey_dashboard_action"/>
+	</menuitem>
+
+</odoo>

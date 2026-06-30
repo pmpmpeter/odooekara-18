@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="print_kra_template_report">
+        <t t-call="web.external_layout">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="doc" t-value="doc.with_context(lang=lang)"/>
+                <t t-set="company" t-value="doc.company_id"/>
+                <div class="page" style="margin:0;">
+                    <div>
+                        <span style="display: inline-block; width: 45%; text-align: left;">
+                            Employee:
+                            <t t-esc="doc.employee_id.name"/>
+                        </span>
+                        <span style="display: inline-block; width: 45%; text-align: right;">
+                            Job Position:
+                            <t t-esc="doc.emp_job_id.name"/>
+                        </span>
+                    </div>
+
+                    <div style="margin-top: 25px;">
+                        <span style="display: inline-block; width: 45%; text-align: left;">
+                            Manager:
+                            <t t-esc="doc.employee_parent_id.name"/>
+                        </span>
+                        <!--                        <span style="display: inline-block; width: 45%; text-align: right;">-->
+                        <!--                            KRA:-->
+                        <!--                            <t t-esc="doc.kra_master.name"/>-->
+                        <!--                        </span>-->
+                    </div>
+
+                    <table style="border-collapse: collapse; width: 100%;">
+                        <thead>
+                            <tr style="font-weight: bold; background: #D3D3D3; height: 25px;">
+                                <th style="padding: 10px;">Sl No</th>
+                                <th style="padding: 10px;">Category</th>
+                                <th style="padding: 10px;">BU</th>
+                                <th style="padding: 10px;">KRA</th>
+                                <th style="padding: 10px;">Goal Description</th>
+                                <th style="padding: 10px;">Weightage</th>
+                                <!--                                <th style="padding: 10px;">Employee Rating-->
+                                <!--                                </th>-->
+                                <!--                                <th style="padding: 10px;">Employee Remark-->
+                                <!--                                </th>-->
+                                <!--                                <th t-if="env.user.has_group('hr_extended.group_hr_recruitment_ekara_manager')"-->
+                                <!--                                    style="padding: 10px;">Manager Rating-->
+                                <!--                                </th>-->
+                                <!--                                <th t-if="env.user.has_group('hr_extended.group_hr_recruitment_ekara_manager')"-->
+                                <!--                                    style="padding: 10px;">Manager Remark-->
+                                <!--                                </th>-->
+                                <!--                                <th t-if="env.user.has_group('hr_extended.group_hr_recruitment_bu_head')"-->
+                                <!--                                    style="padding: 10px;">BU Head Rating-->
+                                <!--                                </th>-->
+                                <!--                                <th t-if="env.user.has_group('hr_extended.group_hr_recruitment_bu_head')"-->
+                                <!--                                    style="padding: 10px;">BU Head Remark-->
+                                <!--                                </th>-->
+                                <!--                                <th t-if="env.user.has_group('hr_recruitment.group_hr_recruitment_manager')"-->
+                                <!--                                    style="padding: 10px;">Director &amp; HR Rating-->
+                                <!--                                </th>-->
+                                <!--                                <th t-if="env.user.has_group('hr_recruitment.group_hr_recruitment_manager')"-->
+                                <!--                                    style="padding: 10px;">Director &amp; HR Remark-->
+                                <!--                                </th>-->
+                                <!--                                <th t-if="env.user.has_group('hr_recruitment.group_hr_recruitment_manager')"-->
+                                <!--                                    style="padding: 10px;">Final Score-->
+                                <!--                                </th>-->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="sl_no" t-value="1"/>
+                            <t t-foreach="doc.kra_details_ids" t-as="detail">
+                                <tr t-attf-style="background:{'D3D3D3' if sl_no % 2 == 1 else 'CBC3E3'};">
+                                    <td style="padding: 10px;">
+                                        <t t-esc="sl_no"/>
+                                        <t t-set="sl_no" t-value="sl_no+1"/>
+                                    </td>
+                                    <td style="padding: 10px;">
+                                        <t t-esc="detail.category"/>
+                                    </td>
+                                    <td style="padding: 10px;">
+                                        <t t-esc="detail.business_unit_id.name"/>
+                                    </td>
+                                    <td style="padding: 10px;">
+                                        <t t-esc="detail.kra_type"/>
+                                    </td>
+                                    <td style="padding: 10px;">
+                                        <t t-esc="detail.goal_description"/>
+                                    </td>
+                                    <td style="padding: 10px;">
+                                        <t t-esc="detail.weightage"/>
+                                    </td>
+                                    <!--                                    <td style="padding: 10px;">-->
+                                    <!--                                        <t t-esc="detail.employee_rating"/>-->
+                                    <!--                                    </td>-->
+                                    <!--                                    <td style="padding: 10px;">-->
+                                    <!--                                        <t t-esc="detail.employee_remark"/>-->
+                                    <!--                                    </td>-->
+                                    <!--                                    <td t-if="env.user.has_group('hr_extended.group_hr_recruitment_ekara_manager')"-->
+                                    <!--                                        style="padding: 10px;">-->
+                                    <!--                                        <t t-esc="detail.manager_rating"/>-->
+                                    <!--                                    </td>-->
+                                    <!--                                    <td t-if="env.user.has_group('hr_extended.group_hr_recruitment_ekara_manager')"-->
+                                    <!--                                        style="padding: 10px;">-->
+                                    <!--                                        <t t-esc="detail.manager_remark"/>-->
+                                    <!--                                    </td>-->
+                                    <!--                                    <td t-if="env.user.has_group('hr_extended.group_hr_recruitment_bu_head')"-->
+                                    <!--                                        style="padding: 10px;">-->
+                                    <!--                                        <t t-esc="detail.bu_head_rating"/>-->
+                                    <!--                                    </td>-->
+                                    <!--                                    <td t-if="env.user.has_group('hr_extended.group_hr_recruitment_bu_head')"-->
+                                    <!--                                        style="padding: 10px;">-->
+                                    <!--                                        <t t-esc="detail.bu_head_remark"/>-->
+                                    <!--                                    </td>-->
+                                    <!--                                    <td t-if="env.user.has_group('hr_recruitment.group_hr_recruitment_manager')"-->
+                                    <!--                                        style="padding: 10px;">-->
+                                    <!--                                        <t t-esc="detail.director_hr_rating"/>-->
+                                    <!--                                    </td>-->
+                                    <!--                                    <td t-if="env.user.has_group('hr_recruitment.group_hr_recruitment_manager')"-->
+                                    <!--                                        style="padding: 10px;">-->
+                                    <!--                                        <t t-esc="detail.director_hr_remark"/>-->
+                                    <!--                                    </td>-->
+                                    <!--                                    <td t-if="env.user.has_group('hr_recruitment.group_hr_recruitment_manager')"-->
+                                    <!--                                        style="padding: 10px;">-->
+                                    <!--                                        <t t-esc="detail.final_score"/>-->
+                                    <!--                                    </td>-->
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <template id="print_kra_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t
+                        t-call="hr_extended.print_kra_template_report"
+                        t-lang="o.user_id.lang"
+                />
+            </t>
+        </t>
+    </template>
+    <record id="employee_kra_template_pdf" model="ir.actions.report">
+        <field name="name">KRA Template</field>
+        <field name="model">employee.kra</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_extended.print_kra_template</field>
+        <field name="report_file">hr_extended.print_kra_template</field>
+        <field name="print_report_name">'%s - KRA Details' % (object.employee_id.name)</field>
+        <field name="binding_model_id" ref="hr_extended.model_employee_kra"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

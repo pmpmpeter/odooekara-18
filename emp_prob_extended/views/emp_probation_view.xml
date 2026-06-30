@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_employee_form" model="ir.ui.view">
+        <field name="name">view.employee.form.inherit</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+            <div name="button_box" position="inside">
+                <button class="oe_stat_button"
+                        type="object"
+                        icon="fa-external-link"
+                        string="Probation"
+                        name="action_get_employee_probation"
+                        groups="emp_prob_extended.group_employee_probation_user"
+                        invisible="employee_probation_count == 0">
+                    <field name="employee_probation_count" widget="statinfo" string="Probation"/>
+                </button>
+            </div>
+            <xpath expr="//field[@name='parent_id']" position="after">
+                <field name="hr_id"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="employee_probation_tree_view" model="ir.ui.view">
+        <field name="name">employee.probation.view.list</field>
+        <field name="model">employee.probation</field>
+        <field name="arch" type="xml">
+            <list string="Employee Probation">
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="start_date"/>
+                <field name="end_date"/>
+                <field name="state" widget='badge' decoration-info="state in ('in_progress','review')"
+                       decoration-success="state =='confirm'" decoration-danger="state =='cancel'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="employee_probation_form_view" model="ir.ui.view">
+        <field name="name">employee.probation.view.form</field>
+        <field name="model">employee.probation</field>
+        <field name="arch" type="xml">
+            <form string="Employee Probation">
+                <header>
+                    <button name="employee_probation_review"
+                            string="Review"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state in ['in_progress','review','confirm','cancel']"
+                            groups="emp_prob_extended.group_employee_probation_user"/>
+                    <button name="employee_probation_confirm"
+                            string="Confirm"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state in ['draft','in_progress','confirm','cancel']"
+                            groups="emp_prob_extended.group_employee_probation_manager,hr_extended.group_hr_payslip_admin"/>
+                    <button name="action_send_probation_confirmation_mail"
+                            string="Send Mail"
+                            type="object"
+                            class="oe_highlight"
+                            invisible="state not in ['confirm']"
+                            groups="emp_prob_extended.group_employee_probation_manager,emp_prob_extended.group_employee_probation_supervisor"/>
+                    <button name="employee_probation_cancel"
+                            string="Cancel"
+                            type="object"
+                            invisible="state in ['draft','cancel']"
+                            groups="emp_prob_extended.group_employee_probation_manager,emp_prob_extended.group_employee_probation_supervisor"/>
+                    
+                    <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,review,confirm"
+                           nolabel="1"/>
+                </header>
+                <sheet>
+                    <field name="review_form_count" invisible="1"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object" string="Employee"
+                                name="action_open_employee" icon="fa-user" invisible="state not in ('confirm')">
+                        </button>
+
+                        <button name="action_open_review_forms"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-file-text-o"
+                                invisible="review_form_count == 0"
+                                groups="emp_prob_extended.group_employee_probation_manager,emp_prob_extended.group_employee_probation_supervisor">
+                            <field name="review_form_count" widget="statinfo" string="Review Form"/>
+                        </button>
+                    </div>
+
+                    <widget name="web_ribbon" title="Confirmed" bg-color="text-bg-success"
+                            invisible="state not in ['confirm']"/>
+
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Name..."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="EMPLOYEE">
+                            <field name="company_id" invisible="1"/>
+                            <field name="employee_id"
+                                   options="{'no_open':True,'no_quick_create':True,'no_create': True,}"
+                                   readonly="state not in ['draft']" required="True"/>
+                            <field name="email" readonly="state not in ['draft']"/>
+                            <field name="department_id"
+                                   options="{'no_open':True,'no_quick_create':True,'no_create': True,}"
+                                   readonly="state not in ['draft']"/>
+                            <field name="parent_id" options="{'no_open':True,'no_quick_create':True,'no_create': True,}"
+                                   readonly="state not in ['draft']"/>
+                            <field name="hr_id" options="{'no_open':True,'no_quick_create':True,'no_create': True,}"
+                                   readonly="state not in ['draft']"/>
+                        </group>
+                        <group string="PROBATION">
+                            <field name="based_on" readonly="state not in ['draft']"/>
+                            <field name="number_of_days" invisible="based_on not in ('days')"
+                                   readonly="state not in ['draft']"/>
+                            <field name="number_of_months" invisible="based_on not in ('months')"
+                                   readonly="state not in ['draft']"/>
+                            <field name="start_date" readonly="state not in ['draft']"/>
+                            <field name="end_date" readonly="state not in ['draft']"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_emp_probation_search" model="ir.ui.view">
+        <field name="name">Employee Probation - Search</field>
+        <field name="model">employee.probation</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="In Progress" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter string="Reviewed" name="reviewed" domain="[('state', '=', 'review')]"/>
+                <filter string="Confirmed" name="confirmed" domain="[('state', '=', 'confirm')]"/>
+                <filter string="Canceled" name="canceled" domain="[('state', '=', 'cancel')]"/>
+
+                <group expand="0" string="Group By">
+                    <filter string="Employee" name="group_by_employee" context="{'group_by':'employee_id'}"/>
+                    <filter string="Department" name="group_by_department" context="{'group_by':'department_id'}"/>
+                    <filter string="Based on Months/Days" name="group_by_based_on" context="{'group_by':'based_on'}"/>
+                    <filter string="Status" name="group_by_state" context="{'group_by':'state'}"/>
+                </group>
+
+                <field name="employee_id" string="Employee Name"/>
+                <field name="department_id" string="Department"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="employee_probation_action" model="ir.actions.act_window">
+        <field name="name">Employee Probation</field>
+        <field name="res_model">employee.probation</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="emp_prob_extended.view_emp_probation_search"/>
+        <field name="context">{'search_default_draft': True}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No Employee Probation!
+            </p>
+        </field>
+    </record>
+    <menuitem
+            id="probation_menu_root"
+            name="Probation"
+            parent="hr.menu_hr_employee_payroll"
+            sequence="90"
+    />
+    <menuitem id="probation_confirmation_menu"
+              parent="probation_menu_root"
+              name="Employee Probation"
+              action="employee_probation_action"
+              groups="emp_prob_extended.group_employee_probation_user"
+              sequence="7"
+    />
+</odoo>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="batch_jv_code" model="ir.sequence">
+        <field name="name">Batch JV Code</field>
+        <field name="code">account.batch.jv</field>
+        <field name="prefix">BATCH/</field>
+        <field name="padding">3</field>
+    </record>
+</odoo>

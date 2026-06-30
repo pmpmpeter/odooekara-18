@@ -1,0 +1,77 @@
+<odoo>
+    <data>
+        <!-- not using -->
+        <record id="employee_grievance_template_to_manager" model="mail.template">
+            <field name="name">Employee Grievance</field>
+            <field name="model_id" ref="model_grievance_management"/>
+            <field name="subject">Grievance Management for Employee Request: {{ object.name }} - {{object.subject}}
+            </field>
+            <!--            <field name="email_from">{{ object.employee_id.work_email }}</field>-->
+            <field name="email_to">{{ object.manager_id.work_email }}</field>
+<!--            <field name="partner_to">{{ object.manager_id.id }}</field>-->
+            <field name="description">Add Description</field>
+            <field name="body_html" type="html">
+                <div>
+                    <p>
+                        Hi<t t-out="object.manager_id.name"/>,<br/>Employee Request
+                        <b>
+                            <t t-out="object.name"/>
+                        </b>
+                        subject
+                        <b>
+                            <t t-out="object.subject"/>
+                        </b>
+                        has submitted by
+                        <t t-out="object.employee_id.name"/>
+                        <br/>
+                        <br/>
+                        Thank you
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="employee_grievance_template_reply_with_resolution" model="mail.template">
+            <field name="name">Employee Grievance With Resolution</field>
+            <field name="model_id" ref="model_grievance_management"/>
+            <field name="subject">Reply for Grievance Management for Employee Request: {{ object.name }} - {{ object.subject }}
+            </field>
+            <!--            <field name="email_from">{{ object.manager_id.work_email }}</field>-->
+            <field name="email_to">{{ object.employee_id.work_email }}</field>
+            <field name="description">Add Description</field>
+            <field name="body_html" type="html">
+                <div>
+                    <p>
+                        Hi <t t-out="object.employee_id.name"/>,<br/>Your Request
+                        <b>
+                            <t t-out="object.name"/>
+                        </b>
+                        has
+                        resolved.<br/>
+                        <t t-if="object.management_representative_id and object.management_resolution">
+                            Resolved by:
+                            <t t-out="object.management_representative_id.name"/>
+                            <br/>
+                            Management Resolution:
+                            <t t-out="object.management_resolution"/>
+                            <br/>
+                        </t>
+                        <t t-else="">
+                            Resolved by:
+                            <t t-out="object.manager_id.name"/>
+                            <br/>
+                            Timeline:
+                            <t t-out="object.date_timeline"/>
+                            <br/>
+                            Resolution:
+                            <t t-out="object.resolution"/>
+                            <br/>
+                        </t>
+                        <br/>
+                        Thank you
+                    </p>
+                </div>
+            </field>
+        </record>
+    </data>
+</odoo>

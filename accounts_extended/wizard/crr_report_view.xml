@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_account_q_report_wizard" model="ir.ui.view">
+        <field name="name">account.quarterly.report.wizard.form</field>
+        <field name="model">account.quarterly.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Generate Quarterly COA Report">
+                <group>
+                    <!-- <field name="account_ids" widget="many2many_tags" options="{'no_create': True}"/> -->
+                    <group>
+                        <field name="start_date" invisible='report_file'/>
+                        <field name="end_date" invisible='report_file'/>
+                    </group>
+                    <field name="file_name" invisible="1"/>
+                    <field name="report_file" readonly="1" widget="binary" filename="file_name" invisible='not report_file'/>
+                </group>
+                <footer>
+                    <button name="action_generate_report" string="Generate Report" type="object" class="btn-primary"/>
+                    <button string="Close" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_account_q_report_wizard" model="ir.actions.act_window">
+        <field name="name">Generate Quarterly COA Report</field>
+        <field name="res_model">account.quarterly.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+<!-- 
+    <menuitem id="menu_account_q_report_wizard"
+              name="Generate CRR Report"
+              sequence="100"
+              parent="account.menu_finance_reports"
+              groups="account.group_account_manager,account.group_account_user"
+              action="action_account_q_report_wizard"/> -->
+</odoo>

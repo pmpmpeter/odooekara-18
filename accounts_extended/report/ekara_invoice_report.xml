@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="ekara_invoice_template_paperformat" model="report.paperformat">
+    <field name="name">Invoice PaperFormat</field>
+     <field name="default" eval="True"/>
+    <field name="format">A4</field>
+    <field name="page_height">0</field>
+    <field name="page_width">0</field>
+    <field name="orientation">Portrait</field>
+    <field name="margin_top">6</field>
+    <field name="margin_bottom">6</field>
+    <field name="margin_left">5</field>
+    <field name="margin_right">5</field>
+    <field name="header_line" eval="False"/>
+    <field name="header_spacing">20</field>
+    <field name="dpi">90</field>
+</record>
+
+    <record id="print_invoice_template1" model="ir.actions.report">
+        <field name="name">Invoice</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">accounts_extended.template_print_invoice</field>
+        <field name="report_file">accounts_extended.template_print_invoice</field>
+        <field name="paperformat_id" ref="accounts_extended.ekara_invoice_template_paperformat"/>
+    </record>
+</odoo>

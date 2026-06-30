@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="report_custom_payslip_template">
+        <t t-name="hr_payroll_extended.report_custom_payslip_template">
+            <t t-call="web.basic_layout">
+                <t t-foreach="docs" t-as="o">
+                    <div class="page">
+
+                        <!-- Company Info and Logo -->
+                        <table width="100%"
+                               style="border: 1px solid black; border-collapse: collapse; margin-bottom: 10px;">
+                            <tr>
+                                <!-- Left: Company Address -->
+                                <td style="width: 70%; padding: 5px; vertical-align: top; line-height: 1.5;">
+                                    <div style="font-weight:bold; font-size:14px;">
+                                        <t t-esc="o.company_id.name"/>
+                                    </div>
+                                    <div style="font-weight:bold; font-style:italic; font-size:13px; margin-top:3px;">
+                                        Registered Office:
+                                    </div>
+                                    <div style="font-size:13px;">
+                                        <t t-if="o.company_id.street">
+                                            <t t-esc="o.company_id.street"/>
+                                            <br/>
+                                        </t>
+                                        <t t-if="o.company_id.street2">
+                                            <t t-esc="o.company_id.street2"/>
+                                            <br/>
+                                        </t>
+                                        <t t-if="o.company_id.city or o.company_id.zip">
+                                            <t t-esc="o.company_id.city"/>
+                                            <t t-if="o.company_id.zip">-
+                                                <t t-esc="o.company_id.zip"/>
+                                            </t>
+                                            <br/>
+                                        </t>
+                                        <t t-if="o.company_id.state_id">
+                                            <t t-esc="o.company_id.state_id.name"/>
+                                            <br/>
+                                        </t>
+                                        <t t-if="o.company_id.country_id">
+                                            <t t-esc="o.company_id.country_id.name"/>
+                                        </t>
+                                    </div>
+                                </td>
+
+                                <!-- Right: Logo -->
+                                <td style="width: 30%; padding: 10px; text-align: center; vertical-align: middle;">
+                                    <img t-if="o.company_id.logo"
+                                         t-att-src="image_data_uri(o.company_id.logo)"
+                                         style="max-width: 180px; max-height: 80px;"
+                                         alt="Logo"/>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Title -->
+                        <div class="text-center" style="margin-top: 10px;">
+                                <h4>SALARY SLIP FOR THE MONTH OF
+                                    <t t-esc="o.date_from.strftime('%B').upper()"/>
+                                    <t t-esc="o.date_from.strftime('%Y').upper()"/>
+                                </h4>
+                        </div>
+
+                        <!-- Employee Details -->
+                        <table class="table table-sm mt-3" width="100%" style="margin-top: 20px;">
+                            <tr>
+                                <td>
+                                    <strong>Employee Number:</strong>
+                                </td>
+                                <td>
+                                    <t t-esc="o.employee_id.new_emp_no or ''"/>
+                                </td>
+                                <td>
+                                    <strong>Name:</strong>
+                                </td>
+                                <td>
+                                    <t t-esc="o.employee_id.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Designation:</strong>
+                                </td>
+                                <td>
+                                    <t t-esc="o.employee_id.job_id.name or ''"/>
+                                </td>
+                                <td>
+                                    <strong>PAN:</strong>
+                                </td>
+                                <td>
+                                    <t t-if="o.employee_id.user_id.partner_id">
+                                        <t t-esc="o.employee_id.user_id.partner_id.l10n_in_pan"/>
+                                    </t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>PF Account No.:</strong>
+                                </td>
+                                <td>
+                                    <t t-esc="o.employee_id.pf_no or ''"/>
+                                </td>
+                                <td>
+                                    <strong>UAN:</strong>
+                                </td>
+                                <td>
+                                    <t t-esc="o.employee_id.uan_no or ''"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Date of Joining:</strong>
+                                </td>
+                                <td>
+                                    <t t-esc="o.employee_id.joining_date or ''"/>
+                                </td>
+                                <td>
+                                    <strong>Date of Severance:</strong>
+                                </td>
+                                <td>
+                                    <t t-esc="o.employee_id.last_working_day or ''"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <strong>Paid Days this Month:</strong>
+                                </td>
+                                <td colspan="3">
+                                    <t t-set="vals" t-value="o.compute_ytd_value(o.employee_id)"/>
+                                    <t t-set="days" t-value="vals['days_in_month']"/>
+                                    <t t-esc="days"/>
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Earnings & Deductions -->
+                        <table class="table table-sm" width="100%" border="1"
+                               style="margin-top: 20px; border-collapse: collapse;">
+                            <thead>
+                                <tr>
+                                    <th colspan="3" class="text-center">Earnings</th>
+                                    <th colspan="3" class="text-center">Deductions</th>
+                                </tr>
+                                <tr>
+                                    <th>Description</th>
+                                    <th>FTM</th>
+                                    <th>YTD</th>
+                                    <th>Description</th>
+                                    <th>FTM</th>
+                                    <th>YTD</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="line_ids" t-value="o.sudo().line_ids.sudo() or []"/>
+                                <t t-set="earnings" t-value="[l for l in line_ids if l.category_id.code != 'DED' and l.salary_rule_id.appears_on_payroll_report]"/>
+                                <t t-set="deductions" t-value="[l for l in line_ids if l.category_id.code == 'DED' and l.salary_rule_id.appears_on_payroll_report]"/>
+
+                                <t t-set="max_lines" t-value="max(len(earnings), len(deductions))"/>
+
+                                <t t-foreach="range(max_lines)" t-as="i">
+                                    <tr>
+                                        <!-- Earnings -->
+                                        <td style="text-align: left;">
+                                            <t t-if="i &lt; len(earnings)">
+                                                <t t-esc="earnings[i].name"/>
+                                            </t>
+                                        </td>
+                                        <td style="text-align: right;">
+                                            <t t-if="i &lt; len(earnings)">
+                                                <span>
+                                                    <t t-esc="earnings[i].total or 0.0" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                                </span>
+                                            </t>
+                                        </td>
+                                        <t t-set="vals" t-value="o.compute_ytd_value(o.employee_id)"/>
+                                        <t t-set="ytd" t-value="vals['month_total']"/>
+                                        <t t-set="income_total" t-value="vals['income_total']"/>
+                                        <t t-set="ytd_april" t-value="vals['ytd_april']"/>
+                                        <t t-set="recoveries_of_advance" t-value="vals['recoveries_of_advance']"/>
+                                        <t t-set="recoveries" t-value="vals['recoveries']"/>
+                                        <td style="text-align: right;">
+                                            <t t-if="i &lt; len(earnings)">
+                                            <t t-if="earnings[i].code == 'Other_earnings_through_payroll'">
+                                                <span>
+                                                    <t t-esc="ytd_april" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                                </span>
+                                            </t>
+                                                <t t-else="">
+                                                    <t t-set="year_total" t-value="(earnings[i].total or 0.0) * ytd"/>
+                                                    <span>
+                                                        <t t-esc="year_total"
+                                                           t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                                    </span>
+                                                </t>
+                                            </t>
+                                        </td>
+
+                                        <!-- Deductions -->
+                                        <td style="text-align: left;">
+                                            <t t-if="i &lt; len(deductions)">
+                                                <t t-esc="deductions[i].name"/>
+                                            </t>
+                                        </td>
+                                        <td style="text-align: right;">
+                                            <t t-if="i &lt; len(deductions)">
+                                                <span>
+                                                    <t t-esc="deductions[i].total or 0.0"
+                                                       t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                                </span>
+                                            </t>
+                                        </td>
+                                        <td style="text-align: right;">
+                                            <t t-if="i &lt; len(deductions)">
+                                            <!--                                                <t t-set="year_total" t-value="(deductions[i].total or 0.0) * ytd"/>-->
+                                            <!--                                                <span>-->
+                                            <!--                                                    <t t-esc="year_total" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>-->
+                                            <!--                                                </span>-->
+                                            <!--                                            </t>-->
+                                            <t t-if="deductions[i].code == 'INC-T'">
+                                                <span>
+                                                    <t t-esc="income_total"
+                                                       t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                                </span>
+                                            </t>
+                                            <t t-elif="deductions[i].code == 'Other_recoveries'">
+                                                <span>
+                                                    <t t-esc="recoveries"
+                                                       t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                                </span>
+                                            </t>
+                                            <t t-elif="deductions[i].code == 'Recovery_of_advances'">
+                                                <span>
+                                                    <t t-esc="recoveries_of_advance"
+                                                       t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                                </span>
+                                            </t>
+                                             <t t-elif="deductions[i].code == 'LOP'">
+                                                  <t t-set="lop" t-value="(0.0)"/>
+                                                <span>
+                                                    <t t-esc="lop" t-options="{&quot;widget&quot;: &quot;monetary&quot;, &quot;display_currency&quot;: o.company_id.currency_id}"/>
+                                                </span>
+                                            </t>
+                                            <t t-else="">
+                                                <t t-set="year_total" t-value="(deductions[i].total or 0.0) * ytd"/>
+                                                <span>
+                                                    <t t-esc="year_total"
+                                                       t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                                </span>
+                                            </t>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </t>
+
+                                <!-- Totals -->
+                                <tr>
+                                    <td style="text-align: center;">
+                                        <strong>Gross Earnings</strong>
+                                    </td>
+                                    <td style="text-align: right;">
+                                        <span>
+                                            <t t-esc="sum(l.total for l in earnings)" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                        </span>
+                                    </td>
+                                    <td style="text-align: right;">
+                                        <span>
+                                            <t t-esc="sum(l.total for l in earnings) * ytd" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                        </span>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <strong>Gross Deductions</strong>
+                                    </td>
+                                    <td style="text-align: right;">
+                                        <span>
+                                            <t t-esc="sum(l.total for l in deductions)" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                        </span>
+                                    </td>
+                                    <td style="text-align: right;">
+                                        <span>
+                                            <t t-esc="sum(l.total for l in deductions) * ytd" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                        </span>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td colspan="6">
+                                        <strong>Net amount - bank transfer</strong>:
+                                        <span>
+                                            <t t-esc="sum(l.total for l in earnings) - sum(l.total for l in deductions)" t-options='{"widget": "monetary", "display_currency": o.company_id.currency_id}'/>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

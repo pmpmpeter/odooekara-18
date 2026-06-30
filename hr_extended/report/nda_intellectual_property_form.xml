@@ -1,0 +1,538 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="paperformat_nda_intellectual_property_form_pdf_A4" model="report.paperformat">
+        <field name="name">nda_intellectual_property_form</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">10</field>
+        <field name="margin_bottom">20</field>
+        <field name="margin_left">20</field>
+        <field name="margin_right">20</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">35</field>
+        <field name="dpi">90</field>
+    </record>
+    <record id="report_nda_intellectual_property_form_template" model="ir.actions.report">
+        <field name="name">NDA Intellectual Property Form</field>
+        <field name="model">hr.employee</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_extended.print_report_nda_intellectual_property_form</field>
+        <field name="report_file">hr_extended.print_report_nda_intellectual_property_form</field>
+        <field name="paperformat_id" ref="hr_extended.paperformat_nda_intellectual_property_form_pdf_A4"/>
+        <field name="print_report_name">'NDA (Intellectual Property)'</field>
+        <!--        <field name="binding_model_id" ref="hr_extended.model_hr_employee"/>-->
+        <field name="binding_model_id" eval="False"/>
+        <field name="binding_type">report</field>
+    </record>
+
+
+    <template id="print_report_nda_intellectual_property_form">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="hr_extended.print_report_nda_intellectual_property_report" t-lang="o.user_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <template id="print_report_nda_intellectual_property_report">
+        <t t-call="web.external_layout">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="doc" t-value="doc.with_context(lang=lang)"/>
+                <t t-set="company" t-value="doc.company_id"/>
+                <div style="font-size:17px; ">
+                    <p style="line-height:12px;">
+                        <h6 style="text-decoration:underline;">Confidentiality and Intellectual Property Assignment
+                            Agreement
+                        </h6>
+                        <br/>
+                        <br/>
+                        This Confidentiality and Intellectual Property Assignment Agreement (the <b>“Agreement”</b>) is
+                        executed on , 2022 (<b>“Effective Date”</b>)
+                        <br/>
+                        <b>BY AND BETWEEN</b>
+                        <br/>
+                        <br/>
+                        <b>Solis Health Private Limited,</b>
+                        a company incorporated under the Companies Act, 1956
+                        having its registered office at No: 58, 15t h crossroad, J P Nagar, 2nd Phase , Bengaluru,
+                        Karnataka 560078 (hereinafter referred to as the “<b>Company</b>”, which expression shall,
+                        unless
+                        it be repugnant to the context or meaning thereof, be deemed to mean and include its successors
+                        and assigns) of the
+                        <b>FIRST PART;</b>
+                        <br/>
+                        <br/>
+                        AND
+                        <br/>
+                        <br/>
+                        Mr./Ms.  <sapn style="padding:10em;"></sapn>, son/daugter of
+                        <sapn style="padding:10em;"></sapn>
+                        <br/>residing at
+                        <sapn style="padding:10em;"></sapn>
+                        <sapn style="padding:10em;"></sapn>
+                        <br/>and associated with <sapn style="padding:20em;"></sapn>(hereinafte
+                        <br/>referred as the <b>“Employee</b>”) of the
+                        <b>SECOND PART.</b>
+                        <br/>
+                        <br/>
+
+                        The Company and the Employee will individually be referred as a <b>“Party”</b>and collectively
+                        as the
+                        <b>“Parties”.</b>
+                        <br/>
+                        <ol type="A">
+                            <b>WHEREAS</b>
+                            <li>The Employee has been offered employment by the Company and the Employee has
+                                accepted the offer of the Company;
+                            </li>
+                            <li>The Employee has entered into an employment agreement with the Company;</li>
+                            <li>By virtue of employment with the Company, the Employee will create int ellectual
+                                property and have access to information and technical data which is confidential in
+                                nature.
+                            </li>
+                        </ol>
+                        <br/>
+                        <br/>
+                        Now therefore, in consideration of the employment being provided and the other covenants and
+                        promises contained herein, the Parties hereto more fully agree as under:
+                        <br/>
+                        <br/>
+
+                        <ol type="1">
+                            <li>
+                                <u>
+                                    <b>COMPANY CONFIDENTIAL INFORMATION</b>
+                                </u>
+                                <br/>
+                                <br/>
+                                <ol type="a">
+                                    <li>During the course of the Employee’s employment with the Company, it is likely
+                                        that the
+                                        Employee will come into possession of or become familiar (whether disclosed
+                                        orally,
+                                        visually, in writing or howsoever) with the confidential or proprietary
+                                        technical, financial, marketing, distribution, or other technical or business
+                                        information or
+                                        trade secrets of the Company, including without limitation, policies, business
+                                        plans, go to
+                                        market strategies, employee details, contractor information, client information
+                                        and data,
+                                        cost data, pricing information and other commercial terms, terms and conditions
+                                        of
+                                        contracts and transactions between the clients/vendors and the Company, business
+                                        plans
+                                        concepts, techniques, algorithms, processes, methods, systems, designs, computer
+                                        programs, formulae, development or experimental work, and work in progress (the
+                                        “<b>Confidential Information”</b>). The Employee understands that it has access
+                                        to such
+                                        information only by virtue of his/her employment with the Company and has a
+                                        continuing
+                                        obligation to protect all such information from disclosure during and post the
+                                        termination
+                                        of his/her employment with the Company.
+                                    </li>
+                                    <br/>
+                                    <br/>
+                                    <li>The Employee hereby agrees and undertakes that the Employee shall maintain
+                                        strict
+                                        confidentiality of the Confidential Information and will not disclose or use the
+                                        any
+                                        Confidential Information except for the benefit of the Company and to the extent
+                                        necessary to perform his/ her obligations to the Company, in the course of the
+                                        Employee’s
+                                        employment. The Employee undertakes that he/she shall not disclose the
+                                        Confidential
+                                        Information to any person at any time during or after his/ her employment with
+                                        the
+                                        Company without the prior written approval of the Company. The Employee further
+                                        agrees that he/ she shall not claim or represent that he/ she has any interest
+                                        by way of
+                                        ownership, assignment or otherwise in the same. The Employee further undertakes
+                                        not to
+                                        make copies of such Confidential Information except as authorised by the
+                                        Company.
+                                    </li>
+                                    <br/>
+                                    <br/>
+                                    <li>The Employee shall, upon request or upon the termination of his/ her employment
+                                        relationship with the Company howsoever occurring, promptly return to the
+                                        Company all
+                                        materials, writings, equipment, models, mechanisms, and the like obtained from
+                                        or
+                                        through the Company, including, but not limited to, all Confidential
+                                        Information, all of
+                                        which the Employee acknowledge is the sole and exclusive property of the
+                                        Company.
+                                    </li>
+                                    <br/>
+                                    <br/>
+                                    <li>During employment with the Company, the Employee shall not use improperly or
+                                        disclose
+                                        any confidential or proprietary information or trade secrets of his/her former
+                                        employers,
+                                        principals, partners, co-ventures, clients, customers or suppliers of the
+                                        vendors or
+                                        customers of such persons or entities or their vendor or customers and the
+                                        Employee shall
+                                        not bring onto the premises of the Company or introduce in the Company systems,
+                                        any
+                                        unpublished document or any property belonging to any such persons or entities
+                                        or their
+                                        vendors or customers unless such persons or entities have given their consent.
+                                        The
+                                        Employee undertakes that the Employee shall not violate any non-disclosure or
+                                        proprietary rights agreement he/ she may have signed with any such person or
+                                        entity.
+                                    </li>
+                                    <br/>
+                                    <br/>
+
+                                </ol>
+                            </li>
+                            <li>
+                                <u>
+                                    <b>COMPANY INTELLECTUAL PROPERTY</b>
+                                </u>
+                                <br/>
+                                <br/>
+                                <ol type="a">
+                                    <li>The Employee acknowledges that all right, title and interest (including without
+                                        limitation
+                                        any and all patent, copyright, trademarks, moral rights, design rights and other
+                                        proprietary rights), that is now or may be available, in any inventions,
+                                        discoveries,
+                                        concepts, designs, business processes, know-how developments, improvements,
+                                        original
+                                        works of authorship, material, trade secrets, processes, formulae, business and
+                                        product
+                                        names, logos, slogans, industrial models, processes, designs, databases,
+                                        methodologies,
+                                        software, computer programs (including all source codes), technical information,
+                                        manufacturing, engineering and technical drawings, know-how (collectively, the
+                                        “Inventions”) created or conceived by the Employee (either solely or jointly) in
+                                        course
+                                        of the Employee’s employment with the Company shall vest with the Company upon
+                                        creation.
+                                    </li>
+                                    <br/>
+                                    <br/>
+                                    <li>To the extent that any such rights do not vest with the Company automatically as
+                                        per the
+                                        terms above or through operation of law, the Employee hereby irrevocably,
+                                        unconditionally and in perpetuity assigns to the Company all of right, title and
+                                        interest
+                                        (including without limitation any and all patent, copyright, trademarks, moral
+                                        rights,
+                                        design rights, database rights, trade names, service marks and other proprietary
+                                        rights),
+                                        that is now or may be available worldwide, in any and all Inventions, that he/
+                                        she solely
+                                        or jointly may conceive, write, encode, develop, or reduce to practice during
+                                        his/ her
+                                        employment with the Company in consideration of the Company paying the Employee
+                                        his/ her salary which, the Employee acknowledges, is full and sufficient
+                                        compensation for
+                                        such assignment. Further, all records, documents, papers (including copies and
+                                        summaries thereof), and other copyrightable works created, developed or acquired
+                                        by
+                                        the Employee in the course of employment shall, together with all the worldwide
+                                        copyright and design rights in all such works, be and at all times remain the
+                                        absolute
+                                        property of the Company.
+                                    </li>
+                                    <br/>
+                                    <br/>
+                                    <li>Subject to (a) and (b) above, the Parties acknowledge and agree that this
+                                        Agreement
+                                        constitutes a valid, binding and on-going agreement for assignment of rights
+                                        including, as
+                                        applicable, all intellectual property rights in the Inventions in the manner
+                                        prescribed
+                                        under the Trademarks Act 1999, the Patents Act 1970, the Indian Copyright Act
+                                        1957 and
+                                        the Designs Act, 2000 and such other statutes and/or rules that are applicable
+                                        in this
+                                        respect, as may be amended, supplemented, replaced or introduced from time to
+                                        time.
+                                        Should the enactments as referred in the preceding sentence prescribe any other
+                                        action
+                                        to be taken for the assignment of any rights including any intellectual property
+                                        rights in
+                                        the Inventions in favour of the Company to be effective, the Employee shall
+                                        undertake
+                                        and complete all such actions in a timely manner as and when required. The
+                                        Parties
+                                        further agree, that the failure of the Company to exercise any rights over the
+                                        Inventions
+                                        as contemplated herein within a period of one year from the date of the
+                                        assignment as
+                                        referred to under this Clause 2 shall not cause the assignment of any rights, as
+                                        applicable, to lapse and the Parties expressly waive the
+                                        application of Section 19(4) of the Indian Copyright Act, 1957. The Employee
+                                        hereby
+                                        waives any moral rights the Employee has or may have in the Inventions. The
+                                        obligations
+                                        of the Employee under this Clause 2 shall survive the termination of this
+                                        Agreement.
+                                    </li>
+                                    <br/>
+                                    <br/>
+                                    <li>The Employee undertakes that he/ she shall at all times during employment with
+                                        the
+                                        Company and thereafter fully cooperate with Company to register, perfect and/or
+                                        enforce
+                                        intellectual property rights that may derive as a result of the work performed
+                                        by him/
+                                        her as an employee of the Company. This shall include executing, acknowledging,
+                                        and
+                                        delivering to the Company all documents or papers that may be requested by the
+                                        Company to enable the Company or customers of the Company to create, establish,
+                                        publish or protect said intellectual property rights.
+                                    </li>
+                                    <br/>
+                                    <br/>
+                                    <li>The Employee declares that as of today, the Employee is not a member of the
+                                        Board of
+                                        Directors, a partner or employee, nor does the Employee hold any other office,
+                                        in any
+                                        other company, body corporate, partnership or other entity, whether organized
+                                        for profit
+                                        or not. In the event that he/ she is permitted to hold any office, whether for
+                                        profit or
+                                        otherwise in such organization, the Employee shall immediately inform the
+                                        Company and
+                                        the Employee undertakes to maintain the confidentiality of all information
+                                        pertaining to
+                                        the Company, its intellectual property including methodologies, processes and
+                                        know
+                                        how, and its business activities and agree to be bound by any other obligations
+                                        owed to
+                                        the Company.
+                                    </li>
+                                    <br/>
+                                    <br/>
+                                    <li>The Employee hereby represents and warrants that the Employee shall not use or
+                                        integrate any third-party materials or data that are not validly licensed to the
+                                        Company
+                                        into the Inventions or any part thereof, unless previously authorized by the
+                                        Company.
+                                        The Employee represents and warrants that the Employee has not violated and will
+                                        not
+                                        violate the intellectual property rights of any third party, and covenants that
+                                        the
+                                        Employee shall not violate the intellectual property rights of any third party
+                                        in the course
+                                        of his/ her service with the Company. In the event any constituent of
+                                        intellectual property
+                                        of a third party is integrated in the Inventions or any part thereof created by
+                                        the
+                                        Employee, the Employee agrees to procure for the Company, at his/ her cost and
+                                        expense,
+                                        a non-exclusive, irrevocable, fully transferable, perpetual, fully paid-up
+                                        license to use, and
+                                        modify, such third party intellectual property integrated. The Company shall
+                                        cooperate
+                                        with the Employee in executing all such assignments, oaths, declarations, and
+                                        other
+                                        documents to effect the foregoing.
+                                    </li>
+                                    <br/>
+                                    <br/>
+                                </ol>
+                            </li>
+                            <li>
+                                <u>
+                                    <b>NOTIFICATIONS TO THIRD PARTIES</b>
+                                </u>
+                                <br/>
+                                <br/>The Company may notify any future or prospective employer or third party of the
+                                existence of this agreement and the details of the Employee’s obligations hereunder.
+                            </li>
+                            <br/>
+                            <br/>
+                            <li>
+                                <u>
+                                    <b>REMEDIES</b>
+                                </u>
+                                <br/>The Employee acknowledges and agrees that breach or anticipated breach of this
+                                Agreement by him/her may cause the Company irreparable damage and harm and
+                                therefore, without prejudice to any other rights or remedies that the Company may have,
+                                the
+                                Employee agrees that the Company shall be entitled to seek extraordinary relief in
+                                court,
+                                including without limitation, specific performance, preliminary or permanent injunctions
+                                or
+                                other appropriate remedy without the necessity of posting a bond or other security.
+                            </li>
+                            <br/>
+                            <br/>
+                            <li>
+                                <u>MISCELLANEOUS TERMS</u>
+                                <br/>
+                                <br/>
+                                <ol type="a">
+                                    <li>
+                                        <u>
+                                            <b>Governing Law and Jurisdiction :</b>
+                                        </u>
+                                        This Agreement shall be governed by the laws of India.
+                                        The competent courts at Bangalore, India shall have exclusive jurisdiction over
+                                        all
+                                        disputes arising from or relating to this Agreement and the Parties waive any
+                                        jurisdictional or venue defenses otherwise available provided however that the
+                                        Company shall be entitled to seek injunctive relief under this Agreement in any
+                                        court of
+                                        competent jurisdiction.
+                                    </li>
+                                    <br/>
+                                    <br/>
+                                    <li>
+                                        <u>
+                                            <b>Waiver:</b>
+                                        </u>
+                                        No waiver by either Party of any default shall be deemed as a waiver of any
+                                        prior or subsequent default of the same or other provisions of thisAgreement.
+                                    </li>
+                                    <br/>
+                                    <br/>
+                                    <li>
+                                        <u>
+                                            <b>Severability:</b>
+                                        </u>
+                                        If any provision hereof is held invalid or unenforceable by a court of
+                                        competent jurisdiction, such invalidity shall not affect the validity or oper
+                                        ation of any
+                                        other provision, and such invalid provision shall be deemed to be severed from
+                                        the
+                                        Agreement.
+                                    </li>
+                                    <br/>
+                                    <br/>
+                                    <li>
+                                        <u>
+                                            <b>Assignment:</b>
+                                        </u>
+                                        This Agreement and the rights and obligations thereunder are personal
+                                        with respect to the Employee and may not be assigned by any act of his/ her or
+                                        by
+                                        operation of law. The Company shall, however, have the absolute, unfettered
+                                        right to
+                                        assign this Agreement to a successor in interest to the Company or to the
+                                        purchaser of
+                                        any of the assets of the Company.
+                                    </li>
+                                    <br/>
+                                    <br/>
+                                    <li>
+                                        <u>
+                                            <b>Legal costs:</b>
+                                        </u>
+                                        The Employee agrees that the Company may initiate appropriate legal action
+                                        against him/ her for the breach of any of the terms of this Agreement, and
+                                        recover the
+                                        costs of such legal action, including all damages and lawyers’ fees. The Company
+                                        may also, at its discretion, terminate the Employee’s employment with the
+                                        Company.
+                                    </li>
+                                    <br/>
+                                    <br/>
+                                    <li>
+                                        <u>
+                                            <b>Entire Agreement:</b>
+                                        </u>
+                                        This Agreement, along with the appointment letter executed with the
+                                        Company, constitutes the entire Agreement with regard to the subject matter of
+                                        this
+                                        Agreement, and supersedes all other previous agreements. It can only be modified
+                                        by an
+                                        agreement in writing and signed by the Parties hereto. This Agreement shall be
+                                        binding
+                                        on and shall inure to the benefit of the Parties hereto, and their heirs,
+                                        administrators,
+                                        successors, and assigns. For the avoidance of doubt it is hereby clarified that
+                                        the
+                                        termination of the employment agreement shall not mean a termination of this
+                                        Agreement. This Agreement does not provide any employment rights to Employee,
+                                        all
+                                        employment related terms shall be solely as per the Appointment Letter execut ed
+                                        with
+                                        the Company.
+                                    </li>
+                                    <br/>
+                                    <br/>
+                                    <li>
+                                        <u>
+                                            <b>Acknowledgement of Rights and duties:</b>
+                                        </u>
+                                        The Employee hereby certifies and acknowledge
+                                        that he/ she has carefully read all of the provisions of this Agreement and
+                                        understands
+                                        and will fully and faithfully comply with such provisions.
+                                    </li>
+                                    <br/>
+                                    <br/>
+                                    <li>
+                                        <u>
+                                            <b>No conflicts:</b>
+                                        </u>
+                                        The Employee represent and covenant that performance of this Agreement
+                                        does not and will not breach any agreement he/ she has entered into or will
+                                        enter into
+                                        with any third party, including without limitation, any agreement to keep in
+                                        confidenc e
+                                        proprietary or confidential information acquired by him/ her in confidence or in
+                                        trust
+                                        prior to his/her employment with the Company. The Employee agrees not to enter
+                                        into
+                                        any writtenor oral agreement that conflicts withthe provisions of this Agreement
+                                    </li>
+                                    <br/>
+                                    <br/>
+
+                                </ol>
+                            </li>
+                        </ol>
+                        <br/>
+                        <br/>
+                        The Parties have entered into and executed this Agreement the day and year first above
+                        written, by the hand of then duly authorized representative.
+                        <br/>
+                        <br/>
+                        <table style="width:100%; border-collapse: collapse;  font-size: 20px; ">
+                            <tr>
+                                <th style="text-align: center; width: 50%;height: 50px;">Solis Health Private Limited
+                                </th>
+                                <th style="text-align: center; width: 50%;height: 50px;">Employee</th>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left; width: 50%;height: 50px;">Signature:</td>
+                                <td style="text-align: left; width: 50%;height: 50px;">Signature:</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left; width: 50%;height: 50px;">Name: Ms, Preeti Jeevan
+                                    Head - HR–
+                                </td>
+                                <td style="text-align: left; width: 50%;height: 50px;">Name:</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left; width: 50%;height: 50px;">Place: Bangalore</td>
+                                <td style="text-align: left; width: 50%;height: 50px;">Place:</td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: left; width: 50%;height: 50px;">Date:</td>
+                                <td style="text-align: left; width: 50%;height: 50px;">Date:</td>
+                            </tr>
+                        </table>
+
+
+                    </p>
+                </div>
+
+
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,109 @@
+<?xml version="1.0" ?>
+<odoo>
+  <record id="contact_creation_mail" model="mail.template">
+        <field name="name">Invitation Mail</field>
+        <field name="model_id" ref="model_contact_creation"/>
+        <field name="email_to">{{object.email}}</field>
+        <field name="subject">Invitation Email for {{object.name}}
+        </field>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Dear <t t-out="object.name or ''"/>,
+                    <br/>
+                    <p>Kindly login using below URL and credentials and update your profile details using Edit Information after login and then upload KYC documents.</p>
+                    <t t-set="website_url" t-value="object.portal_url()"></t>
+                     <p>URL: <a t-att-href='website_url' t-out="website_url or ''"/></p>
+                    <p>Username: <t t-out="object.email or ''"/></p>
+                    <p>Password: <t t-out="object.password or ''"/></p>
+
+                </p>
+            </div>
+        </field>
+        <field name="lang">{{ object.partner_id.lang }}</field>
+        <field name="auto_delete" eval="False"/>
+    </record>
+
+    <record id="supplier_contact_creation_mail" model="mail.template">
+        <field name="name">Supplier - Invitation Mail</field>
+        <field name="model_id" ref="model_contact_creation"/>
+        <field name="email_to">{{object.email}}</field>
+        <field name="subject">Supplier Invitation Email for {{object.name}}</field>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    Dear <t t-out="object.name or ''"/>,
+                    <br/>
+                    <p>Kindly login using below URL and credentials and update your profile details using Edit Information after login and then upload KYC documents.</p>
+                    <t t-set="website_url" t-value="object.portal_url()"></t>
+                     <p>URL: <a t-att-href='website_url' t-out="website_url or ''"/></p>
+                    <p>Username: <t t-out="object.email or ''"/></p>
+                    <p>Password: <t t-out="object.password or ''"/></p>
+
+                </p>
+            </div>
+        </field>
+        <field name="lang">{{ object.partner_id.lang }}</field>
+        <field name="auto_delete" eval="False"/>
+    </record>
+
+    <record id="approved_contact_information_mail" model="mail.template">
+        <field name="name">Contact Approved - Invitation Mail</field>
+        <field name="model_id" ref="model_res_partner"/>
+        <field name="email_to">{{object.email}}</field>
+        <field name="subject">Contact Approved – {{ object.name}}</field>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    <p>Dear <t t-out="object.name or ''"/>,
+                    </p>
+                    <p>Your contact has been approved based on the information you recently updated.</p>
+                    <p>You can now access the portal using the credentials.
+                    </p>
+                </p>
+            </div>
+        </field>
+        <field name="lang">{{ object.lang }}</field>
+        <field name="auto_delete" eval="False"/>
+    </record>
+
+    <record id="contact_review_mail" model="mail.template">
+        <field name="name">Contact Review Invitation</field>
+        <field name="model_id" ref="model_res_partner"/>
+        <field name="subject">Contact Review Invitation - {{object.name}}
+        </field>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    <p>Dear Team,</p>
+                    <br/>
+                    <p>Kindly review datas of contact <t t-out="object.name or ''"/> .</p>
+                    <p>Thank You.</p>
+                </p>
+            </div>
+        </field>
+<!--        <field name="lang">{{ object.partner_id.lang }}</field>-->
+        <field name="auto_delete" eval="False"/>
+    </record>
+    <record id="contact_reviewed_mail" model="mail.template">
+        <field name="name">Contact Reviewed</field>
+        <field name="model_id" ref="model_res_partner"/>
+        <field name="email_to">{{object.email}}</field>
+        <field name="subject">Contact Reviewed - {{object.name}}
+        </field>
+        <field name="body_html" type="html">
+            <div style="margin: 0px; padding: 0px;">
+                <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                    <p>Dear <t t-out="object.name or ''"/>,</p>
+                    <br/>
+                    <p>Your datas has been reviewed by the team.</p>
+                    <p>Thank You.</p>
+                </p>
+            </div>
+        </field>
+<!--        <field name="lang">{{ object.partner_id.lang }}</field>-->
+        <field name="auto_delete" eval="False"/>
+    </record>
+
+</odoo>
+

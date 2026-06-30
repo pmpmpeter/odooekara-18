@@ -1,0 +1,52 @@
+<odoo>
+
+    <!-- Invoice Type List View -->
+    <record id="view_invoice_type_tree" model="ir.ui.view">
+        <field name="name">invoice.type.list</field>
+        <field name="model">invoice.type</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Invoice Type Form View -->
+    <record id="view_invoice_type_form" model="ir.ui.view">
+        <field name="name">invoice.type.form</field>
+        <field name="model">invoice.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                        <group>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action for Invoice Types -->
+    <record id="action_invoice_type" model="ir.actions.act_window">
+        <field name="name">Invoice Types</field>
+        <field name="res_model">invoice.type</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create a new Invoice Type
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu for Invoice Types -->
+
+    
+
+    
+</odoo>

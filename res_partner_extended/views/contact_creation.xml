@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+
+        <record id="view_salesperson_tree" model="ir.ui.view">
+            <field name="name">contact.creation.list</field>
+            <field name="model">contact.creation</field>
+            <field name="arch" type="xml">
+                <list string="Salesperson">
+                    <field name="name"/>
+                    <field name="email"/>
+                    <field name="password"/>
+                    <field name="company_ids" widget="many2many_tags"/>
+                    <field name="default_company_id"/>
+                    <field name="active"/>
+                </list>
+            </field>
+        </record>
+
+
+        <record id="view_salesperson_form" model="ir.ui.view">
+            <field name="name">contact.creation.form</field>
+            <field name="model">contact.creation</field>
+            <field name="arch" type="xml">
+                <form string="Salesperson">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,active,approve,expired"/>
+                        <button name="action_confirm" string="Send Invitation" type="object" class="btn-primary"
+                                invisible="user_created == True"/>
+                        <button name="action_resend_invite" string="Resend Invitation" type="object" class="btn-primary"
+                                invisible="state not in ('expired')"/>
+                        <button name="action_deactivate" string="Deactivate" type="object" class="btn-secondary" invisible="user_created == False or active == False"/>
+                        <button name="action_activate" string="Activate" type="object" class="btn-secondary" invisible="active != False"/>
+                        <button name="action_delete" string="Delete" type="object" class="btn-secondary" invisible="state == 'in_active'" groups="accounts_extended.group_cancel_accounting_entry"/>
+                    </header>
+                    <sheet>
+                        <widget name="web_ribbon" title="Approved" bg_color="text-bg-success" invisible="not is_approved"/>
+                        <group>
+                            <group>
+                                <field name="is_approved" invisible="1"/>
+                                <field name="name" readonly="user_created == True"/>
+                                <field name="email" readonly="user_created == True"/>
+                                <field name="password" readonly="user_created == True"/>
+                                <field name="company_ids" widget="many2many_tags" options="{'no_quick_create':True,'no_create': True,}"/>
+                                <field name="default_company_id" options="{'no_quick_create':True,'no_create': True,}"/>
+                                <field name="active"/>
+                                <field name="user_created" invisible="1"/>
+                                <field name="valid_up_to" readonly="1" force_save="1" invisible="is_approved"/>
+                            </group>
+                            <group>
+                                <field name="is_customer" readonly="user_created == True"/>
+                                <field name="is_vendor" readonly="user_created == True"/>
+                                <field name="msme_status" widget="radio" />
+                                <field name="msme_number" invisible="msme_status ==  'unregistered'" />
+                                <field name="msme_validity" invisible="msme_status ==  'unregistered'"/>
+                                <field name="user_id" 
+                                    options="{'no_quick_create':True,'no_create': True,}" 
+                                    readonly='1' invisible='1'/>
+                                <field name="partner_id" options="{'no_quick_create':True,'no_create': True,}" readonly='1'/>
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_salesperson_form_view" model="ir.actions.act_window">
+            <field name="name">Contacts Creation</field>
+            <field name="res_model">contact.creation</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <menuitem id="menu_salesperson"
+                  name="Contacts Creation"
+                  parent="contacts.menu_contacts"
+                  sequence="10"
+                  action="action_salesperson_form_view"/>
+    </data>
+</odoo>

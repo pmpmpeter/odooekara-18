@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="view_res_company_inherit_company_code" model="ir.ui.view">
+        <field name="name">res.company.inherit</field>
+        <field name="model">res.company</field>
+        <field name="priority">2</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='currency_id']" position="after">
+                <field name="company_code"/>
+                <field name="tcs_limit"/>
+                <field name="tcs_limit_amount" invisible="not tcs_limit"/>
+            </xpath>
+            <xpath expr="//field[@name='color']" position="after">
+                <field name="tds_limit"/>
+                <field name="tds_limit_amount" invisible="not tds_limit"/>
+                <field name="tds_tax_id" string="TDS Tax" 
+                    options="{'no_open': True, 'no_quick_create':True,'no_create': True,}" 
+                    invisible='not tds_limit' required='tds_limit'/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

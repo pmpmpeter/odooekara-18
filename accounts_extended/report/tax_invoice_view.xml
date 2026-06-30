@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="report_rental_tax_invoice_template">
+            <t t-call="web.basic_layout">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="web.html_container">
+                        <div class="page">
+                            <div class="oe_structure"/>
+                            <table style="width:100%; border: 2px solid black; border-collapse: collapse;">
+                                <tr>
+                                    <th colspan="5"
+                                        style="border: 2px solid black; text-align:center; font-size:14px;padding:10px">
+                                        <strong style="font-weight: bolder;">TAX INVOICE
+                                            <span style="font-size: 10px;">(ORIGINAL)</span>
+                                        </strong>
+                                    </th>
+                                </tr>
+
+
+                                <tr>
+                                    <td colspan="5" style="padding: 5px; vertical-align: top;">
+                                        <strong>PAN:</strong>
+                                        <span t-field="o.company_id.vat"/>
+                                        <span style=" margin-left:350px;text-align:center;vertical-align: top;">
+                                            <span style="font-weight:bolder;text_align:center;">Email:</span>
+                                            <span t-field="o.company_id.email"/>
+                                        </span>
+                                        <br/>
+                                        <strong>GST NO:</strong>
+                                        <span t-field="o.l10n_in_gstin"/>
+
+                                        <div style="padding: 6px;text-align: center;font-size: 16px; x">
+                                            <span>
+                                                <strong style="text-transform: uppercase;">
+                                                    <h4 style="font-weight: bolder;" t-esc="o.company_id.name"/>
+                                                </strong>
+                                            </span>
+                                        </div>
+
+                                        <span style="padding: 0; font-weight: bold; margin-left: 200px;text-align:left">
+                                            <t t-esc="o.company_id.street"/>
+                                            <t t-esc="o.company_id.street2"/>
+                                            <t t-esc="o.company_id.city"/>
+                                            <t t-esc="o.company_id.state_id.name"/>
+                                            <t t-esc="o.company_id.zip"/>
+                                        </span>
+
+
+                                    </td>
+                                    <td>
+                                    </td>
+                                </tr>
+
+
+                                <tr>
+                                    <td colspan="1" rowspan="6" style="border: 2px solid black; padding: 3px;">
+                                        <div style=" text-align:center;">
+                                            <span>
+                                                <strong>1</strong>
+                                            </span>
+                                        </div>
+                                    </td>
+
+
+                                    <td rowspan="3" style="border: 2px solid black; padding: 3px; vertical-align: top;">
+                                        <span>
+                                            <strong>
+                                                <u>
+                                                    <t t-esc="o.partner_id.name"/>
+                                                </u>
+                                            </strong>
+                                        </span>
+                                        <br/>
+                                        Address :
+                                        <br/>
+                                        <t t-esc="o.partner_id.name"/>
+                                        <t t-esc="o.partner_id.street"/>
+                                        <br/>
+                                        <t t-esc="o.partner_id.street2"/>
+                                        <br/>
+                                        <t t-esc="o.partner_id.city"/>
+                                        <t t-esc="o.partner_id.state_id.name"/>
+                                        <t t-esc="o.partner_id.zip"/>
+                                        <br/>
+                                        PAN NO :
+                                        <t t-esc="o.partner_id.l10n_in_pan"/>
+                                        <br/>
+                                        GST NO :
+                                        <t t-esc="o.partner_id.vat"/>
+                                        <br/>
+                                    </td>
+
+                                    <td colspan="2" style="border: 2px solid black; padding: 3px; vertical-align: top;">
+                                        <strong>INVOICE NO:</strong>
+
+                                    </td>
+                                    <td style="border: 2px solid black; padding: 3px; text-align:center;">
+                                        <t t-esc="o.name"/>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td colspan="2" style="border: 2px solid black; padding: 3px; vertical-align: top;">
+                                        <strong>DATE :</strong>
+                                    </td>
+                                    <td style="border: 2px solid black; padding: 3px; text-align:center">
+                                        <span t-field="o.invoice_date" t-options='{"format": "dd-MM-yyyy"}'/>
+                                    </td>
+
+                                </tr>
+
+                                <tr>
+                                    <td colspan="3" style="border: 2px solid black; padding: 0px;">
+                                        <div style="text-align: center;">
+                                            <span>
+                                                <strong>AMOUNT</strong>
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td colspan="1" style="border: 2px solid black; padding: 3px; text-align: center;">
+                                        <span>
+                                            <strong>Service period for the month of
+                                                <t t-esc="o.invoice_date and o.invoice_date.strftime('%B %Y').capitalize() or ''"/>
+                                            </strong>
+                                        </span>
+                                    </td>
+                                    <td style="border: 2px solid black; padding: 3px; text-align: center;">
+                                        <span>
+                                            <strong>HSN/SAC</strong>
+                                        </span>
+                                    </td>
+                                    <td rowspan="2" style="border: 2px solid black; padding: 5px;"></td>
+                                    <td rowspan="2" style="border: 2px solid black; padding: 3px;text-align:center">
+                                        <span>
+                                            <strong>********</strong>
+                                        </span>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td colspan="1" rowspan="2" style="padding: 3px;">
+                                        <span>
+                                            <strong>PROPERTY RENT FOR THE MONTH
+                                                <t t-esc="o.invoice_date and o.invoice_date.strftime('%B %Y').upper() or ''"/>
+                                            </strong>
+                                        </span>
+                                    </td>
+
+                                    <td style="border: 2px solid black; padding: 3px; text-align: center;">
+                                        <t t-foreach="o.invoice_line_ids" t-as="line">
+                                            <span>
+                                                <t t-esc="line.product_id.l10n_in_hsn_code"/>
+                                            </span>
+                                        </t>
+                                    </td>
+                                </tr>
+
+                                <tr>
+
+                                    <td colspan="3" style="border: 2px solid black; padding: 4px;">
+                                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                                            <span style="flex: 1; text-align: left;left-padding;6px;">SUBTOTAL:</span>
+                                            <span style="text-align: right;">
+                                                <t t-esc="o.amount_untaxed"
+                                                   t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                                            </span>
+                                        </div>
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <t t-if="o.amount_tax">
+                                        <t t-set="cgst_amount" t-value="o.amount_tax / 2"/>
+                                        <t t-set="sgst_amount" t-value="o.amount_tax / 2"/>
+
+                                    </t>
+
+
+                                    <td colspan="2" rowspan="2"
+                                        style="border: 2px solid black; padding: 3px; vertical-align: top;">
+                                        <span>
+                                            PLACE OF SUPPLY :
+                                            <span t-field="o.l10n_in_state_id"/>
+                                        </span>
+                                    </td>
+                                    <td colspan="1"
+                                        style="border: 2px solid black; padding: 3px; text-align:center;">
+                                        <span>CGST @</span>
+                                    </td>
+
+                                    <td style="border: 2px solid black;padding: 3px;text-align:center;">
+                                        <t t-if="o.invoice_line_ids">
+                                            <t t-foreach="o.invoice_line_ids" t-as="line">
+                                                <t t-if="line.tax_ids">
+                                                    <t t-foreach="line.tax_ids" t-as="tax">
+                                                        <span t-esc="str(int(tax.amount)) + '%'"/>
+                                                    </t>
+                                                </t>
+                                            </t>
+                                        </t>
+                                    </td>
+
+                                    <td colspan="1" style="border: 2px solid black; padding: 3px; text-align:right;">
+                                        <t t-if="cgst_amount">
+                                            <span>
+                                                <t t-esc="cgst_amount" t-options='{"widget": "float", "precision": 2}'/>
+                                            </span>
+                                        </t>
+                                    </td>
+
+
+                                    <tr>
+                                        <td colspan="1"
+                                            style="border: 2px solid black; padding: 3px; text-align: center;">
+                                            <span>SGST @</span>
+                                        </td>
+
+                                        <td style="text-align: right;border: 2px solid black;padding:3px;text-align:center;">
+                                            <t t-if="o.invoice_line_ids">
+                                                <t t-foreach="o.invoice_line_ids" t-as="line">
+                                                    <t t-if="line.tax_ids">
+                                                        <t t-foreach="line.tax_ids" t-as="tax">
+                                                            <span t-esc="str(int(tax.amount)) + '%'"/>
+                                                        </t>
+                                                    </t>
+                                                </t>
+                                            </t>
+                                        </td>
+
+                                        <td colspan="1"
+                                            style="border: 2px solid black; padding: 3px; text-align: right;">
+                                            <t t-if="sgst_amount">
+                                                <t t-esc="sgst_amount" t-options='{"widget": "float", "precision": 2}'/>
+                                            </t>
+
+                                        </td>
+                                    </tr>
+                                </tr>
+
+
+                                <tr>
+                                    <td colspan="2" rowspan="2"
+                                        style="border: 2px solid black; padding: 3px; vertical-align: top;">
+                                        <span>AMOUNT IN WORDS :
+                                            <t t-esc="o.currency_id.amount_to_text(o.amount_total).upper()"/>
+                                        </span>
+                                    </td>
+                                    <td colspan="1"
+                                        style="border: 2px solid black; padding: 3px;text-align:center;">
+                                        <span>ROUND OFF</span>
+                                    </td>
+
+
+                                    <td colspan="1" style="border: 2px solid black; padding: 3px; vertical-align: top;">
+                                        <span></span>
+                                    </td>
+
+                                    <td colspan="1" style="border: 2px solid black; padding: 3px; vertical-align: top;">
+                                        <span></span>
+                                    </td>
+
+                                </tr>
+                                <tr>
+                                    <td colspan="1" style="border: 2px solid black; padding: 3px; text-align: center;">
+                                        <span>
+                                            <strong>TOTAL</strong>
+                                        </span>
+                                    </td>
+                                    <td colspan="1" style="border: 2px solid black; padding: 3px; vertical-align: top;">
+
+                                    </td>
+
+                                    <td colspan="1" style="border: 2px solid black; padding: 3px; text-align: right;">
+                                        <span>
+                                            <span t-field="o.amount_total"/>
+                                        </span>
+                                    </td>
+                                </tr>
+
+
+                                <tr>
+
+                                    <td colspan="2" style="border: 2px solid black;padding-left: 3px; ">
+                                        <span>
+                                            <strong>
+                                                <u>DECLARATION</u>
+                                            </strong>
+                                        </span>
+                                    </td>
+
+
+                                    <td colspan="3" rowsspan="2"
+                                        style="border: 2px solid black;padding-left: 3px;text-align:center ">
+
+                                        <span>
+                                            <strong>BANK DETAILS :</strong>
+                                        </span>
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td colspan="2"
+                                        style="border: 2px solid black; padding-left: 5px; vertical-align: top;">
+                                        <span>
+                                            WE DECLARE THAT THIS INVOICE SHOWS THE ACTUAL PRICE .
+                                            <br/>
+                                            SERVICES DESCRIBED AND ALL PARTICULARS ARE TRUE AND CORRECT
+                                            <br/>
+                                            <br/>
+                                            TDS TO BE DEDUCTED ON (PAN)- ****************
+                                            <br/>
+                                            <br/>
+                                        </span>
+
+                                    </td>
+
+
+                                    <td colspan="3"
+                                        style="border: 2px solid black; padding-left: 5px; vertical-align: top;">
+                                        <span>
+
+                                            <strong>
+                                                <t t-esc="o.company_id.name"/>
+                                            </strong>
+                                            <br/>
+
+                                            <t t-if="o.partner_bank_id">
+                                                A/C NO -
+                                                <t t-esc="o.partner_bank_id.acc_number"/>
+                                                <br/>
+                                                IFSC -
+                                                <t t-esc="o.partner_bank_id.bank_id.ifsc_code"/>
+                                                <br/>
+                                                <t t-esc="o.partner_bank_id.bank_id.name"/>
+                                            </t>
+                                            <t t-else="">
+                                                <t t-if="o.company_id.bank_ids">
+                                                    A/C NO -
+                                                    <t t-esc="o.company_id.bank_ids[0].acc_number"/>
+                                                    <br/>
+                                                    IFSC -
+                                                    <t t-esc="o.company_id.bank_ids[0].bank_id.ifsc_code"/>
+                                                    <br/>
+                                                    <t t-esc="o.company_id.bank_ids[0].bank_id.name"/>
+                                                </t>
+                                            </t>
+                                        </span>
+                                    </td>
+                                </tr>
+
+
+                                <tr>
+                                    <td colspan="2"
+                                        style="border: 2px solid black; padding-left: 5px; vertical-align: top;">
+                                        <strong>PARTY'S SEAL &amp; SIGNATURE</strong>
+                                        <br/>
+                                        <br/>
+                                        <br/>
+                                        <br/>
+                                        <br/>
+                                        <br/>
+
+                                    </td>
+                                    <td colspan="3"
+                                        style="border: 2px solid black; padding-left: 5px; text-align:center;">
+                                        <span>
+                                            <strong>FOR</strong>
+                                            <t t-esc="o.company_id.name"/>
+                                            <br/>
+                                            <br/>
+                                            <br/>
+                                            <span style=" padding-bottom: 5px;">
+                                                <strong>AUTHORIZED SIGNATORY</strong>
+                                            </span>
+                                        </span>
+                                    </td>
+
+                                </tr>
+
+                            </table>
+
+                            <div style=" text-align:center;">
+                                <br/>
+                                <span>*This is a computer-generated invoice signature not required*</span>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>

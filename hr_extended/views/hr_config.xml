@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- HR Job Levels -->
+
+        <record id="hr_job_levels_view_tree" model="ir.ui.view">
+            <field name="model">hr.job.levels</field>
+            <field name="arch" type="xml">
+                <list string="Job Levels" editable="bottom" duplicate="0">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="company_id" options="{'no_open':True,'no_quick_create':True,'no_create': True,}"/>
+                    <field name="code" groups="base.group_no_one"/>
+                    <field name="active"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="hr_job_level_view_form" model="ir.ui.view">
+            <field name="model">hr.job.levels</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="company_id"
+                                   options="{'no_open':True,'no_quick_create':True,'no_create': True,}"/>
+                            <field name="code" groups="base.group_no_one"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_job_level_search" model="ir.ui.view">
+            <field name="name">Job Level Search</field>
+            <field name="model">hr.job.levels</field>
+            <field name="arch" type="xml">
+                <search>
+                    <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                    <field name="name" string="Name"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="hr_job_levels_action" model="ir.actions.act_window">
+            <field name="name">Job Levels</field>
+            <field name="res_model">hr.job.levels</field>
+            <field name="view_mode">tree</field>
+            <field name="search_view_id" ref="view_job_level_search"/>
+            <field name="target">current</field>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new Job level
+                </p>
+            </field>
+        </record>
+
+        <menuitem
+                id="menu_hr_recruitment_job_levels"
+                action="hr_job_levels_action"
+                parent="hr_recruitment.menu_hr_recruitment_config_jobs"
+                sequence="3"
+                groups="hr_recruitment.group_hr_recruitment_manager"/>
+
+        <!-- Position Name Master -->
+
+        <record id="hr_position_names_view_tree" model="ir.ui.view">
+            <field name="model">hr.position.names</field>
+            <field name="arch" type="xml">
+                <list string="Position Names" editable="bottom" duplicate="0">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="company_id" options="{'no_open':True,'no_quick_create':True,'no_create': True,}"/>
+                    <field name="code" groups="base.group_no_one"/>
+                    <field name="active"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="hr_position_names_view_form" model="ir.ui.view">
+            <field name="model">hr.position.names</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="company_id"
+                                   options="{'no_open':True,'no_quick_create':True,'no_create': True,}"/>
+                            <field name="code" groups="base.group_no_one"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_position_names_search" model="ir.ui.view">
+            <field name="name">Position Name Search</field>
+            <field name="model">hr.position.names</field>
+            <field name="arch" type="xml">
+                <search>
+                    <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                    <field name="name" string="Name"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="hr_position_names_action" model="ir.actions.act_window">
+            <field name="name">Position Names</field>
+            <field name="res_model">hr.position.names</field>
+            <field name="view_mode">tree</field>
+            <field name="search_view_id" ref="view_position_names_search"/>
+            <field name="target">current</field>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new Position Names
+                </p>
+            </field>
+        </record>
+
+        <menuitem
+                id="menu_hr_recruitment_position_names"
+                action="hr_position_names_action"
+                parent="hr_recruitment.menu_hr_recruitment_config_jobs"
+                sequence="4"
+                groups="hr_recruitment.group_hr_recruitment_manager"/>
+
+        <!-- Business Units Master -->
+
+        <record id="business_units_view_tree" model="ir.ui.view">
+            <field name="model">business.units</field>
+            <field name="arch" type="xml">
+                <list string="Business Units" editable="bottom" duplicate="0">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="company_id" options="{'no_open':True,'no_quick_create':True,'no_create': True,}"/>
+                    <field name="code" groups="base.group_no_one"/>
+                    <field name="active"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="business_units_view_form" model="ir.ui.view">
+            <field name="model">business.units</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code" groups="base.group_no_one"/>
+                            <field name="company_id"
+                                   options="{'no_open':True,'no_quick_create':True,'no_create': True,}"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_business_units_search" model="ir.ui.view">
+            <field name="name">Business Unit Search</field>
+            <field name="model">business.units</field>
+            <field name="arch" type="xml">
+                <search>
+                    <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                    <field name="name" string="Name"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="business_units_action" model="ir.actions.act_window">
+            <field name="name">Business Units</field>
+            <field name="res_model">business.units</field>
+            <field name="view_mode">tree</field>
+            <field name="search_view_id" ref="view_business_units_search"/>
+            <field name="target">current</field>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new Business Units
+                </p>
+            </field>
+        </record>
+
+        <menuitem
+                id="menu_business_units"
+                action="business_units_action"
+                parent="hr_recruitment.menu_hr_recruitment_config_jobs"
+                sequence="5"
+                groups="hr_recruitment.group_hr_recruitment_manager"/>
+
+        <!-- Ekara Location Master -->
+
+        <record id="location_master_view_tree" model="ir.ui.view">
+            <field name="model">location.master</field>
+            <field name="arch" type="xml">
+                <list string="Location" editable="bottom" duplicate="0">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="company_id" options="{'no_open':True,'no_quick_create':True,'no_create': True,}"/>
+                    <field name="code" groups="base.group_no_one"/>
+                    <field name="active"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="location_master_view_form" model="ir.ui.view">
+            <field name="model">location.master</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="company_id"
+                                   options="{'no_open':True,'no_quick_create':True,'no_create': True,}"/>
+                            <field name="code" groups="base.group_no_one"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_location_master_search" model="ir.ui.view">
+            <field name="name">Location Search</field>
+            <field name="model">location.master</field>
+            <field name="arch" type="xml">
+                <search>
+                    <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                    <field name="name" string="Name"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="location_master_action" model="ir.actions.act_window">
+            <field name="name">Location</field>
+            <field name="res_model">location.master</field>
+            <field name="view_mode">tree</field>
+            <field name="search_view_id" ref="view_location_master_search"/>
+            <field name="target">current</field>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new Location
+                </p>
+            </field>
+        </record>
+
+        <menuitem
+                id="menu_location_master"
+                action="location_master_action"
+                parent="hr_recruitment.menu_hr_recruitment_config_jobs"
+                sequence="6"
+                groups="hr_recruitment.group_hr_recruitment_manager"/>
+
+        <!-- Assets category Master -->
+
+        <record id="assets_category_view_tree" model="ir.ui.view">
+            <field name="model">assets.category</field>
+            <field name="arch" type="xml">
+                <list string="Category" editable="bottom" duplicate="0">
+                    <field name="name"/>
+                    <field name="company_id" options="{'no_open':True,'no_quick_create':True,'no_create': True,}"/>
+                    <field name="active"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="assets_category_view_form" model="ir.ui.view">
+            <field name="model">assets.category</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="company_id"
+                                   options="{'no_open':True,'no_quick_create':True,'no_create': True,}"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="assets_category_view_search" model="ir.ui.view">
+            <field name="name">Assets Search</field>
+            <field name="model">assets.category</field>
+            <field name="arch" type="xml">
+                <search>
+                    <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                    <field name="name" string="Name"/>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="assets_category_view_action">
+            <field name="name">Assets Category</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">assets.category</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="assets_category_view_search"/>
+            <field name="help" type="html">
+                <field class="oe_view_nocontent_create">
+                    Create a new Assets Category
+                </field>
+            </field>
+        </record>
+
+        <!-- In Employee-> Configuration -->
+        <menuitem
+                id="menu_assets_category"
+                action="assets_category_view_action"
+                parent="hr_insurance.menu_human_resources_configuration_insurance"
+                groups="hr.group_hr_manager"
+                sequence="7"/>
+
+        <!-- Budgeting Units Master -->
+
+        <record id="budgeting_units_view_tree" model="ir.ui.view">
+            <field name="model">budgeting.units</field>
+            <field name="arch" type="xml">
+                <list string="Budgeting Units" editable="bottom" duplicate="0">
+                    <field name="name"/>
+                    <field name="company_id" options="{'no_open':True,'no_quick_create':True,'no_create': True,}"/>
+                    <field name="active"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="budgeting_units_view_form" model="ir.ui.view">
+            <field name="model">budgeting.units</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="company_id"
+                                   options="{'no_open':True,'no_quick_create':True,'no_create': True,}"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="budgeting_units_view_search" model="ir.ui.view">
+            <field name="name">Budgeting Units Search</field>
+            <field name="model">budgeting.units</field>
+            <field name="arch" type="xml">
+                <search>
+                    <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                    <field name="name" string="Name"/>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="budgeting_units_view_action">
+            <field name="name">Budgeting Units</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">budgeting.units</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="budgeting_units_view_search"/>
+            <field name="help" type="html">
+                <field class="oe_view_nocontent_create">
+                    Create a new Budgeting Unit
+                </field>
+            </field>
+        </record>
+
+        <menuitem
+                id="menu_budgeting_units_config"
+                action="budgeting_units_view_action"
+                parent="hr_recruitment.menu_hr_recruitment_config_jobs"
+                groups="hr_recruitment.group_hr_recruitment_manager"
+                sequence="5"/>
+
+        <!-- Sub Location / sub business unit Master -->
+
+        <record id="sub_location_view_tree" model="ir.ui.view">
+            <field name="model">sub.location</field>
+            <field name="arch" type="xml">
+                <list string="SubLocation" editable="bottom" duplicate="0">
+                    <field name="name"/>
+                    <field name="company_id" options="{'no_open':True,'no_quick_create':True,'no_create': True,}"/>
+                    <field name="active"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="sub_location_view_form" model="ir.ui.view">
+            <field name="model">sub.location</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="company_id"
+                                   options="{'no_open':True,'no_quick_create':True,'no_create': True,}"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="sub_location_view_search" model="ir.ui.view">
+            <field name="name">Sub Location Search</field>
+            <field name="model">sub.location</field>
+            <field name="arch" type="xml">
+                <search>
+                    <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                    <field name="name" string="Name"/>
+                </search>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="sub_location_view_action">
+            <field name="name">Sub Location</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">sub.location</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="sub_location_view_search"/>
+            <field name="help" type="html">
+                <field class="oe_view_nocontent_create">
+                    Create a new Sub Location
+                </field>
+            </field>
+        </record>
+
+        <menuitem
+                id="menu_sub_location_config"
+                action="sub_location_view_action"
+                parent="hr_recruitment.menu_hr_recruitment_config_jobs"
+                groups="hr_recruitment.group_hr_recruitment_manager"
+                sequence="6"/>
+
+    </data>
+</odoo>

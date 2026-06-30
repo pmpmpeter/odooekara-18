@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- HR Leave Sub Categories -->
+
+        <record id="hr_leave_sub_type_view_tree" model="ir.ui.view">
+            <field name="model">hr.leave.sub.type</field>
+            <field name="arch" type="xml">
+                <list string="Leave Subcategories">
+                    <field name="name"/>
+                    <field name="leave_type_id" options="{'no_open':True,'no_quick_create':True,'no_create': True,}" widget="many2many_tags"/>
+                    <field name="days"/>
+                    <field name="company_id" options="{'no_open':True,'no_quick_create':True,'no_create': True,}"
+                           readonly="1"/>
+                    <field name="active"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="hr_leave_sub_type_view_form" model="ir.ui.view">
+            <field name="model">hr.leave.sub.type</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="leave_type_id" widget="many2many_tags"
+                                   options="{'no_open':True,'no_quick_create':True,'no_create': True,}"/>
+                            <field name="days"/>
+                        </group>
+                        <group>
+                            <field name="company_id"
+                                   options="{'no_open':True,'no_quick_create':True,'no_create': True,}" readonly="1"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_hr_leave_sub_type_search" model="ir.ui.view">
+            <field name="name">Leave - Subcategories</field>
+            <field name="model">hr.leave.sub.type</field>
+            <field name="arch" type="xml">
+                <search>
+                    <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                    <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                    <field name="name" string="Name"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="hr_leave_sub_type_action" model="ir.actions.act_window">
+            <field name="name">Leave - SubCategory</field>
+            <field name="res_model">hr.leave.sub.type</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="view_hr_leave_sub_type_search"/>
+            <field name="target">current</field>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new Leave SubCategory
+                </p>
+            </field>
+        </record>
+
+        <menuitem
+                id="hr_holidays_status_menu_leave_sub_type"
+                action="hr_leave_sub_type_action"
+                name="Leave Subcategory"
+                parent="hr_holidays.menu_hr_holidays_configuration"
+                sequence="1"/>
+
+    </data>
+</odoo>

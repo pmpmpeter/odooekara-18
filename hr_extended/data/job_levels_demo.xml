@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- <record id="base.user_demo" model="res.users">
+            <field name="groups_id" eval="[(3, ref('hr.group_hr_manager'))]"/>
+        </record> -->
+
+        <!--job levels-->
+        <record id="level_name_director" model="hr.job.levels">
+            <field name="name">Director</field>
+            <field name="sequence">1</field>
+        </record>
+
+        <record id="level_name_jl1" model="hr.job.levels">
+            <field name="name">JL – 1 : Executive Vice President</field>
+            <field name="sequence">2</field>
+        </record>
+
+        <record id="level_name_jl2" model="hr.job.levels">
+            <field name="name">JL – 2 : Vice President</field>
+            <field name="sequence">3</field>
+        </record>
+        <record id="level_name_jl3" model="hr.job.levels">
+            <field name="name">JL – 3 : Associate Vice President</field>
+            <field name="sequence">4</field>
+        </record>
+        <record id="level_name_jl4" model="hr.job.levels">
+            <field name="name">JL – 4 : Senior General Manager</field>
+            <field name="sequence">5</field>
+        </record>
+        <record id="level_name_jl5" model="hr.job.levels">
+            <field name="name">JL – 5 : General Manager</field>
+            <field name="sequence">6</field>
+        </record>
+        <record id="level_name_jl6" model="hr.job.levels">
+            <field name="name">JL – 6 : Deputy General Manager</field>
+            <field name="sequence">7</field>
+        </record>
+        <record id="level_name_jl7" model="hr.job.levels">
+            <field name="name">JL – 7 : Assistant General Manager</field>
+            <field name="sequence">8</field>
+        </record>
+        <record id="level_name_jl8" model="hr.job.levels">
+            <field name="name">JL – 8 : Senior Manager</field>
+            <field name="sequence">9</field>
+        </record>
+        <record id="level_name_jl9" model="hr.job.levels">
+            <field name="name">JL – 9 : Manager</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="level_name_jl10" model="hr.job.levels">
+            <field name="name">JL – 10 : Assistant Manager</field>
+            <field name="sequence">11</field>
+        </record>
+        <record id="level_name_jl11" model="hr.job.levels">
+            <field name="name">JL – 11 : Team Lead</field>
+            <field name="sequence">12</field>
+        </record>
+        <record id="level_name_jl12" model="hr.job.levels">
+            <field name="name">JL – 12 : Senior Executive</field>
+            <field name="sequence">13</field>
+        </record>
+        <record id="level_name_jl13" model="hr.job.levels">
+            <field name="name">JL – 13 : Executive</field>
+            <field name="sequence">14</field>
+        </record>
+        <record id="level_name_jl14" model="hr.job.levels">
+            <field name="name">JL – 14 : Junior Executive</field>
+            <field name="sequence">15</field>
+        </record>
+        <record id="level_name_operation_employee" model="hr.job.levels">
+            <field name="name">Operations Employee</field>
+            <field name="sequence">16</field>
+        </record>
+
+        <!--position names-->
+        <record id="position_name_director" model="hr.position.names">
+            <field name="name">Director</field>
+            <field name="sequence">1</field>
+        </record>
+
+        <record id="position_name_Head_PR" model="hr.position.names">
+            <field name="name">Head - Property Management and PR</field>
+            <field name="sequence">2</field>
+        </record>
+
+        <record id="position_name_senior_executive" model="hr.position.names">
+            <field name="name">Senior Executive Assistant – Director’s Office</field>
+            <field name="sequence">3</field>
+        </record>
+        <record id="position_name_head_finance" model="hr.position.names">
+            <field name="name">Head - Finance and Accounts</field>
+            <field name="sequence">4</field>
+        </record>
+        <record id="position_name_head_human_resource" model="hr.position.names">
+            <field name="name">Head - Human Resources</field>
+            <field name="sequence">5</field>
+        </record>
+        <record id="position_name_senior_executive_finance" model="hr.position.names">
+            <field name="name">Senior Executive – Finance and Accounts</field>
+            <field name="sequence">6</field>
+        </record>
+        <record id="position_name_head_compliance" model="hr.position.names">
+            <field name="name">Head - Compliance</field>
+            <field name="sequence">7</field>
+        </record>
+        <record id="position_name_senior_manager_it" model="hr.position.names">
+            <field name="name">Senior Manager – IT and Business Solutions</field>
+            <field name="sequence">8</field>
+        </record>
+        <record id="position_name_company_secretary" model="hr.position.names">
+            <field name="name">Company Secretary</field>
+            <field name="sequence">9</field>
+        </record>
+        <record id="position_name_driver" model="hr.position.names">
+            <field name="name">Driver</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="position_name_body_guard" model="hr.position.names">
+            <field name="name">Body Guard</field>
+            <field name="sequence">11</field>
+        </record>
+
+        <!-- Business units data-->
+        <record id="bu_data_1" model="business.units">
+            <field name="name">Corporate</field>
+            <field name="sequence">1</field>
+        </record>
+
+        <record id="bu_data_2" model="business.units">
+            <field name="name">Centre</field>
+            <field name="sequence">2</field>
+        </record>
+
+        <record id="bu_data_3" model="business.units">
+            <field name="name">Telehealth</field>
+            <field name="sequence">3</field>
+        </record>
+
+        <!-- Ekara Location data-->
+        <record id="location_1" model="location.master">
+            <field name="name">Bangalore</field>
+            <field name="sequence">1</field>
+        </record>
+
+        <!--        <record id="ekara_location_1" model="location.master">-->
+        <!--            <field name="name">Hyderabad</field>-->
+        <!--            <field name="sequence">2</field>-->
+        <!--        </record>-->
+
+        <!--        <record id="ekara_location_1" model="location.master">-->
+        <!--            <field name="name">Telehealth</field>-->
+        <!--            <field name="sequence">3</field>-->
+        <!--        </record>-->
+
+    </data>
+</odoo>

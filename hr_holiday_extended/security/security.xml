@@ -1,0 +1,6 @@
+<?xml version="1.0" ?>
+<odoo>
+    <record id="group_leave_access_view" model="res.groups">
+        <field name="name">Leave Access</field>
+    </record>
+</odoo>

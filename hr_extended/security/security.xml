@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2018-2019 ForgeFlow, S.L.
+     License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl-3.0) -->
+<odoo>
+
+     <record id="group_hr_payslip_readonly" model="res.groups">
+            <field name="name">Payroll Readonly</field>
+            <field name="category_id" ref="base.module_category_human_resources"/>
+        </record>
+
+     <record id="group_hr_payslip_admin" model="res.groups">
+            <field name="name">HR - Admin</field>
+            <field name="category_id" ref="base.module_category_human_resources"/>
+     </record>
+
+    <record id="employee_indent_comp_rule" model="ir.rule">
+        <field name="name">Employee Indent multi-company</field>
+        <field name="model_id" ref="model_employee_indent"/>
+        <field name="domain_force">[('organization', 'in', company_ids)]</field>
+    </record>
+
+    <record id="joining_doc_config_rule" model="ir.rule">
+        <field name="name">Joining Documents multi-company</field>
+        <field name="model_id" ref="model_employee_join_doc_config"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+
+    <record id="ir_rule_employee_kra_company" model="ir.rule">
+        <field name="name">Employee KRA: Multi Company</field>
+        <field name="model_id" ref="hr_extended.model_employee_kra"/>
+        <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+    </record>
+
+    <record id="ir_rule_joining_documents_company" model="ir.rule">
+        <field name="name">Joining Documents: Multi Company</field>
+        <field name="model_id" ref="hr_extended.model_joining_documents"/>
+        <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+    </record>
+
+    <record id="ir_rule_kra_master_company" model="ir.rule">
+        <field name="name">KRA Master: Multi Company</field>
+        <field name="model_id" ref="hr_extended.model_kra_master"/>
+        <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+    </record>
+
+    <record id="ir_rule_hr_position_names_company" model="ir.rule">
+        <field name="name">HR Position Names: Multi Company</field>
+        <field name="model_id" ref="hr_extended.model_hr_position_names"/>
+        <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+    </record>
+
+    <record id="ir_rule_hr_job_levels_company" model="ir.rule">
+        <field name="name">HR Job Levels: Multi Company</field>
+        <field name="model_id" ref="hr_extended.model_hr_job_levels"/>
+        <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+    </record>
+
+    <record id="ir_rule_business_units_company" model="ir.rule">
+        <field name="name">Business Units: Multi Company</field>
+        <field name="model_id" ref="hr_extended.model_business_units"/>
+        <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+    </record>
+
+    <record id="ir_rule_location_master_company" model="ir.rule">
+        <field name="name">Location Master: Multi Company</field>
+        <field name="model_id" ref="hr_extended.model_location_master"/>
+        <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+    </record>
+
+    <record id="ir_rule_manpower_budget_company" model="ir.rule">
+        <field name="name">Manpower Budget: Multi Company</field>
+        <field name="model_id" ref="hr_extended.model_manpower_budget"/>
+        <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+    </record>
+
+    <record id="ir_rule_director_approve_manpower_company" model="ir.rule">
+        <field name="name">Director Approve Manpower: Multi Company</field>
+        <field name="model_id" ref="hr_extended.model_director_approve_manpower"/>
+        <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+    </record>
+
+    <record id="ir_rule_assets_category_company" model="ir.rule">
+        <field name="name">Assets Category: Multi Company</field>
+        <field name="model_id" ref="hr_extended.model_assets_category"/>
+        <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+    </record>
+
+
+    <record id="group_hr_admin_recuitment" model="res.groups">
+        <field name="name">Recruitment Admin</field>
+    </record>
+
+    <!--    Joining document rule-->
+    <!--To view their own record only-->
+    <record id="joining_document_rule_user" model="ir.rule">
+        <field name="name">Joining Document - Candidate</field>
+        <field name="model_id" ref="hr_extended.model_joining_documents"/>
+        <field name="domain_force">[('employee_id.user_id','=',user.id)]
+        </field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <!--    HR permission to view record   -->
+    <record id="joining_document_rule_hr" model="ir.rule">
+        <field name="name">Joining Document - HR</field>
+        <field name="model_id" ref="hr_extended.model_joining_documents"/>
+        <field name="domain_force">[(1,'=',1)]</field>
+        <field name="groups" eval="[(4, ref('hr.group_hr_user'))]"/>
+    </record>
+    <record id="joining_document_rule_manager" model="ir.rule">
+        <field name="name">Joining Document - Manager</field>
+        <field name="model_id" ref="hr_extended.model_joining_documents"/>
+        <field name="domain_force">[(1,'=',1)]</field>
+        <field name="groups" eval="[(4, ref('hr.group_hr_manager'))]"/>
+    </record>
+
+    <!-- Employee KRA rule -->
+    <!--To view their own record only-->
+    <record id="employee_kra_rule_user" model="ir.rule">
+        <field name="name">Employee KRA - Candidate</field>
+        <field name="model_id" ref="hr_extended.model_employee_kra"/>
+        <field name="domain_force">['|',('employee_id.user_id','=',user.id),('employee_parent_id.user_id','=',user.id)]
+        </field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <!--    HR permission to view record   -->
+    <record id="employee_kra_rule_hr" model="ir.rule">
+        <field name="name">Employee KRA - HR</field>
+        <field name="model_id" ref="hr_extended.model_employee_kra"/>
+        <field name="domain_force">[(1,'=',1)]</field>
+        <field name="groups" eval="[(4, ref('hr.group_hr_user'))]"/>
+    </record>
+    <record id="employee_kra_rule_manager" model="ir.rule">
+        <field name="name">Employee KRA - Manager</field>
+        <field name="model_id" ref="hr_extended.model_employee_kra"/>
+        <field name="domain_force">[(1,'=',1)]</field>
+        <field name="groups" eval="[(4, ref('hr.group_hr_manager'))]"/>
+    </record>
+
+    <!--Employee To view their own record only-->
+    <record id="hr_employee_public_rule_user" model="ir.rule">
+        <field name="name">Employee User</field>
+        <field name="model_id" ref="hr.model_hr_employee_public"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="perm_read" eval="1"/>
+        <field name="perm_write" eval="0"/>
+        <field name="perm_create" eval="0"/>
+        <field name="perm_unlink" eval="0"/>
+    </record>
+
+    <!--Manager To view their own record only-->
+    <record id="hr_employee_public_rule_manager" model="ir.rule">
+        <field name="name">Employee Manager</field>
+        <field name="model_id" ref="hr.model_hr_employee_public"/>
+        <field name="domain_force">[(1,'=',1)]</field>
+        <field name="groups" eval="[(4, ref('hr.group_hr_user'))]"/>
+    </record>
+
+    <!-- Confirmation needed to commented -->
+    <!--    <record id="hr_employee_rule_user" model="ir.rule">-->
+    <!--        <field name="name">Employee User</field>-->
+    <!--        <field name="model_id" ref="hr.model_hr_employee"/>-->
+    <!--        <field name="domain_force">[('user_id', '=', user.id)]</field>-->
+    <!--        <field name="groups" eval="[(4, ref('base.group_user'))]"/>-->
+    <!--        <field name="perm_read" eval="1"/>-->
+    <!--        <field name="perm_write" eval="0"/>-->
+    <!--        <field name="perm_create" eval="0"/>-->
+    <!--        <field name="perm_unlink" eval="0"/>-->
+    <!--    </record>-->
+    <!--Manager To view their own record only-->
+    <record id="hr_employee_rule_hr" model="ir.rule">
+        <field name="name">Employee HR</field>
+        <field name="model_id" ref="hr.model_hr_employee"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('hr.group_hr_user'))]"/>
+    </record>
+    <record id="hr_employee_rule_manager" model="ir.rule">
+        <field name="name">Employee Manager</field>
+        <field name="model_id" ref="hr.model_hr_employee"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('hr.group_hr_manager'))]"/>
+    </record>
+
+    <record id="group_hr_recruitment_bu_head" model="res.groups">
+        <field name="name">BU Head</field>
+        <field name="category_id" ref="base.module_category_human_resources_recruitment"/>
+        <field name="implied_ids" eval="[(4, ref('hr_recruitment.group_hr_recruitment_user'))]"/>
+        <field name="comment">This group has permissions to oversee the recruitment process for their business unit.
+        </field>
+    </record>
+
+    <record id="group_hr_recruitment_director" model="res.groups">
+        <field name="name">Director</field>
+        <field name="category_id" ref="base.module_category_human_resources_recruitment"/>
+        <field name="implied_ids" eval="[(4, ref('hr_extended.group_hr_recruitment_bu_head'))]"/>
+        <field name="comment">This group has permissions to oversee and manage recruitment at the organization-wide
+            level.
+        </field>
+    </record>
+    <record id="seq_manpower_budget" model="ir.sequence">
+        <field name="name">Manpower Budget Sequence</field>
+        <field name="code">manpower.budget</field>
+        <field name="prefix">MPB-</field>
+        <field name="padding">4</field>
+        <field name="number_next">1</field>
+        <field name="number_increment">1</field>
+    </record>
+    <!-- User Group -->
+    <record id="group_manpower_budget_user" model="res.groups">
+        <field name="name">Manpower Budget User</field>
+    </record>
+
+    <record id="group_view_own_document" model="res.groups">
+        <field name="name">Documents:View Own Documents</field>
+    </record>
+    <record id="group_view_own_contract" model="res.groups">
+        <field name="name">Compensation:View Only</field>
+    </record>
+    <record id="group_view_own_payroll" model="res.groups">
+        <field name="name">Payroll:View Only</field>
+    </record>
+    <record id="group_view_own_timeoff" model="res.groups">
+        <field name="name">TimeOff:View Only</field>
+    </record>
+    <record id="group_view_own_accounting_comp" model="res.groups">
+        <field name="name">Accounting:View Accounting Components</field>
+    </record>
+
+    <!-- Manager Group -->
+    <record id="group_manpower_budget_manager" model="res.groups">
+        <field name="name">Manpower Budget Manager</field>
+        <field name="implied_ids" eval="[(4, ref('group_manpower_budget_user'))]"/>
+    </record>
+
+    <!-- Bu head in recruitment -->
+    <!--    not needed right now-->
+    <!--        <record id="group_hr_recruitment_ekara_manager" model="res.groups">-->
+    <!--            <field name="name">Officer: Manager</field>-->
+    <!--            <field name="category_id" ref="base.module_category_human_resources_recruitment"/>-->
+    <!--            <field name="implied_ids"-->
+    <!--                   eval="[(4, ref('hr.group_hr_user')), (4, ref('hr_recruitment.group_hr_recruitment_interviewer'))]"/>-->
+    <!--        </record>-->
+    <!--    needed if we want bu head as separate group-->
+    <!--    <record id="group_hr_recruitment_bu_head" model="res.groups">-->
+    <!--        <field name="name">Officer: BU Head</field>-->
+    <!--        <field name="category_id" ref="base.module_category_human_resources_recruitment"/>-->
+    <!--        <field name="implied_ids"-->
+    <!--               eval="[(4, ref('hr.group_hr_user')), (4, ref('hr_recruitment.group_hr_recruitment_interviewer')), (4,ref('hr_recruitment.group_hr_recruitment_user'))]"/>-->
+    <!--    </record>-->
+    <!--    <record id="hr_recruitment.group_hr_recruitment_manager" model="res.groups">-->
+    <!--        <field name="implied_ids"-->
+    <!--               eval="[(4, ref('hr_extended.group_hr_recruitment_bu_head'))]"/>-->
+    <!--    </record>-->
+</odoo>

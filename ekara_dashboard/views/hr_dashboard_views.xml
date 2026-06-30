@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="action_ekara_dashboard" model="ir.actions.client">
+        <field name="name">Headcount Analytics</field>
+        <field name="tag">ekara_dashboard_tag</field>
+    </record>
+
+    <!-- <menuitem
+            id="menu_ekara_dashboard"
+            name="HR Analytics"
+            parent="hr.menu_hr_root"
+            action="action_ekara_dashboard"
+            sequence="1"/> -->
+
+</odoo>

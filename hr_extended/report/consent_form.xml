@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="consent_form_template" model="ir.actions.report">
+        <field name="name">Consent Form</field>
+        <field name="model">hr.employee</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_extended.print_consent_form</field>
+        <field name="report_file">hr_extended.print_consent_form</field>
+        <field name="print_report_name">'Consent Form'</field>
+        <!--        <field name="binding_model_id" ref="hr_extended.model_hr_employee"/>-->
+        <field name="binding_model_id" eval="False"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="print_consent_form">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="hr_extended.print_consent_report" t-lang="o.user_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <template id="print_consent_report">
+        <t t-call="web.external_layout">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="doc" t-value="doc.with_context(lang=lang)"/>
+                <t t-set="company" t-value="doc.company_id"/>
+                <div style="margin-left: 25px; margin-right: 25px;">
+                    <h3 style="text-align: center; font-weight: bold;  text-decoration: underline;">
+                        CONSENT FORM
+
+                    </h3>
+                    <br/>
+                    <p>
+                        I, ______________________ s/o/d/o _____________________ residing at
+                        _________________________________________________________________________________hereby consent
+                        to Ekara Partnership (hereinafter referred to as the <b>“Company”</b>) collecting, using and
+                        storing my
+                        information including sensitive personal information, shared subsequent to this form for the
+                        purposes of background verification (hereinafter referred to as the <b>“Purpose”</b>).
+                    </p>
+                    <p>
+                        I understand and acknowledge that the information collected from me will be used for the
+                        furtherance of the Purpose and afforded confidentiality as per the Company’s policies and
+                        applicable law.
+                    </p>
+                    <p>
+                        I consent to the following categories of information being collected by the Company:
+                    </p>
+                    <ol type="I" style="text-align: justify;">
+                        <li>
+                            <p style="text-align: justify;">
+                                Educational Documents
+                            </p>
+                        </li>
+                        <li>
+                            <p style="text-align: justify;">
+                                Relieving Letter from your existing / last employer
+                            </p>
+                        </li>
+                        <li>
+                            <p style="text-align: justify;">
+                                Birth Certificate / School Leaving Certificate
+                            </p>
+                        </li>
+                        <li>
+                            <p style="text-align: justify;">
+                                Passport size color photographs
+                            </p>
+                        </li>
+                        <li>
+                            <p style="text-align: justify;">
+                                Self-certified copy of your passport / a photo identification card / driving license
+                            </p>
+                        </li>
+                    </ol>
+                    <p>
+                        I understand that the information collected will be kept confidential at all times and will only
+                        be accessed by the Company’s authorized representatives and or third parties strictly on a need
+                        to know basis in connection with the Purpose.
+                    </p>
+                    <p>
+                        I represent that I have the full right to share all such information with the Company and hereby
+                        authorize the Company to collect, use and store the information for the Purpose.
+                    </p>
+                    <br/>
+                    <br/>
+                    <div>
+                        <span style="display: inline-block; width: 45%; text-align: left;">
+                            Name: ___________________________
+                        </span>
+                        <span style="display: inline-block; width: 45%; text-align: right;">
+                            Date: _________________________
+                        </span>
+                    </div>
+
+                    <div style="margin-top: 40px;">
+                        <span style="display: inline-block; width: 45%; text-align: left;">
+                            Signature: ___________________________
+                        </span>
+                        <span style="display: inline-block; width: 45%; text-align: right;">
+                            Place: _________________________
+                        </span>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

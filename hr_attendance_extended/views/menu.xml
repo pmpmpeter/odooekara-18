@@ -1,0 +1,17 @@
+<odoo>
+    <menuitem id="menu_hr_attendance_submenu" name="PDF Reports"
+              parent="hr_attendance.menu_hr_attendance_root" sequence="30"/>
+
+    <record id="action_attendance_report_form_f_h_t" model="ir.actions.act_window">
+        <field name="name">Attendance Report</field>
+        <field name="res_model">attendance.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_attendance_form_f_report"
+              name="Form F,H,T"
+              parent="menu_hr_attendance_submenu"
+              groups="hr_attendance.group_hr_attendance_manager"
+              action="action_attendance_report_form_f_h_t" sequence="10"/>
+</odoo>

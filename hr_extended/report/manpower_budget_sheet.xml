@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<record id="manpower_budget_report_action" model="ir.actions.report">
+    <field name="name">Manpower Budget Sheet</field>
+    <field name="model">manpower.budget.wizard</field>
+    <field name="report_type">xlsx</field>
+    <field name="report_name">hr_extended.report_manpower_budget_sheet</field>
+    <field name="print_report_name">'Manpower Budget Report' </field>
+</record>
+
+</odoo>

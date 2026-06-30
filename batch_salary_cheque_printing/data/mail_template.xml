@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+<record id="email_template_batch_jv" model="mail.template">
+            <field name="name">Batch JV Notification</field>
+            <field name="model_id" ref="batch_salary_cheque_printing.model_account_batch_jv"/>
+            <field name="subject">Batch JV Details - {{ object.name }}</field>
+            <field name="email_from">{{ user.email }}</field>
+            <field name="email_to">{{ object.create_uid.email }}</field>
+            <field name="body_html">
+                <![CDATA[
+                <p>Hi,</p>
+                <p>Please find the attached batch salary details report and cheque PDF report.</p>
+                ]]>
+            </field>
+        </record>
+</odoo>
+

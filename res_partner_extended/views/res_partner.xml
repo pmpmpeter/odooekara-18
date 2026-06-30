@@ -1,0 +1,686 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="res_partner_flow_kanban_view" model="ir.ui.view">
+            <field name="name">res.partner.flow.kanban.view</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.res_partner_kanban_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='email']" position="after">
+                    <field name="state"/>
+                </xpath>
+
+                <xpath expr="//div[hasclass('mb-1')]" position="inside">
+                    <field name="state" widget="label_selection" options="{'classes': {'draft': 'default', 'done': 'default', 'approve': 'success'}}"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="view_res_partner_filter_inerit" model="ir.ui.view">
+            <field name="name">res.partner.search.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_res_partner_filter"/>
+            <field name="arch" type="xml">
+                <xpath expr="//search" position="inside">
+                    <!--                    <field name="customer_code" string="Customer Code"/>-->
+                    <field name="vendor_code" string="Partner Code"/>
+                </xpath>
+                <xpath expr="//filter[@name='customer']" position="after">
+                    <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
+                    <filter string="To Validate" name="done" domain="[('state','=','done')]"/>
+                    <filter string="Approved" name="approve" domain="[('state','=','approve')]"/>
+                </xpath>
+                <xpath expr="//filter[@name='type_company']" position="after">
+                    <filter string="Customer" name="is_customer" domain="[('is_customer','=',True)]"/>
+                    <filter string="Supplier" name="is_vendor" domain="[('is_vendor','=',True)]"/>
+                </xpath>
+                <xpath expr="//search/group" position="inside">
+                    <filter name="state" string="Status" domain="[]" context="{'group_by' : 'state'}"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="res_partner_extend_tree_inherit" model="ir.ui.view">
+            <field name="name">res.partner.inherits.list</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_tree"/>
+            <field name="arch" type="xml">
+                 <xpath expr="//field[@name='company_id']" position="attributes">
+                     <attribute name="invisible">1</attribute>
+                </xpath>
+                <xpath expr="//field[@name='company_id']" position="after">
+                     <field name="company_ids" widget="many2many_tags"/>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="res_partner_extend" model="ir.ui.view">
+            <field name="name">res.partner.inherits</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="l10n_in.l10n_in_view_partner_form"/>
+            <field name="arch" type="xml">
+                <field name="l10n_in_pan" position="after">
+                    <field name="state" invisible="1"/>
+                    <field name="msme_status" widget="radio" readonly="state in ('approve', 'done')"/>
+                    <field name="is_nonodoo_company" readonly="state in ('approve', 'done')"/>
+                    <field name="msme_number" invisible="msme_status ==  'unregistered'"
+                           readonly="state in ('approve', 'done')"/>
+                    <field name="msme_validity" invisible="msme_status ==  'unregistered'"
+                           readonly="state in ('approve', 'done')"/>
+                </field>
+                <field name="l10n_in_gst_treatment" position="before">
+                    <field name="can_edit_vendor_code" invisible="1"/>
+                    <field name="vendor_code" readonly="not can_edit_vendor_code"/>
+                </field>
+            </field>
+        </record>
+
+        <record id="res_partner_master_extend" model="ir.ui.view">
+            <field name="name">res.partner.inherits</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='button_box']" position="inside">
+
+                    <button name="action_view_approvals"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-check-circle"
+                            string="Change Request"/>
+
+                </xpath>
+                <xpath expr="//sheet" position='before'>
+                    <header>
+                        <field name="has_to_review" invisible="1"/>
+                        <field name="is_request_approved" invisible="1"/>
+                        <field name="can_request" invisible="1"/>
+                        <button name="action_create_approval"
+                                type="object"
+                                invisible="state == 'draft'"
+                                string="Request Changes"
+                                class="btn-primary"/>
+                        <button name="action_validate" type="object" string="Validate"
+                                invisible="state != 'draft'" class="oe_highlight"
+                                groups="account.group_account_manager"/>
+                        <button name="action_approve" type="object" string="Approve"
+                                invisible="state != 'done'" class="oe_highlight"
+                                groups="account.group_account_manager"/>
+                        <button name="reset_to_draft" type="object"
+                                string="Reset To Draft" invisible="state not in ['approve', 'done'] or not is_request_approved"
+                                class="oe_highlight"
+                                />
+                        <button name="mark_as_reviewed" type="object" string="Mark As Reviewed" invisible="not has_to_review"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                </xpath>
+                <xpath expr="//page[@name='sales_purchases']/group/group[@name='misc']/field[@name='company_id']"
+                       position="attributes">
+                    <attribute name="invisible">0</attribute>
+                </xpath>
+                <xpath expr="//page[@name='sales_purchases']/group/group[@name='misc']/field[@name='company_id']"
+                       position="after">
+                    <field name="company_ids" widget="many2many_tags"
+                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"/>
+                </xpath>
+                <xpath expr="//field[@name='phone']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='mobile']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='function']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@id='individual']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                    <attribute name="invisible">is_company</attribute>
+                </xpath>
+                <xpath expr="//field[@id='company']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                    <attribute name="invisible">not is_company</attribute>
+                </xpath>
+                <xpath expr="//field[@name='lang']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='category_id']" position="replace">
+                    <field name="category_id" widget="many2many_tags"
+                           options="{'color_field': 'color','no_open': True, 'no_quick_create':True,'no_create': True}"
+                           readonly="state not in ['approve','done']"
+                           placeholder='e.g. "B2B", "VIP", "Consulting", ...'/>
+                    <field name="approved_date" readonly="1"/>
+                    <field name="review_on" readonly="state == 'approve'"/>
+
+                </xpath>
+                <xpath expr="//field[@name='vat']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                    <attribute name="required">0</attribute>
+                    <attribute name="placeholder">'Eg:33AAHHK3869G1Z3'</attribute>
+                </xpath>
+                <xpath expr="//field[@name='property_account_receivable_id']" position="attributes">
+                    <attribute name="options">{'no_open': True, 'no_quick_create':True,'no_create': True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='property_account_payable_id']" position="attributes">
+                    <attribute name="options">{'no_open': True, 'no_quick_create':True,'no_create': True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='state_id']" position="attributes">
+                    <attribute name="options">{'no_open': True, 'no_quick_create':True,'no_create': True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='title']" position="attributes">
+                    <attribute name="options">{'no_open': True, 'no_quick_create':True,'no_create': True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='bank_ids']/list/field[@name='bank_id']" position="attributes">
+                    <attribute name="options">{'no_open': True, 'no_quick_create':True,'no_create': True}</attribute>
+                </xpath>
+                <xpath expr="//page[@name='accounting']/group//group[@name='accounting_entries']//field[@name='property_account_receivable_id']"
+                       position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                    <attribute name="required">0</attribute>
+                </xpath>
+                <xpath expr="//page[@name='accounting']/group//group[@name='accounting_entries']//field[@name='property_account_payable_id']"
+                       position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                    <attribute name="required">0</attribute>
+                </xpath>
+                <xpath expr="//page[@name='accounting']/group//group[@name='banks']//field[@name='bank_ids']"
+                       position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//page[@name='sales_purchases']//field[@name='user_id']" position="before">
+                    <field name="is_customer"/>
+                </xpath>
+                <!-- <xpath expr="//field[@name='commercial_partner_id']" position="attributes">
+                    <attribute name="readonly">state in ['approve', 'done']</attribute>
+                </xpath> -->
+                <xpath expr="//field[@name='company_id']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+               <!--  <xpath expr="//field[@name='country_code']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath> -->
+                <xpath expr="//field[@name='company_type']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='parent_id']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='company_name']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='street']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='street2']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='city']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='state_id']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='zip']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='country_id']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='email']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='website']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='title']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='category_id']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <!-- <xpath expr="//field[@name='user_ids']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath> -->
+                <xpath expr="//field[@name='image_1920']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='avatar_128']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <!-- <xpath expr="//field[@name='active_lang_count']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath> -->
+                <!-- <xpath expr="//field[@name='active']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath> -->
+                <xpath expr="//field[@name='company_registry']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='ref']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='company_id']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done') or parent_id</attribute>
+                </xpath>
+                <xpath expr="//field[@name='industry_id']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='use_partner_credit_limit']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <!-- <xpath expr="//field[@name='ubl_cii_format']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath> -->
+                <xpath expr="//field[@name='l10n_in_pan']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='l10n_in_gst_treatment']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='child_ids']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+            </field>
+        </record>
+
+        <record id="purchase_property_extend" model="ir.ui.view">
+            <field name="name">res.partner.inherits</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="purchase.view_partner_property_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='buyer_id']" position="before">
+                    <field name="is_vendor"/>
+                    <!--                    <field name="vendor_code" invisible="is_vendor != True"/>-->
+                </xpath>
+                <xpath expr="//field[@name='buyer_id']" position="attributes">
+                    <attribute name="invisible">not is_vendor</attribute>
+                </xpath>
+                <xpath expr="//field[@name='property_supplier_payment_term_id']" position="attributes">
+                    <attribute name="invisible">not is_vendor</attribute>
+                </xpath>
+                <xpath expr="//label[@for='receipt_reminder_email']" position="attributes">
+                    <attribute name="invisible">not is_vendor</attribute>
+                </xpath>
+                <xpath expr="//field[@name='receipt_reminder_email']" position="attributes">
+                    <attribute name="invisible">not is_vendor</attribute>
+                </xpath>
+                <xpath expr="//field[@name='property_purchase_currency_id']" position="attributes">
+                    <attribute name="invisible">not is_vendor</attribute>
+                </xpath>
+                <xpath expr="//field[@name='is_vendor']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='buyer_id']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='is_customer']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='property_payment_term_id']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='property_product_pricelist']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='property_supplier_payment_term_id']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='receipt_reminder_email']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='property_purchase_currency_id']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='property_account_position_id']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='company_id']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='website_id']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+
+
+            </field>
+        </record>
+
+        <record id="account.res_partner_action_customer" model="ir.actions.act_window">
+            <field name="context">{'search_default_customer': 1,'res_partner_search_mode': 'customer',
+                'default_is_company': True, 'default_customer_rank': 1, 'default_is_customer': True}
+            </field>
+        </record>
+        <record id="account.res_partner_action_supplier" model="ir.actions.act_window">
+            <field name="context">{'search_default_supplier': 1,'res_partner_search_mode': 'supplier',
+                'default_is_company': True, 'default_supplier_rank': 1, 'default_is_vendor': True}
+            </field>
+        </record>
+
+        <!-- <record id="account.view_partner_property_form" model="ir.ui.view">
+            <field name="name">res.partner.property.form.inherit</field>
+            <field name="model">res.partner</field>
+            <field name="priority">2</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='company_id']" position="after">
+                    <field name="fiscal_country_codes" invisible="1"/>
+                </xpath>
+                <xpath expr="//sheet" position="before">
+                    <div groups="account.group_account_invoice,account.group_account_readonly"
+                         class="alert alert-warning" role="alert" style="margin-bottom:0px;"
+                         invisible="duplicated_bank_account_partners_count == 0">
+                        One or more Bank Accounts set on this partner are also used by other
+                        <bold>
+                            <button class="alert-link" type="object" name="action_view_partner_with_same_bank"
+                                    role="button" string="Partners" style="padding: 0;vertical-align: baseline;"/>
+                        </bold>
+                        . Please make sure that this is a wanted behavior.
+                    </div>
+                </xpath>
+                <page name="sales_purchases" position="after">
+                    <page string="Invoicing" name="accounting" invisible="not is_company and parent_id" groups="account.group_account_invoice,account.group_account_readonly">
+                        <field name="duplicated_bank_account_partners_count" invisible="1"/>
+                        <field name="show_credit_limit" invisible="1"/>
+                        <group>
+                            <group string="Bank Accounts" name="banks"
+                                   groups="account.group_account_invoice,account.group_account_readonly">
+                                <field name="bank_ids" nolabel="1" colspan="2" context="{'default_partner_id': id}"
+                                       widget="auto_save_res_partner">
+                                    <list>
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="acc_number"/>
+                                        <field name="bank_id"/>
+                                        <field name="allow_out_payment"/>
+                                        <field name="acc_holder_name" column_invisible="True"/>
+                                    </list>
+                                </field>
+                            </group>
+                            <group string="Accounting Entries" name="accounting_entries"
+                                   groups="account.group_account_readonly">
+                                <field name="currency_id" invisible="1"/>
+                                <field name="property_account_receivable_id"
+                                       options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                       invisible="not is_customer"/>
+                                <field name="property_account_payable_id"
+                                       options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                       invisible="not is_vendor"/>
+                            </group>
+                            <group string="Credit Limits"
+                                   name="credit_limits"
+                                   groups="account.group_account_invoice,account.group_account_readonly"
+                                   invisible="not show_credit_limit">
+                                <field name="credit"/>
+                                <field name="days_sales_outstanding"/>
+                            </group>
+                            <group string="LDC Details" name="ldc_details" groups="account.group_account_invoice,account.group_account_readonly">
+                                <field name="ldc_no"/>
+                                <field name="ldc_expiry_date" required="ldc_no"/>
+                            </group>
+                            <group string="TDS Applicable"
+                                   name="tds_check"
+                                   groups="account.group_account_invoice,account.group_account_readonly">
+                                <field name="tds_applicable"/>
+                                <field name="tds_limit_amount_partner" invisible='not tds_applicable'
+                                       required='tds_applicable'/>
+                                <field name="tds_tax_id" string="TDS Tax"
+                                       options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                       invisible='not tds_applicable' required='tds_applicable'/>
+                            </group>
+                            <group string="TCS Applicable" invisible="country_code != 'IN'"
+                                   name="tcs_check"
+                                   groups="account.group_account_invoice,account.group_account_readonly">
+                                <field name="tcs_applicable"/>
+                                <field name="tcs_limit_amount_partner" invisible='not tcs_applicable'
+                                       required='tcs_applicable'/>
+                                <field name="tcs_tax_id" string="TCS Tax"
+                                       options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                       invisible='not tcs_applicable' required='tcs_applicable'/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Invoicing" name="accounting_disabled" invisible="is_company or not parent_id"
+                          groups="account.group_account_invoice,account.group_account_readonly">
+                        <div>
+                            <p>Accounting-related settings are managed on
+                                <button name="open_commercial_entity" type="object" string="the parent company"
+                                        class="oe_link"/>
+                            </p>
+                        </div>
+                    </page>
+                    <page string="Review Log" name="review_log" readonly="state == 'approve'">
+                    <group string="Review Log">
+                            <group>
+                                <field name="review_lines">
+                                    <list editable="bottom" edit="0" create="0" delete="0">
+                                        <field name="review_date" width="500"/>
+                                        <field name="review_on" width="500"/>
+                                        <field name="review_status" width="500" widget="badge"
+                                                   decoration-muted="review_status == 'on_review'"
+                                                   decoration-success="review_status == 'reviewed'"
+                                                   decoration-danger="review_status == 'expired'"/>
+                                    </list>
+                                </field>
+                            </group>
+                    </group>
+                    </page>
+                </page>
+                <xpath expr="//group[@name='misc']" position="before">
+                    <group string="Fiscal Information" name="fiscal_information" priority="5"
+                           groups="account.group_account_invoice,account.group_account_readonly">
+                        <field name="property_account_position_id"
+                               options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"/>
+                    </group>
+                </xpath>
+                <group name="sale" position="inside">
+                    <field string="Payment Terms" name="property_payment_term_id"
+                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                           groups="account.group_account_invoice,account.group_account_readonly"
+                           invisible="not is_customer" readonly="parent_id"/>
+                    <label for="use_partner_credit_limit" string="Credit Limit"/>
+                    <div class="o_row">
+                        <field name="use_partner_credit_limit"/>
+                        <field name="credit_limit" class="oe_inline"
+                               invisible="not use_partner_credit_limit"/>
+                    </div>
+                </group>
+                <group name="purchase" position="inside">
+                    <field string="Payment Terms" name="property_supplier_payment_term_id"
+                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                           groups="account.group_account_invoice,account.group_account_readonly"
+                           invisible="not is_vendor"/>
+                </group>
+            </field>
+        </record> -->
+        <!-- commented above code as they have overwritten the view from account module. Instead i have added below code for the changes -->
+
+        <record id="view_partner_property_form_ekara" model="ir.ui.view">
+            <field name="name">res.partner.property.form.ekara</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="account.view_partner_property_form"/>
+            <field name="arch" type="xml">
+
+                <!-- LDC Details -->
+                <xpath expr="//group[@name='credit_limits']" position="after">
+                    <group string="LDC Details"
+                           name="ldc_details"
+                           groups="account.group_account_invoice,account.group_account_readonly">
+                        <field name="ldc_no"/>
+                        <field name="ldc_expiry_date" required="ldc_no"/>
+                    </group>
+
+                    <group string="TDS Applicable"
+                           name="tds_check"
+                           groups="account.group_account_invoice,account.group_account_readonly">
+                        <field name="tds_applicable"/>
+                        <field name="tds_limit_amount_partner"
+                               invisible="not tds_applicable"
+                               required="tds_applicable"/>
+                        <field name="tds_tax_id"
+                               string="TDS Tax"
+                               options="{'no_open': True, 'no_quick_create':True,'no_create': True}"
+                               invisible="not tds_applicable"
+                               required="tds_applicable"/>
+                    </group>
+
+                    <group string="TCS Applicable"
+                           name="tcs_check"
+                           invisible="country_code != 'IN'"
+                           groups="account.group_account_invoice,account.group_account_readonly">
+                        <field name="tcs_applicable"/>
+                        <field name="tcs_limit_amount_partner"
+                               invisible="not tcs_applicable"
+                               required="tcs_applicable"/>
+                        <!-- <field name="tcs_tax_id"
+                               string="TCS Tax"
+                               options="{'no_open': True, 'no_quick_create':True,'no_create': True}"
+                               invisible="not tcs_applicable"
+                               required="tcs_applicable"/> -->
+                    </group>
+                </xpath>
+
+                <!-- Review Log Page -->
+                <xpath expr="//page[@name='accounting_disabled']" position="after">
+                    <page string="Review Log"
+                          name="review_log"
+                          readonly="state == 'approve'">
+
+                        <group string="Review Log">
+                            <group>
+                                <field name="review_lines">
+                                    <list editable="bottom"
+                                          edit="0"
+                                          create="0"
+                                          delete="0">
+                                        <field name="review_date"/>
+                                        <field name="review_on"/>
+                                        <field name="review_status"
+                                               widget="badge"
+                                               decoration-muted="review_status == 'on_review'"
+                                               decoration-success="review_status == 'reviewed'"
+                                               decoration-danger="review_status == 'expired'"/>
+                                    </list>
+                                </field>
+                            </group>
+                        </group>
+
+                    </page>
+                </xpath>
+
+                <!-- Credit Limit in Sale Section -->
+                <xpath expr="//group[@name='sale']/field[@name='property_inbound_payment_method_line_id']"
+                       position="after">
+
+                    <label for="use_partner_credit_limit"
+                           string="Credit Limit"/>
+
+                    <div class="o_row">
+                        <field name="use_partner_credit_limit"/>
+                        <field name="credit_limit"
+                               class="oe_inline"
+                               invisible="not use_partner_credit_limit"/>
+                    </div>
+
+                </xpath>
+
+            </field>
+        </record>
+
+        <record id="view_partner_approval_tree" model="ir.ui.view">
+        <field name="name">res.partner.approval.list</field>
+        <field name="model">res.partner.approval</field>
+        <field name="arch" type="xml">
+            <list string="Contact Approvals">
+                <field name="partner_id"/>
+                <field name="request_note"/>
+                <field name="state"/>
+                <field name="create_date"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- FORM VIEW -->
+    <record id="view_partner_approval_form" model="ir.ui.view">
+        <field name="name">res.partner.approval.form</field>
+        <field name="model">res.partner.approval</field>
+        <field name="arch" type="xml">
+            <form string="Contact Approval">
+                <header>
+
+                    <button name="action_submit"
+                            string="Submit"
+                            type="object"
+                            invisible="state != 'draft'"/>
+
+                    <button name="action_approve"
+                            string="Approve"
+                            type="object"
+                            invisible="state != 'pending'"
+                            groups="res_partner_extended.group_contact_admin_access"/>
+
+                    <button name="action_reject"
+                            string="Reject"
+                            type="object"
+                            invisible="state != 'pending'"
+                            groups="res_partner_extended.group_contact_admin_access"/>
+
+                    <button name="action_reset_draft"
+                            string="Reset to Draft"
+                            type="object"
+                            invisible="state not in ['approved','rejected']"/>
+
+                    <field name="state" widget="statusbar"/>
+                </header>
+
+                <sheet>
+                    <group>
+                        <field name="partner_id" readonly="state != 'draft'"/>
+                        <field name="request_note" readonly="state != 'draft'"/>
+                        <field name="rejection_reason"
+                               readonly="1"
+                               invisible="state != 'rejected'"/>
+                    </group>
+                </sheet>
+
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- ACTION -->
+    <record id="action_partner_approval" model="ir.actions.act_window">
+        <field name="name">Contact Change Request</field>
+        <field name="res_model">res.partner.approval</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- MENU -->
+    <menuitem id="menu_partner_approval_root"
+              name="Contact Approvals"
+              parent="contacts.menu_contacts"
+              action="action_partner_approval"/>
+
+
+        <record id="view_reject_wizard_form" model="ir.ui.view">
+            <field name="name">reject.wizard.form</field>
+            <field name="model">partner.approval.reject.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Reject Reason">
+                    <group>
+                        <field name="reason" required="1"/>
+                    </group>
+                    <footer>
+                        <button name="action_confirm_reject"
+                                string="Confirm Reject"
+                                type="object"
+                                class="btn-danger"/>
+                        <button string="Cancel" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

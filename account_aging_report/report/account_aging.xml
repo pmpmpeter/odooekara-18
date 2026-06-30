@@ -1,0 +1,377 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="aged_receivable_report_move_invoice_date" model="account.report">
+        <field name="name">Aged Receivable Invoice Date</field>
+        <field name="filter_date_range" eval="False"/>
+        <field name="filter_unfold_all" eval="True"/>
+        <field name="filter_partner" eval="True"/>
+        <field name="filter_period_comparison" eval="False"/>
+        <field name="filter_account_type">receivable</field>
+        <field name="filter_hierarchy">never</field>
+        <field name="filter_show_draft" eval="False"/>
+        <field name="filter_multi_company">selector</field>
+        <field name="default_opening_date_filter">today</field>
+        <field name="custom_handler_model_id" ref="account_reports.model_account_aged_receivable_report_handler"/>
+        <field name="column_ids">
+            <record id="aged_receivable_report_invoice_date_ar1" model="account.report.column">
+                <field name="name">Invoice Date</field>
+                <field name="expression_label">invoice_date</field>
+                <field name="figure_type">date</field>
+                <field name="sortable" eval="True"/>
+            </record>
+            <record id="aged_receivable_report_amount_currency_ar1" model="account.report.column">
+                <field name="name">Amount Currency</field>
+                <field name="expression_label">amount_currency</field>
+            </record>
+            <record id="aged_receivable_report_currency_ar1" model="account.report.column">
+                <field name="name">Currency</field>
+                <field name="expression_label">currency</field>
+                <field name="figure_type">string</field>
+            </record>
+            <record id="aged_receivable_report_account_name_ar1" model="account.report.column">
+                <field name="name">Account</field>
+                <field name="expression_label">account_name</field>
+                <field name="figure_type">string</field>
+            </record>
+            <record id="aged_receivable_report_expected_date_ar1" model="account.report.column">
+                <field name="name">Expected Date</field>
+                <field name="expression_label">expected_date</field>
+                <field name="figure_type">date</field>
+                <field name="sortable" eval="True"/>
+            </record>
+            <record id="aged_receivable_report_period0_ar1" model="account.report.column">
+                <field name="name">At Date</field>
+                <field name="expression_label">period0</field>
+                <field name="sortable" eval="True"/>
+            </record>
+            <record id="aged_receivable_report_period1_ar1" model="account.report.column">
+                <field name="name">1-30</field>
+                <field name="expression_label">period1</field>
+                <field name="sortable" eval="True"/>
+            </record>
+            <record id="aged_receivable_report_period2_ar1" model="account.report.column">
+                <field name="name">31-60</field>
+                <field name="expression_label">period2</field>
+                <field name="sortable" eval="True"/>
+            </record>
+            <record id="aged_receivable_report_period3_ar1" model="account.report.column">
+                <field name="name">61-90</field>
+                <field name="expression_label">period3</field>
+                <field name="sortable" eval="True"/>
+            </record>
+            <record id="aged_receivable_report_period4_ar1" model="account.report.column">
+                <field name="name">91-120</field>
+                <field name="expression_label">period4</field>
+                <field name="sortable" eval="True"/>
+            </record>
+            <record id="aged_receivable_report_period5_ar1" model="account.report.column">
+                <field name="name">Older</field>
+                <field name="expression_label">period5</field>
+                <field name="sortable" eval="True"/>
+            </record>
+            <record id="aged_receivable_report_total_ar1" model="account.report.column">
+                <field name="name">Total</field>
+                <field name="expression_label">total</field>
+                <field name="sortable" eval="True"/>
+            </record>
+        </field>
+        <field name="line_ids">
+          <record id="aged_receivable_line_ar1" model="account.report.line">
+              <field name="name">Aged Receivable</field>
+              <field name="groupby">partner_id, id</field>
+              <field name="expression_ids">
+                  <record id="aged_receivable_line_invoice_date_ar1" model="account.report.expression">
+                      <field name="label">invoice_date</field>
+                      <field name="engine">custom</field>
+                      <field name="formula">_report_custom_engine_aged_receivable_invoice_date</field>
+                      <field name="subformula">invoice_date</field>
+                      <field name="auditable" eval="False"/>
+                  </record>
+                  <record id="aged_receivable_line_amount_currency_ar1" model="account.report.expression">
+                      <field name="label">amount_currency</field>
+                      <field name="engine">custom</field>
+                      <field name="formula">_report_custom_engine_aged_receivable_invoice_date</field>
+                      <field name="subformula">amount_currency</field>
+                      <field name="auditable" eval="False"/>
+                  </record>
+                  <record id="aged_receivable_line_amount_currency_forced_currency_ar1" model="account.report.expression">
+                      <field name="label">_currency_amount_currency</field>
+                      <field name="engine">custom</field>
+                      <field name="formula">_report_custom_engine_aged_receivable_invoice_date</field>
+                      <field name="subformula">currency_id</field>
+                  </record>
+                  <record id="aged_receivable_line_currency_ar1" model="account.report.expression">
+                      <field name="label">currency</field>
+                      <field name="engine">custom</field>
+                      <field name="formula">_report_custom_engine_aged_receivable_invoice_date</field>
+                      <field name="subformula">currency</field>
+                      <field name="auditable" eval="False"/>
+                  </record>
+                  <record id="aged_receivable_line_account_name_ar1" model="account.report.expression">
+                      <field name="label">account_name</field>
+                      <field name="engine">custom</field>
+                      <field name="formula">_report_custom_engine_aged_receivable_invoice_date</field>
+                      <field name="subformula">account_name</field>
+                      <field name="auditable" eval="False"/>
+                  </record>
+                  <record id="aged_receivable_line_expected_date_ar1" model="account.report.expression">
+                      <field name="label">expected_date</field>
+                      <field name="engine">custom</field>
+                      <field name="formula">_report_custom_engine_aged_receivable_invoice_date</field>
+                      <field name="subformula">expected_date</field>
+                      <field name="auditable" eval="False"/>
+                  </record>
+                  <record id="aged_receivable_line_period0_ar1" model="account.report.expression">
+                      <field name="label">period0</field>
+                      <field name="engine">custom</field>
+                      <field name="formula">_report_custom_engine_aged_receivable_invoice_date</field>
+                      <field name="subformula">period0</field>
+                      <field name="auditable" eval="True"/>
+                  </record>
+                  <record id="aged_receivable_line_period1_ar1" model="account.report.expression">
+                      <field name="label">period1</field>
+                      <field name="engine">custom</field>
+                      <field name="formula">_report_custom_engine_aged_receivable_invoice_date</field>
+                      <field name="subformula">period1</field>
+                      <field name="auditable" eval="True"/>
+                  </record>
+                  <record id="aged_receivable_line_period2_ar1" model="account.report.expression">
+                      <field name="label">period2</field>
+                      <field name="engine">custom</field>
+                      <field name="formula">_report_custom_engine_aged_receivable_invoice_date</field>
+                      <field name="subformula">period2</field>
+                      <field name="auditable" eval="True"/>
+                  </record>
+                  <record id="aged_receivable_line_period3_ar1" model="account.report.expression">
+                      <field name="label">period3</field>
+                      <field name="engine">custom</field>
+                      <field name="formula">_report_custom_engine_aged_receivable_invoice_date</field>
+                      <field name="subformula">period3</field>
+                      <field name="auditable" eval="True"/>
+                  </record>
+                  <record id="aged_receivable_line_period4_ar1" model="account.report.expression">
+                      <field name="label">period4</field>
+                      <field name="engine">custom</field>
+                      <field name="formula">_report_custom_engine_aged_receivable_invoice_date</field>
+                      <field name="subformula">period4</field>
+                      <field name="auditable" eval="True"/>
+                  </record>
+                  <record id="aged_receivable_line_period5_ar1" model="account.report.expression">
+                      <field name="label">period5</field>
+                      <field name="engine">custom</field>
+                      <field name="formula">_report_custom_engine_aged_receivable_invoice_date</field>
+                      <field name="subformula">period5</field>
+                      <field name="auditable" eval="True"/>
+                  </record>
+                  <record id="aged_receivable_line_total_ar1" model="account.report.expression">
+                      <field name="label">total</field>
+                      <field name="engine">custom</field>
+                      <field name="formula">_report_custom_engine_aged_receivable_invoice_date</field>
+                      <field name="subformula">total</field>
+                      <field name="auditable" eval="True"/>
+                  </record>
+              </field>
+          </record>
+        </field>
+    </record>
+
+    <record id="aged_payable_report_move_invoice_date" model="account.report">
+        <field name="name">Aged Payable Invoice Date</field>
+        <field name="filter_date_range" eval="False"/>
+        <field name="filter_unfold_all" eval="True"/>
+        <field name="filter_partner" eval="True"/>
+        <field name="filter_period_comparison" eval="False"/>
+        <field name="filter_account_type">payable</field>
+        <field name="filter_hierarchy">never</field>
+        <field name="filter_show_draft" eval="False"/>
+        <field name="filter_multi_company">selector</field>
+        <field name="default_opening_date_filter">today</field>
+        <field name="custom_handler_model_id" ref="account_reports.model_account_aged_payable_report_handler"/>
+        <field name="column_ids">
+            <record id="aged_payable_report_invoice_date_ap1" model="account.report.column">
+                <field name="name">Invoice Date</field>
+                <field name="expression_label">invoice_date</field>
+                <field name="figure_type">date</field>
+                <field name="sortable" eval="True"/>
+            </record>
+            <record id="aged_payable_report_amount_currency_ap1" model="account.report.column">
+                <field name="name">Amount Currency</field>
+                <field name="expression_label">amount_currency</field>
+            </record>
+            <record id="aged_payable_report_currency_ap1" model="account.report.column">
+                <field name="name">Currency</field>
+                <field name="expression_label">currency</field>
+                <field name="figure_type">string</field>
+            </record>
+            <record id="aged_payable_report_account_name_ap1" model="account.report.column">
+                <field name="name">Account</field>
+                <field name="expression_label">account_name</field>
+                <field name="figure_type">string</field>
+            </record>
+            <record id="aged_payable_report_expected_date_ap1" model="account.report.column">
+                <field name="name">Expected Date</field>
+                <field name="expression_label">expected_date</field>
+                <field name="figure_type">date</field>
+                <field name="sortable" eval="True"/>
+            </record>
+            <record id="aged_payable_report_period0_ap1" model="account.report.column">
+                <field name="name">At Date</field>
+                <field name="expression_label">period0</field>
+                <field name="sortable" eval="True"/>
+            </record>
+            <record id="aged_payable_report_period1_ap1" model="account.report.column">
+                <field name="name">1-30</field>
+                <field name="expression_label">period1</field>
+                <field name="sortable" eval="True"/>
+            </record>
+            <record id="aged_payable_report_period2_ap1" model="account.report.column">
+                <field name="name">31-60</field>
+                <field name="expression_label">period2</field>
+                <field name="sortable" eval="True"/>
+            </record>
+            <record id="aged_payable_report_period3_ap1" model="account.report.column">
+                <field name="name">61-90</field>
+                <field name="expression_label">period3</field>
+                <field name="sortable" eval="True"/>
+            </record>
+            <record id="aged_payable_report_period4_ap1" model="account.report.column">
+                <field name="name">91-120</field>
+                <field name="expression_label">period4</field>
+                <field name="sortable" eval="True"/>
+            </record>
+            <record id="aged_payable_report_period5_ap1" model="account.report.column">
+                <field name="name">Older</field>
+                <field name="expression_label">period5</field>
+                <field name="sortable" eval="True"/>
+            </record>
+            <record id="aged_payable_report_total_ap1" model="account.report.column">
+                <field name="name">Total</field>
+                <field name="expression_label">total</field>
+                <field name="sortable" eval="True"/>
+            </record>
+        </field>
+        <field name="line_ids">
+            <record id="aged_payable_line_ap1" model="account.report.line">
+                <field name="name">Aged PayableS3</field>
+                <field name="groupby">partner_id, id</field>
+                <field name="expression_ids">
+                    <record id="aged_payable_line_invoice_date_ap1" model="account.report.expression">
+                        <field name="label">invoice_date</field>
+                        <field name="engine">custom</field>
+                        <field name="formula">_report_custom_engine_aged_payable_invoice_date</field>
+                        <field name="subformula">invoice_date</field>
+                        <field name="auditable" eval="False"/>
+                    </record>
+                    <record id="aged_payable_line_amount_currency_ap1" model="account.report.expression">
+                        <field name="label">amount_currency</field>
+                        <field name="engine">custom</field>
+                        <field name="formula">_report_custom_engine_aged_payable_invoice_date</field>
+                        <field name="subformula">amount_currency</field>
+                        <field name="auditable" eval="False"/>
+                    </record>
+                    <record id="aged_payable_line_amount_currency_forced_currency_ap1" model="account.report.expression">
+                        <field name="label">_currency_amount_currency</field>
+                        <field name="engine">custom</field>
+                        <field name="formula">_report_custom_engine_aged_payable_invoice_date</field>
+                        <field name="subformula">currency_id</field>
+                    </record>
+                    <record id="aged_payable_line_currency_ap1" model="account.report.expression">
+                        <field name="label">currency</field>
+                        <field name="engine">custom</field>
+                        <field name="formula">_report_custom_engine_aged_payable_invoice_date</field>
+                        <field name="subformula">currency</field>
+                        <field name="auditable" eval="False"/>
+                    </record>
+                    <record id="aged_payable_line_account_name_ap1" model="account.report.expression">
+                        <field name="label">account_name</field>
+                        <field name="engine">custom</field>
+                        <field name="formula">_report_custom_engine_aged_payable_invoice_date</field>
+                        <field name="subformula">account_name</field>
+                        <field name="auditable" eval="False"/>
+                    </record>
+                    <record id="aged_payable_line_expected_date_ap1" model="account.report.expression">
+                        <field name="label">expected_date</field>
+                        <field name="engine">custom</field>
+                        <field name="formula">_report_custom_engine_aged_payable_invoice_date</field>
+                        <field name="subformula">expected_date</field>
+                        <field name="auditable" eval="False"/>
+                    </record>
+                    <record id="aged_payable_line_period0_ap1" model="account.report.expression">
+                        <field name="label">period0</field>
+                        <field name="engine">custom</field>
+                        <field name="formula">_report_custom_engine_aged_payable_invoice_date</field>
+                        <field name="subformula">period0</field>
+                        <field name="auditable" eval="True"/>
+                    </record>
+                    <record id="aged_payable_line_period1_ap1" model="account.report.expression">
+                        <field name="label">period1</field>
+                        <field name="engine">custom</field>
+                        <field name="formula">_report_custom_engine_aged_payable_invoice_date</field>
+                        <field name="subformula">period1</field>
+                        <field name="auditable" eval="True"/>
+                    </record>
+                    <record id="aged_payable_line_period2_ap1" model="account.report.expression">
+                        <field name="label">period2</field>
+                        <field name="engine">custom</field>
+                        <field name="formula">_report_custom_engine_aged_payable_invoice_date</field>
+                        <field name="subformula">period2</field>
+                        <field name="auditable" eval="True"/>
+                    </record>
+                    <record id="aged_payable_line_period3_ap1" model="account.report.expression">
+                        <field name="label">period3</field>
+                        <field name="engine">custom</field>
+                        <field name="formula">_report_custom_engine_aged_payable_invoice_date</field>
+                        <field name="subformula">period3</field>
+                        <field name="auditable" eval="True"/>
+                    </record>
+                    <record id="aged_payable_line_period4_ap1" model="account.report.expression">
+                        <field name="label">period4</field>
+                        <field name="engine">custom</field>
+                        <field name="formula">_report_custom_engine_aged_payable_invoice_date</field>
+                        <field name="subformula">period4</field>
+                        <field name="auditable" eval="True"/>
+                    </record>
+                    <record id="aged_payable_line_period5_ap1" model="account.report.expression">
+                        <field name="label">period5</field>
+                        <field name="engine">custom</field>
+                        <field name="formula">_report_custom_engine_aged_payable_invoice_date</field>
+                        <field name="subformula">period5</field>
+                        <field name="auditable" eval="True"/>
+                    </record>
+                    <record id="aged_payable_line_total_ap1" model="account.report.expression">
+                        <field name="label">total</field>
+                        <field name="engine">custom</field>
+                        <field name="formula">_report_custom_engine_aged_payable_invoice_date</field>
+                        <field name="subformula">total</field>
+                        <field name="auditable" eval="True"/>
+                    </record>
+                </field>
+            </record>
+        </field>
+    </record>
+
+   <record id="action_account_report_ar_invoice_date" model="ir.actions.client">
+            <field name="name">Aged Receivable-Invoice Date</field>
+            <field name="tag">account_report</field>
+            <field name="context" eval="{'report_id': ref('aged_receivable_report_move_invoice_date')}"/>
+        </record>
+
+        <record id="action_account_report_ap_invoice_date" model="ir.actions.client">
+            <field name="name">Aged Payable-Invoice Date</field>
+            <field name="tag">account_report</field>
+            <field name="context" eval="{'report_id': ref('aged_payable_report_move_invoice_date')}"/>
+        </record>
+
+    <menuitem 
+        id="menu_action_account_report_aged_receivable_invoice_date" 
+        name="Aged Receivable-Invoice Date" action="action_account_report_ar_invoice_date" 
+        groups="account.group_account_readonly" 
+        parent="account_reports.account_reports_partners_reports_menu" sequence='11'/>
+
+    <menuitem id="menu_action_account_report_aged_payable_invoice_date" 
+        name="Aged Payable-Invoice Date" action="action_account_report_ap_invoice_date" 
+        groups="account.group_account_readonly"
+        parent="account_reports.account_reports_partners_reports_menu" sequence='12'/>
+
+</odoo>

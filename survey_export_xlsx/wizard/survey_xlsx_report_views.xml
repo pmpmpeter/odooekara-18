@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+    Form view definition for the Survey Answer XLS Report.
+    This view is used to configure the report generation for survey answers.
+
+    - The view is associated with the `survey.xlsx.report` model.
+    - It includes fields for selecting a partner (`partner_id`) and the related surveys (`survey_ids`).
+    - The partner field is restricted from creation and opening from within this form view.
+    - The `survey_ids` field is rendered as tags and is invisible by default.
+    - Two buttons are provided in the footer:
+      - "PRINT" to trigger the `action_print_survey_xlsx_report` method.survey.menu_surveys
+      - "CANCEL" to cancel the operation and close the form.
+    -->
+    <record id="survey_xlsx_report_view_form" model="ir.ui.view">
+        <field name="name">survey.xlsx.report.view.form</field>
+        <field name="model">survey.xlsx.report</field>
+        <field name="arch" type="xml">
+            <form string="Survey Report">
+                <group>
+                    <group>
+                        <field name="survey_ids" widget="many2many_tags" domain="[('survey_type', '!=', 'appraisal')]"
+                               options="{'no_quick_create':True,'no_create': True, 'no_open': True}"
+                               invisible="report_file"/>
+                        <field name="partner_id"
+                               options="{'no_quick_create':True,'no_create': True, 'no_open': True}" invisible="report_file or group_by"/>
+                        <field name="group_by" invisible="report_file"/>
+                        <field name="file_name" invisible='1'/>
+                        <field name="report_file" filename="file_name" invisible="not file_name"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_print_survey_xlsx_report"
+                            string="PRINT"
+                            type="object" class="btn-primary" invisible="group_by"/>
+                    <button name="action_print_survey_groupby_xlsx_report"
+                            string="PRINT"
+                            type="object" class="btn-primary" invisible="not group_by"/>
+                    <button name="action_print_survey_results_percentage_xlsx_report"
+                            string="Print Analytics"
+                            type="object" class="btn-primary"/>
+                    <button string="CANCEL" class="btn-secondary"
+                            special="cancel" data-hotkey="z"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_survey_xlsx_report" model="ir.actions.act_window">
+        <field name="name">Survey Report</field>
+        <field name="res_model">survey.xlsx.report</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_survey_xlsx_report_root"
+              name="Survey Reports"
+              parent="survey.menu_surveys"
+              groups="survey.group_survey_manager"
+              sequence="50"/>
+
+    <menuitem id="menu_survey_xlsx_report"
+              name="Survey XLS Report"
+              parent="menu_survey_xlsx_report_root"
+              action="action_survey_xlsx_report"
+              sequence="10"/>
+
+
+</odoo>

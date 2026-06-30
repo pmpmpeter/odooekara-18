@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="paperformat_experience_relieving_letter_pdf_A4" model="report.paperformat">
+        <field name="name">Experience Relieving Letter - Separation</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">50</field>
+        <field name="margin_bottom">25</field>
+        <field name="margin_left">15</field>
+        <field name="margin_right">15</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">48</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <record id="report_experience_relieving_letter" model="ir.actions.report">
+        <field name="name">Experience Relieving Letter</field>
+        <field name="model">hr.resignation</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_resignation.print_experience_relieving_letter</field>
+        <field name="report_file">hr_resignation.print_experience_relieving_letter</field>
+        <field name="paperformat_id" ref="hr_resignation.paperformat_experience_relieving_letter_pdf_A4"/>
+        <field name="print_report_name">'Experience Relieving Letter - %s' % (object.employee_id.name)</field>
+        <field name="binding_model_id" ref="hr_resignation.model_hr_resignation"/>
+        <field name="binding_type">report</field>
+    </record>
+
+
+    <template id="print_experience_relieving_letter">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <t t-foreach="docs" t-as="doc">
+                    <div style="font-size:20px; ">
+                        <div style="justify-content: center; padding:0.6rem;padding-left: 35px;text-decoration: none; font-size:20px;width: 100%;">
+                            <P>
+                                <span t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d')"/>
+                                <h4 align="center">
+                                    <u>TO WHOMSOEVER IT MAY CONCERN</u>
+                                </h4>
+                                <br/>
+                                <b>
+                                    <span style="font-weight:bold; text-decoration: underline;">Subject :</span>
+                                </b>
+                                Experience and Relieving Letter.
+                                <br/>
+                                <br/>
+                                This is to certify that
+                                <b>
+                                    <t t-esc="doc.employee_id.name"/>
+                                </b>
+                                has worked with our
+                                organization from
+                                <b>
+                                    <t t-esc="doc.joined_date"/>
+                                </b>
+                                to
+                                <b><t t-esc="doc.hr_approved_reliving_date"/>.
+                                </b>
+                                <br/>
+                                <br/>
+                                <span t-esc="doc.employee_id.gender == 'male' and 'his' or 'her'"/>
+                                designation at the time of leaving was
+                                <b>‘<t t-esc="doc.designation_id.name"/>’.
+                                </b>
+                                <br/>
+                                <br/>
+                                <span t-esc="doc.employee_id.gender == 'male' and 'He' or 'She'"/>
+                                stands relieved from all duties &amp; responsibilities assigned to<span
+                                    t-esc="doc.employee_id.gender == 'male' and 'him' or 'her'"/>.
+                                <br/>
+                                <br/>
+                                We appreciate
+                                <span t-esc="doc.employee_id.gender == 'male' and 'his' or 'her'"/>
+                                contribution towards the organization and wish
+                                <span t-esc="doc.employee_id.gender == 'male' and 'him' or 'her'"/>
+                                all the very best
+                                in all
+                                <span t-esc="doc.employee_id.gender == 'male' and 'his' or 'her'"/>
+                                future endeavors
+                                <br/>
+                                <br/>
+                                <br/>
+                                Best Wishes,
+                                <br/>
+                                <br/>
+                                <t t-esc="doc.coach_id.name"/>
+                                <br/>
+                                Head – Human Resources
+                            </P>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

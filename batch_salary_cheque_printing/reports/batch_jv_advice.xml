@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+<record id="action_print_batch_jv" model="ir.actions.report">
+        <field name="name">Print Bank Advice </field>
+        <field name="model">account.batch.jv</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">batch_salary_cheque_printing.print_batch_bank_advice</field>
+        <field name="report_file">batch_salary_cheque_printing.print_batch_bank_advice</field>
+        <field name="paperformat_id" ref="base.paperformat_batch_deposit"/>
+        <field name="binding_model_id" ref="model_account_batch_jv"/>
+        <field name="binding_type">report</field>
+</record>
+</odoo>

@@ -1,0 +1,31 @@
+<odoo>
+    <record id="cron_check_expired_tasks" model="ir.cron">
+        <field name="name">Document Expiration and Task Scheduler</field>
+        <field name="model_id" ref="project.model_project_task"/>
+        <field name="state">code</field>
+        <field name="code">model.check_expired_tasks()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+    <record id="ir_cron_check_active_tasks" model="ir.cron">
+        <field name="name">Check Active Tasks</field>
+        <field name="model_id" ref="project.model_project_task"/>
+        <field name="state">code</field>
+        <field name="code">model.check_active_tasks()</field>
+        <field name="interval_number">1</field>
+        <field name="interval_type">days</field>
+        <field name="active">True</field>
+    </record>
+
+        <record id="ir_cron_send_document_reminder" model="ir.cron">
+        <field name="name">Send Document Validity Reminder</field>
+        <field name="model_id" ref="project.model_project_project"/>
+        <field name="state">code</field>
+        <field name="code">model.send_reminder_document()</field>
+        <field name="interval_type">days</field>
+        <field name="interval_number">1</field>
+        <field name="active" eval="True"/>
+    </record>
+</odoo>

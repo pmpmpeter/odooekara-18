@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="account_journal_dashboard_kanban_view" model="ir.ui.view">
+        <field name="name">account.journal.dashboard.kanban</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.account_journal_dashboard_kanban_view"/>
+        <field name="arch" type="xml">
+            <!-- <div name="latest_statement" position="replace">
+                <div class="row" name="latest_statement" t-if="dashboard.last_balance and dashboard.account_balance">
+                    <div class="col-7">
+                        <span title="Latest Statement">Latest Statement</span>
+                    </div>
+                    <div class="col-5 text-right">
+                        <span><t t-esc="dashboard.last_balance"/></span>
+                    </div>
+                </div>
+                <div class="row" name="difference" t-if="dashboard.last_balance and dashboard.account_balance">
+                    <div class="col-7">
+                        <span title="Balance Difference">Difference</span>
+                    </div>
+                    <div class="col-5 text-right">
+                        <span><t t-esc="dashboard.difference"/></span>
+                    </div>
+                </div>
+            </div> -->
+            <xpath expr="//t[@t-name='JournalBodyBankCash']/div[@id='dashboard_bank_cash_right']" position="inside">
+                <!-- Used in Gencor commented only the button in view, functionalities available in code -->
+                <!--<div class="row" name="balance_on_date">
+                    <div>
+                        <button string="Balance on Date" type="object" class="btn btn-primary" name="action_journal_wizard"/>
+                    </div>
+                </div>-->
+                <div class="row" name="bank_closing_balance1" t-if="dashboard.bank_closing_balance1">
+                    <div class="col text-start">
+                        <span title="Bank Balance">Bank Balance</span>
+                    </div>
+                    <div class="col-auto text-end">
+                        <span>
+                            <t t-esc="dashboard.bank_closing_balance1"/>
+                        </span>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,1103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="paperformat_appointment_letter_emp_pdf_A4" model="report.paperformat">
+        <field name="name">Appointment Letter - Employee</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">23</field>
+        <field name="margin_bottom">25</field>
+        <field name="margin_left">15</field>
+        <field name="margin_right">15</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">18</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <record id="appointment_letter_emp_template" model="ir.actions.report">
+        <field name="name">Appointment Letter - Employee</field>
+        <field name="model">hr.employee</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_extended.print_appointment_letter_emp</field>
+        <field name="report_file">hr_extended.print_appointment_letter_emp</field>
+        <field name="paperformat_id" ref="hr_extended.paperformat_appointment_letter_emp_pdf_A4"/>
+        <field name="print_report_name">'%s - Appointment Letter' % (object.name)</field>
+        <field name="binding_model_id" ref="hr_extended.model_hr_employee"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="print_appointment_letter_emp">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="hr_extended.print_appointment_letter_emp_report" t-lang="o.user_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <template id="print_appointment_letter_emp_report">
+        <!--        <t t-call="web.external_layout">-->
+        <t t-call="web.basic_layout">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="doc" t-value="doc.with_context(lang=lang)"/>
+                <t t-set="company" t-value="doc.company_id"/>
+                <div class="header">
+                    <img t-if="doc.company_id.logo"
+                         t-att-src="image_data_uri(doc.company_id.logo)" alt="Logo"
+                         style="max-width: 50%; max-height: 45px; width: auto; height: auto;"/>
+                </div>
+                <div class="page">
+                    <div style="text-align: center; margin-top: 20px;">
+                        <h3 style="text-decoration: underline;">Appointment Letter</h3>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <p>
+                            <strong>Name:</strong>
+                            <t t-esc="doc.name"/>
+                            <br/>
+                            <strong>Address:</strong>
+                            <t t-esc="doc.private_street"/>
+                            <br/>
+                            <t t-esc="doc.private_street2"/>
+                            <br/>
+                            <t t-esc="doc.private_city"/>
+                            <br/>
+                            <t t-esc="' - '.join(filter(None, [doc.private_state_id.name, doc.private_zip]))"/>
+                        </p>
+                    </div>
+                    <div style="margin-top: 30px;">
+                        <p>
+                            Dear
+                            <strong>
+                                <t t-esc="doc.name"/>
+                            </strong>
+                            ,
+                        </p>
+                        <p>
+                            Welcome to
+                            <strong>
+                                <t t-out="doc.company_id.name"/>
+                            </strong>
+                            .
+                        </p>
+                        <p>
+                            (Hereinafter referred to as the “Company”) We are pleased to appoint you on the terms and
+                            conditions as detailed under. The terms of this Appointment Letter (hereinafter referred to
+                            as the “Agreement”) supersede all other communications made to you prior to the execution of
+                            this Agreement.
+                        </p>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                            <tr>
+                                <td style="width: 30%; padding: 8px; border: 1px solid #000;">
+                                    <strong>Designation</strong>
+                                </td>
+                                <td style="width: 70%; padding: 8px; border: 1px solid #000;">
+                                    <t t-esc="doc.job_title"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; border: 1px solid #000;">
+                                    <strong>Department</strong>
+                                </td>
+                                <td style="padding: 8px; border: 1px solid #000;">
+                                    <t t-esc="doc.department_id.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; border: 1px solid #000;">
+                                    <strong>Job Level</strong>
+                                </td>
+                                <td style="padding: 8px; border: 1px solid #000;">
+                                    <t t-esc="doc.job_id.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; border: 1px solid #000;">
+                                    <strong>Reporting Manager</strong>
+                                </td>
+                                <td style="padding: 8px; border: 1px solid #000;">
+                                    <t t-esc="doc.parent_id.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; border: 1px solid #000;">
+                                    <strong>Date of Joining</strong>
+                                </td>
+                                <td style="padding: 8px; border: 1px solid #000;">
+                                    <t t-esc="doc.joining_date.strftime('%d-%m-%Y') if doc.joining_date else ''"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px; border: 1px solid #000;">
+                                    <strong>Annual Compensation
+                                        <br/>
+                                        (in Digits)
+                                        <br/>
+                                        (in Words)
+                                    </strong>
+                                </td>
+                                <td style="padding: 8px; border: 1px solid #000;">
+                                    Rs.<t t-out="round(doc.contract_id.sudo().total_ctc_annum)"/>/-
+                                    <br/>
+                                    <br/>
+                                    <t t-out="doc.contract_id.sudo().total_ctc_in_words"/>
+                                    only
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <ol>
+                        <li>
+                            <p style="text-decoration: underline; font-weight: bold;">Role &amp; Responsibilities:</p>
+                            <ol type="a">
+                                <li>
+                                    <p style="text-align: justify;">
+                                        Your role and associated responsibilities shall be as detailed under Annexure I
+                                        of this Agreement. The Company shall have the right to reassign your reporting
+                                        to any other position as it deems fit.
+                                    </p>
+                                </li>
+                                <li>
+                                    <p style="text-align: justify">
+                                        During your employment with the Company, you will perform your duties faithfully
+                                        and to the best of your ability and you will devote your full business efforts
+                                        and time to the Company. You will discharge all your obligations and diligently
+                                        undertake all activities as required by the Company. You shall in the discharge
+                                        of your employment obligations behave in an honest and ethical manner.
+                                    </p>
+                                </li>
+                                <li>
+                                    <p style="text-align: justify">
+                                        During your employment with the Company, you will not engage in any other
+                                        activities that conflict with your obligations to the Company or the full
+                                        discharge of your duties with the Company, without the prior approval of the
+                                        Company. For the avoidance of doubt, it is not permitted for you to seek
+                                        alternative employment either whole time or part time, or associate with any
+                                        firm, person or organization as an advisor, director or partner, whether for
+                                        remuneration or not while you are an employee of the Company, unless otherwise
+                                        agreed in writing between you and the Company.
+                                    </p>
+                                </li>
+                            </ol>
+                        </li>
+                        <li>
+                            <p style="text-decoration: underline; font-weight: bold;">Employment Term</p>
+                            <ol type="a">
+                                <li>
+                                    <p style="text-align: justify;">
+                                        Subject to the termination rights specified in this Agreement, your employment
+                                        shall commence on the date of joining mention above and subject to your
+                                        successful confirmation on completion of probation as specified in Section 2(b)
+                                        shall continue till the event of your retirement as detailed herein. You will
+                                        retire from the employment of the Company on the last day in the month in which
+                                        you attain your sixtieth (60) birth anniversary.
+                                    </p>
+                                </li>
+                            </ol>
+                        </li>
+                        <li>
+                            <p style="text-decoration: underline; font-weight: bold;">Performance Review</p>
+                            <ol type="a">
+                                <li>
+                                    <p style="text-align: justify;">
+                                        An appraisal of your performance may be conducted by the Company on such
+                                        periodicity as the Company deems appropriate. Such appraisal may be used by the
+                                        Company in determination of any target bonuses, increments, incentives or other
+                                        reward mechanism. Any target bonuses, increments or other incentives may be
+                                        provided at the sole discretion of the Company.
+                                    </p>
+                                </li>
+                                <li>
+                                    <p style="text-align: justify;">
+                                        You hereby acknowledge that the salary paid under this Agreement is sufficient
+                                        consideration and the Company may at its discretion, provide additional benefits
+                                        from time to time which it may withdraw at its sole discretion upon notice.
+                                    </p>
+                                </li>
+                            </ol>
+                        </li>
+                        <li>
+                            <p style="text-decoration: underline; font-weight: bold;">Remuneration</p>
+                            <ol type="a">
+                                <li>
+                                    <p style="text-align: justify;">
+                                        Your annual compensation and break-up of your compensation shall be as detailed
+                                        under Annexure II of this Agreement.
+                                    </p>
+                                </li>
+                                <li>
+                                    <p style="text-align: justify;">
+                                        In addition to the compensation as laid down in Annexure II to this Agreement,
+                                        you may be entitled to such other benefits as may be granted by the Company, in
+                                        its sole discretion to employees of similar rank and position from time to time.
+                                        You may also be eligible for incentives based on the incentive scheme of the
+                                        Company as adopted by it and in accordance with any modifications to it made
+                                        from time to time.
+                                    </p>
+                                </li>
+                                <li>
+                                    <p style="text-align: justify;">
+                                        Your monthly compensation shall be paid by means of wire transfer.
+                                    </p>
+                                </li>
+                                <li>
+                                    <p style="text-align: justify;">
+                                        All payments made pursuant to this Agreement will be subject to withholding of
+                                        applicable taxes.
+                                    </p>
+                                </li>
+                            </ol>
+                        </li>
+                        <li>
+                            <p style="text-decoration: underline; font-weight: bold;">Place of Work</p>
+                            <ol type="a">
+                                <li>
+                                    <p style="text-align: justify;">
+                                        <!--change here work location-->
+                                        Your place of work will be <!--Bangalore-->
+                                        <br/>
+                                        However, you may be required to work in other locations in India or overseas
+                                    </p>
+                                </li>
+                                <li>
+                                    <p style="text-align: justify;">
+                                        You hereby consent to the transfer in your location, to provide services to the
+                                        Company’s customers, subsidiaries or affiliates, based on business needs. In
+                                        such an event, the Company will do its best to accommodate, solely at its
+                                        discretion, any requests or preferences that you may have with respect to
+                                        location or other matters in accordance with Company policy. In the event of
+                                        your transfer to another location, remuneration and other benefits shall be
+                                        determined in accordance with the Company's existing policies in that regard, at
+                                        its discretion.
+                                    </p>
+                                </li>
+                            </ol>
+                        </li>
+                        <li>
+                            <p style="text-decoration: underline; font-weight: bold;">Employee Benefits and Leave
+                                policies
+                            </p>
+                            <ol type="a">
+                                <li>
+                                    <p style="text-align: justify;">
+                                        During the term of your employment with the Company, you may be entitled to
+                                        participate in the employee benefit plans being put in place and hereafter will
+                                        be maintained by the Company if you meet the eligibility criteria as determined
+                                        by the Company, in its sole discretion. You understand that the Company reserves
+                                        the right to cancel or change the benefit plans and programs it offers to its
+                                        employees at any time, for any or no reason, and with or without notice.
+                                    </p>
+                                </li>
+                                <li>
+                                    <p style="text-align: justify;">
+                                        During the term of your employment with the Company, you will be entitled to
+                                        leave under the leave policies being put in place and hereafter will be
+                                        maintained by the Company of general applicability to similarly situated
+                                        employees of the Company. You understand that the Company reserves the right to
+                                        cancel or change the leave it offers to its employees at any time, for any or no
+                                        reason, with or without notice.
+                                    </p>
+                                </li>
+                            </ol>
+                        </li>
+                        <li>
+                            <p style="text-decoration: underline; font-weight: bold;">Confidentiality</p>
+                            <ol type="a">
+                                <li>
+                                    <p style="text-align: justify;">
+                                        During the course of your employment with the Company, it is likely that you
+                                        will come into possession of or become familiar (whether disclosed orally,
+                                        visually, in writing or howsoever) with the confidential or proprietary
+                                        technical, financial, marketing, distribution, training or other technical or
+                                        business information or trade secrets of the Company, including without
+                                        limitation, policies, business plans, go to market strategies, strategies in
+                                        general, employee details, contractor information, client information and data,
+                                        cost data, pricing information and other commercial terms, terms and conditions
+                                        of contracts and transactions between the clients/vendors and the Company,
+                                        business plans concepts, techniques, training, algorithms, processes, methods,
+                                        methodologies, systems, designs, computer programs, formulae, development or
+                                        experimental work, inventions, processes, protocols and work in progress (the
+                                        <b>“Confidential Information”</b>). You understand that you have access to such
+                                        information only by virtue of your employment with the Company and has a
+                                        continuing obligation to protect all such information from disclosure during and
+                                        post the termination of your employment with the Company.
+                                    </p>
+                                </li>
+                                <li>
+                                    <p style="text-align: justify;">
+                                        You hereby agree and undertake that you shall maintain strict confidentiality of
+                                        the Confidential Information and will not disclose or use any Confidential
+                                        Information except for the benefit of the Company and to the extent necessary to
+                                        perform your obligations to the Company, in the course of your employment. You
+                                        undertake that you shall not disclose the
+                                        Confidential Information to any person at any time during or after your
+                                        employment with the Company without the prior written approval of the Company.
+                                        You further agree that you will not claim or represent that you have any
+                                        interest by way of ownership, assignment or otherwise in the same. You further
+                                        undertake not to make copies of such Confidential Information except as
+                                        authorized by the Company.
+                                    </p>
+                                </li>
+                                <li>
+                                    <p style="text-align: justify;">
+                                        You shall, upon request or upon the termination of your employment relationship
+                                        with the Company howsoever occurring, promptly return to the Company all
+                                        materials, IT assets (including but not limited to laptops, computers, hard
+                                        drives), writings, equipment, models, materials, books, mechanisms, and the like
+                                        obtained from or through the Company, including,
+                                        but not limited to, all Confidential Information, all of which you acknowledge
+                                        is the sole and exclusive property of the Company.
+                                    </p>
+                                </li>
+                                <li>
+                                    <p style="text-align: justify;">
+                                        During employment with the Company, you shall not use improperly or disclose any
+                                        confidential or proprietary information or trade secrets of your former
+                                        employers, principals, partners, co-ventures, clients, customers or suppliers of
+                                        the vendors or customers of such persons or entities or their vendor or
+                                        customers and you shall not bring onto the premises of the Company or introduce
+                                        in the Company systems, any unpublished document or any property belonging to
+                                        any such persons or entities or their vendors or customers unless such persons
+                                        or entities have given their consent. You undertake that you shall not violate
+                                        any non- disclosure or proprietary rights agreement you may have signed with any
+                                        such person or entity.
+                                    </p>
+                                </li>
+                            </ol>
+                        </li>
+                        <li>
+                            <p style="text-decoration: underline; font-weight: bold;">Intellectual Property Rights</p>
+                            <ol type="a">
+                                <li>
+                                    <p style="text-align: justify;">
+                                        You acknowledge and agree that all inventions, improvements, discoveries,
+                                        methods, processes, developments, software and works of authorship, whether or
+                                        not patentable or copyrightable, which are created, made, conceived or reduced
+                                        to practice by you or under your direction or jointly with others during the
+                                        employment whether or not during normal working hours or on the premises of the
+                                        Company or any of its affiliates (all of which are collectively referred to
+                                        herein as <b>“Inventions”</b>) shall, upon creation, vest with the Company hence
+                                        shall
+                                        be the proprietary property of the Company. To the extent that the rights in the
+                                        Inventions do not vest in the Company, by contract or operation of law, you
+                                        hereby absolutely and unconditionally assign to the Company (or any person or
+                                        entity designated by the Company) all your right (including any and all
+                                        intellectual property rights), title and interest in and to all Inventions, as
+                                        and when such Inventions are created. Such assignment shall, to the extent
+                                        permissible by applicable law, be automatic, without requiring any further acts
+                                        by you or by the Company. You further agree to cooperate fully with the Company
+                                        to enable the Company to procure, maintain and enforce the intellectual property
+                                        rights in such Inventions and other works.
+                                    </p>
+                                </li>
+                            </ol>
+                        </li>
+                        <li>
+                            <p style="text-decoration: underline; font-weight: bold;">Consent to use Personal
+                                Information
+                            </p>
+                            <ol type="a">
+                                <li>
+                                    <p style="text-align: justify;">
+                                        You hereby consent to the collection of your personal information including but
+                                        not limited to your sensitive personal information by the Company for the
+                                        purposes of conducting background checks and verifications and for the
+                                        processing of your benefits while you are employed with the Company. You also
+                                        consent to the Company sharing your personal information with authorised third
+                                        parties for legitimate purposes in connection with the Company’s business in
+                                        compliance with applicable law.
+                                    </p>
+                                </li>
+                            </ol>
+                        </li>
+                        <li>
+                            <p style="text-decoration: underline; font-weight: bold;">Use of Email</p>
+                            <ol type="a">
+                                <li>
+                                    <p style="text-align: justify;">
+                                        It is strictly forbidden to use Ekara ’s email system for anything other than
+                                        legitimate business purposes. Under no circumstances personal email address to
+                                        be used to send official mail communication and vice versa. Inappropriate use of
+                                        personal email address for official communication and corporate email address
+                                        for personal communication can lead to disciplinary action up to and including
+                                        termination of employment.
+                                    </p>
+                                </li>
+                            </ol>
+                        </li>
+                        <li>
+                            <p style="text-decoration: underline; font-weight: bold;">Discipline</p>
+                            <ol type="a">
+                                <li>
+                                    <p style="text-align: justify;">
+                                        You will be governed by the Company’s rules, regulations and policies that are
+                                        updated and published from time to time.
+                                    </p>
+                                </li>
+                                <li>
+                                    <p style="text-align: justify;">
+                                        You are expected to maintain a high level of professionalism at all times,
+                                        whether within the Company premises or any other associated premises including
+                                        client and vendor premises.
+                                    </p>
+                                </li>
+                                <li>
+                                    <p style="text-align: justify;">
+                                        You shall not publicly criticize, defame or misrepresent the Company, its
+                                        employees, directors or other personnel and shall not, knowingly, conduct
+                                        yourself in a manner which may result in the Company’s name, image, goodwill or
+                                        business is tarnished.
+                                    </p>
+                                </li>
+                            </ol>
+                        </li>
+                        <div style="page-break-before: always;">
+                            <li>
+                                <p style="text-decoration: underline; font-weight: bold;">Termination:</p>
+                                <ol type="a">
+                                    <li>
+                                        <p style="text-align: justify;">
+                                            You may terminate this Agreement for convenience by providing sixty (60)
+                                            days
+                                            written notice. Provided that during your probation period, this notice
+                                            period
+                                            shall be thirty (30) days.
+                                        </p>
+                                    </li>
+                                    <li>
+                                        <p style="text-align: justify;">
+                                            The Company may terminate this Agreement during your probation period by
+                                            providing you with thirty (30) days written notice or salary in lieu of such
+                                            notice.
+                                        </p>
+                                    </li>
+                                    <li>
+                                        <p style="text-align: justify;">
+                                            After you have been confirmed, the Company may terminate your employment at
+                                            any
+                                            time by giving sixty (60) days written notice or salary in lieu of such
+                                            notice.
+                                        </p>
+                                    </li>
+                                    <li>
+                                        <p style="text-align: justify;">
+                                            Notwithstanding anything contained herein, the Company may in its sole
+                                            discretion, immediately terminate you for a breach of this Agreement,
+                                            non-performance, misconduct, failure to successfully complete any
+                                            performance
+                                            improvement plan or for any other disciplinary reasons. If the Company
+                                            believes
+                                            it is necessary as a party of any disciplinary proceedings or in order to
+                                            investigate a complaint against you, the Company may suspend you for so long
+                                            as
+                                            it may think fit without prejudice to the Company’s right to subsequently
+                                            terminate this Agreement on the same or any other ground.
+                                        </p>
+                                    </li>
+                                    <li>
+                                        <p style="text-align: justify;">
+                                            <strong style="text-decoration: underline;">Voluntary Termination:</strong>
+                                            On voluntary termination, you shall receive any accrued
+                                            but unpaid salary, benefits and all other payments on the next regularly
+                                            scheduled payroll date or as required by applicable law. However, the
+                                            Company
+                                            shall have the right to deduct any outstanding amounts owed by you to the
+                                            Company, as well as losses to the Company, directly arising out of your acts
+                                            of
+                                            omission or commission, and you, now irrevocably, authorize the Company to
+                                            deduct such outstanding amounts from your full and final settlement.
+                                        </p>
+                                    </li>
+                                    <li>
+                                        <p style="text-align: justify;">
+                                            <strong style="text-decoration: underline;">Involuntary Termination :
+                                            </strong>
+                                            If at any time, in the opinion of the Company, which
+                                            is final in this matter, you are found guilty of dishonesty, disobedience,
+                                            disorderly behaviour, negligence, indiscipline, absence from duty without
+                                            prior
+                                            permission, committing a breach of any of the terms, conditions and
+                                            stipulations
+                                            contained in the appointment letter and on your part to be observed and
+                                            performed or in violation of one or more terms of the said letter, or any
+                                            other
+                                            conduct considered by the Company as being detrimental to its interests,
+                                            your
+                                            services are liable to be terminated forthwith, without any notice nor
+                                            salary in
+                                            lieu of notice period. Without prejudice to any other action, rights or
+                                            remedies
+                                            available to the Company by law, you shall be liable to make good any
+                                            consequent
+                                            damage or loss caused, and you shall irrevocably, authorize the Company to
+                                            deduct all such damages or losses from your full and final settlement.
+                                            Further,
+                                            to the extent permitted by applicable law, you may forfeit any arrears or
+                                            benefits, at the discretion of the Company.
+                                        </p>
+                                    </li>
+                                    <li>
+                                        <p style="text-align: justify;">
+                                            On the termination of your employment, you shall immediately deliver to the
+                                            Company, all materials and equipment of the Company or any other property
+                                            relating to the Company or its business which are in your possession. For
+                                            the
+                                            purpose of clarity, you shall vacate any accommodation, if any provided by
+                                            the
+                                            Company, return computing equipment, mobile phones, credit cards or any
+                                            other
+                                            Company provided material or equipment.
+                                        </p>
+                                    </li>
+                                    <li>
+                                        <p style="text-align: justify;">
+                                            During any period of notice of termination, whether such notice has been
+                                            given
+                                            by the Company or by you, the Company shall have the right to assign or
+                                            reduce
+                                            your duties.
+                                        </p>
+                                    </li>
+                                    <li>
+                                        <p style="text-align: justify;">
+                                            At all times during any period of notice of termination served in accordance
+                                            hereunder, you shall continue to be bound by the same obligations as were
+                                            owed
+                                            to the Company prior to the commencement of the notice period and the
+                                            Company
+                                            shall continue to pay you in accordance with the entitlements under this
+                                            Agreement.
+                                        </p>
+                                    </li>
+                                </ol>
+                            </li>
+                            <li>
+                                <p style="text-decoration: underline; font-weight: bold;">Non- Competition</p>
+                                <ol type="a">
+                                    <li>
+                                        <p style="text-align: justify;">
+                                            You undertake to the Company that during the period of your employment with
+                                            the
+                                            Company and for a further period of twelve (12) months from the date you
+                                            ceases
+                                            to be in the employment of the Company (<b>“Non-Compete Period”</b>), you
+                                            shall
+                                            refrain, either directly or indirectly, from engaging in any similar or
+                                            Competing Business as that of the Company or its affiliates, either as an
+                                            individual, independent contractor, unit holder member, principal, agent,
+                                            partner, director, employee, secondee, consultant, advisor in of or to any
+                                            person who carries it on except on behalf of the Company. For the purposes
+                                            of
+                                            this Clause, <b>“Competing Business”</b> shall mean, directly or indirectly,
+                                            engaged in
+                                            the business same as the Company’s.
+                                        </p>
+                                    </li>
+                                </ol>
+                            </li>
+                            <li>
+                                <p style="text-decoration: underline; font-weight: bold;">Training</p>
+                                <ol type="a">
+                                    <li>
+                                        <p style="text-align: justify;">
+                                            You acknowledge that the Company shall be providing training for the
+                                            betterment
+                                            of your professional skills at the time of joining of the Company’s
+                                            employment.
+                                            You further acknowledge that the Company shall be incurring expenditure and
+                                            considerable efforts for training and the Company would incur loss should
+                                            you
+                                            leave the services of the Company during the Expected Employment Period.
+                                            <b>“Expected Employment Period”</b>
+                                            means the period of a minimum of one (1) year
+                                            after
+                                            the training is completed.
+                                        </p>
+                                    </li>
+                                    <li>
+                                        <p style="text-align: justify;">
+                                            You hereby undertake to remain in Company’s employment for the Expected
+                                            Employment Period. Should you elect to resign from the Company during the
+                                            Expected Employment Period, you agree that the Company shall be entitled to
+                                            recover the actual expenditure incurred on your training, which shall in the
+                                            aggregate, not exceed the equivalent of one (1) year salary.
+                                        </p>
+                                    </li>
+                                </ol>
+                            </li>
+                            <li>
+                                <p style="text-decoration: underline; font-weight: bold;">Non-Solicit</p>
+                                <p>During the course of employment and for a period of twelve (12) months following the
+                                    termination of employment with the Company you shall refrain from:
+                                </p>
+                                <ol type="a">
+                                    <li>
+                                        <p style="text-align: justify;">
+                                            either directly or indirectly solicit, render services to or for, or accept
+                                            from, anyone who is a client, customer, or a supplier of the Company
+                                            (whether
+                                            present or future), any business of the type performed by the Company, or
+                                            persuade or attempt in any manner to persuade any client, customer, or
+                                            supplier
+                                            of the Company to cease to do business or to reduce the amount of business
+                                            which
+                                            any such client, customer, or supplier has customarily done or is reasonably
+                                            expected to do with the Company;
+                                        </p>
+                                    </li>
+                                    <li>
+                                        <p style="text-align: justify;">
+                                            employ as an employee or retain as a consultant any person (including
+                                            individual, firm, corporation or other form of entity) who is then or at any
+                                            time during the One (1) year period prior to the date of the purported
+                                            solicitation was, an employee of or exclusive consultant to the Company, or
+                                            persuade or attempt to persuade any employee of, or exclusive consultant to,
+                                            the
+                                            Company, to leave the employment of the Company or to become employed as an
+                                            employee or retained as a consultant by any other person.
+                                        </p>
+                                    </li>
+                                </ol>
+                            </li>
+                            <div style="page-break-before: always;"></div>
+                            <li>
+                                <p style="text-decoration: underline; font-weight: bold;">Acknowledgement</p>
+                                <ol type="a">
+                                    <li>
+                                        <p style="text-align: justify;">
+                                            You agree and acknowledge that the terms of Sections 12, 13 and 14 are
+                                            reasonable terms required to protect the legitimate business interests of
+                                            the
+                                            Company. You further agree that your employment with the Company and the
+                                            training imparted to you constitute sufficient consideration for your
+                                            assumption
+                                            of these obligations.
+                                        </p>
+                                    </li>
+                                </ol>
+                            </li>
+                            <li>
+                                <p style="text-decoration: underline; font-weight: bold;">Non-Assignment</p>
+                                <ol type="a">
+                                    <li>
+                                        <p style="text-align: justify;">
+                                            Your interests under this Agreement are not subject to the claims of
+                                            creditors
+                                            and your successors and may not be assigned, alienated or encumbered.
+                                        </p>
+                                    </li>
+                                </ol>
+                            </li>
+                            <li>
+                                <p style="text-decoration: underline; font-weight: bold;">Successor</p>
+                                <ol type="a">
+                                    <li>
+                                        <p style="text-align: justify;">
+                                            This Agreement shall be binding and inure to the benefit of any successor to
+                                            the
+                                            Company. Any such successor of the Company shall be deemed substitute for
+                                            the
+                                            Company under the terms of this Agreement for all purposes.
+                                        </p>
+                                    </li>
+                                </ol>
+                            </li>
+                            <li>
+                                <p style="text-decoration: underline; font-weight: bold;">Modification</p>
+                                <ol type="a">
+                                    <li>
+                                        <p style="text-align: justify;">
+                                            Any modification of this Agreement or additional obligation assumed by
+                                            either
+                                            party in connection with this Agreement shall be binding only if evidenced
+                                            in
+                                            writing signed by each party or an authorized representative of each party.
+                                        </p>
+                                    </li>
+                                </ol>
+                            </li>
+                            <li>
+                                <p style="text-decoration: underline; font-weight: bold;">Severability</p>
+                                <ol type="a">
+                                    <li>
+                                        <p style="text-align: justify;">
+                                            Each provision/paragraph of this Agreement shall be and remain separate from
+                                            and
+                                            independent of and severable from all and any other provisions/paragraphs
+                                            herein
+                                            except where otherwise indicated by the context of the Agreement. The
+                                            decision
+                                            or declaration that one or more of the provisions/paragraphs are null and
+                                            void
+                                            shall have no effect on the remaining paragraphs of this Agreement. If any
+                                            provision/paragraph of this Agreement is held to be invalid, illegal or
+                                            unenforceable for any reason, such provision/paragraph shall be separable
+                                            from
+                                            the remainder of the provisions hereof which shall continue in full force
+                                            and
+                                            effect as if this Agreement had been executed with the invalid
+                                            provisions/paragraphs eliminated.
+                                        </p>
+                                    </li>
+                                </ol>
+                            </li>
+                            <li>
+                                <p style="text-decoration: underline; font-weight: bold;">Applicable Law</p>
+                                <ol type="a">
+                                    <li>
+                                        <p style="text-align: justify;">
+                                            The validity, interpretation, construction and performance of this Agreement
+                                            shall be governed by the Laws of India. Any and all disputes that arise from
+                                            this Agreement shall be subject to the exclusive jurisdiction of the
+                                            competent
+                                            courts in Bangalore, India.
+                                        </p>
+                                    </li>
+                                </ol>
+                            </li>
+                            <li>
+                                <p style="text-decoration: underline; font-weight: bold;">Timings/Work week:</p>
+                                <ol type="a">
+                                    <li>
+                                        <p style="text-align: justify;">
+                                            9:00AM to 5:30PM from Monday to Saturday every week, with the exception of
+                                            National &amp; festival holidays as declared.
+                                        </p>
+                                    </li>
+                                </ol>
+                            </li>
+                        </div>
+                    </ol>
+                    <div style="page-break-before: always;">
+                        <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 14px;">
+                            <tr>
+                                <td colspan="3" style="padding: 10px; font-family: Arial, sans-serif;">
+                                    <div style="text-align: center; font-weight: bold; text-decoration: underline; margin-bottom: 10px;">
+                                        ANNEXURE I
+                                    </div>
+                                    <div style="margin-bottom: 5px;">
+                                        <b>Name:</b>
+                                        <span t-esc="doc.name or 'N/A'"/>
+                                    </div>
+                                    <div style="margin-bottom: 5px;">
+                                        <b>Designation:</b>
+                                        <span t-esc="doc.job_title or 'N/A'"/>
+                                    </div>
+                                    <div style="margin-bottom: 5px;">
+                                        <b>Job Level:</b>
+                                        <span t-esc="doc.job_id.name or 'N/A'"/>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3"
+                                    style="text-align: center; font-weight: bold; text-decoration: underline; padding: 10px;">
+                                    <b>Salary Structure with effect from
+                                        <t t-esc="doc.joining_date.strftime('%d-%m-%Y') if doc.joining_date else ''"/>
+                                    </b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center; font-weight: bold; padding: 10px; border: 1px solid #000; background-color: #add8e6;">
+                                    <b>Particulars</b>
+                                </td>
+                                <td style="text-align: center; font-weight: bold; padding: 10px; border: 1px solid #000; background-color: #add8e6;">
+                                    <b>Per Annum</b>
+                                </td>
+                                <td style="text-align: center; font-weight: bold; padding: 10px; border: 1px solid #000; background-color: #add8e6;">
+                                    <b>Per Month</b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" style="padding: 10px; border: 1px solid #000; font-weight: bold;">Part -
+                                    A
+                                    (Fixed Pay)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #000;">Basic and DA</td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.contract_id.sudo().basic_da_per_annum or 0.0)"/>
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.contract_id.sudo().basic_da_per_month or 0.0)"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #000;">House Rent Allowance</td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.contract_id.sudo().hra_per_annum or 0.0)"/>
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.contract_id.sudo().hra_per_month or 0.0)"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #000;">Special Allowance</td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.contract_id.sudo().special_allowance_per_annum or 0.0)"/>
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.contract_id.sudo().special_allowance_per_month or 0.0)"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6;">
+                                    Sub-total (Part A)
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.contract_id.sudo().sub_total_a_per_annum or 0.0)"/>
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.contract_id.sudo().sub_total_a_per_month or 0.0)"/>
+                                </td>
+                            </tr>
+                            <!-- Details: Part B -->
+                            <tr>
+                                <td colspan="3" style="padding: 10px; border: 1px solid #000; font-weight: bold;">
+                                    Part – B (Statutory Payments)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #000;">Statutory Bonus</td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.contract_id.sudo().statutory_bonus_per_annum or 0.0)"/>
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.contract_id.sudo().statutory_bonus_per_month or 0.0)"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #000;">Provident Fund (Employer's
+                                    Contribution)
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.contract_id.sudo().pf_employer_per_annum or 0.0)"/>
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.contract_id.sudo().pf_employer_per_month or 0.0)"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #000;">ESIC (Employer's Contribution)</td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.contract_id.sudo().esic_employer_per_annum or 0.0)"/>
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.contract_id.sudo().esic_employer_per_month or 0.0)"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6;">
+                                    Sub-total (Part B)
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.contract_id.sudo().sub_total_b_per_annum or 0.0)"/>
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.contract_id.sudo().sub_total_b_per_month or 0.0)"/>
+                                </td>
+                            </tr>
+
+
+                            <!-- Details: Part C -->
+                            <tr>
+                                <td colspan="3" style="padding: 10px; border: 1px solid #000; font-weight: bold;">Part –
+                                    C
+                                    (Variable Pay)
+                                </td>
+                            </tr>
+                            <!--                            <tr>-->
+                            <!--                                <td style="padding: 10px; border: 1px solid #000;">Store Performance Incentive</td>-->
+                            <!--                                <td style="padding: 10px; border: 1px solid #000; text-align: right">-->
+                            <!--                                    <t t-set="annual_store_performance_incentive"-->
+                            <!--                                       t-value="doc.applicant_id.annual_store_performance_incentive or 0.0"/>-->
+                            <!--                                    <t t-esc="'{:,}'.format(annual_store_performance_incentive)"/>-->
+                            <!--                                </td>-->
+                            <!--                                <td style="padding: 10px; border: 1px solid #000; text-align: right">-->
+                            <!--                                    <t t-esc="'{:,}'.format(round(annual_store_performance_incentive / 12))"/>-->
+                            <!--                                </td>-->
+                            <!--                            </tr>-->
+                            <!--                            <tr>-->
+                            <!--                                <td style="padding: 10px; border: 1px solid #000;">Monthly Performance Incentive</td>-->
+                            <!--                                <td style="padding: 10px; border: 1px solid #000; text-align: right">-->
+                            <!--                                    <t t-set="monthly_performance_incentive"-->
+                            <!--                                       t-value="doc.applicant_id.monthly_performance_incentive or 0.0"/>-->
+                            <!--                                    <t t-esc="'{:,}'.format(monthly_performance_incentive)"/>-->
+                            <!--                                </td>-->
+                            <!--                                <td style="padding: 10px; border: 1px solid #000; text-align: right">-->
+                            <!--                                    <t t-esc="'{:,}'.format(round(monthly_performance_incentive / 12))"/>-->
+                            <!--                                </td>-->
+                            <!--                            </tr>-->
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #000;">Performance Linked Variable Pay*</td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.contract_id.sudo().variable_pay_per_annum or 0.0)"/>
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.contract_id.sudo().variable_pay_per_month or 0.0)"/>
+                                </td>
+                            </tr>
+                            <!--                            <tr>-->
+                            <!--                                <td style="padding: 10px; border: 1px solid #000;">Performance Linked Pay</td>-->
+                            <!--                                <td style="padding: 10px; border: 1px solid #000; text-align: right">-->
+                            <!--                                    <t t-set="annual_performance_linked_pay"-->
+                            <!--                                       t-value="doc.applicant_id.annual_performance_linked_pay or 0.0"/>-->
+                            <!--                                    <t t-esc="'{:,}'.format(annual_performance_linked_pay)"/>-->
+                            <!--                                </td>-->
+                            <!--                                <td style="padding: 10px; border: 1px solid #000; text-align: right">-->
+                            <!--                                    <t t-esc="'{:,}'.format(round(annual_performance_linked_pay / 12))"/>-->
+                            <!--                                </td>-->
+                            <!--                            </tr>-->
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6;">
+                                    Sub-total (Part C)
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.contract_id.sudo().sub_total_c_per_annum or 0.0)"/>
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.contract_id.sudo().sub_total_c_per_month or 0.0)"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6;">
+                                    TOTAL SALARY (A + B + C)
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.contract_id.sudo().total_salary_per_annum or 0.0)"/>
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.contract_id.sudo().total_salary_per_month or 0.0)"/>
+                                </td>
+                            </tr>
+                            <!--                        </table>-->
+                            <!--                        <div style="page-break-before: always;"></div>-->
+                            <!-- Details: Part D -->
+                            <!--                        <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 14px;">-->
+                            <tr>
+                                <td colspan="3" style="padding: 10px; border: 1px solid #000; font-weight: bold;">Part D
+                                    (Other Benefits)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #000;">Medical Insurance*</td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.contract_id.sudo().medical_insurances or 0.0)"/>
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">-</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #000;">Group Personal Accidental
+                                    Insurance**
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.contract_id.sudo().group_personal_acc_insurance or 0.0)"/>
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">-</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #000;">Health Benefit Plan***
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.contract_id.sudo().health_ben_plan or 0.0)"/>
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">-</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6;">
+                                    Sub-total (Part D)
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.contract_id.sudo().sub_total_d or 0.0)"/>
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6; text-align: right">
+                                    -
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6;">
+                                    Total Cost to the Company (A + B + C + D)
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.contract_id.sudo().total_ctc_annum or 0.0)"/>
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.contract_id.sudo().total_ctc_month or 0.0)"/>
+                                </td>
+                            </tr>
+                        </table>
+                        <div style="font-size:13px; margin-top:10px;">
+                            <b>*Payable as per the policy of the company</b>
+                            <br/>
+                            <br/>
+                            <b>**Medical and Accidental Insurance applicable as per the company policy</b>
+                            <br/>
+                            <br/>
+                            <b>***Apart from the above, you will be eligible for gratuity, leave, and other benefits as
+                                per
+                                the company policy
+                            </b>
+                        </div>
+
+                        <div style="margin-top:75px">
+                            <span style="display: inline-block; width: 45%; text-align: left;">
+                                <b>Authorised Signatory</b>
+                            </span>
+                            <span style="display: inline-block; width: 45%; text-align: right;">
+                                <b>Acknowledgement (By Employee)</b>
+                            </span>
+                        </div>
+
+                        <div style="margin-top: 0px;">
+                            <span style="display: inline-block; width: 45%; text-align: left;">
+                                <b>Head – Human Resources</b>
+                            </span>
+                        </div>
+                    </div>
+                    <div style="page-break-before: always;">
+                        <div style="text-align: center; margin-top: 20px;">
+                            <b>
+                                <h4 style="text-decoration: underline;">Annexure II</h4>
+                            </b>
+                            <b>
+                                <h5 style="text-decoration: underline;">ROLES AND RESPONSIBILITIES</h5>
+                            </b>
+                        </div>
+                        <br/>
+                        <p>
+                            A Job description will be issued to you citing the roles and responsibilities in detail.
+                        </p>
+                        <p>
+                            In addition to the roles and responsibilities listed in the Job Description, you may be
+                            assigned with additional responsibilities associated with your role in the Company.
+                        </p>
+                        <p>
+                            <strong>Wishing you a prosperous career at Solis Health.,</strong>
+                        </p>
+                        <div style="margin-top:150px">
+                            <span style="display: inline-block; width: 45%; text-align: left;">
+                                <b>Authorised Signatory</b>
+                            </span>
+                            <span style="display: inline-block; width: 45%; text-align: right;">
+                                <b>Acknowledgement (By Employee)</b>
+                            </span>
+                        </div>
+
+                        <div style="margin-top: 0px;">
+                            <span style="display: inline-block; width: 45%; text-align: left;">
+                                <b>Head – Human Resources</b>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </t>
+        <!--        </t>-->
+    </template>
+</odoo>

@@ -1,0 +1,537 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="paperformat_performance_impvmt_pdf_A4" model="report.paperformat">
+        <field name="name">Performance Improvement Form</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">50</field>
+        <field name="margin_bottom">25</field>
+        <field name="margin_left">15</field>
+        <field name="margin_right">15</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">48</field>
+        <field name="dpi">90</field>
+    </record>
+    <record id="performance_impvmt_report" model="ir.actions.report">
+        <field name="name">Performance Improvement Plan</field>
+        <field name="model">hr.pip</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_appraisal_extended.print_performance_impvmt</field>
+        <field name="report_file">hr_appraisal_extended.print_performance_impvmt</field>
+        <field name="paperformat_id" ref="hr_appraisal_extended.paperformat_performance_impvmt_pdf_A4"/>
+        <field name="print_report_name">'Performance Improvement Plan'</field>
+        <field name="binding_model_id" ref="hr_appraisal_extended.model_hr_pip"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="print_performance_impvmt">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <t t-foreach="docs" t-as="doc">
+                    <div class="page" style="margin:0;">
+                        <p>
+                            <H4 style="text-align: center; font-weight: bold;">Performance Improvement Plan (PIP)</H4>
+                            <H6 style="text-align: center; font-weight: bold;">Confidential</H6>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <H6>
+                                <b>TO:</b>
+                                <span style="margin-left: 10px;">
+                                    <t t-esc="doc.employee_id.name"/>
+                                </span>
+                                <br/>
+                                <b>FROM DATE:</b>
+                                <span style="margin-left: 10px;">
+                                    <t t-esc="doc.start_date"/>
+                                </span>
+                                <br/>
+                                <b>RE:</b>
+                                <span style="margin-left: 10px;">Performance Improvement Plan (PIP)</span>
+                            </H6>
+                            <br/>
+                            <br/>
+                            <span>The purpose of this Performance Improvement Plan (PIP) is to define serious areas of
+                                concern,
+
+                                gaps in your work performance, reiterate <b>DEPARTMENT</b> expectations, and allow you
+                                the
+
+                                opportunity to demonstrate improvement and commitment.
+                            </span>
+                            <br/>
+                            <br/>
+                            <div style="width: 900px; height: 150px; border: 2px solid black;
+                box-shadow: 0px -5px 10px rgba(0, 0, 0, 0.2);
+                text-align: center; position: relative; padding-top: 20px;">
+                                <!-- Checkboxes -->
+                                <label style="position: absolute; top: 20px; left: 20px;">
+                                    <input type="checkbox">
+                                        <t t-esc="doc.areas_of_concern"/>
+                                    </input>
+
+                                </label>
+                            </div>
+                            <!--                        <div style="width: 900px; height: 100px; border: 2px solid black;-->
+                            <!--                box-shadow: 0px -5px 10px rgba(0, 0, 0, 0.2);-->
+                            <!--                text-align: center; line-height: 100px; position: relative;">-->
+                            <!--                            <label style="position: absolute; top: 20px; left: 20px;">-->
+                            <!--                                <input type="checkbox"></input>-->
+                            <!--                                Option 1-->
+                            <!--                            </label>-->
+                            <!--                            <label style="position: absolute; top: 50px; left: 20px;">-->
+                            <!--                                <input type="checkbox"></input>-->
+                            <!--                                Option 2-->
+                            <!--                            </label>-->
+                            <!--                            <label style="position: absolute; top: 80px; left: 20px;">-->
+                            <!--                                <input type="checkbox"></input>-->
+                            <!--                                Option 3-->
+                            <!--                            </label>-->
+                            <!--                            &lt;!&ndash;                            <input type="checkbox" style="position: absolute; top: 10px; left: 10px;"></input><br/>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                            <input type="checkbox" style="position: absolute; top: 10px; left: 10px;"></input><br/>&ndash;&gt;-->
+                            <!--                            &lt;!&ndash;                            <input type="checkbox" style="position: absolute; top: 10px; left: 10px;"></input>&ndash;&gt;-->
+
+                            <!--                        </div>-->
+                            <br/>
+                            <br/>
+                            <h5 style="">
+                                <b>Observations, Previous Discussions or Counselling:</b>
+                            </h5>
+                            <br/>
+                            <br/>
+                            <div style="width: 900px; height: 150px; border: 2px solid black;
+                box-shadow: 0px -5px 10px rgba(0, 0, 0, 0.2);
+                line-height: 100px; position: relative;">
+                                <span style="margin-left: 10px;">
+                                    <t t-esc="doc.observations"/>
+                                </span>
+                            </div>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <div style="page-break-before: always;">
+                            </div>
+                            <span>
+                                <b>Step 1: Improvement Goals:</b>
+                                These are the goals related to areas of concern to be improved
+                                and addressed:
+                            </span>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <table style="width: 100%; border-collapse: collapse; border: 1px solid black;">
+                                <t t-set="s_no" t-value="1"/>
+                                <tr t-foreach="doc.improvement_goal_ids" t-as="imp" style="border: 1px solid black;">
+                                    <td style="text-align: center; font-weight: bold; padding: 10px; width: 20%; border: 1px solid black;">
+                                        <t t-esc="s_no"/>
+                                    </td>
+                                    <td style="text-align: center; font-weight: bold; padding: 10px; width: 20%; border: 1px solid black;">
+                                        <t t-esc="imp.name"/>
+                                    </td>
+                                    <t t-set="s_no" t-value="s_no + 1"/>
+
+                                </tr>
+                            </table>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <span>
+                                <b>Step 2: Activity Goals:</b>
+                                Listed below are activities that will help you reach each the Goal:
+                            </span>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <table style="width: 100%; border-collapse: collapse; border: 1px solid black;">
+                                <tr style="border: 1px solid black;">
+                                    <th style="text-align: center; font-weight: bold; padding: 10px; width: 20%; border: 1px solid black;">
+                                        Goal #
+                                    </th>
+                                    <th style="text-align: center; font-weight: bold; padding: 10px; width: 20%; border: 1px solid black;">
+                                        Activity
+                                    </th>
+                                    <th style="text-align: center; font-weight: bold; padding: 10px; width: 20%; border: 1px solid black;">
+                                        How to Accomplish
+                                    </th>
+                                    <th style="text-align: center; font-weight: bold; padding: 10px; width: 20%; border: 1px solid black;">
+                                        Start Date
+                                    </th>
+                                    <th style="text-align: center; font-weight: bold; padding: 10px; width: 20%; border: 1px solid black;">
+                                        Projected Completion Date
+                                    </th>
+                                </tr>
+                                <tr t-foreach="doc.activity_goal_ids" t-as="act" style="border: 1px solid black;">
+                                    <td style="text-align: center; padding: 10px; width: 20%; border: 1px solid black;">
+                                        <t t-esc="act.goal"/>
+                                    </td>
+                                    <td style="text-align: center; padding: 10px; width: 20%; border: 1px solid black;">
+                                        <t t-esc="act.activity"/>
+                                    </td>
+                                    <td style="text-align: center; padding: 10px; width: 20%; border: 1px solid black;">
+                                        <t t-esc="act.how_to"/>
+                                    </td>
+                                    <td style="text-align: center; padding: 10px; width: 20%; border: 1px solid black;">
+                                        <t t-esc="act.start_date"/>
+                                    </td>
+                                    <td style="text-align: center; padding: 10px; width: 20%; border: 1px solid black;">
+                                        <t t-esc="act.completion_date"/>
+                                    </td>
+                                </tr>
+
+                            </table>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <span>
+                                <b>Step 3: Resources:</b>
+                                Listed below are resources available to you to complete your
+                                <br/>
+                                Improvement activities.
+                            </span>
+                            <br/>
+                            <br/>
+                            <table style="width: 100%; border-collapse: collapse; border: 1px solid black;">
+                                <t t-set="r_s_no" t-value="1"/>
+                                <tr t-foreach="doc.resource_ids" t-as="res" style="border: 1px solid black;">
+                                    <td style="text-align: center; font-weight: bold; padding: 10px; width: 20%; border: 1px solid black;">
+                                        <t t-esc="r_s_no"/>
+                                    </td>
+                                    <td style="text-align: center; font-weight: bold; padding: 10px; width: 20%; border: 1px solid black;">
+                                        <t t-esc="res.name"/>
+                                    </td>
+                                    <t t-set="r_s_no" t-value="r_s_no + 1"/>
+                                </tr>
+
+                            </table>
+                            <br/>
+                            <br/>
+                            <span>
+                                <b>Step 4: Expectations:</b>
+                                The following performance standards must be accomplished to
+                                demonstrate progress towards achievement of each Improvement goal:
+                            </span>
+                            <br/>
+                            <br/>
+                            <table style="width: 100%; border-collapse: collapse; border: 1px solid black;">
+                                <t t-set="e_s_no" t-value="1"/>
+                                <tr t-foreach="doc.expectation_ids" t-as="exp" style="border: 1px solid black;">
+                                    <td style="text-align: center; font-weight: bold; padding: 10px; width: 20%; border: 1px solid black;">
+                                        <t t-esc="e_s_no"/>
+                                    </td>
+                                    <td style="text-align: center; font-weight: bold; padding: 10px; width: 20%; border: 1px solid black;">
+                                        <t t-esc="exp.name"/>
+                                    </td>
+                                    <t t-set="e_s_no" t-value="e_s_no + 1"/>
+                                </tr>
+
+                            </table>
+                            <br/>
+                            <br/>
+                            <div style="page-break-before: always;">
+                            </div>
+                            <span>
+                                <b>Step 5 Progress Checkpoints:</b>
+                                The following schedule will be used to evaluate your progress
+                                in meeting your Improvement activities.
+                            </span>
+                            <br/>
+                            <br/>
+                            <table style="width: 100%; border-collapse: collapse; border: 1px solid black;">
+                                <tr style="border: 1px solid black;">
+                                    <th style="text-align: center; font-weight: bold; padding: 10px; width: 20%; border: 1px solid black;">
+                                        Goal #
+                                    </th>
+                                    <th style="text-align: center; font-weight: bold; padding: 10px; width: 20%; border: 1px solid black;">
+                                        Activity
+                                    </th>
+                                    <th style="text-align: center; font-weight: bold; padding: 10px; width: 20%; border: 1px solid black;">
+                                        Checkpoint Date
+                                    </th>
+                                    <th style="text-align: center; font-weight: bold; padding: 10px; width: 20%; border: 1px solid black;">
+                                        Type of Follow-up (Email
+                                        memo/call/meeting)
+                                    </th>
+                                    <th style="text-align: center; font-weight: bold; padding: 10px; width: 20%; border: 1px solid black;">
+                                        Progress Expected
+                                    </th>
+                                    <th style="text-align: center; font-weight: bold; padding: 10px; width: 20%; border: 1px solid black;">
+                                        Notes
+                                    </th>
+                                </tr>
+                                <tr t-foreach="doc.progress_checkpoint_ids" t-as="prog"
+                                    style="border: 1px solid black;">
+                                    <td style="text-align: center; padding: 10px; width: 20%; border: 1px solid black;">
+                                        <t t-esc="prog.goal"/>
+                                    </td>
+                                    <td style="text-align: center; padding: 10px; width: 20%; border: 1px solid black;">
+                                        <t t-esc="prog.activity"/>
+                                    </td>
+                                    <td style="text-align: center; font-weight: bold; padding: 10px; width: 20%; border: 1px solid black;">
+                                        <t t-esc="prog.checkpoint_date"/>
+                                    </td>
+                                    <td style="text-align: center; padding: 10px; width: 20%; border: 1px solid black;">
+                                        <t t-esc="prog.followup_type"/>
+                                    </td>
+                                    <td style="text-align: center; padding: 10px; width: 20%; border: 1px solid black;">
+                                        <t t-esc="prog.progress_expected"/>
+                                    </td>
+                                    <td style="text-align: center; padding: 10px; width: 20%; border: 1px solid black;">
+                                        <t t-esc="prog.notes"/>
+                                    </td>
+
+                                </tr>
+
+                            </table>
+                            <br/>
+                            <br/>
+                            <span>
+                                <b>Follow-up Updates:</b>
+                                You will receive feedback on your progress according to the following schedule:
+                            </span>
+                            <br/>
+                            <br/>
+                            <table style="width: 100%; border-collapse: collapse; border: 1px solid black;">
+                                <tr style="border: 1px solid black;">
+                                    <th style="text-align: center; font-weight: bold; padding: 10px; width: 20%; border: 1px solid black;">
+                                        Date
+                                        Scheduled
+                                    </th>
+                                    <th style="text-align: center; font-weight: bold; padding: 10px; width: 20%; border: 1px solid black;">
+                                        Activity
+                                    </th>
+                                    <th style="text-align: center; font-weight: bold; padding: 10px; width: 20%; border: 1px solid black;">
+                                        Conducted By
+                                    </th>
+                                    <th style="text-align: center; font-weight: bold; padding: 10px; width: 20%; border: 1px solid black;">
+                                        Completion Date
+                                    </th>
+                                </tr>
+                                <tr t-foreach="doc.activities_ids" t-as="act" style="border: 1px solid black;">
+                                    <td style="text-align: center; padding: 10px; width: 20%; border: 1px solid black;">
+                                        <t t-esc="act.date_schedule"/>
+                                    </td>
+                                    <td style="text-align: center; padding: 10px; width: 20%; border: 1px solid black;">
+                                        <t t-esc="act.activity_memo"/>
+                                    </td>
+                                    <td style="text-align: center; padding: 10px; width: 20%; border: 1px solid black;">
+                                        <t t-esc="act.conducted_by.name"/>
+                                    </td>
+                                    <td style="text-align: center; padding: 10px; width: 20%; border: 1px solid black;">
+                                        <t t-esc="act.completion_date"/>
+                                    </td>
+                                </tr>
+
+                            </table>
+                            <br/>
+                            <br/>
+                            <h6>
+                                <b>Timeline for Improvement, Consequences &amp; Expectations:</b>
+                            </h6>
+                            <br/>
+                            <br/>
+                            <span>Effective immediately, you are placed on a 90-day PIP. During this time, you will be
+                                expected to
+
+                                make regular progress on the plan outlined above. Failure to meet or exceed these
+
+                                expectations, or any display of gross misconduct will result in further disciplinary
+                                action,
+                                up to
+
+                                and including termination. In addition, if there is no significant improvement to
+                                indicate
+                                that the
+
+                                expectations and goals will be met within the timeline indicated in this PIP, your
+                                employment
+
+                                may be terminated prior to 90 days. Furthermore, failure to maintain performance
+                                expectations
+
+                                after the completion of the PIP may result in additional disciplinary action up to and
+                                including
+
+                                termination.
+                                <br/>
+                                <br/>
+
+                                The PIP does not alter the employment-at-will relationship. Additionally, the contents
+                                of
+                                this PIP
+
+                                are to remain confidential. Should you have questions or concerns regarding the content,
+                                you
+
+                                will be expected to follow up directly with me.
+                                <br/>
+                                <br/>
+                                We will meet again on as noted above to discuss your Performance Improvement Plan.
+                                Please schedule accordingly.
+                            </span>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <div style="text-align:left;">
+                                <text>
+                                    <b>Signatures:</b>
+                                </text>
+                            </div>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <div style="text-align:left;">
+                                <text>
+                                    <b>Employee Name:</b>
+                                    <span style="margin-left: 10px;">
+                                        <t t-esc="doc.employee_sign_id.name"/>
+                                    </span>
+                                </text>
+                            </div>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <div style="text-align:left;">
+                                <text>
+                                    <b>Employee Signature:</b>
+                                    <t t-if="doc.employee_signature">
+                                        <img t-att-src="'data:image/png;base64,' + doc.employee_signature.decode('utf-8')"
+                                             style="max-width: 125px;"/>
+                                    </t>
+                                    <t t-else="">
+                                        <span>No signature available</span>
+                                    </t>
+                                </text>
+                            </div>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <div style="text-align:left;">
+                                <text>
+                                    <b>Date:</b>
+                                    <span style="margin-left: 10px;">
+                                        <t t-esc="doc.employee_signature_date"/>
+                                    </span>
+                                </text>
+                            </div>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <div style="text-align:left;">
+                                <text>
+                                    <b>Supervisor Name:</b>
+                                    <span style="margin-left: 10px;">
+                                        <t t-esc="doc.supervisor_sign_id.name"/>
+                                    </span>
+                                </text>
+                            </div>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <div style="text-align:left;">
+                                <text>
+                                    <b>Supervisor Signature:</b>
+                                    <t t-if="doc.supervisor_signature">
+                                        <img t-att-src="'data:image/png;base64,' + doc.supervisor_signature.decode('utf-8')"
+                                             style="max-width: 125px;"/>
+                                    </t>
+                                    <t t-else="">
+                                        <span>No signature available</span>
+                                    </t>
+                                </text>
+                            </div>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <div style="text-align:left;">
+                                <text>
+                                    <b>Date:</b>
+                                    <span style="margin-left: 10px;">
+                                        <t t-esc="doc.supervisor_signature_date"/>
+                                    </span>
+                                </text>
+                            </div>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <div style="text-align:left;">
+                                <text>
+                                    <b>HOD/Director Name:</b>
+                                    <span style="margin-left: 10px;">
+                                        <t t-esc="doc.hod_sign_id.name"/>
+                                    </span>
+                                </text>
+                            </div>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <div style="text-align:left;">
+                                <text>
+                                    <b>HOD/Director Signature:</b>
+                                    <t t-if="doc.hod_signature">
+                                        <img t-att-src="'data:image/png;base64,' + doc.hod_signature.decode('utf-8')"
+                                             style="max-width: 125px;"/>
+                                    </t>
+                                    <t t-else="">
+                                        <span>No signature available</span>
+                                    </t>
+                                </text>
+                            </div>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <div style="text-align:left;">
+                                <text>
+                                    <b>Date:</b>
+                                    <span style="margin-left: 10px;">
+                                        <t t-esc="doc.hod_signature_date"/>
+                                    </span>
+                                </text>
+                            </div>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <div style="text-align:left;">
+                                <text>
+                                    <b>HR Head Name:</b>
+                                    <span style="margin-left: 10px;">
+                                        <t t-esc="doc.hr_head_sign_id.name"/>
+                                    </span>
+                                </text>
+                            </div>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <div style="text-align:left;">
+                                <text>
+                                    <b>HR Head Signature:</b>
+                                    <t t-if="doc.hr_head_signature">
+                                        <img t-att-src="'data:image/png;base64,' + doc.hr_head_signature.decode('utf-8')"
+                                             style="max-width: 125px;"/>
+                                    </t>
+                                    <t t-else="">
+                                        <span>No signature available</span>
+                                    </t>
+                                </text>
+                            </div>
+                            <br/>
+                            <br/>
+                            <br/>
+                            <div style="text-align:left;">
+                                <text>
+                                    <b>Date:</b>
+                                    <span style="margin-left: 10px;">
+                                        <t t-esc="doc.hr_head_signature_date"/>
+                                    </span>
+                                </text>
+                            </div>
+                        </p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

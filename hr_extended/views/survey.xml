@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+        <record id="survey_survey_view_form_inherit" model="ir.ui.view">
+            <field name="name">survey.survey.view.form.inherit</field>
+            <field name="model">survey.survey</field>
+            <field name="inherit_id" ref="survey.survey_survey_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='user_id']" position="after">
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                </xpath>
+            </field>
+        </record>
+        <record id="survey_user_input_view_graph" model="ir.ui.view">
+            <field name="name">survey.user_input.view.graph</field>
+            <field name="model">survey.user_input</field>
+            <field name="arch" type="xml">
+                <graph string="Survey Results" type="bar">
+                    <field name="state" type="row"/>
+                    <field name="scoring_percentage" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
+        <record id="survey_user_input_view_pie" model="ir.ui.view">
+            <field name="name">survey.user_input.view.pie</field>
+            <field name="model">survey.user_input</field>
+            <field name="arch" type="xml">
+                <graph string="Survey Results" type="pie">
+                    <field name="state" type="row"/>
+                    <field name="scoring_percentage" type="measure"/>
+                </graph>
+            </field>
+        </record>
+        <record model="ir.actions.act_window" id="survey.action_survey_user_input">
+            <field name="name">Participations</field>
+            <field name="res_model">survey.user_input</field>
+            <field name="view_mode">list,kanban,form,graph</field>
+            <field name="view_id" ref="survey.survey_user_input_view_tree"/>
+            <field name="search_view_id" ref="survey.survey_user_input_view_search"/>
+            <field name="context">{'search_default_group_by_survey': True}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_empty_folder">
+                    No answers yet!
+                </p>
+                <p>
+                    You can share your links through different means: email, invite shortcut, live presentation, ...
+                </p>
+            </field>
+        </record>
+    </data>
+</odoo>

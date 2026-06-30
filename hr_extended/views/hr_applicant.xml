@@ -1,0 +1,474 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+
+        <!-- Wizard View -->
+        <record id="view_hr_applicant_refuse_wizard_form" model="ir.ui.view">
+            <field name="name">hr.applicant.refuse.wizard.form</field>
+            <field name="model">hr.applicant.refuse.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Refuse Offer Letter">
+                    <group>
+                        <field name="reason"/>
+                    </group>
+                    <footer>
+                        <button string="Confirm" type="object" name="action_confirm_refuse" class="btn-primary"/>
+                        <button string="Cancel" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+         <record id="view_hr_applicant_refuse_tree" model="ir.ui.view">
+            <field name="name">hr.applicant.refuse.list</field>
+            <field name="model">hr.applicant.refuse</field>
+            <field name="arch" type="xml">
+                <list string="Refuse Reason">
+                    <field name="user_id"/>
+                    <field name="reason"/>
+                    <field name="create_date"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Action for Smart Button -->
+        <record id="action_hr_applicant_refuse_log" model="ir.actions.act_window">
+            <field name="name">Refusals</field>
+            <field name="res_model">hr.applicant.refuse</field>
+            <field name="view_mode">tree</field>
+            <field name="domain">[('applicant_id','=',active_id)]</field>
+        </record>
+        <!-- HR applicant kanban view draggable and quick create stop-->
+        <record model="ir.ui.view" id="hr_kanban_view_applicant_inherited">
+            <field name="name">Hr Applicants kanban Inherited</field>
+            <field name="model">hr.applicant</field>
+            <field name="inherit_id" ref="hr_recruitment.hr_kanban_view_applicant"/>
+            <field name="arch" type="xml">
+                <kanban position="attributes">
+                    <attribute name="group_create">false</attribute>
+                    <attribute name="records_draggable">false</attribute>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Hr Job view inherited to show the KRA -->
+        <record id="inherit_hr_job_view_form" model="ir.ui.view">
+            <field name="name">Inherit Jobs - Form</field>
+            <field name="model">hr.job</field>
+            <field name="inherit_id" ref="hr.view_hr_job_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='recruitment_target']" position="after">"
+                    <field name="kra_master" options="{'no_quick_create':True,'no_create': True,}"/>
+                </xpath>
+                <xpath expr="//sheet" position="inside">
+                    <field name="allowed_user_ids" invisible="1"/>
+                </xpath>
+                <xpath expr="//div[@name='recruitment_target']/span" position="replace">
+                    <span>New Employees</span>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Hr Applicant view Inherited-->
+        <record id="inherit_hr_applicant_view_form" model="ir.ui.view">
+            <field name="name">Inherit Jobs - Recruitment Form</field>
+            <field name="model">hr.applicant</field>
+            <field name="inherit_id" ref="hr_recruitment.hr_applicant_view_form"/>
+            <field name="arch" type="xml">
+                <field name="applicant_properties" position="before">
+                     <group string="Salary Breakup">
+                         <button name="action_create_breakup_lines"  type="object" string="Create Salary Lines" class="btn-primary" invisible="salary_breakup_added" width="80px" />
+                         <field name="salary_breakup_added" invisible="1"/>
+                         <field name="salary_breakup_approved" invisible="1"/>
+                        <field name="salary_breakup_ids" readonly="salary_breakup_approved" string="" width="60px">
+                            <list editable="bottom" create="0" delete="0">
+                                <field name="salary_breakup_type" width="60px" readonly="1"/>
+                                <field name="salary_proposed" width="80px"/>
+                                <field name="state" readonly="1" width="80px"/>
+                                <field name="final_state" readonly="1" width="80px"/>
+                                <button name="action_hr_approve" type="object" string="HR Approve" class="btn-primary" invisible="state != 'approved' or final_state != 'draft'" width="80px" />
+                                <button name="action_approve" type="object" string="Director Approve" class="btn-primary" invisible="state != 'draft'" width="80px" />
+                                <button name="action_reject" type="object" string="Director Reject" class="btn-danger" invisible="state != 'draft'" width="80px" />
+                                <button name="action_hr_reject" type="object" string="HR Reject" class="btn-danger" invisible="state != 'approved' or final_state != 'draft'"  width="80px" />
+                                <button name="action_view" type="object" string="View" class="btn-secondary" width="80px"/>
+                            </list>
+                        </field>
+                    </group>
+                </field>
+                <!-- to avoid jumping stages and fix approval matrix -->
+                <xpath expr="//field[@name='stage_id']" position="attributes">
+                    <attribute name="options">{'fold_field': 'fold'}</attribute>
+                </xpath>
+                <xpath expr="//div[@class='oe_button_box']" position="inside">
+                    <!--                    <field name="is_pre_emp_form_clicked" invisible="1"/>-->
+                    <field name="last_stage_id" invisible="1"/>
+                    <field name="stage_status" invisible="1"/>
+                    <!--                    <button class="oe_stat_button" type="object" string="Referral Form"-->
+                    <!--                            invisible="not is_pre_emp_form_clicked"-->
+                    <!--                            name="action_open_related_candidate" icon="fa-user-plus">-->
+                    <!--                    </button>-->
+                    <!--                    <button name="action_open_interview_assessment"-->
+                    <!--                            type="object"-->
+                    <!--                            class="oe_stat_button"-->
+                    <!--                            icon="fa-bars"-->
+                    <!--                            invisible="interview_assessment_count == 0">-->
+                    <!--                        <field name="interview_assessment_count" widget="statinfo" string="Interview Assessment"/>-->
+                    <!--                    </button>-->
+                </xpath>
+                <xpath expr="//button[@name='archive_applicant']" position="before">
+                    <button name="action_first_stage_new" string="New" type="object"
+                            invisible="stage_status != False"
+                            class="btn-primary"/>
+                </xpath>
+                <xpath expr="//button[@name='archive_applicant']" position="after">
+                    <field name="interview_assessment_letter_count" invisible="1"/>
+                    <button name="action_send_document_update_mail" type="object" class="oe_highlight"
+                            string="Send Document Update"
+                            invisible="stage_status not in ('shortlist','offer_accepted') or application_status == 'refused' or
+                            document_sent == 'yes'"/>
+                    <button name="action_send_offer_offer_letter_for_approval" type="object" string="Send for Director Review"
+                            class="btn-primary" groups="hr_recruitment.group_hr_recruitment_manager"
+                            invisible="stage_status not in ('document_validated','offer_accepted') or application_status == 'refused' or
+                            offer_letter_sent_director == 'yes'"/>
+                    <button name="action_approve_offer_letter" type="object" string="Approve Offer Letter"
+                            class="btn-primary" groups="hr_extended.group_hr_recruitment_director"
+                            invisible="stage_status not in ('document_validated','offer_accepted') or application_status == 'refused' or
+                            offer_letter_sent_director != 'yes' or offer_letter_approved == 'yes'"/>
+                     <button name="action_refuse_offer_letter" type="object" string="Refuse Offer Letter"
+                            class="btn-primary" groups="hr_extended.group_hr_recruitment_director"
+                            invisible="stage_status not in ('document_validated','offer_accepted') or application_status == 'refused' or
+                            offer_letter_sent_director != 'yes' or offer_letter_approved == 'yes'"/>
+                    <button name="action_send_offer_letter_mail" type="object" class="oe_highlight"
+                            string="Send Offer Letter"
+                            invisible="document_sent == 'no' or offer_letter_approved == 'no' or application_status == 'refused' or
+                             offer_letter_sent == 'yes'"/>
+                    <button name="action_create_interview_assessment" type="object" class="oe_highlight"
+                            string="Create Interview Assessment"
+                            invisible="application_status == 'refused' or interview_assessment_letter_count > 0"/>
+                     <button name="action_approve_employee_documents" type="object" class="oe_highlight"
+                            string="Approve Documents"
+                            invisible = "stage_status not in ('shortlist') or application_status == 'refused' or document_sent == 'no'"/>
+                     <button name="action_refuse_employee_documents" type="object" class="oe_highlight"
+                            string="Refuse Documents"
+                            invisible = "stage_status not in ('shortlist') or application_status == 'refused' or document_sent == 'no'"/>
+                    <button name="action_offer_accepted" string="Offer Accept" type="object"
+                            invisible="document_sent == 'no' or offer_letter_sent == 'no' or stage_status not in ('director_approval') or application_status == 'refused'"
+                            class="btn-primary"/>
+                    <button string="Offer Letter Report" type="action"
+                            invisible="stage_status not in ('document_validated','offer_accepted','director_approval') or application_status == 'refused'"
+                            name="%(hr_extended.salary_breakup_report)d" class="btn-primary"/>
+                    <!--                    <button string="Offer Letter" type="action"-->
+                    <!--                            name="%(hr_extended.salary_breakup_report)d" class="btn-primary"-->
+                    <!--                            invisible="stage_status != 'shortlist'"/>-->
+                </xpath>
+
+                <xpath expr="//header" position="inside">
+                    <!-- Approve Button -->
+                    <button name="action_approve" type="object" string="Approve" class="btn-primary"
+                            invisible="stage_status != 'second_interview' or application_status == 'refused'"/>
+                    <!-- Hold Button -->
+                    <button name="action_hold" type="object" string="Hold" class="btn-secondary"
+                            invisible="stage_status == 'hold' or stage_status in ('reject','shortlist','offer_accepted') or application_status == 'refused'"/>
+                    <!-- Reopen Button -->
+                    <button name="action_reopen" type="object" string="Reopen" class="btn-warning"
+                            invisible="stage_status != 'hold' or stage_status in ('reject','shortlist','offer_accepted') or application_status == 'refused'"/>
+                </xpath>
+                <!-- Directly inherited the third web_ribbon -->
+                <xpath expr="(//widget[@name='web_ribbon'])[3]" position="attributes">
+                    <attribute name="title">Offer Accepted</attribute>
+                </xpath>
+
+                <xpath expr="//button[@name='archive_applicant']" position="attributes">
+                    <attribute name="invisible">stage_status in ("offer_accepted")</attribute>
+                </xpath>
+
+                <xpath expr="//field[@name='department_id']" position="after">
+                    <field name="grade_job_level_id" options="{'no_quick_create':True,'no_create': True,}"/>
+                </xpath>
+                <xpath expr="//field[@name='interviewer_ids']" position="before">
+                    <field name="document_sent"
+                           invisible="stage_status not in ('shortlist','offer_accepted')"/>
+                     <field name="offer_letter_sent_director"
+                           invisible="stage_status not in ('shortlist','offer_accepted')"/>
+                    <field name="offer_letter_approved"
+                           invisible="stage_status not in ('shortlist','offer_accepted')"/>
+                    <field name="offer_letter_sent"
+                           invisible="stage_status not in ('shortlist','offer_accepted')"/>
+                     <field name="refuse_count" invisible="1"/>
+                </xpath>
+
+                <xpath expr="//group[@name='recruitment_contract']" position="before">
+                    <group string="Additional Information">
+                        <field name="verification_date"/>
+                        <!--                        <field name="sourcing_type" readonly="is_pre_emp_form_clicked"/>-->
+                        <!--                        <field name="referred_by" invisible="sourcing_type not in ('internal_sourcing')"-->
+                        <!--                               readonly="is_pre_emp_form_clicked"-->
+                        <!--                               options="{'no_quick_create':True,'no_create': True,}"/>-->
+                        <!--                        <button name="action_create_pre_form" string="Pre-Employment Form"-->
+                        <!--                                type="object"-->
+                        <!--                                class="oe_highlight pre-emp-form-btn"-->
+                        <!--                                invisible="sourcing_type not in ('internal_sourcing') or is_pre_emp_form_clicked"/>-->
+                        <!--                        <style>-->
+                        <!--                            .pre-emp-form-btn{-->
+                        <!--                            width:175px;-->
+                        <!--                            }-->
+                        <!--                        </style>-->
+                    </group>
+                </xpath>
+            </field>
+        </record>
+
+        
+
+
+        <!--salary breakup page -->
+        <record id="hr_applicant_view_form_inherit" model="ir.ui.view">
+            <field name="name">hr.applicant.view.form.inherit.additional.info</field>
+            <field name="model">hr.applicant</field>
+            <field name="inherit_id" ref="hr_recruitment.hr_applicant_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
+                    <button name="action_open_invitation_letter"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-envelope"
+                            invisible="first_invitation_letter_count == 0">
+                        <field name="first_invitation_letter_count" widget="statinfo" string="Invitation Letters"/>
+                    </button>
+                    <button name="action_open_interview_assessment_letter"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-bars"
+                            invisible="interview_assessment_letter_count == 0">
+                        <field name="interview_assessment_letter_count" widget="statinfo" string="Assessment Form"/>
+                    </button>
+                    <button name="action_view_documents"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-file">
+                    <field string="Documents" name="document_ids" widget="statinfo"/>
+                    </button>
+                     <button type="action"
+                                class="oe_stat_button"
+                                name="%(action_hr_applicant_refuse_log)d"
+                                icon="fa-ban">
+                            <field string="Refusals" name="refuse_count" widget="statinfo"/>
+                        </button>
+                </xpath>
+                <xpath expr="//button[@name='create_employee_from_applicant']" position="after">
+                    <button name="action_send_first_invitiation" type="object" class="oe_highlight"
+                            string="Send Invitation"
+                            invisible="stage_status not in ('first_level','new','initial') or application_status == 'refused'"/>
+                </xpath>
+                <!-- <xpath expr="//group[@name='recruitment_contract']/div/field[@name='salary_proposed']" position="attributes">
+                    <attribute name="invisible">not salary_breakup_approved</attribute>
+                </xpath> -->
+                <!-- commented due to access rights issue -->
+                <xpath expr="//group[@name='recruitment_contract']/div/span[preceding-sibling::field[@name='salary_proposed']]" position="attributes">
+                   <attribute name="invisible">not salary_breakup_approved</attribute>
+                </xpath>
+                <xpath expr="//group[@name='recruitment_contract']/div/field[@name='salary_proposed_extra']" position="attributes">
+                    <attribute name="invisible">not salary_breakup_approved</attribute>
+                </xpath>
+                <!-- <field name="salary_proposed" position="attributes">
+                    <attribute name="invisible">not salary_breakup_approved</attribute>
+                </field> -->
+                <!-- commented due to access rights issue -->
+                <notebook position="inside">
+                    <field name="salary_breakup_approved" invisible="1"/>
+                    <page string="Salary Breakup" invisible="stage_status not in ('shortlist','offer_accepted') or not salary_breakup_approved">
+                        <group>
+                            <group string="Compensation Details">
+                                <field name="monthly_fixed_salary"/>
+                                <label for="statutory_bonus_applicable"/>
+                                <div class="o_row">
+                                    <field name="statutory_bonus_applicable"/>
+                                </div>
+                                <label for="provident_fund_applicable"/>
+                                <div class="o_row">
+                                    <field name="provident_fund_applicable"/>
+                                </div>
+                                <label for="esi_applicable"/>
+                                <div class="o_row">
+                                    <field name="esi_applicable"/>
+                                </div>
+                                <label for="variable_pay_percentage"/>
+                                <div class="o_row">
+                                    <field name="variable_pay_percentage"/>
+                                </div>
+                            </group>
+                            <group string="Compensation Details">
+                                <field name="grade"/>
+                                <field name="locations_id" options="{'no_quick_create':True,'no_create': True,}"
+                                       required="stage_status in ('shortlist')"/>
+                                <field name="annual_store_performance_incentive" invisible="1"/>
+                                <field name="annual_performance_linked_pay" invisible="1"/>
+                                <field name="monthly_performance_incentive" invisible="1"/>
+                                <field name="medical_insurance"/>
+                                <field name="group_personal_accident_insurance"/>
+                                <field name="health_benefit_plan"/>
+                                <field name="indicative_take_home_salary" readonly="1" force_save="1"/>
+                            </group>
+                            <group string="Salary Break-up (Per Annum)">
+                                <field name="basic_da_per_annum" readonly="1" force_save="1"/>
+                                <field name="hra_per_annum" readonly="1" force_save="1"/>
+                                <field name="special_allowance_per_annum" readonly="1" force_save="1"/>
+                                <field name="sub_total_a_per_annum" readonly="1" force_save="1" invisible="1"/>
+                                <field name="statutory_bonus_per_annum" readonly="1" force_save="1"/>
+                                <field name="pf_employer_per_annum" readonly="1" force_save="1"/>
+                                <field name="esic_employer_per_annum" readonly="1" force_save="1"/>
+                                <field name="sub_total_b_per_annum" readonly="1" force_save="1" invisible="1"/>
+                                <field name="store_performance_incentive_annum" readonly="1" force_save="1"
+                                       invisible="1"/>
+                                <field name="monthly_performance_incentive_annum" readonly="1" force_save="1"
+                                       invisible="1"/>
+                                <field name="variable_pay_per_annum" readonly="1" force_save="1"/>
+                                <field name="performance_linked_pay_annum" readonly="1" force_save="1" invisible="1"/>
+                                <field name="sub_total_c_per_annum" readonly="1" force_save="1" invisible="1"/>
+                                <field name="total_salary_per_annum" readonly="1" force_save="1"/>
+                                <field name="medical_insurances" readonly="1" force_save="1"/>
+                                <field name="group_personal_acc_insurance" readonly="1" force_save="1"/>
+                                <field name="health_ben_plan" readonly="1" force_save="1"/>
+                                <field name="sub_total_d" readonly="1" force_save="1" invisible="1"/>
+
+                            </group>
+                            <group string="Salary Break-up (Per Month)">
+                                <field name="basic_da_per_month" readonly="1" force_save="1"/>
+                                <field name="hra_per_month" readonly="1" force_save="1"/>
+                                <field name="special_allowance_per_month" readonly="1" force_save="1"/>
+                                <field name="sub_total_a_per_month" readonly="1" force_save="1" invisible="1"/>
+                                <field name="statutory_bonus_per_month" readonly="1" force_save="1"/>
+                                <field name="pf_employer_per_month" readonly="1" force_save="1"/>
+                                <field name="esic_employer_per_month" readonly="1" force_save="1"/>
+                                <field name="sub_total_b_per_month" readonly="1" force_save="1" invisible="1"/>
+                                <field name="store_performance_incentive_month" readonly="1" force_save="1" invisible="1"/>
+                                <field name="monthly_performance_incentive_month" readonly="1" force_save="1" invisible="1"/>
+                                <field name="variable_pay_per_month" readonly="1" force_save="1"/>
+                                <field name="performance_linked_pay_month" readonly="1" force_save="1" invisible="1"/>
+                                <field name="sub_total_c_per_month" readonly="1" force_save="1" invisible="1"/>
+                                <field name="total_salary_per_month" readonly="1" force_save="1"/>
+                            </group>
+                            <group>
+                                <field name="total_ctc_annum" readonly="1" force_save="1"/>
+                            </group>
+                            <group>
+                                <field name="total_ctc_month" readonly="1" force_save="1"/>
+                            </group>
+                        </group>
+                       
+                    </page>
+                </notebook>
+            </field>
+        </record>
+
+        <record id="hr_recruitment_stage_form_inherit" model="ir.ui.view">
+            <field name="name">hr.recruitment.stage.form.inherit</field>
+            <field name="model">hr.recruitment.stage</field>
+            <field name="inherit_id" ref="hr_recruitment.hr_recruitment_stage_form"/>
+            <field name="arch" type="xml">
+                <field name='job_ids' position='after'>
+                    <field name='stage'/>
+                </field>
+            </field>
+        </record>
+
+        <record id="view_salary_breakup_line_form" model="ir.ui.view">
+    <field name="name">salary.breakup.lines.form</field>
+    <field name="model">salary.breakup.lines</field>
+    <field name="arch" type="xml">
+        <form string="Salary Breakup Details">
+
+            <sheet>
+                <group>
+                    <field name="applicant_id" readonly="1"/>
+                    <field name="salary_breakup_type" readonly="1"/>
+                    <field name="state" readonly="1"/>
+                    <field name="salary_proposed" readonly="state in ('approved','rejected')"/>
+                </group>
+
+               <notebook position="inside">
+                    <page string="Salary Breakup">
+                        <button name="calculate_salary" invisible="state in ('approved','rejected')" type="object" string="Calculate Salary" class="btn-primary"/>
+                        <group readonly="state in ('approved','rejected')">
+                            <group string="Compensation Details">
+                                <field name="monthly_fixed_salary"/>
+                                <label for="statutory_bonus_applicable"/>
+                                <div class="o_row">
+                                    <field name="statutory_bonus_applicable"/>
+                                </div>
+                                <label for="provident_fund_applicable"/>
+                                <div class="o_row">
+                                    <field name="provident_fund_applicable"/>
+                                </div>
+                                <label for="esi_applicable"/>
+                                <div class="o_row">
+                                    <field name="esi_applicable"/>
+                                </div>
+                                <label for="variable_pay_percentage"/>
+                                <div class="o_row">
+                                    <field name="variable_pay_percentage"/>
+                                </div>
+                            </group>
+                            <group string="Compensation Details">
+                                <field name="grade"/>
+                                <field name="locations_id"  options="{'no_quick_create':True,'no_create': True,}"/>
+                                <field name="medical_insurance"/>
+                                <field name="group_personal_accident_insurance"/>
+                                <field name="health_benefit_plan"/>
+                                <field name="indicative_take_home_salary" readonly="1" force_save="1"/>
+                            </group>
+                            <group string="Salary Break-up (Per Annum)">
+                                <field name="basic_da_per_annum" readonly="1" force_save="1"/>
+                                <field name="hra_per_annum" readonly="1" force_save="1"/>
+                                <field name="special_allowance_per_annum" readonly="1" force_save="1"/>
+                                <field name="sub_total_a_per_annum" readonly="1" force_save="1" invisible="1"/>
+                                <field name="statutory_bonus_per_annum" readonly="1" force_save="1"/>
+                                <field name="pf_employer_per_annum" readonly="1" force_save="1"/>
+                                <field name="esic_employer_per_annum" readonly="1" force_save="1"/>
+                                <field name="sub_total_b_per_annum" readonly="1" force_save="1" invisible="1"/>
+                                <field name="store_performance_incentive_annum" readonly="1" force_save="1"
+                                       invisible="1"/>
+                                <field name="monthly_performance_incentive_annum" readonly="1" force_save="1"
+                                       invisible="1"/>
+                                <field name="variable_pay_per_annum" readonly="1" force_save="1"/>
+                                <field name="performance_linked_pay_annum" readonly="1" force_save="1" invisible="1"/>
+                                <field name="sub_total_c_per_annum" readonly="1" force_save="1" invisible="1"/>
+                                <field name="total_salary_per_annum" readonly="1" force_save="1"/>
+                                <field name="medical_insurances" readonly="1" force_save="1"/>
+                                <field name="group_personal_acc_insurance" readonly="1" force_save="1"/>
+                                <field name="health_ben_plan" readonly="1" force_save="1"/>
+                                <field name="sub_total_d" readonly="1" force_save="1" invisible="1"/>
+                            </group>
+                            <group string="Salary Break-up (Per Month)">
+                                <field name="basic_da_per_month" readonly="1" force_save="1"/>
+                                <field name="hra_per_month" readonly="1" force_save="1"/>
+                                <field name="special_allowance_per_month" readonly="1" force_save="1"/>
+                                <field name="sub_total_a_per_month" readonly="1" force_save="1" invisible="1"/>
+                                <field name="statutory_bonus_per_month" readonly="1" force_save="1"/>
+                                <field name="pf_employer_per_month" readonly="1" force_save="1"/>
+                                <field name="esic_employer_per_month" readonly="1" force_save="1"/>
+                                <field name="sub_total_b_per_month" readonly="1" force_save="1" invisible="1"/>
+                                <field name="store_performance_incentive_month" readonly="1" force_save="1" invisible="1"/>
+                                <field name="monthly_performance_incentive_month" readonly="1" force_save="1" invisible="1"/>
+                                <field name="variable_pay_per_month" readonly="1" force_save="1"/>
+                                <field name="performance_linked_pay_month" readonly="1" force_save="1" invisible="1"/>
+                                <field name="sub_total_c_per_month" readonly="1" force_save="1" invisible="1"/>
+                                <field name="total_salary_per_month" readonly="1" force_save="1"/>
+                            </group>
+                            <group>
+                                <field name="total_ctc_annum" readonly="1" force_save="1"/>
+                            </group>
+                            <group>
+                                <field name="total_ctc_month" readonly="1" force_save="1"/>
+                            </group>
+                        </group>
+                    </page>
+                </notebook>
+            </sheet>
+        </form>
+    </field>
+</record>
+
+
+    </data>
+</odoo>

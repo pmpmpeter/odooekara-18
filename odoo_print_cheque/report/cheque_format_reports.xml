@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!--Cheque print PDF format-->
+    <!--Paper format -->
+    <record id="paperformat_print_cheque" model="report.paperformat">
+        <field name="name">Print Cheque</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="header_line" eval="False"/>
+        <field name="margin_top">1</field>
+        <field name="margin_left">1</field>
+        <field name="header_spacing" eval="False"/>
+        <field name="dpi">90</field>
+    </record>
+
+    <record id="paperformat_payment_cheque" model="report.paperformat">
+        <field name="name">Payment Cheque</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="header_line" eval="False"/>
+        <field name="margin_top">1</field>
+        <field name="margin_bottom">20</field>
+        <field name="margin_left">10</field>
+        <field name="margin_right">10</field>
+        <field name="header_spacing" eval="False"/>
+        <field name="dpi">90</field>
+    </record>
+    <!--Cheque print action-->
+    <record id="print_cheque_action" model="ir.actions.report">
+        <field name="name">Cheque</field>
+        <field name="model">cheque.format</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">odoo_print_cheque.cheque_print</field>
+        <field name="report_file">odoo_print_cheque.cheque_print</field>
+        <field name="paperformat_id"
+               ref="odoo_print_cheque.paperformat_print_cheque"/>
+        <field name="binding_model_id" ref="model_cheque_format"/>
+        <field name="binding_type">report</field>
+    </record>
+    <!--Test Cheque print PDF format-->
+    <!--Paper format -->
+    <record id="paperformat_print_test_cheque" model="report.paperformat">
+        <field name="name">Print Test Cheque</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="orientation">Portrait</field>
+        <field name="header_line" eval="False"/>
+        <field name="margin_top">1</field>
+        <field name="margin_left">1</field>
+        <field name="header_spacing" eval="False"/>
+        <field name="dpi">90</field>
+    </record>
+    <!--Print test cheque Action-->
+    <record id="test_cheque_action" model="ir.actions.report">
+        <field name="name">Test Print</field>
+        <field name="model">cheque.format</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">odoo_print_cheque.cheque_test_print</field>
+        <field name="report_file">odoo_print_cheque.cheque_test_print</field>
+        <field name="paperformat_id"
+               ref="odoo_print_cheque.paperformat_print_test_cheque"/>
+        <field name="binding_model_id" ref="model_cheque_format"/>
+        <field name="binding_type">report</field>
+    </record>
+    <!--Cheque print payment-->
+    <record id="print_cheque_payment" model="ir.actions.report">
+        <field name="name">Cheque Payment</field>
+        <field name="model">account.payment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">odoo_print_cheque.cheque_payment_document</field>
+        <field name="report_file">odoo_print_cheque.cheque_payment_document</field>
+        <field name="paperformat_id" ref="odoo_print_cheque.paperformat_payment_cheque"/>
+<!--        <field name="binding_model_id" ref="model_account_payment"/>-->
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'%s' % (object.cheque_number)</field>
+    </record>
+
+    <record id="print_cheque_payment_account_move" model="ir.actions.report">
+        <field name="name">Cheque Payment Journal Entry</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">odoo_print_cheque.cheque_payment_document_account_move</field>
+        <field name="report_file">odoo_print_cheque.cheque_payment_document_account_move</field>
+        <field name="paperformat_id" ref="odoo_print_cheque.paperformat_payment_cheque"/>
+<!--        <field name="binding_model_id" ref="account.model_account_move"/>-->
+        <field name="binding_type">report</field>
+    </record>
+
+    <record id="print_cheque_payment_batch" model="ir.actions.report">
+        <field name="name">Cheque Batch payment</field>
+        <field name="model">account.batch.payment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">odoo_print_cheque.cheque_batch_payment_document</field>
+        <field name="report_file">odoo_print_cheque.cheque_batch_payment_document</field>
+        <field name="paperformat_id" ref="odoo_print_cheque.paperformat_payment_cheque"/>
+        <field name="binding_model_id" ref="model_account_batch_payment"/>
+        <field name="binding_type">report</field>
+        <field name="print_report_name">'%s' % (object.name)</field>
+    </record>
+</odoo>

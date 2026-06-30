@@ -1,0 +1,40 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* oi_hr_holidays_attachment
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 17.0+e\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-02-25 07:54+0000\n"
+"PO-Revision-Date: 2024-02-25 12:00+0300\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: \n"
+"Language: ar\n"
+"X-Generator: Poedit 2.4.3\n"
+
+#. module: oi_hr_holidays_attachment
+#: model:ir.model.fields,field_description:oi_hr_holidays_attachment.field_hr_leave_type__attachment_required
+msgid "Attachment Required"
+msgstr "المرفق مطلوب"
+
+#. module: oi_hr_holidays_attachment
+#: model:ir.model,name:oi_hr_holidays_attachment.model_hr_leave
+msgid "Time Off"
+msgstr "الإجازات"
+
+#. module: oi_hr_holidays_attachment
+#: model:ir.model,name:oi_hr_holidays_attachment.model_hr_leave_type
+msgid "Time Off Type"
+msgstr "نوع الاجازة"
+
+#. module: oi_hr_holidays_attachment
+#. odoo-python
+#: code:addons/oi_hr_holidays_attachment/models/hr_leave.py:0
+#, python-format
+msgid "You cannot send the leave request without attaching a document."
+msgstr "لا يمكنك إرسال طلب الإجازة دون إرفاق مستند"

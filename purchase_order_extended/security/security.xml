@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!-- Copyright 2018-2019 ForgeFlow, S.L.
+     License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl-3.0) -->
+<odoo>
+    <record id="group_purchase_admin" model="res.groups">
+        <field name="name">Purchase Admin</field>
+    </record>
+
+     <!-- Group: Purchase Department Head -->
+        <record id="group_purchase_depaertment_head" model="res.groups">
+            <field name="name">Purchase Department Head</field>
+            <field name="category_id" ref="base.module_category_accounting"/>
+            <field name="comment">Group for Purchase Department Head.</field>
+        </record>
+</odoo>

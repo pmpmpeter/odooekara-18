@@ -1,0 +1,556 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="paperformat_nomination_form_pdf_A4" model="report.paperformat">
+        <field name="name">NDA Form</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">20</field>
+        <field name="margin_bottom">20</field>
+        <field name="margin_left">20</field>
+        <field name="margin_right">20</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">35</field>
+        <field name="dpi">90</field>
+    </record>
+    <record id="report_nomination_form_template" model="ir.actions.report">
+        <field name="name">Nomination Form</field>
+        <field name="model">hr.employee</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_extended.print_report_nomination_form</field>
+        <field name="report_file">hr_extended.print_report_nomination_form</field>
+        <field name="paperformat_id" ref="hr_extended.paperformat_nomination_form_pdf_A4"/>
+        <field name="print_report_name">'PF Nomination Form'</field>
+        <!--        <field name="binding_model_id" ref="hr_extended.model_hr_employee"/>-->
+        <field name="binding_model_id" eval="False"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="print_report_nomination_form">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="hr_extended.print_report_nomination_report" t-lang="o.user_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+
+    <template id="print_report_nomination_report">
+        <t t-call="web.external_layout">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="doc" t-value="doc.with_context(lang=lang)"/>
+                <t t-set="company" t-value="doc.company_id"/>
+                <!--                page1-->
+                <div style="margin-left: 25px; margin-right: 25px;" class="page">
+                    <h4 style="text-align: center; font-weight: bold;">
+                        NOMINATION AND DECLARATION FORM
+                        <br/>
+                        FOR UNEXEMPTED/EXEMPTED ESTABLISHMENTS
+                        <br/>
+                    </h4>
+                    <p style="text-align: center; font-weight: bold;">Declaration and Nomination Form under the
+                        Employees’ Provident Funds and Employees’ Pension Scheme
+                    </p>
+                    <p>(Paragraphs 33 &amp; 61 (1) of the Employees Provident Fund Scheme, 1952 and Paragraph 18 of the
+                        Employees’ Pension scheme, 1995)
+                    </p>
+                    <br/>
+                    <ol class="no-border" style="border: none; width: 100%;">
+                        <li>
+                            <!--                            Name (in Block letters)&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;:-->
+                            <div>
+                                <!--                            Address&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;: Permanent<br/>  Temporary<br/>-->
+                                <p>Name (in Block letters)
+                                    <span style="padding-left:30pt;">:</span>
+                                </p>
+                            </div>
+                        </li>
+                        <li>
+                            <!--                            Father’s/Husband’s Name&#160;&#160;&#160;&#160;:-->
+                            <div>
+                                <!--                            Address&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;: Permanent<br/>  Temporary<br/>-->
+                                <p>Father’s/Husband’s Name
+                                    <span style="padding-left:13pt;">:</span>
+                                </p>
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <!--                            Address&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;: Permanent<br/>  Temporary<br/>-->
+                                <p>Date of Birth
+                                    <span style="padding-left:81pt;">:</span>
+                                </p>
+                            </div>
+                            <!--                            Date of Birth&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;:-->
+                        </li>
+                        <li>
+                            <div>
+                                <!--                            Address&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;: Permanent<br/>  Temporary<br/>-->
+                                <p>Sex
+                                    <span style="padding-left:131pt;">:</span>
+                                </p>
+                            </div>
+                            <!--                            Sex &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;:-->
+                        </li>
+                        <li>
+                            <div>
+                                <!--                            Address&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;: Permanent<br/>  Temporary<br/>-->
+                                <p>Marital Status
+                                    <span style="padding-left:75pt;">:</span>
+                                </p>
+                            </div>
+                            <!--                           Marital Status&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;:-->
+                        </li>
+                        <li>
+                            <div>
+                                <!--                            Address&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;: Permanent<br/>  Temporary<br/>-->
+                                <p>Account No
+                                    <span style="padding-left:88pt;">:</span>
+                                </p>
+                            </div>
+                            <!--                            Account No&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;:-->
+                        </li>
+                        <li>
+                            <div>
+                                <!--                            Address&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;: Permanent<br/>  Temporary<br/>-->
+                                <p>Address
+                                    <span style="padding-left: 140px;">:</span>
+                                    <span>
+                                        <span style="padding-left: 20px;">Permanent</span>
+                                        <br/>
+                                        <br/>
+                                        <span style="padding-left: 221px;">Temporary</span>
+                                    </span>
+                                </p>
+                            </div>
+                        </li>
+                        <li>
+                            <div>
+                                <!--                            Address&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;: Permanent<br/>  Temporary<br/>-->
+                                <p>Date of Joining
+                                    <span>
+                                        <span style="padding-left: 94px;">:</span>
+                                        <span style="padding-left: 22px;">EPF</span>
+                                        <br/>
+                                        <br/>
+                                        <span style="padding-left: 225px;">EPS</span>
+                                    </span>
+                                </p>
+                            </div>
+                            <!--                            Date of Joining&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;:-->
+                            <!--                            <ul>-->
+                            <!--                                <li>EPF</li><br/>-->
+                            <!--                                <li>EPS</li>-->
+                            <!--                            </ul>-->
+                        </li>
+                    </ol>
+                    <br/>
+                    <p style="page-break-before:always;"></p>
+                    <h4 style="text-align: center; font-weight: bold;">PART – A (EPF)</h4>
+                    <br/>
+                    <p>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;I hereby nominate the
+                        person(s) /cancel the nomination made by me previously and nominate the person(s) mentioned
+                        below
+                        to receive the amount standing to my credit in the Employees’ Provident Fund in the event of my
+                        death :
+                    </p>
+                    <table style="width: 100%; border-collapse: collapse; grid-template-columns: repeat(5, 1fr);">
+                        <tr>
+                            <th style="width: 20%; text-align: left; padding: 5px;">Name &amp; Address of the
+                                nominee/nominees
+                            </th>
+                            <th style="width: 20%; text-align: left; padding: 5px;">Nominee’s relationship with the
+                                member
+                            </th>
+                            <th style="width: 15%; text-align: left; padding: 5px;">Date of Birth</th>
+                            <th style="width: 20%; text-align: left; padding: 5px;">Total amount of share of
+                                Accumulations in Provident
+                                Fund to be paid to each
+                                nominee
+                            </th>
+                            <th style="width: 25%; text-align: left; padding: 5px;">If the nominee is a minor, name
+                                &amp;
+                                relationship &amp; address of the guardian who
+                                may receive the amount during the
+                                minority of nominee
+                            </th>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center; padding: 5px;">1</td>
+                            <td style="text-align: center; padding: 5px;">2</td>
+                            <td style="text-align: center; padding: 5px;">3</td>
+                            <td style="text-align: center; padding: 5px;">4</td>
+                            <td style="text-align: center; padding: 5px;">5</td>
+                        </tr>
+                        <tr>
+                            <td style="height:150px"></td>
+                            <td style="height:150px"></td>
+                            <td style="height:150px"></td>
+                            <td style="height:150px"></td>
+                            <td style="height:150px"></td>
+
+                        </tr>
+                    </table>
+                    <!-- Notes Section -->
+                    <div style="margin-top: 20px; font-size: 12px; line-height: 1.5;">
+                        <p>1. *Certified that I have no family as defined in para 2(g) of the Employees’ Provident Fund
+                            Scheme, 1952, and should I acquire a Family hereafter, the above nomination should be deemed
+                            as canceled.
+                        </p>
+                        <p>2. *Certified that my father/mother is/are dependent upon me.</p>
+                        <!--                    </div>-->
+                        <!--                    <div style="display: flex; display: -webkit-box;-webkit-box-pack: center;">-->
+                        <br/>
+                        <br/>
+                        <div style="font-size:15px;display: flex;">
+                            <div class="left" style="text-align:right;">
+                                <span>Signature or thumb impression of the subscriber</span>
+                            </div>
+                            <div style="text-align:left;">
+                                <span>_________________________<br/>*Strike out whichever is not applicable.
+                                </span>
+                            </div>
+                        </div>
+                        <!--                        <div style="width:10%;padding-left:5px;font-size:15px;">-->
+                        <!--                        <p style="width:10%;padding-left:5px;font-size:15px;">*Strike out whichever is not applicable.</p>-->
+                        <!--                        </div>-->
+                        <!--                        <div style="text-align: left; margin-left: -120px;">*Strike out whichever is not applicable.</div>-->
+
+                        <!--                        <div style="text-align: left; padding: -120px; ">&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;<br/>-->
+                        <!--                            <p>*Strike out whichever is not applicable.</p>-->
+                        <!--                        </div>-->
+                        <!--                        <div style="text-align: right; margin-right: -10px;">-->
+                        <!--                            <p>Signature or thumb impression of the subscriber</p>-->
+                        <!--                        </div>-->
+                    </div>
+                </div>
+                <p style="page-break-before:always;"></p>
+                <!--                page2-->
+                <div style="margin-left: 25px; margin-right: 25px;" class="page">
+                    <h4 style="text-align: center; font-weight: bold;">Part B (EPS)</h4>
+                    <p>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;I hereby
+                        furnish below particulars of the members of my family who would be eligible to receive
+                        widow/children pension
+                        in the event of my death.
+                    </p>
+                    <!--                    table2.1-->
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr>
+                            <th>S.No.</th>
+                            <th>Name of the family members</th>
+                            <th>Address</th>
+                            <th>Date of Birth</th>
+                            <th>Relationship with the member</th>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center; ">1</td>
+                            <td style="text-align: center; ">2</td>
+                            <td style="text-align: center; ">3</td>
+                            <td style="text-align: center; ">4</td>
+                            <td style="text-align: center; ">5</td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center; padding: 10px;">1</td>
+                            <td style="text-align: center; padding: 10px;"></td>
+                            <td style="text-align: center; padding: 10px;"></td>
+                            <td style="text-align: center; padding: 10px;"></td>
+                            <td style="text-align: center; padding: 10px;"></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center; padding: 10px;">2</td>
+                            <td style="text-align: center; padding: 10px;"></td>
+                            <td style="text-align: center; padding: 10px;"></td>
+                            <td style="text-align: center; padding: 10px;"></td>
+                            <td style="text-align: center; padding: 10px;"></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center; padding: 10px;">3</td>
+                            <td style="text-align: center; padding: 10px;"></td>
+                            <td style="text-align: center; padding: 10px;"></td>
+                            <td style="text-align: center; padding: 10px;"></td>
+                            <td style="text-align: center; padding: 10px;"></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center; padding: 10px;">4</td>
+                            <td style="text-align: center; padding: 10px;"></td>
+                            <td style="text-align: center; padding: 10px;"></td>
+                            <td style="text-align: center; padding: 10px;"></td>
+                            <td style="text-align: center; padding: 10px;"></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center; padding: 10px;">5</td>
+                            <td style="text-align: center; padding: 10px;"></td>
+                            <td style="text-align: center; padding: 10px;"></td>
+                            <td style="text-align: center; padding: 10px;"></td>
+                            <td style="text-align: center; padding: 10px;"></td>
+                        </tr>
+                    </table>
+                    <p>** Certified that I have no family, as defined in para 2(vii) of Employees’ Pension Scheme, 1995
+                        and should I acquire a family
+                        hereafter I shall furnish particulars thereon in the above form.
+                    </p>
+                    <p>I hereby nominate the following person for receiving the monthly widow pension (admissible under
+                        para 16 2(a)(i) and (ii)
+                        in the event of my death without leaving any eligible family member for receiving Pension.
+                    </p>
+                    <!--                    table2.2-->
+                    <table style="width: 85%; border-collapse: collapse; text-align: center;">
+                        <tr>
+                            <th style="height:25px">Name and Address of the Nominee</th>
+                            <th style="height:25px">Date of Birth</th>
+                            <th style="height:25px">Relationship with the member</th>
+                        </tr>
+                        <tr>
+                            <td style="height:150px"></td>
+                            <td style="height:150px"></td>
+                            <td style="height:150px"></td>
+                        </tr>
+                    </table>
+                    <div>
+                        <div style="font-size:16px;">
+                            <p style="width:95%;padding-left:1px;text-align:left">Date :</p>
+                            <p style="width:100%;padding-right:1px;text-align:right">Signature or thumb impression
+                                <br/>
+                                of the subscriber
+                            </p>
+                            <p style="width:95%;padding-left:1px;text-align:left">Place :<br/>**Strike out whichever is
+                                not applicable.
+                            </p>
+                        </div>
+                        <!--                        <div style="text-align: right;">-->
+                        <!--                            <p>Signature or thumb impression</p><br/>-->
+                        <!--                            <p>&#160;&#160;&#160;&#160;&#160;&#160;&#160;of the subscriber</p>-->
+                        <!--                        </div>-->
+                    </div>
+                    <p style="page-break-before:always;"></p>
+                    <h4 style="text-align: center; font-weight: bold;">CERTIFICATE BY EMPLOYER</h4>
+                    <p>Certified that the above declaration and nomination has been signed/thumb impressed before me by
+                        Shri/Smt./Kum.______________________employed in my establishment after he/she has read the
+                        entries/entries have been read over to him/her
+                        by me and got confirmed by him/her.
+                    </p>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <br/>
+                    <div style="font-size:16px;display:flex;align-items:left;justify-content:space-between;">
+                        <div align="left">
+                            <span>Place :___________________
+                                <br/>
+                                <br/>
+                                Dated the :_________________
+                            </span>
+                        </div>
+                        <div align="right">
+                            <span>Signature of the employer or other<br/>Authoried Officers of the Establishment.
+                                <br/>
+                            </span>
+                            <span style="width:84%;padding-right:1px;text-align:right">Designation
+                                <br/>
+                            </span>
+                            <span>Name &amp; Address of the Factory/<br/>Establishment or Rubber Stamp Thereon
+                            </span>
+                        </div>
+                    </div>
+
+                    <!--                    <div style="display: flex; display: -webkit-box;-webkit-box-pack: center;">-->
+                    <!--                        <div style="text-align: left;">-->
+                    <!--                            <p>Place  :___________________</p><br/><br/>-->
+                    <!--                            <p>Dated the :_________________</p><br/>-->
+                    <!--                        </div>-->
+                    <!--                        <div style="text-align: right;">-->
+                    <!--                            <p>Signature of the employer or other<br/>Authoried Officers of the Establishment.</p><br/>-->
+                    <!--                            <p>Designation</p><br/>-->
+                    <!--                            <p>Name &amp; Address of the Factory/ <br/>Establishment or Rubber Stamp Thereon</p>-->
+                    <!--                        </div>-->
+                    <!--                    </div>-->
+                </div>
+                <p style="page-break-before:always;"></p>
+
+                <!--                page3-->
+                <div style="margin-left: 25px; margin-right: 25px;" class="page">
+                    <h4 style="text-align: center; font-weight: bold; text-decoration: underline;">GUIDANCE FOR FILLING
+                        THE FORM No - 2
+                    </h4>
+                    <br/>
+                    <h4 style="text-align: center; font-weight: bold; text-decoration: underline; ">Employee’s Provident
+                        Fund Scheme, 1952:-
+                    </h4>
+                    <br/>
+                    <h4 style="text-align: center; font-weight: bold;">( E P F )</h4>
+                    <br/>
+                    <h5 style="text-decoration: underline;">Para 33 :- Declaration by persons already employed at the
+                        time of institution of the fund :-
+                    </h5>
+                    <u/>
+                    <p>Every person who is required or entitled to become a member of the Fund shall be asked forthwith
+                        by his employer to
+                        <br/>
+                        furnish and shall, on such demand, furnish to him, for communication to the Commissioner,
+                        particulars concerning
+                        <br/>
+                        himself and his nominee required for the declaration form in Form 2. Such employer shall enter
+                        the particulars in the
+                        <br/>
+                        declaration form and obtain the signature or thumb impression of the person concerned.
+                    </p>
+                    <h5 style="text-decoration: underline;">Para 61 : Nomination</h5>
+                    <ol>
+                        <li>Each member shall make in his declaration in Form 2, a nomination conferring the right to
+                            receive the amount that
+                            <br/>
+                            may stand to his credit in the Fund in the event of his death before the amount standing to
+                            his credit has become
+                            <br/>
+                            payable, or where the amount has become payable before payment has been made.
+                        </li>
+                        <br/>
+                        <li>A member may in this nomination distribute the amount that may stand to his credit in the
+                            Fund amongst his
+                            <br/>
+                            nominees at his own discretion.
+                        </li>
+                        <br/>
+                        <li>If a member has a family at the time of making a nomination, the nomination shall be in
+                            favour of one or more
+                            <br/>
+                            persons belonging to his family. Any nomination made by such member in favour of a person
+                            not belonging to his
+                            <br/>
+                            family shall be invalid.
+                        </li>
+                        <br/>
+                        Provided that a fresh nomination shall be made by the member on his marriage and any nomination
+                        made before
+                        such marriage shall be deemed to be invalid.
+                        <br/>
+                        <br/>
+                        <li>If at the time of making a nomination the member has no family, the nomination may be in
+                            favour of any person or
+                            persons but if the member subsequently acquires a family, such nomination shall forthwith be
+                            deemed to be invalid
+                            and the member shall make a fresh nomination in favour of one or more persons belonging to
+                            his family.
+                            <br/>
+                            <br/>4A Where the nomination is wholly or partly in favour of a minor, the member may, for
+                            the purposes of this scheme
+                            appoint a major person of his family, as defined in clause (g) of paragraph 2, to be the
+                            guardian of the minor
+                            nominee in the event of the member predeceasing the nominee and the guardian so appointed.
+                            Provided that where there is no major person in the family, the member may, at his
+                            discretion, appoint any other
+                            person to be a guardian of the minor nominee.
+                        </li>
+                        <br/>
+                        <li>A nomination made under sub-paragraph(1) may at any time be modified by a member after
+                            giving a written notice
+                            of his intention of doing so in form 2. If the nominee predeceases the member, the interest
+                            of the nominee shall
+                            revert to the member who may make a fresh nomination in respect of such interest.
+                        </li>
+                        <br/>
+                        <li>A nomination or its modification shall take effect to the extent that it is valid on the
+                            date on which it is received by
+                            the commissioner.
+                        </li>
+                        <br/>
+                    </ol>
+
+                </div>
+                <p style="page-break-before:always;"></p>
+                <!--                page4-->
+                <div style="margin-left: 25px; margin-right: 25px;" class="page">
+                    <h5 style="font-weight: bold; text-decoration: underline;">Para 2(g) : Family Means :-</h5>
+                    <p>(&#x2170;) in the case of a male member, his wife, his children, whether married or unmarried,
+                        his dependent parents and
+                        <br/>
+                        his deceased son’s widow and children;
+                    </p>
+                    <br/>
+                    <p>Provided that if a member proves that his wife has ceased, under the personal law governing him
+                        or the
+                        <br/>
+                        customary law of the community to which the spouses belong, to be entitled to maintenance she
+                        shall no
+                        <br/>
+                        longer be deemed to be a part of the member’s family for the purpose of this scheme, unless the
+                        member
+                        <br/>
+                        subsequently intimates by express notice in writing to the commissioner that she shall continue
+                        to be so
+                        <br/>
+                        regarded; and
+                    </p>
+                    <br/>
+                    <p>(&#x2171;) In the case of a female member, her husband, her children, whether married or
+                        unmarried, her
+                        dependent parents, her husband’s, dependent parents, her deceased sons’s widow and children;
+                    </p>
+                    <br/>
+                    <p>Provided that if a member by notice in writing to the commissioner expresses her desire to
+                        exclude her
+                        husband from the family, the husband and his dependent parents shall no longer be deemed to be a
+                        part of
+                        the member’s family for the purpose of this scheme, unless the member subsequently cancels in
+                        writing any
+                        such notice.
+                    </p>
+                    <br/>
+                    <p>
+                        <u>Explanation :-</u>
+                        In either of the above two cases, if the child of a member [or as the case may be, the child of
+                        a deceased son of the member ] has been adopted by another person and if, under the personal law
+                        of the
+                        adopter, adoption is legally recognised, such a child shall be considered as excluded from the
+                        family of the
+                        member.
+                    </p>
+                    <h4 style="text-align: center; font-weight: bold; text-decoration: underline;">EMPLOYEES PENSION
+                        SCHEME, 1995
+                    </h4>
+                    <h4 style="text-align: center; font-weight: bold; text-decoration: underline;">( E P S )</h4>
+                    <h5 style="font-weight: bold; text-decoration: underline;">Para 18 : Particulars to be supplied by
+                        the Employees already employed at the time of commencement of
+                        the Employees Pension Scheme.
+                    </h5>
+                    <p>Every person who is entitled to become a member of the Employees Pension Fund shall be asked
+                        forthwith by his
+                        employer to furnish and that person shall, on such demand, furnish to him for communication to
+                        the Commissioner
+                        particulars concerning himself and his family in the form prescribed by the Central Provident
+                        Fund Commissioner.
+                    </p>
+                    <br/>
+                    <br/>
+                    <h5 style="font-weight: bold; text-decoration: underline;">Para 2(vii) :- Family means :-</h5>
+                    <p>(&#x2170;)&#160;&#160;&#160;Wife in the case of male member of the Employees’ Pension Fund;</p>
+                    <br/>
+                    <p>(&#x2171;)&#160;&#160;&#160;Husband in the case of a female member of the Employees’ Pension
+                        fund;and
+                    </p>
+                    <br/>
+                    <p>(&#x2172;)&#160;&#160;&#160;Sons and daughters of a member of the Employees Pension fund;</p>
+                    <br/>
+                    <p><b>Explanation –</b>The expression “Sons” and “daughters” shall include children [ Legally
+                        adopted by the member]
+                    </p>
+                    <p>
+                        <b>NOTE :</b>
+                        Members can nominate a person to receive benefits under the Employees’ Pension Scheme 1995 where
+                        a
+                        member is unmarried or does not have any family. Such nominee shall be paid pension equal to
+                        widow
+                        pension in case of death of member.
+                    </p>
+                </div>
+            </t>
+        </t>
+
+    </template>
+
+
+</odoo>

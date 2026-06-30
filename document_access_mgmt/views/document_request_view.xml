@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="document_request_tree_view" model="ir.ui.view">
+        <field name="name">document.request.list</field>
+        <field name="model">document.request</field>
+        <field name="arch" type="xml">
+            <list string="Document Request">
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="request_date"/>
+                <field name="documents_id" column_invisible="1"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-muted="state == 'submitted'"
+                       decoration-warning="state == 'to_approve'"
+                       decoration-success="state == 'approved'"
+                       decoration-danger="state == 'rejected'"
+                />
+            </list>
+        </field>
+    </record>
+
+    <record id="document_request_form_view" model="ir.ui.view">
+        <field name="name">document.request.form</field>
+        <field name="model">document.request</field>
+        <field name="priority" eval="1"/>
+        <field name="arch" type="xml">
+            <form string="Document Request">
+                <header>
+                    <button name="action_send_approval_request" type="object" 
+                        string="Submit for Approval" invisible="state != 'draft'" class="oe_highlight"/>
+                    <button name="action_approve" type="object" string="Approve" invisible="state != 'to_approve'" class="oe_highlight" groups="document_access_mgmt.group_document_manager"/>
+                    <button name="action_reject" type="object" string="Reject" invisible="state != 'to_approve'" class="oe_highlight" groups="document_access_mgmt.group_document_manager"/>
+                    <button string="Download PDF" type="object" name="download_pdf" invisible="state != 'approved or not documents_id'" class="oe_highlight"/>
+                    <field name="state" widget="statusbar" 
+                        statusbar_visible="draft,submitted,to_approve,approved" 
+                        readonly="1"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="user_id" required="True" readonly="state != 'draft'"
+                                options="{'no_open': True, 'no_quick_create':True,'no_create': True}"/>
+                            <field name="document_id" invisible="1" required="False" readonly="state != 'draft'"
+                                options="{'no_open': True, 'no_quick_create':True,'no_create': True}"/>
+                            <field name="pdf_document" readonly="1" invisible="state not in ['approved'] or not document_id"
+                                widget="binary" filename="pdf_filename" />
+                            <field name="pdf_filename" readonly="1" invisible="1"/>
+                            <field name="documents_id" readonly="state != 'draft'"
+                               options="{'no_open': True, 'no_quick_create':True,'no_create': True}"/>
+                            <field name="document_available_till" groups="multi_level_approval.group_approval_manager" readonly="state in ('approved','expired')"/>
+                            <field name="is_doc_expired" invisible="1"/>
+                            <field name="documents_pdf_document" readonly="1" invisible="state not in ('approved') or is_doc_expired"
+                                widget="binary" filename="documents_pdf_filename" />
+                            <field name="documents_pdf_filename" readonly="1" invisible="1"/>
+                            <field name="purpose" required='1' readonly="state != 'draft'"/>
+                            <field name="is_watermark" readonly="state != 'draft'" invisible="not document_id"/>
+                            <field name="watermark_content" invisible="not is_watermark" readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="request_date" required="True" readonly="state != 'draft'"/>
+                            <field name="approve_uid" invisible="state == 'draft'" 
+                                options="{'no_open': True, 'no_quick_create':True,'no_create': True}"/>
+                            <field name="approved_date" readonly="1" invisible="state not in ('approved','expired')"/>
+                            <field name="pdf_expiry_date" readonly="1" invisible="state not in ('approved','expired') or not document_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                         <page string="Download Reason" invisible='not download_reason'>
+                            <field name='download_reason'/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+               </div>
+
+            </form>
+        </field>
+    </record>
+
+    <record id="document_request_action" model="ir.actions.act_window">
+        <field name="name">Document Request</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">document.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Document Request
+          </p>
+        </field>
+    </record>
+</odoo>

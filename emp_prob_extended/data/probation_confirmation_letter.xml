@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="mail_probation_confirmation_mailsss" model="mail.template">
+            <field name="name">Probation Confirmation Letter</field>
+            <field name="model_id" ref="emp_prob_extended.model_employee_probation"/>
+            <!--<field name="email_from">{{ object.employee_id.work_email }}</field>-->
+            <field name="email_to">{{object.employee_id.work_email}}</field>
+            <field name="subject">Probation Confirmation Letter</field>
+            <field name="body_html" type="html">
+                <!--<div style="justify-content: center; padding:0.6rem;padding-left: 35px;text-decoration: none; font-size:13px;width:40%">-->
+                <div>
+                    <t t-set="current_date" t-value="time.strftime('%Y-%m-%d')"/>
+                    <p>Date:
+                        <t t-esc="current_date"/>
+                        <br/>
+                        <br/>
+                        <span style="font-weight:bold;">
+                            Name:
+                            <t t-out="object.employee_id.name"/>,
+                        </span>
+                        <br/>
+                        <span style="font-weight:bold;">Designation:
+                            <t t-out="object.employee_id.job_id.name"/>,
+                        </span>
+                        <br/>
+                        <span style="font-weight:bold;">Employee ID:
+                            <t t-out="object.employee_id.id"/>,
+                        </span>
+                        <br/>
+                        <br/>
+                        <span style="font-weight:bold;">Subject :Letter of Confirmation</span>
+                        <br/>
+                        <br/>
+
+
+                        <span style="font-weight:bold;">Dear<t t-out="object.employee_id.name"/>,
+                        </span>
+                        <br/>
+                        <br/>
+                        We are pleased to inform you that you are confirmed in the services of this organization
+                        effective
+                        <b>
+                            <t t-esc="current_date"/>
+                            as
+                        </b>
+                        <br/>
+                        <br/>
+
+                        All other terms conditions of your employment as mentioned in your letter of appointment
+                        shall continue and remain unchanged.
+                        <br/>
+                        <br/>
+
+                        We sincerely hope that you shall continue to work with dedication, loyalty, zeal and
+                        enthusiasm so as to help the organization achieve greater heights in the days to come.
+                        <br/>
+                        <br/>
+
+                        We look forward to your long and fruitful association with us.
+
+                        <br/>
+                        <br/>
+                        Warm regards,
+                        <br/>
+                        <br/>
+                        <b>Head – Human Resources</b>
+                    </p>
+                </div>
+            </field>
+        </record>
+    </data>
+
+
+</odoo>

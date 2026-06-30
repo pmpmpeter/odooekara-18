@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<t t-name="ekara_dashboard.SurveyDashboard">
+
+<div class="survey_dashboard container-fluid">
+
+
+<div class="row">
+
+<div class="col-lg-3">
+
+<div class="survey_card c1">
+
+<div class="count">
+
+<t t-esc="
+state.dashboard.cards?.surveys || 0"/>
+
+</div>
+
+<div>
+Total Surveys
+</div>
+
+</div>
+
+</div>
+
+
+<div class="col-lg-3">
+
+<div class="survey_card c2">
+
+<div class="count">
+
+<t t-esc="
+state.dashboard.cards?.registered || 0"/>
+
+</div>
+
+<div>
+Registered
+</div>
+
+</div>
+
+</div>
+
+
+<div class="col-lg-3">
+
+<div class="survey_card c3">
+
+<div class="count">
+
+<t t-esc="
+state.dashboard.cards?.completed || 0"/>
+
+</div>
+
+<div>
+Completed
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="col-lg-3">
+
+<div class="survey_card c4">
+
+<div class="count">
+
+<t t-esc="
+state.dashboard.cards?.engagement || 0"/>%
+
+</div>
+
+<div>
+Engagement
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<t
+t-foreach="
+state.dashboard.surveys || []"
+t-as="survey"
+t-key="survey.id">
+
+<div class="main_card">
+
+<h3>
+
+<t t-esc="
+survey.survey"/>
+
+</h3>
+
+
+<div class="row mb-3">
+
+<div class="col">
+
+Registered:
+<b>
+<t t-esc="
+survey.registered"/>
+</b>
+
+</div>
+
+
+<div class="col">
+
+Completed:
+<b>
+<t t-esc="
+survey.completed"/>
+</b>
+
+</div>
+
+
+<div class="col">
+
+Pending:
+<b>
+<t t-esc="
+survey.pending"/>
+</b>
+
+</div>
+
+
+<div class="col">
+
+Engagement:
+
+<b>
+
+<t t-esc="
+survey.engagement"/>%
+
+</b>
+
+</div>
+
+</div>
+
+
+<table
+class="table">
+
+<thead>
+
+<tr>
+
+<th>
+Section
+</th>
+
+<th>
+Questions
+</th>
+
+<th>
+Responses
+</th>
+
+<th>
+Engagement
+</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+
+<t
+t-foreach="
+survey.sections"
+t-as="sec"
+t-key="sec.name">
+
+
+<tr>
+
+<td>
+
+<t t-esc="
+sec.name"/>
+
+</td>
+
+<td>
+
+<t t-esc="
+sec.questions"/>
+
+</td>
+
+<td>
+
+<t t-esc="
+sec.responses"/>
+
+</td>
+
+<td>
+
+<div
+class="progress">
+
+<div
+class="progress-bar"
+
+t-att-style="
+'width:'+
+sec.engagement+
+'%'">
+
+<t t-esc="
+sec.engagement"/>%
+
+</div>
+
+</div>
+
+</td>
+
+</tr>
+
+</t>
+
+</tbody>
+
+</table>
+
+</div>
+
+</t>
+
+</div>
+
+</t>

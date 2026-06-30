@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="ir_rule_employee_training_company" model="ir.rule">
+        <field name="name">Employee Training: Multi Company</field>
+        <field name="model_id" ref="employee_orientation.model_employee_training"/>
+        <field name="domain_force">[('company_id', 'in', company_ids + [False])]</field>
+    </record>
+
+    <record id="employee_training_see_own_record_user" model="ir.rule">
+        <field name="name">See Own Training Record - User</field>
+        <field name="model_id" ref="employee_orientation.model_employee_training"/>
+        <field name="domain_force">[('program_convener_id','=',user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="employee_training_user_see_all_records" model="ir.rule">
+        <field name="name">See all Trainings - User</field>
+        <field name="model_id" ref="employee_orientation.model_employee_training"/>
+        <field name="domain_force">[(1 ,'=',1)]</field>
+        <field name="groups" eval="[(4, ref('hr.group_hr_user'))]"/>
+    </record>
+
+    <record id="employee_training_manager_see_all_records" model="ir.rule">
+        <field name="name">See all Trainings - Manager</field>
+        <field name="model_id" ref="employee_orientation.model_employee_training"/>
+        <field name="domain_force">[(1 ,'=',1)]</field>
+        <field name="groups" eval="[(4, ref('hr.group_hr_manager'))]"/>
+    </record>
+
+</odoo>

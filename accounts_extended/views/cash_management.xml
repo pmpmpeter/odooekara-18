@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_cash_management_form" model="ir.ui.view">
+        <field name="name">cash.management.form</field>
+        <field name="model">cash.management</field>
+        <field name="arch" type="xml">
+            <form string="Cash Requirement Report">
+                <header>
+                    <button name="action_submit_crr" string="Submit" type="object" class="oe_stat_button" invisible="approval_status != 'draft'"/>
+                    <field name="approval_status" widget="statusbar" statusbar_visible="draft,submitted,consolidated"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_crr_lines" string="CRR  Monthly Breakup" type="object" class="oe_stat_button">
+<!--                            <field name="crr_line_count" string="CRR  Monthly Breakup"  widget="statinfo"/>-->
+                        </button>
+                    </div>
+                     <div class="oe_title">
+                        <h1>
+                            <field name="name"  readonly="1" placeholder="Draft"/>
+                        </h1>
+                    </div>
+                    <group>
+
+                        <field name="approval_status" invisible="1"/>
+                        <group>
+                            <field name="create_uid" string="Created By" readonly="1" options="{'no_open':True,'no_create': True}"/>
+                            <field name="create_date" string="Created Date" readonly="1"/>
+                            <field name="submitted_name" invisible='1'/>
+                            <field name="submitted_file" filename = 'submitted_name' invisible='1' readonly="approval_status in ('approved','to approve')"/>
+                            <field name="submit_by" readonly='1' force_save='1' options="{'no_open':True,'no_create': True}"/>
+                            <field name="submitted_date" readonly="1"/>
+                             <field name="approved_file" readonly='1' filename='approved_name' invisible='1' />
+                            <field name="approved_by" readonly="1" options="{'no_open':True,'no_create': True}" invisible='1'/>
+                            <field name="approved_date" readonly="1" invisible='1'/>
+                            <field name="approved_name" invisible='1' readonly="1"/>
+                            <field name="approval_state" readonly="1"/>
+                            <field name="company_id" readonly="1" options="{'no_open':True,'no_create': True,}"/>
+
+                        </group>
+                        <group>
+
+                            <field name="user_type" readonly="approval_status != 'draft'" required="approval_status == 'draft'"/>
+                            <field name="start_date" readonly="approval_status != 'draft'" required="approval_status == 'draft'"/>
+                            <field name="to_date" readonly="approval_status != 'draft'" required="approval_status == 'draft'"/>
+                            <field name="tax_entity" invisible="1"/>
+                            <field name="tax_entity1"/>
+                            <field name="tax_entity2"/>
+<!--                            <field name="tax_entity_1" required="tax_entity == 'both' or tax_entity == 'entity1'" readonly="approval_status in ('approved','consolidated')" invisible="tax_entity not in ('entity1','both')" options="{'no_open':True,'no_create': True,}"/>-->
+                            <field name="tax_entity_1_amount" readonly="approval_status in ('approved','consolidated')" invisible="not tax_entity1"/>
+<!--                            <field name="tax_entity_2" required="tax_entity == 'both' or tax_entity == 'entity2'" readonly="approval_status in ('approved','consolidated')" invisible="tax_entity not in ('entity2','both')" options="{'no_open':True,'no_create': True,}"/>-->
+                            <field name="tax_entity_2_amount" readonly="approval_status in ('approved','consolidated')" invisible="not tax_entity2"/>
+                            <field name="approval_document" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Revision Remarks" invisible='not revision_reason'>
+                            <field name='revision_reason' force_save='1' readonly="1"/>
+                        </page>
+                        <page string="Cash Payments">
+                            <field name="cash_payment_ids" context="{'default_cash_type': 'cash_payment'}" readonly="approval_status != 'draft'">
+                                <list editable="bottom" colors="red">
+                                    <field name="company_id" column_invisible='1'/>
+                                    <field name="cash_type" column_invisible='1' readonly='1' force_save='1'/>
+                                    <field name="budget_position_id" optional='hide'/>
+                                    <field name="budget_type" optional='hide'/>
+                                    <field name="analytic_account_id" optional='hide' column_invisible="parent.user_type == 'non_odoo'"/>
+                                    <field name="department_id" optional='hide' column_invisible="parent.user_type == 'non_odoo'"/>
+                                    <field name="budget_total" sum='Total'/>
+                                    <field name="apr" sum='apr'/>
+                                    <field name="may" sum='may'/>
+                                    <field name="june" sum='june'/>
+                                    <field name="quarter_1" decoration-success = "1" sum='Q1'/>
+                                    <field name="july" sum='july'/>
+                                    <field name="aug" sum='aug'/>
+                                    <field name="sep" sum='sep'/>
+                                    <field name="quarter_2" decoration-success = "1" sum='Q2'/>
+                                    <field name="october" sum='october'/>
+                                    <field name="nov" sum='nov'/>
+                                    <field name="dec" sum='dec'/>
+                                    <field name="quarter_3" decoration-success = "1" sum='Q3'/>
+                                    <field name="jan" sum='jan'/>
+                                    <field name="feb" sum='feb'/>
+                                    <field name="march" sum='march'/>
+                                    <field name="quarter_4" decoration-success = "1" sum='Q4'/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Cash Receipts">
+                            <field name="cash_receipt_ids" context="{'default_cash_type': 'cash_receipt'}" readonly="approval_status != 'draft'">
+                                <list editable="bottom">
+                                     <field name="company_id" column_invisible='1'/>
+                                    <field name="cash_type" column_invisible='1' readonly='1' force_save='1'/>
+                                    <field name="budget_position_id" optional='hide'/>
+                                    <field name="budget_type" optional='hide'/>
+                                    <field name="analytic_account_id" optional='hide' column_invisible="parent.user_type == 'non_odoo'"/>
+                                    <field name="department_id" optional='hide' column_invisible="parent.user_type == 'non_odoo'"/>
+                                    <field name="budget_total" sum='Total'/>
+                                    <field name="apr" sum='apr'/>
+                                    <field name="may" sum='may'/>
+                                    <field name="june" sum='june'/>
+                                    <field name="quarter_1" decoration-success = "1" sum='Q1'/>
+                                    <field name="july" sum='july'/>
+                                    <field name="aug" sum='aug'/>
+                                    <field name="sep" sum='sep'/>
+                                    <field name="quarter_2" decoration-success = "1" sum='Q2'/>
+                                    <field name="october" sum='october'/>
+                                    <field name="nov" sum='nov'/>
+                                    <field name="dec" sum='dec'/>
+                                    <field name="quarter_3" decoration-success = "1" sum='Q3'/>
+                                    <field name="jan" sum='jan'/>
+                                    <field name="feb" sum='feb'/>
+                                    <field name="march" sum='march'/>
+                                    <field name="quarter_4" decoration-success = "1" sum='Q4'/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids" options="{'post_refresh': 'always'}"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_cash_management_tree" model="ir.ui.view">
+        <field name="name">cash.management.list</field>
+        <field name="model">cash.management</field>
+        <field name="arch" type="xml">
+            <list string="Cash Requirement Report">
+                <field name="name"/>
+                <field name="create_uid"/>
+                <field name="submit_by"/>
+                <field name="approval_status"/>
+                <field name="approved_by"/>
+                <field name="approved_date"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_cash_management_search" model="ir.ui.view">
+        <field name="name">cash.management.search</field>
+        <field name="model">cash.management</field>
+        <field name="arch" type="xml">
+            <search string="Cash Requirement Report">
+                <field name="name"/>
+                <field name="create_uid"/>
+                <field name="approval_status"/>
+                <field name="approved_by"/>
+                <field name="approved_date"/>
+                
+                <filter name="filter_draft" string="Draft" domain="[('approval_status', '=', 'draft')]"/>
+                <filter name="filter_to_approve" string="To Approve" domain="[('approval_status', '=', 'to approve')]"/>
+                <filter name="filter_approved" string="Approved" domain="[('approval_status', '=', 'approved')]"/>
+                
+                <group expand="0" string="Group By">
+                    <filter name="group_create_uid" string="Created By" context="{'group_by': 'create_uid'}"/>
+                    <filter name="group_approval_status" string="Status" context="{'group_by': 'approval_status'}"/>
+                    <filter name="group_approved_by" string="Approved By" context="{'group_by': 'approved_by'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    
+     <record id="action_cash_management" model="ir.actions.act_window">
+        <field name="name">Cash Requirement Report</field>
+        <field name="res_model">cash.management</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_cash_management_tree"/>
+        <field name="search_view_id" ref="view_cash_management_search"/>
+        <field name="help" type="html">
+            <p>
+                Use this menu to upload and validate your cash requirement report.
+            </p>
+        </field>
+    </record>
+
+
+        <record id="seq_cash_management" model="ir.sequence">
+            <field name="name">Cash Requirement Report</field>
+            <field name="code">cash.management</field>
+            <field name="prefix">CM-</field>
+            <field name="padding">5</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+    <record id="view_crr_line_tree" model="ir.ui.view">
+        <field name="name">cash.management.line.list</field>
+        <field name="model">cash.management.line</field>
+        <field name="arch" type="xml">
+           <list editable="bottom" create='0' edit='0' delete='0'>
+                <field name="user_type"/>
+               <field name="budget_position_id" />
+                <field name="budget_type" />
+                <field name="analytic_account_id" />
+                <field name="department_id" />
+                <field name="budget_total" sum='Total'/>
+                <field name="apr" sum='apr'/>
+                <field name="may" sum='may'/>
+                <field name="june" sum='june'/>
+                <field name="quarter_1" decoration-success = "1" sum='Q1'/>
+                <field name="july" sum='july'/>
+                <field name="aug" sum='aug'/>
+                <field name="sep" sum='sep'/>
+                <field name="quarter_2" decoration-success = "1" sum='Q2'/>
+                <field name="october" sum='october'/>
+                <field name="nov" sum='nov'/>
+                <field name="dec" sum='dec'/>
+                <field name="quarter_3" decoration-success = "1" sum='Q3'/>
+                <field name="jan" sum='jan'/>
+                <field name="feb" sum='feb'/>
+                <field name="march" sum='march'/>
+                <field name="quarter_4" decoration-success = "1" sum='Q4'/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_crr_line_search" model="ir.ui.view">
+        <field name="name">cash.management.line.search</field>
+        <field name="model">cash.management.line</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="user_type"/>
+                <field name="budget_type"/>
+                <field name="budget_position_id"/>
+                
+                <filter string="Capex" name='filter_capex' domain="[('budget_type', '=', 'capex')]"/>
+                <filter string="Opex" name='filter_opex' domain="[('budget_type', '=', 'opex')]"/>
+                <filter string="OCIF" name='filter_ocif' domain="[('budget_type', '=', 'ocif')]"/>
+                <filter string="NOOCIF" name='filter_noocif' domain="[('budget_type', '=', 'noocif')]"/>
+                 
+              <group expand="0" string="Group By">
+                    <filter name='group_user_type' string="User Type" context="{'group_by': 'user_type'}"/>
+                    <filter name='group_budget_type' string="Budget Type" context="{'group_by': 'budget_type'}"/>
+                    <filter name='group_budget_position' string="Budget Position" context="{'group_by': 'budget_position_id'}"/>
+                    <filter name='group_department' string="Department" context="{'group_by': 'department_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+</odoo>
+

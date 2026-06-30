@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="criminal_case_form_template" model="ir.actions.report">
+        <field name="name">Criminal Case Form</field>
+        <field name="model">hr.employee</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_extended.print_criminal_case_form</field>
+        <field name="report_file">hr_extended.print_criminal_case_form</field>
+        <field name="print_report_name">'Criminal Case Form'</field>
+        <!--        <field name="binding_model_id" ref="hr_extended.model_hr_employee"/>-->
+        <field name="binding_model_id" eval="False"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="print_criminal_case_form">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="hr_extended.print_criminal_case_report" t-lang="o.user_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <template id="print_criminal_case_report">
+        <t t-call="web.external_layout">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="doc" t-value="doc.with_context(lang=lang)"/>
+                <t t-set="company" t-value="doc.company_id"/>
+                <div style="margin-left: 25px; margin-right: 25px;">
+                    <h3 style="text-align: center; font-weight: bold;">
+                        CRIMINAL CASE
+                    </h3>
+
+                    <h4 style="text-align: center; font-weight: bold;">
+                        SELF DECLARATION
+                    </h4>
+                    <br/>
+                    <p>
+                        I, ______________________ s/o/d/o _____________________ residing at
+                        _________________________________________________________________________________hereby declare
+                        that there are no criminal cases against me or I have ever been convicted by the courts or
+                        cautioned, reprimanded by the police under the jurisdiction of any state governments in India or
+                        abroad.
+                    </p>
+                    <p>
+                        I understand that my appointment is conditional on satisfactory screening for a criminal record
+                        based on my above declaration.
+                    </p>
+                    <p>
+                        I confirm that the information I have given on this form is correct and complete and I
+                        understand that any false information could result in my dismissal from employment.
+                    </p>
+                    <br/>
+                    <p>Signature: ___________________________</p>
+                    <p>Name: _________________________</p>
+                    <p>Company/Dept: ___________________________</p>
+                    <p>Date: _________________________</p>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

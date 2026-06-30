@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hr_resignation,access.hr.resignation,hr_resignation.model_hr_resignation,base.group_user,1,1,1,0
+access_hr_contract_user,access.hr.contract.user,hr_contract.model_hr_contract,base.group_user,1,0,0,0
+access_exit_interview_base,access.exit.interview.base,model_exit_interview,base.group_user,1,1,1,0
+access_exit_interview_hr_user,access.exit.interview.hr.user,model_exit_interview,hr.group_hr_user,1,1,1,0
+access_exit_interview_manager,access.exit.interview.manager,model_exit_interview,hr.group_hr_manager,1,1,1,1
+access_clearance_form_base,access.clearance.form.base,model_clearance_form,base.group_user,1,1,1,0
+access_clearance_form_hr_user,access.clearance.form.hr.user,model_clearance_form,hr.group_hr_user,1,1,1,0
+access_clearance_form_manager,access.clearance.form.manager,model_clearance_form,hr.group_hr_manager,1,1,1,1
+access_clearance_asset,access.clearance.asset,model_clearance_asset,base.group_user,1,1,1,1
+access_clearance_function_head,access.clearance.function.head,model_clearance_function_head,base.group_user,1,1,1,1

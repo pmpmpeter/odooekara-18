@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<record id="get_annual_performance_review" model="ir.actions.report">
+    <field name="name">Annual Performance Review</field>
+    <field name="model">self.rating</field>
+    <field name="report_type">xlsx</field>
+    <field name="report_name">hr_appraisal_extended.report_annual_performance_review</field>
+    <field name="report_file">hr_appraisal_extended.report_annual_performance_review</field>
+    <field name="binding_model_id" ref="hr_appraisal_extended.model_self_rating"/>
+    <field name="binding_type">report</field>
+</record>
+</odoo>

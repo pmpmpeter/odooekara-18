@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_manpower_budget_wizard_form" model="ir.ui.view">
+        <field name="name">manpower.budget.wizard.form</field>
+        <field name="model">manpower.budget.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Manpower Budget Report">
+                <group>
+                    <group>
+                        <group>
+                        <field name="start_date"/>
+                        <field name="end_date"/>
+                    </group>
+                    </group>
+                    <group>
+                    </group>
+                </group>
+                <footer>
+                    <button string="Generate Report" type="object" name="generate_report" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_manpower_budget_wizard" model="ir.actions.act_window">
+        <field name="name">Manpower Budget Report</field>
+        <field name="res_model">manpower.budget.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <!-- <menuitem id="menu_manpower_budget_report" name="Manpower Budget Report"
+              parent="hr.hr_menu_hr_reports"
+              action="action_manpower_budget_wizard"/> -->
+</odoo>

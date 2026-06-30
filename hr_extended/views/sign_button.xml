@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="inherit_sign_send_request_view_form" model="ir.ui.view">
+        <field name="name">sign.send.request.view.form.inherit</field>
+        <field name="model">sign.send.request</field>
+        <field name="inherit_id" ref="sign.sign_send_request_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//footer/button[@name='sign_directly'][not(@context)]" position="attributes">
+                <attribute name="invisible">context.get('sign_directly_without_mail', False) or not is_user_signer
+                </attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- To Increase the width of the INITIAL button in sign -->
+    <record id="sign.sign_item_type_initial" model="sign.item.type">
+        <field name="default_width" type="float">0.109</field>
+    </record>
+
+    <!-- To Increase the width of the CHECKBOX button in sign -->
+    <record id="sign.sign_item_type_checkbox" model="sign.item.type">
+        <field name="default_width" type="float">0.073</field>
+    </record>
+
+</odoo>

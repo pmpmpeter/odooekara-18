@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="inherit_share_view_form_popup" model="ir.ui.view">
+        <field name="name">documents.share.inherit.form</field>
+        <field name="model">documents.share</field>
+        <field name="inherit_id" ref="documents.share_view_form_popup"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='action']" position="before">
+                <field name="partner_ids" widget="many2many_tags" options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"/>
+            </xpath>
+            <xpath expr="//footer" position="inside">
+                  <button string="Send Mail" class="oe_highlight" type="object" name="action_send_custom_share_mail" data-hotkey="q"/>
+            </xpath>
+            <xpath expr="//footer/button[@special='save']" position="attributes">
+                <attribute name="string">Share(Copy Link)</attribute>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

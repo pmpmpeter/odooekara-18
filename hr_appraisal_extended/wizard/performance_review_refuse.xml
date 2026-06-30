@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_performance_review_refuse_popup" model="ir.ui.view">
+            <field name="name">performance.review.refuse.popup.form</field>
+            <field name="model">performance.review.refuse.popup</field>
+            <field name="arch" type="xml">
+                <form string="Refuse Process">
+                    <group>
+                        <field name="refuse_reason" string="Refuse Reason" required="1"/>
+                        <field name="employee_rating_id"
+                               options="{'no_create': True,'no_create_edit':True,'no_open': True}" invisible="1"
+                               readonly="1"/>
+                    </group>
+                    <footer>
+                        <button string="Refuse" name="refuse_process" type="object" class="btn-primary"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        <record id="action_performance_review_refuse_popup" model="ir.actions.act_window">
+            <field name="name">Refuse Process popup</field>
+            <field name="res_model">performance.review.refuse.popup</field>
+            <field name="view_mode">list,form</field>
+            <field name="view_id" ref="view_performance_review_refuse_popup"/>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

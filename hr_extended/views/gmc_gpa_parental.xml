@@ -1,0 +1,126 @@
+<!--<?xml version="1.0" encoding="utf-8"?>-->
+<!--<odoo>-->
+<!--access_gmcgpa_parental,gmcgpa.parental,model_gmcgpa_parental,base.group_user,1,1,1,1-->
+
+<!--    <record id="view_gmc_gpa_parental_form" model="ir.ui.view">-->
+<!--        <field name="name">view.gmc.gpa.parental.form</field>-->
+<!--        <field name="model">gmcgpa.parental</field>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <form>-->
+<!--                <header>-->
+<!--                    <field name="state" widget="statusbar" options="{'clickable': '1', 'fold_field': 'fold'}"-->
+<!--                           statusbar_visible="draft,active,inactive,terminated"/>-->
+<!--                </header>-->
+<!--                <sheet>-->
+<!--                    <group>-->
+<!--                        <group>-->
+<!--                            <field name="employee_id" required="True" widget="many2one_avatar_user"-->
+<!--                                   options="{'no_quick_create':True,'no_create': True}"-->
+<!--                                   readonly="state not in ('draft')"/>-->
+<!--                            <field name="emp_code" readonly="1"/>-->
+<!--                            <field name="email" widget="email" required="True" readonly="state not in ('draft')"/>-->
+<!--                            <field name="contact_no" widget="phone" required="True" readonly="state not in ('draft')"/>-->
+<!--                        </group>-->
+<!--                        <group>-->
+<!--                            <field name="dependent_name" readonly="state not in ('draft')"/>-->
+<!--                            <field name="relationship" readonly="state not in ('draft')"/>-->
+<!--                            <field name="dob" readonly="state not in ('draft')"/>-->
+<!--                            <field name="age" readonly="1"/>-->
+<!--                            <field name="gender" readonly="state not in ('draft')"/>-->
+<!--                        </group>-->
+<!--                    </group>-->
+<!--                    <notebook>-->
+<!--                        <page string="Job Related">-->
+<!--                            <group>-->
+<!--                                <group>-->
+<!--                                    <field name="designation" readonly="state not in ('draft')"/>-->
+<!--                                    <field name="company_id" options="{'no_quick_create':True,'no_create': True}"-->
+<!--                                           readonly="state not in ('draft')"/>-->
+<!--                                    <field name="doj" readonly="state not in ('draft')"/>-->
+<!--                                    <field name="lwd" readonly="state not in ('draft')"/>-->
+<!--                                </group>-->
+<!--                                <group>-->
+<!--                                    <field name="insurance_type" readonly="state not in ('draft')"/>-->
+<!--                                    <field name="sum_insured_gmc" readonly="state not in ('draft')"/>-->
+<!--                                    <field name="sum_insured_gpa" readonly="state not in ('draft')"/>-->
+<!--                                </group>-->
+<!--                            </group>-->
+<!--                            <group>-->
+<!--                                <field name="remarks" readonly="state not in ('draft')"/>-->
+<!--                            </group>-->
+<!--                        </page>-->
+<!--                    </notebook>-->
+<!--                </sheet>-->
+<!--                <div class="oe_chatter">-->
+<!--                    <field name="message_follower_ids" widget="mail_followers"/>-->
+<!--                    <field name="activity_ids" widget="mail_activity"/>-->
+<!--                    <field name="message_ids" widget="mail_thread"/>-->
+<!--                </div>-->
+<!--            </form>-->
+<!--        </field>-->
+<!--    </record>-->
+
+<!--    <record id="view_gmcgpa_parental_tree" model="ir.ui.view">-->
+<!--        <field name="name">view.gmcgpa_parental.list</field>-->
+<!--        <field name="model">gmcgpa.parental</field>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <list>-->
+<!--                <field name="employee_id"/>-->
+<!--                <field name="emp_code"/>-->
+<!--                <field name="email"/>-->
+<!--                <field name="contact_no"/>-->
+<!--                <field name="sum_insured_gmc"/>-->
+<!--                <field name="sum_insured_gpa"/>-->
+<!--                <field name="state" widget='badge' decoration-info="state == 'inactive'"-->
+<!--                       decoration-success="state =='active'" decoration-danger="state == 'terminated'"/>-->
+<!--            </list>-->
+<!--        </field>-->
+<!--    </record>-->
+
+<!--    <record id="view_gmc_gpa_parental_form_search" model="ir.ui.view">-->
+<!--        <field name="name">view.gmc.gpa.parental.form.search</field>-->
+<!--        <field name="model">gmcgpa.parental</field>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <search>-->
+<!--                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>-->
+<!--                <filter string="Active" name="active"-->
+<!--                        domain="[('state', '=', 'active')]"/>-->
+<!--                <filter string="Terminated" name="terminated" domain="[('state', '=', 'terminated')]"/>-->
+
+<!--                <group expand="0" string="Group By">-->
+<!--                    <filter string="Designation" name="group_by_designation" context="{'group_by':'designation'}"/>-->
+<!--                    <filter string="Insurance Type" name="group_by_insurance_type"-->
+<!--                            context="{'group_by':'insurance_type'}"/>-->
+<!--                    <filter string="Status" name="group_by_state" context="{'group_by':'state'}"/>-->
+<!--                </group>-->
+
+<!--                <field name="employee_id" string="Name"/>-->
+<!--                <field name="designation" string="Designation"/>-->
+<!--                <field name="insurance_type" string="Insurance Type"/>-->
+<!--            </search>-->
+<!--        </field>-->
+<!--    </record>-->
+
+<!--    <record id="action_view_gmcgpa_parental" model="ir.actions.act_window">-->
+<!--        <field name="name">GMC GPA Parental</field>-->
+<!--        <field name="res_model">gmcgpa.parental</field>-->
+<!--        <field name="view_mode">list,form</field>-->
+<!--        <field name="view_id" ref="view_gmcgpa_parental_tree"/>-->
+<!--        <field name="search_view_id" ref="view_gmc_gpa_parental_form_search"/>-->
+<!--        <field name="target">current</field>-->
+<!--        <field name="context">-->
+<!--            {-->
+<!--            'search_default_active': 1-->
+<!--            }-->
+<!--        </field>-->
+<!--    </record>-->
+
+<!--    <menuitem id="gmc_gpa_parental_menu" name="GMC GPA Parental"-->
+<!--              groups="base.group_user" parent="hr.menu_hr_employee_payroll"-->
+<!--              sequence="13"/>-->
+
+<!--    <menuitem id="employee_gmc_gpa_parental_menu"-->
+<!--              parent="hr_extended.gmc_gpa_parental_menu" name="GMC GPA Form"-->
+<!--              action="action_view_gmcgpa_parental" groups="base.group_user"-->
+<!--              sequence="1"/>-->
+<!--</odoo>-->

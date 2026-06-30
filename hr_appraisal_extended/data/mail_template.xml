@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="mail_three60_performance_reviewer" model="mail.template">
+        <field name="name">360 Performance Review Notification</field>
+        <field name="model_id" ref="hr_appraisal_extended.model_threeperformance_review"/>
+        <field name="subject">360 Performance Review Notification</field>
+        <field name="body_html" type="html">
+            <p>
+                Dear Reviewer,
+            </p>
+            <p>
+                Please review the 360 Performance for the employee <t t-out="object.employee_id.name"/>.
+            </p>
+            <p>
+                Best regards,
+            </p>
+        </field>
+    </record>
+</odoo>

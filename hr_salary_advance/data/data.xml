@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+
+        <record id="hr_salary_advance_seq" model="ir.sequence">
+            <field name="name">HR Salary Advance Sequence</field>
+            <field name="code">hr.salary.advance.seq</field>
+            <field name="prefix">SA</field>
+            <field name="padding">5</field>
+        </record>
+
+    </data>
+</odoo>

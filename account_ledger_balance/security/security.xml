@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <record id="account_ledger_balance_rule" model="ir.rule">
+        <field name="name">Account Ledger Balance Record Rule</field>
+        <field name="model_id" ref="model_accounting_balance_report"/>
+       <field name="domain_force">[('company_id', '=', company_id)]</field>
+    </record>
+</odoo>
+

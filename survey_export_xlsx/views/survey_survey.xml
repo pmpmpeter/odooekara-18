@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="survey_survey_view_form_inherit" model="ir.ui.view">
+        <field name="name">survey.survey.view.form.inherit</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.survey_survey_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='question_type']" position="before">
+                <field name="survey_category_id" options="{'no_open':True,'no_quick_create':True,'no_create':True}"/>
+            </xpath>
+        </field>
+    </record>
+
+     <record id="survey_question_form_inherit" model="ir.ui.view">
+        <field name="name">survey.question.form.inherit</field>
+        <field name="model">survey.question</field>
+        <field name="inherit_id" ref="survey.survey_question_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='question_type']" position="before">
+                <field name="survey_category_id" options="{'no_open':True,'no_quick_create':True,'no_create':True}"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

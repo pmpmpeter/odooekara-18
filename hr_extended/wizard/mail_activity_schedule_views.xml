@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="inherit_mail_activity_schedule_view_form" model="ir.ui.view">
+            <field name="name">Iinherit Activity schedule</field>
+            <field name="model">mail.activity.schedule</field>
+            <field name="inherit_id" ref="mail.mail_activity_schedule_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//footer[2]" position="inside">   
+                    <button name="action_create_task" string="Create Task" type="object" class="btn-primary"
+                                invisible="has_error"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

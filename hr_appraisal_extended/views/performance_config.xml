@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- 360 Performance Config -->
+
+        <record id="performance_config_view_tree" model="ir.ui.view">
+            <field name="model">performance.config</field>
+            <field name="arch" type="xml">
+                <list string="360 Performance Configuration">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name" required="True"/>
+                    <field name="review_types"/>
+                    <field name="active"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="performance_config_view_form" model="ir.ui.view">
+            <field name="model">performance.config</field>
+            <field name="arch" type="xml">
+                <form>
+                    <group>
+                        <group>
+                            <field name="name" required="True"/>
+                            <field name="review_types"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <record id="performance_config_filter_inactive" model="ir.ui.view">
+            <field name="model">performance.config</field>
+            <field name="arch" type="xml">
+                <search>
+                    <filter string="Active" name="show_active" domain="[('active', '=', True)]"/>
+                    <filter string="Archived" name="show_inactive" domain="[('active', '=', False)]"/>
+
+                    <group expand="0" string="Group By">
+                        <filter string="Review Types" name="group_by_review_types"
+                                context="{'group_by':'review_types'}"/>
+                    </group>
+
+                    <field name="name" string="Name"/>
+                    <field name="review_types" string="Review Type"/>
+                </search>
+            </field>
+        </record>
+
+        <record id="performance_config_action" model="ir.actions.act_window">
+            <field name="name">360 Performance Configuration</field>
+            <field name="res_model">performance.config</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="performance_config_filter_inactive"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create a new 360 Performance review configuration
+                </p>
+            </field>
+        </record>
+
+        <menuitem
+                id="menu_performance_configuration"
+                name="360 Performance Configuration"
+                action="hr_appraisal_extended.performance_config_action"
+                parent="hr_appraisal.menu_hr_appraisal_configuration"
+                sequence="4"
+                groups="hr_appraisal.group_hr_appraisal_manager"/>
+    </data>
+</odoo>

@@ -1,0 +1,254 @@
+<odoo>
+
+    <record id="action_employee_indent_report" model="ir.actions.report">
+        <field name="name">Job Description Report</field>
+        <field name="model">employee.indent</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_extended.report_employee_indent_document_report</field>
+        <field name="report_file">hr_extended.report_employee_indent_document_report</field>
+        <field name="print_report_name">'Job Description'</field>
+        <field name="binding_model_id" ref="hr_extended.model_employee_indent"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_employee_indent_document_report">
+        <t t-call="web.html_container">
+            <!--            <t t-call="web.external_layout">-->
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="doc" t-value="doc.with_context(lang=lang)"/>
+                <t t-set="company" t-value="doc.organization"/>
+                <div class="header">
+                    <img t-if="doc.business_unit_id.tax_entity.logo"
+                         t-att-src="image_data_uri(doc.business_unit_id.tax_entity.logo)" alt="Logo"
+                         style="max-width: 50%; max-height: 60px; width: auto; height: auto;"/>
+                    <div style="margin-top: 5px; margin-bottom: 2px;">
+                        <t t-esc="doc.business_unit_id.tax_entity.name"/>
+                    </div>
+                    <div style="margin-bottom: 2px;">
+                        <t t-esc="doc.business_unit_id.tax_entity.street"/>
+                    </div>
+                    <div style="margin-bottom: 2px;">
+                        <t t-esc="doc.business_unit_id.tax_entity.street2"/>
+                    </div>
+                    <div style="margin-bottom: 2px;">
+                        <t t-esc="doc.business_unit_id.tax_entity.city"/>
+                        <t t-esc="doc.business_unit_id.tax_entity.zip"/>
+                    </div>
+                    <div style="margin-bottom: 2px;">
+                        <t t-esc="doc.business_unit_id.tax_entity.state_id.name"/>
+                        <t t-esc="doc.business_unit_id.tax_entity.state_id.code"/>
+                    </div>
+                    <div style="margin-bottom: 2px;">
+                        <t t-esc="doc.business_unit_id.tax_entity.country_id.name"/>
+                    </div>
+
+                    <br/>
+                </div>
+
+                <div class="page" style="margin-top:25px;">
+                    <h1 style="text-align: center; font-size: 20px; font-weight: bold; text-transform: uppercase;">
+                        Job Description
+                    </h1>
+                    <br/>
+
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14px; border: 1px solid black;">
+                        <tr>
+                            <td style="border: 1px solid black; padding: 5px; background-color: #f2f2f2;">
+                                <strong>Business Unit:</strong>
+                            </td>
+                            <td colspan="3" style="border: 1px solid black; padding: 5px;">
+                                <t t-esc="doc.business_unit_id.name"/>
+                            </td>
+                            <!--                                <td style="border: 1px solid black; padding: 5px; background-color: #f2f2f2;">-->
+                            <!--                                    <strong>Source (New Role/Replacement):</strong>-->
+                            <!--                                </td>-->
+                            <!--                        <td style="border: 1px solid black; padding: 5px;">-->
+                            <!--                            <t t-if="is_replacement">Replacement</t>-->
+                            <!--                            <t t-else="">New Role</t>-->
+                            <!--                        </td>-->
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid black; padding: 5px; background-color: #f2f2f2;">
+                                <strong>Department:</strong>
+                            </td>
+                            <td style="border: 1px solid black; padding: 5px;">
+                                <t t-esc="doc.department.name"/>
+                            </td>
+                            <td style="border: 1px solid black; padding: 5px; background-color: #f2f2f2;">
+                                <strong>Priority (Low/Medium/High):</strong>
+                            </td>
+                            <td style="border: 1px solid black; padding: 5px;">
+                                <t t-esc="dict(doc._fields['priority'].selection).get(doc.priority, '')"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid black; padding: 5px; background-color: #f2f2f2;">
+                                <strong>Designation:</strong>
+                            </td>
+                            <td style="border: 1px solid black; padding: 5px;">
+                                <t t-esc="doc.position_name.name"/>
+                            </td>
+                            <td style="border: 1px solid black; padding: 5px; background-color: #f2f2f2;">
+                                <strong>Reporting To:</strong>
+                            </td>
+                            <td style="border: 1px solid black; padding: 5px;">
+                                <t t-esc="doc.reporting_to.name"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid black; padding: 5px; background-color: #f2f2f2;">
+                                <strong>Location:</strong>
+                            </td>
+                            <td style="border: 1px solid black; padding: 5px;">
+                                <t t-esc="doc.locations_id.name"/>
+                            </td>
+                            <td style="border: 1px solid black; padding: 5px; background-color: #f2f2f2;">
+                                <strong>No. of Vacancy:</strong>
+                            </td>
+                            <td style="border: 1px solid black; padding: 5px;">
+                                <t t-esc="doc.target"/>
+                            </td>
+                        </tr>
+
+                    </table>
+                    <div style="margin-top: 20px;"></div>
+
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14px; border: 1px solid black;">
+                        <tr>
+                            <td colspan="2" style="border: 1px solid black; padding: 10px;">
+                                <span style="font-weight: bold; text-decoration: underline;">Purpose of the Job:
+                                </span>
+                                <span style="font-weight: normal;">
+                                    <t t-esc="doc.purpose_of_job"/>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="border: 1px solid black; padding: 10px;">
+                                <span style="font-weight: bold; text-decoration: underline;">Job Description:</span>
+                                <span style="font-weight: normal;">
+                                    <t t-esc="doc.job_description"/>
+                                </span>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid black; padding: 10px; background-color: #f2f2f2; font-weight: bold; width: 20%;">
+                                Technical Qualification:
+                            </td>
+                            <td style="border: 1px solid black; padding: 20px; min-height: 50px; width: 80%;">
+                                <t t-esc="doc.technical_qualification"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid black; padding: 10px; background-color: #f2f2f2; font-weight: bold;">
+                                Essential Years of Work Experience and Qualification:
+                            </td>
+                            <td style="border: 1px solid black; padding: 20px; min-height: 50px;">
+                                <t t-esc="doc.work_experience"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid black; padding: 10px; background-color: #f2f2f2; font-weight: bold;">
+                                Industry Preferences (If any):
+                            </td>
+                            <td style="border: 1px solid black; padding: 20px; min-height: 50px;">
+                                <t t-esc="doc.industry_preferences"/>
+                            </td>
+                        </tr>
+                    </table>
+                    <div style="margin-top: 20px;"></div>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14px; border: 1px solid black;">
+                        <tr>
+                            <td style="border: 1px solid black; padding: 10px; background-color: #f2f2f2; font-weight: bold; width: 20%;">
+                                Mandatory Skills/Competencies:
+                            </td>
+                            <td style="border: 1px solid black; padding: 20px; min-height: 50px; width: 80%;">
+                                <t t-esc="doc.mandatory_skills"/>
+                            </td>
+                        </tr>
+                    </table>
+                    <div style="margin-top: 20px;"></div>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14px; border: 1px solid black;">
+                        <tr>
+                            <td colspan="2" style="border: 1px solid black; padding: 10px;">
+                                <span style="font-weight: bold; text-decoration: underline;">Job Responsibility:
+                                </span>
+                                <span style="font-weight: normal;">
+                                    <t t-esc="doc.job_responsibility"/>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="border: 1px solid black; padding: 10px;">
+                                <span style="font-weight: bold; text-decoration: underline;">Professional
+                                    Requirements:
+                                </span>
+                                <span style="font-weight: normal;">
+                                    <t t-esc="doc.professional_requirements"/>
+                                </span>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="border: 1px solid black; padding: 10px;">
+                                <span style="font-weight: bold; text-decoration: underline;">Educational and
+                                    Experience Requirements:
+                                </span>
+                                <span style="font-weight: normal;">
+                                    <t t-esc="doc.educational_requirements"/>
+                                </span>
+
+                            </td>
+                        </tr>
+                    </table>
+                    <div style="margin-top: 20px;"></div>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14px; border: 1px solid black;">
+                        <tr>
+                            <td colspan="2" style="border: 1px solid black; padding: 10px;">
+                                <span style="font-weight: bold; text-decoration: underline;">Desirable:</span>
+                                <span style="font-weight: normal;">
+                                    <t t-esc="doc.desirable"/>
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid black; padding: 10px; background-color: #f2f2f2; font-weight: bold; width: 20%;">
+                                Approved by (HOD)
+                            </td>
+                            <td style="border: 1px solid black; padding: 20px; min-height: 50px; width: 80%;">
+                                <t t-esc="dict(doc._fields['approved_by_hod'].selection).get(doc.approved_by_hod, '')"/>
+                                <!--<t t-esc="doc.approved_by_hod_id.name"/>-->
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid black; padding: 10px; background-color: #f2f2f2; font-weight: bold;">
+                                Approved by (Director):
+                            </td>
+                            <td style="border: 1px solid black; padding: 20px; min-height: 50px;">
+                                <t t-esc="dict(doc._fields['approved_by_director'].selection).get(doc.approved_by_director, '')"/>
+                                <!--<t t-esc="doc.approved_by_director_id.name"/>-->
+                            </td>
+                        </tr>
+
+                    </table>
+                    <div style="text-align: center; font-size: 12px; font-style: italic; margin-top: 20px;">
+                        <p>Human Resources Department</p>
+                    </div>
+                </div>
+            </t>
+            <!--            </t>-->
+        </t>
+    </template>
+    <!-- <template id="report_employee_indent_document">
+                <t t-foreach="docs" t-as="o">
+                    <t
+                    t-call="hr_extended.report_employee_indent_document_report"
+                    t-lang="o.user_id.lang"
+                    />
+                </t>
+            </t>
+        </template> -->
+
+</odoo>
+   

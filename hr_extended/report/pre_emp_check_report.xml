@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="paperformat_pre_emp_referencec_check_form_pdf_A4" model="report.paperformat">
+        <field name="name">Appointment Letter - Employee not using</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">50</field>
+        <field name="margin_bottom">25</field>
+        <field name="margin_left">15</field>
+        <field name="margin_right">15</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">48</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <template id="report_employment_referral_document">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <t t-foreach="docs" t-as="doc">
+                    <div class="page">
+                        <h2 style="text-align: center;">Pre-Employment Reference Check Form</h2>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                            <tr>
+                                <td style="border: 1px solid #000; padding: 8px;">Candidate Name:</td>
+                                <td style="border: 1px solid #000; padding: 8px;">
+                                    <t t-esc="doc.candidate_name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid #000; padding: 8px;">Date:</td>
+                                <td style="border: 1px solid #000; padding: 8px;">
+                                    <t t-esc="doc.date"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid #000; padding: 8px;">Location:</td>
+                                <td style="border: 1px solid #000; padding: 8px;">
+                                    <t t-esc="doc.location"/>
+                                </td>
+                            </tr>
+                        </table>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                            <tr>
+                                <td style="border: 1px solid #000; padding: 8px;">Name of Referee:</td>
+                                <td style="border: 1px solid #000; padding: 8px;">
+                                    <t t-esc="doc.referee_id.name"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid #000; padding: 8px;">Phone Number:</td>
+                                <td style="border: 1px solid #000; padding: 8px;">
+                                    <t t-esc="doc.referee_phone"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid #000; padding: 8px;">Email:</td>
+                                <td style="border: 1px solid #000; padding: 8px;">
+                                    <t t-esc="doc.referee_email"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid #000; padding: 8px;">Title of Referee:</td>
+                                <td style="border: 1px solid #000; padding: 8px;">
+                                    <t t-esc="doc.referee_title"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid #000; padding: 8px;">Relationship to Candidate:</td>
+                                <td style="border: 1px solid #000; padding: 8px;">
+                                    <t t-esc="doc.referee_relationship"/>
+                                </td>
+                            </tr>
+                        </table>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                            <tr>
+                                <td colspan="2"
+                                    style="border: 1px solid #000; padding: 8px; background-color: #f2f2f2;">
+                                    <strong>COMMENTS ON CANDIDATE’S LEVEL OF TECHNICAL SKILLS AND EXPERTISE:</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"
+                                    style="border: 1px solid #000; padding: 8px; word-wrap: break-word; white-space: pre-wrap; min-height: 50px;">
+                                    <t t-esc="doc.technical_skills_comments"/>
+                                </td>
+                            </tr>
+                        </table>
+                        <!-- Table for job duties comments -->
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                            <tr>
+                                <td colspan="2"
+                                    style="border: 1px solid #000; padding: 8px; background-color: #f2f2f2;">
+                                    <strong>COMMENTS ON CANDIDATE’S JOB DUTIES HANDLED DURING THE TENURE:</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"
+                                    style="border: 1px solid #000; padding: 8px; word-wrap: break-word; white-space: pre-wrap; min-height: 50px;">
+                                    <t t-esc="doc.job_duties_comments"/>
+                                </td>
+                            </tr>
+                        </table>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                            <tr>
+                                <td colspan="2"
+                                    style="border: 1px solid #000; padding: 8px; background-color: #f2f2f2;">
+                                    <strong>COMMENTS ON CANDIDATE’S PROFESSIONAL INTERACTIVE SKILLS:</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"
+                                    style="border: 1px solid #000; padding: 8px; word-wrap: break-word; white-space: pre-wrap; min-height: 50px;">
+                                    <t t-esc="doc.professional_skills_comments"/>
+                                </td>
+                            </tr>
+                        </table>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                            <!-- Integrity or Effectiveness in Handling Resources -->
+                            <tr>
+                                <td style="border: 1px solid #000; padding: 8px;">Integrity or Effectiveness in Handling
+                                    the
+                                    Organization’s Resources for Which They Were Responsible?
+                                </td>
+                                <td style="border: 1px solid #000; padding: 8px;">
+                                    <t t-if="doc.integrity_resources == 'yes'">Yes</t>
+                                    <t t-if="doc.integrity_resources == 'no'">No</t>
+                                </td>
+                            </tr>
+
+                            <!-- Integrity or Effectiveness in Professional Interactions -->
+                            <tr>
+                                <td style="border: 1px solid #000; padding: 8px;">Integrity or Effectiveness in the
+                                    Professional Interactions for Which They Were Responsible?
+                                </td>
+                                <td style="border: 1px solid #000; padding: 8px;">
+                                    <t t-if="doc.integrity_interactions == 'yes'">Yes</t>
+                                    <t t-if="doc.integrity_interactions == 'no'">No</t>
+                                </td>
+                            </tr>
+
+                            <!-- Ability to Accept Responsibility or Maintain Productivity -->
+                            <tr>
+                                <td style="border: 1px solid #000; padding: 8px;">The Ability to Accept Responsibility
+                                    or
+                                    Maintain Productivity on the Assignments for Which They Were Responsible?
+                                </td>
+                                <td style="border: 1px solid #000; padding: 8px;">
+                                    <t t-if="doc.responsibility_productivity == 'yes'">Yes</t>
+                                    <t t-if="doc.responsibility_productivity == 'no'">No</t>
+                                </td>
+                            </tr>
+
+                            <!-- Ability to Exhibit Maturity and Professional Conduct -->
+                            <tr>
+                                <td style="border: 1px solid #000; padding: 8px;">The Ability to Exhibit Maturity,
+                                    Composure, or Professional Conduct Under Typical Job Stresses or Challenges?
+                                </td>
+                                <td style="border: 1px solid #000; padding: 8px;">
+                                    <t t-if="doc.maturity_composure == 'yes'">Yes</t>
+                                    <t t-if="doc.maturity_composure == 'no'">No</t>
+                                </td>
+                            </tr>
+
+                            <!-- Ability to Adapt Successfully to New or Changing Work Situations -->
+                            <tr>
+                                <td style="border: 1px solid #000; padding: 8px;">The Ability to Adapt Successfully to
+                                    New
+                                    or Changing Work Situations: People, Ideas, or Structures?
+                                </td>
+                                <td style="border: 1px solid #000; padding: 8px;">
+                                    <t t-if="doc.adaptability == 'yes'">Yes</t>
+                                    <t t-if="doc.adaptability == 'no'">No</t>
+                                </td>
+                            </tr>
+
+                            <!-- IF YES TO ANY, PLEASE COMMENT -->
+                            <tr>
+                                <td colspan="2" style="border: 1px solid #000; padding: 8px;">
+                                    <strong>If Yes to Any, Please Comment:</strong>
+                                    <div style="border: 1px solid #000; padding: 8px; white-space: pre-wrap;">
+                                        <t t-esc="doc.additional_comments"/>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+                            <!-- Other Comments about Recommendation -->
+                            <tr>
+                                <td colspan="2"
+                                    style="border: 1px solid #000; padding: 8px; background-color: #f2f2f2;">
+                                    <strong>OTHER COMMENTS ABOUT WHETHER YOU WOULD RECOMMEND THE CANDIDATURE FOR A JOB
+                                        ROLE
+                                        AT ANY ORGANIZATION:
+                                    </strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"
+                                    style="border: 1px solid #000; padding: 8px; word-wrap: break-word; white-space: pre-wrap;">
+                                    <t t-esc="doc.other_comments"/>
+                                </td>
+                            </tr>
+                        </table>
+
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+    <record id="pre_employment_referral_report" model="ir.actions.report">
+        <field name="name">Pre Employment Referral Report</field>
+        <field name="model">preemp.check</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_extended.report_employment_referral_document</field>
+        <field name="report_file">hr_extended.report_employment_referral_document</field>
+        <field name="paperformat_id" ref="hr_extended.paperformat_pre_emp_referencec_check_form_pdf_A4"/>
+        <field name="print_report_name">'%s' % (object.candidate_name)</field>
+        <field name="binding_model_id" ref="hr_extended.model_preemp_check"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

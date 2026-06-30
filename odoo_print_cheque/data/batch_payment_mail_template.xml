@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="email_template_batch_payment" model="mail.template">
+            <field name="name">Batch Payment Notification</field>
+            <field name="model_id" ref="account_batch_payment.model_account_batch_payment"/>
+            <field name="subject">Batch Payment Details - {{ object.name }}</field>
+            <field name="email_from">{{ user.email }}</field>
+            <field name="email_to">{{ object.create_uid.email }}</field>
+            <field name="body_html">
+                <![CDATA[
+                <p>Hi,</p>
+                <p>Please find the attached batch payment details report and cheque PDF report.</p>
+                ]]>
+            </field>
+<!--            <field name="report_template_ids" eval="[(4, ref('odoo_print_cheque.print_cheque_payment_batch'))]"/>-->
+
+        </record>
+    </data>
+</odoo>

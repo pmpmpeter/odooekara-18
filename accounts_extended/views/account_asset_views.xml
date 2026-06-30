@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record model="ir.ui.view" id="inherit_account_form_active_form">
+        <field name="name">account.form.active.inherit</field>
+        <field name="model">account.account</field>
+        <field name="inherit_id" ref="account.view_account_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='currency_id']" position="before">
+                <field name="active"/>
+            </xpath>
+            <xpath expr="//field[@name='currency_id']" position="after">
+                <field name="is_cash_rounding" groups="accounts_extended.group_disable_budget_code"/>
+                <field name="subgroup"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="account_active_view_account_search" model="ir.ui.view">
+        <field name="name">account.account.active.search</field>
+        <field name="model">account.account</field>
+        <field name="inherit_id" ref="account.view_account_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search/filter[@name='receivableacc']" position="before">
+                <filter string="Active" name="active" domain="[('active', '=', True)]"/>
+                <filter string="Archived" name="inactive" domain="[('active', '=', False)]"/>
+                <separator/>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="inherit_view_account_asset_form">
+        <field name="name">account.asset.form.inherit</field>
+        <field name="model">account.asset</field>
+        <field name="inherit_id" ref="account_asset.view_account_asset_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='current_values']" position="after">
+                <group string="Asset Usage Info" name="asset_usage_info">
+                    <field name="can_edit_asset_fields" invisible="1"/>
+                    <field name="asset_tag_no" readonly="not can_edit_asset_fields or state not in ('draft')"/>
+                    <field name="end_date" readonly="not can_edit_asset_fields or state not in ('draft')"/>
+                    <field name="life_of_asset" readonly="not can_edit_asset_fields or state not in ('draft')"/>
+                    <field name="employee_id" string="Employee/User" options="{'no_open': True, 'no_quick_create':True,'no_create': True}" readonly="not can_edit_asset_fields or state not in ('draft')"/>
+                    <field name="location_id" options="{'no_open': True, 'no_quick_create':True,'no_create': True}" readonly="not can_edit_asset_fields or state not in ('draft')"/>
+                    <field name="mobile_number" widget="phone" readonly="not can_edit_asset_fields or state not in ('draft')"/>
+                </group>
+            </xpath>
+            <xpath expr="//field[@name='original_value']" position="after">
+                <field name="asset_value"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="inherit_view_account_asset_tree">
+        <field name="name">inherit.account.asset.list</field>
+        <field name="model">account.asset</field>
+        <field name="inherit_id" ref="account_asset.view_account_asset_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="asset_tag_no"/>
+                <field name="end_date"/>
+                <field name="life_of_asset"/>
+                <field name="employee_id" optional="hide" string="User"/>
+                <field name="location" optional="hide"/>
+            </xpath>
+            <xpath expr="//field[@name='original_value']" position="after">
+                <field name="asset_value"/>
+            </xpath>
+	    <xpath expr="//field[@name='acquisition_date']" position="after">
+                <field name="salvage_value"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

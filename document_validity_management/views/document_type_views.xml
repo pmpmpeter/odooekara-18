@@ -1,0 +1,54 @@
+<odoo>
+    <record id="view_document_type_tree" model="ir.ui.view">
+        <field name="name">document.type.list</field>
+        <field name="model">document.type</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="default_validity_period"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_document_type_form" model="ir.ui.view">
+        <field name="name">document.type.form</field>
+        <field name="model">document.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_projects" type="object" string="Projects" class="oe_stat_button"
+                                icon="fa-folder">
+                            <field name="project_count" widget="statinfo" string="Projects"/>
+                        </button>
+                        <button name="action_view_tasks" type="object" string="Tasks" class="oe_stat_button"
+                                icon="fa-tasks">
+                            <field name="task_count" widget="statinfo" string="Tasks"/>
+                        </button>
+                    </div>
+                    <group>
+                        <field name="name"/>
+                        <field name="default_validity_period"/>
+                        <field name="description"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_document_type" model="ir.actions.act_window">
+        <field name="name">Document Types</field>
+        <field name="res_model">document.type</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_document_type_tree"/>
+    </record>
+
+    <menuitem
+            name="Document Validity Management"
+            id="menu_project_document_management"
+            action="action_document_type"
+            parent="project.menu_main_pm"
+            groups="project.group_project_manager"
+            sequence="100"
+    />
+</odoo>

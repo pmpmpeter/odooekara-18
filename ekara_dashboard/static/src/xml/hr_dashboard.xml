@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates xml:space="preserve">
+
+<t t-name="ekara_dashboard.Dashboard">
+
+<div class="o_ekara_dashboard">
+
+<!-- HEADER -->
+
+<div class="dashboard_header">
+
+    <h1>HR Headcount Analytics</h1>
+
+    <span>
+        Workforce insights &amp; diversity overview
+    </span>
+
+</div>
+
+
+<!-- TOP SUMMARY -->
+
+<div class="row">
+
+<div class="col-lg-8">
+
+<div class="summary_panel">
+
+<div class="panel_title">
+
+<i class="fa fa-bar-chart"/>
+
+Executive Summary
+
+</div>
+
+<div class="row mt-3">
+
+<div class="col-6 mb-3">
+
+<div class="mini_kpi total"
+t-on-click="openEmployees">
+
+<div>
+
+<h2>
+<t t-esc="state.headcount"/>
+</h2>
+
+<div>Total Employees</div>
+
+</div>
+
+<i class="fa fa-users"/>
+
+</div>
+
+</div>
+
+
+
+<div class="col-6 mb-3">
+
+<div class="mini_kpi male"
+t-on-click="openMaleEmployees">
+
+<div>
+
+<h2>
+<t t-esc="state.male"/>
+</h2>
+
+<div>Male</div>
+
+</div>
+
+<i class="fa fa-male"/>
+
+</div>
+
+</div>
+
+
+
+<div class="col-6">
+
+<div class="mini_kpi female"
+t-on-click="openFemaleEmployees">
+
+<div>
+
+<h2>
+<t t-esc="state.female"/>
+</h2>
+
+<div>Female</div>
+
+</div>
+
+<i class="fa fa-female"/>
+
+</div>
+
+</div>
+
+
+
+<div class="col-6">
+
+<div class="mini_kpi attrition"
+t-on-click="openAttrition">
+
+<div>
+
+<h2>
+<t t-esc="state.attrition"/>%
+
+</h2>
+
+<div>Attrition</div>
+
+</div>
+
+<i class="fa fa-line-chart"/>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="col-lg-4">
+
+<div class="side_panel">
+
+<div class="small_card retention">
+
+<h2>
+<t t-esc="state.retention"/>%
+
+</h2>
+
+<div>Retention Ratio</div>
+
+</div>
+
+
+<div class="small_card diversity mt-3">
+
+<h2>
+
+<t t-esc="state.male_pct"/>%
+
+/
+
+<t t-esc="state.female_pct"/>%
+
+</h2>
+
+<div>Diversity Ratio</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- DEPARTMENT -->
+
+<div class="section_box">
+
+<div class="section_title">
+
+<i class="fa fa-building"/>
+
+Department Analytics
+
+</div>
+
+
+<div class="department_grid">
+
+<t t-foreach="state.department"
+t-as="d"
+t-key="d.id">
+
+<div class="department_item"
+t-on-click="openDepartment.bind(this,d.id)">
+
+<div class="dept_count">
+
+<t t-esc="d.count"/>
+
+</div>
+
+<div>
+
+<t t-esc="d.name"/>
+
+</div>
+
+</div>
+
+</t>
+
+</div>
+
+</div>
+
+
+
+<!-- LOCATION + TREND -->
+
+<div class="row mt-4">
+
+<div class="col-lg-5">
+
+<div class="section_box">
+
+<div class="section_title">
+
+<i class="fa fa-map-marker"/>
+
+Location Analytics
+
+</div>
+
+
+<div class="location_grid">
+
+<t t-foreach="state.location"
+t-as="l"
+t-key="l.id">
+
+<div class="location_circle"
+
+t-on-click=
+"openLocation.bind(this,l.id)">
+
+<div class="circle_num">
+
+<t t-esc="l.count"/>
+
+</div>
+
+<div>
+
+<t t-esc="l.name"/>
+
+</div>
+
+</div>
+
+</t>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="col-lg-7">
+
+<div class="section_box">
+
+<div class="section_title">
+
+<i class="fa fa-line-chart"/>
+
+Monthly Attrition Trend
+
+</div>
+
+
+<t
+t-foreach="state.monthly_trend"
+t-as="m"
+t-key="m.month">
+
+<div class="trend_row">
+
+<div class="month">
+
+<t t-esc="m.month"/>
+
+</div>
+
+
+<div class="progress flex-grow-1 mx-3">
+
+<div class="progress-bar"
+
+t-att-style="'width:'+ (m.count*20)+'%'">
+
+</div>
+
+</div>
+
+<div>
+
+<t t-esc="m.count"/>
+
+</div>
+
+</div>
+
+</t>
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- JOB LEVEL -->
+
+<div class="section_box mt-4">
+
+<div class="section_title">
+
+<i class="fa fa-sitemap"/>
+
+Job Level Analytics
+
+</div>
+
+
+<div class="grade_grid">
+
+<t
+t-foreach="state.grade"
+t-as="g"
+t-key="g.id">
+
+<div class="grade_item"
+
+t-on-click=
+"openGrade.bind(this,g.id)">
+
+<span class="badge">
+
+<t t-esc="g.count"/>
+
+</span>
+
+<t t-esc="g.name"/>
+
+</div>
+
+</t>
+
+</div>
+
+</div>
+
+</div>
+
+</t>
+
+</templates>

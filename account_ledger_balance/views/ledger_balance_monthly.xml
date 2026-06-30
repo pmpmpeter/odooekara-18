@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="balance_monthly_report">
+            <t t-call="web.external_layout">
+                <!-- <t t-call="report.external_layout"> -->
+                <t t-foreach="docs" t-as="o">
+                    <div class="page">
+                        <div class="oe_structure"/>
+                        <style>
+                            .center {
+                            height: 200px;
+                            position: relative;
+                            border: 3px solid green;
+                            }
+                        </style>
+                        <strong>
+                            <p class="text-center" style="font-size:20px">LEDGER BALANCE REPORT</p>
+                        </strong>
+                        <p class="text-left" style="font-size:15px">
+                            <strong>Ledger Name :</strong>
+                            <span t-esc="o.account_id.code"/>
+                            <span t-field="o.account_id.name"/>
+                        </p>
+                        <p class="text-left" style="font-size:15px">
+                            <strong>Start Date :</strong>
+                            <span t-field="o.date_from" t-field-options='{"format": "dd/MM/yyyy"}'/>
+                        </p>
+                        <p class="text-left" style="font-size:15px">
+                            <strong>End Date :</strong>
+                            <span t-field="o.date_to" t-field-options='{"format": "dd/MM/yyyy"}'/>
+                        </p>
+                        <p t-if="o.partner_id"
+                           class="text-left" style="font-size:15px">
+                            <strong>Partner :</strong>
+                            <span t-field="o.partner_id.name"/>
+                        </p>
+                        <p t-if="o.analytic_account_id.name"
+                           class="text-left" style="font-size:15px">
+                            <strong>Analytic Account :</strong>
+                            <span t-field="o.analytic_account_id.name"/>
+                        </p>
+                        <table colspan="15" class="table table-condensed table-bordered">
+                            <tr>
+                                <td align="left" colspan="2" style="border: 1px solid black;">
+                                    <strong>Opening Balance :</strong>
+                                </td>
+                                <td align="left" colspan="3" style="border: 1px solid black;">
+                                    <strong>Debit :</strong>
+                                </td>
+                                <td align="left" colspan="3" style="border: 1px solid black;">
+                                    <strong>
+                                        <t t-esc="o.get_open_bal_debit(o)"
+                                           t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
+                                    </strong>
+                                </td>
+                                <td align="left" colspan="3" style="border: 1px solid black;">
+                                    <strong>Credit :</strong>
+                                </td>
+                                <td align="left" colspan="3" style="border: 1px solid black;">
+                                    <strong>
+                                        <t t-esc="o.get_open_bal_credit(o)"
+                                           t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
+                                    </strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="left" colspan="2" style="border: 1px solid black;">
+                                    <strong>Period Total :</strong>
+                                </td>
+                                <td align="left" colspan="3" style="border: 1px solid black;">
+                                    <strong>Debit :</strong>
+                                </td>
+                                <td align="left" colspan="3" style="border: 1px solid black;">
+                                    <strong>
+                                        <t t-esc="o.get_period_bal_debit(o)"
+                                           t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
+                                    </strong>
+                                </td>
+                                <td align="left" colspan="3" style="border: 1px solid black;">
+                                    <strong>Credit :</strong>
+                                </td>
+                                <td align="left" colspan="3" style="border: 1px solid black;">
+                                    <strong>
+                                        <t t-esc="o.get_period_bal_credit(o)"
+                                           t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
+                                    </strong>
+                                </td>
+                            </tr>
+                        </table>
+                        <table class="main_table table table-bordered" width="100%">
+                            <thead>
+                                <tr>
+                                    <th valign="middle" align="center" width="5%" style="background-color:#808080;">
+                                        S.NO
+                                    </th>
+                                    <th valign="middle" align="center" width="12%" style="background-color:#808080;">
+                                        Date
+                                    </th>
+                                    <th valign="middle" align="center" width="13%" style="background-color:#808080;">
+                                        Move
+                                    </th>
+                                    <th valign="middle" align="center" width="40%" style="background-color:#808080;">
+                                        Description
+                                    </th>
+                                    <th valign="middle" align="center" width="10%" style="background-color:#808080;">
+                                        Debit
+                                    </th>
+                                    <th valign="middle" align="center" width="10%" style="background-color:#808080;">
+                                        Credit
+                                    </th>
+                                    <th valign="middle" align="center" width="10%" style="background-color:#808080;">
+                                        Balance
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-set="count" t-value="1"/>
+                                <t t-set="total_debit" t-value="0"/>
+                                <t t-set="total_credit" t-value="0"/>
+                                <t t-set="closing_balance" t-value="o.get_open_bal_debit(o)-o.get_open_bal_credit(o)"/>
+                                <tr t-foreach="o.get_account_data(o)" t-as="h">
+                                    <td colspan="1">
+                                        <span t-esc="count"/>
+                                        <t t-set="count" t-value="count+1"/>
+                                    </td>
+                                    <td valign="middle">
+                                        <span t-esc="h['date']" t-field-options='{"format": "dd/MM/yyyy"}'/>
+                                    </td>
+                                    <td valign="middle" align="left">
+                                        <span t-esc="h['move']"/>
+                                    </td>
+                                    <td valign="middle" align="left">
+                                        <span t-esc="h['name']"/>
+                                    </td>
+                                    <td valign="middle" align="right">
+                                        <span t-esc="h['debit']"
+                                              t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
+                                    </td>
+                                    <t t-set="total_debit" t-value="h['debit']+total_debit"/>
+                                    <td valign="middle" align="right">
+                                        <span t-esc="h['credit']"
+                                              t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
+                                    </td>
+                                    <t t-set="total_credit" t-value="h['credit']+total_credit"/>
+                                    <td valign="middle" align="right">
+                                        <span t-esc="h['balance']+closing_balance"
+                                              t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
+                                        <t t-set="closing_balance" t-value="h['balance']+closing_balance"/>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table colspan="15" class="table table-condensed table-bordered">
+                            <tr>
+                                <td align="left" colspan="7" style="border: 1px solid black;">
+                                    <strong>Period Total :</strong>
+                                </td>
+                                <td align="left" colspan="3" style="border: 1px solid black;">
+                                    <strong>Debit:
+                                        <t t-esc="total_debit"
+                                           t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
+                                    </strong>
+                                </td>
+                                <td align="left" colspan="4" style="border: 1px solid black;">
+                                    <strong>Credit:
+                                        <t t-esc="total_credit"
+                                           t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
+                                    </strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="left" colspan="7" style="border: 1px solid black;">
+                                    <strong>Closing Balance :</strong>
+                                </td>
+                                <td align="left" colspan="7" style="border: 1px solid black;">
+                                    <strong>
+                                        <t t-esc="closing_balance"
+                                           t-options="{'widget': 'monetary', 'display_currency': res_company.currency_id}"/>
+                                    </strong>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </t>
+                <!-- </t> -->
+            </t>
+        </template>
+        <template id="report_acc_mo_ledger">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-call="account_ledger_balance.balance_monthly_report"/>
+                </t>
+            </t>
+        </template>
+    </data>
+</openerp>

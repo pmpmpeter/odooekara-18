@@ -1,0 +1,53 @@
+<odoo>
+    <record model="ir.ui.view" id="hr_salary_rule_form_inherit">
+        <field name="name">hr.salary.rule.form.inherit</field>
+        <field name="model">hr.salary.rule</field>
+        <field name="inherit_id" ref="hr_payroll.hr_salary_rule_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='appears_on_payslip']" position="after">
+                <field name="appears_on_batch_report"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="hr_payslip_view_form_inherit">
+        <field name="name">hr.payslip.inherit.form.inherit</field>
+        <field name="model">hr.payslip</field>
+        <field name="inherit_id" ref="hr_payroll.view_hr_payslip_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="generate_payslip" string="Download Payslip" type="object"/>
+            </xpath>
+            <xpath expr="//button[@name='action_print_payslip']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_excel_report_wizard_form" model="ir.ui.view">
+        <field name="name">pf.report.wizard.form</field>
+        <field name="model">pf.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Download PF Report">
+                <group>
+                    <field name="date_from" required="1"/>
+                    <field name="date_to" required="1"/>
+                    <field name="company_id" readonly="1"/>
+                </group>
+                <footer>
+                    <button name="generate_excel_report" string="Download" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="pf_action_report" model="ir.actions.act_window">
+        <field name="name">Download PF Report</field>
+        <field name="res_model">pf.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_pf_report" action='pf_action_report' name="PF Report"
+              parent="hr_payroll.menu_hr_payroll_report"/>
+</odoo>

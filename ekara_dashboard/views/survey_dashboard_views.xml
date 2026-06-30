@@ -1,0 +1,8 @@
+<odoo>
+
+    <record id="survey_dashboard_action" model="ir.actions.client">
+ 		<field name="name">Survey Dashboard</field>
+ 		<field name="tag">survey_dashboard</field>
+    </record>
+
+</odoo>

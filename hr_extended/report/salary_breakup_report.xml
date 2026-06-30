@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="paperformat_salary_breakup__pdf_A4" model="report.paperformat">
+        <field name="name">Salary Breakup Pdf</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">50</field>
+        <field name="margin_bottom">25</field>
+        <field name="margin_left">15</field>
+        <field name="margin_right">15</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">48</field>
+        <field name="dpi">90</field>
+    </record>
+    <record id="salary_breakup_report" model="ir.actions.report">
+        <field name="name">Offer Letter - Salary Breakup PDF</field>
+        <field name="model">hr.applicant</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_extended.print_salary_breakup</field>
+        <field name="report_file">hr_extended.print_salary_breakup</field>
+        <field name="paperformat_id" ref="hr_extended.paperformat_salary_breakup__pdf_A4"/>
+        <field name="print_report_name">'%s' % (object.partner_name)</field>
+        <field name="binding_model_id" ref="hr_extended.model_hr_applicant"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="print_salary_breakup">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <t t-foreach="docs" t-as="doc">
+                    <div class="page">
+                        <p>Dear Mr/Ms
+                            <t t-esc="doc.partner_name"/>,
+                        </p>
+                        <p><b>Greetings from <t t-out="doc.company_id.name"/></b>.
+                        </p>
+                        <p>Further to the discussion we held with you regarding the compensation, we are delighted to
+                            extend
+                            this offer of employment with us.
+                        </p>
+                        <p>Please find the below details of Designation &amp; basic Terms and Conditions of your
+                            employment,
+                            for your kind consideration.
+                        </p>
+                        <p>
+                            <b>Position:</b>
+                            <t t-esc="doc.job_id.name"/>
+                            <br/>
+                            <b>Job Level:</b>
+                            <t t-esc="doc.grade_job_level_id.name"/>
+                            <br/>
+                            <b>Department:</b>
+                            <t t-esc="doc.department_id.name"/>
+                            <br/>
+                            <b>Work Location:</b>
+                            <t t-esc="doc.locations_id.name"/>
+                            <br/>
+                        </p>
+
+                        <table style="width: 100%; border-collapse: collapse; font-family: Arial, sans-serif; font-size: 14px;">
+                            <!--                        <tr>-->
+                            <!--                            <td colspan="3" style="padding: 10px; font-family: Arial, sans-serif;">-->
+                            <!--                                <div style="text-align: center; font-weight: bold; text-decoration: underline; margin-bottom: 10px;">-->
+                            <!--                                    ANNEXURE-->
+                            <!--                                </div>-->
+                            <!--                                <div style="margin-bottom: 5px;">-->
+                            <!--                                    <b>Name:</b>-->
+                            <!--                                    <span t-esc="doc.partner_name or 'N/A'"/>-->
+                            <!--                                </div>-->
+                            <!--                                <div>-->
+                            <!--                                    <b>Designation:</b>-->
+                            <!--                                    <span t-esc="doc.name or 'N/A'"/>-->
+                            <!--                                </div>-->
+                            <!--                            </td>-->
+                            <!--                        </tr>-->
+                            <tr>
+                                <td colspan="3"
+                                    style="text-align: center; font-weight: bold; text-decoration: underline; padding: 10px;">
+                                    <b>Salary Structure with effect from
+                                        <t t-esc="doc.availability.strftime('%d-%m-%Y') if doc.availability else ''"/>
+                                    </b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center; font-weight: bold; padding: 10px; border: 1px solid #000; background-color: #add8e6;">
+                                    <b>Particulars</b>
+                                </td>
+                                <td style="text-align: center; font-weight: bold; padding: 10px; border: 1px solid #000; background-color: #add8e6;">
+                                    <b>Per Annum</b>
+                                </td>
+                                <td style="text-align: center; font-weight: bold; padding: 10px; border: 1px solid #000; background-color: #add8e6;">
+                                    <b>Per Month</b>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="3" style="padding: 10px; border: 1px solid #000; font-weight: bold;">Part -
+                                    A
+                                    (Fixed Pay)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #000;">Basic and DA</td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.basic_da_per_annum or 0.0)"/>
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.basic_da_per_month or 0.0)"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #000;">House Rent Allowance</td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.hra_per_annum or 0.0)"/>
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.hra_per_month or 0.0)"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #000;">Special Allowance</td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.special_allowance_per_annum or 0.0)"/>
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.special_allowance_per_month or 0.0)"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6;">
+                                    Sub-total (Part A)
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.sub_total_a_per_annum or 0.0)"/>
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.sub_total_a_per_month or 0.0)"/>
+                                </td>
+                            </tr>
+                            <!-- Details: Part B -->
+                            <tr>
+                                <td colspan="3" style="padding: 10px; border: 1px solid #000; font-weight: bold;">
+                                    Part – B (Statutory Payments)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #000;">Statutory Bonus</td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.statutory_bonus_per_annum or 0.0)"/>
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.statutory_bonus_per_month or 0.0)"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #000;">Provident Fund (Employer's
+                                    Contribution)
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.pf_employer_per_annum or 0.0)"/>
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.pf_employer_per_month or 0.0)"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #000;">ESIC (Employer's Contribution)</td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.esic_employer_per_annum or 0.0)"/>
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.esic_employer_per_month or 0.0)"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6;">
+                                    Sub-total (Part B)
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.sub_total_b_per_annum or 0.0)"/>
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.sub_total_b_per_month or 0.0)"/>
+                                </td>
+                            </tr>
+
+
+                            <!-- Details: Part C -->
+                            <tr>
+                                <td colspan="3" style="padding: 10px; border: 1px solid #000; font-weight: bold;">Part –
+                                    C
+                                    (Variable Pay)
+                                </td>
+                            </tr>
+                            <!--                            <tr>-->
+                            <!--                                <td style="padding: 10px; border: 1px solid #000;">Store Performance Incentive</td>-->
+                            <!--                                <td style="padding: 10px; border: 1px solid #000; text-align: right">-->
+                            <!--                                    <t t-esc="'{:,}'.format(doc.store_performance_incentive_annum or 0.0)"/>-->
+                            <!--                                </td>-->
+                            <!--                                <td style="padding: 10px; border: 1px solid #000; text-align: right">-->
+                            <!--                                    <t t-esc="'{:,}'.format(doc.store_performance_incentive_month or 0.0)"/>-->
+                            <!--                                </td>-->
+                            <!--                            </tr>-->
+                            <!--                            <tr>-->
+                            <!--                                <td style="padding: 10px; border: 1px solid #000;">Monthly Performance Incentive</td>-->
+                            <!--                                <td style="padding: 10px; border: 1px solid #000; text-align: right">-->
+                            <!--                                    <t t-esc="'{:,}'.format(doc.monthly_performance_incentive_annum or 0.0)"/>-->
+                            <!--                                </td>-->
+                            <!--                                <td style="padding: 10px; border: 1px solid #000; text-align: right">-->
+                            <!--                                    <t t-esc="'{:,}'.format(doc.monthly_performance_incentive_month or 0.0)"/>-->
+                            <!--                                </td>-->
+                            <!--                            </tr>-->
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #000;">Performance Linked Variable Pay*</td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.variable_pay_per_annum or 0.0)"/>
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.variable_pay_per_month or 0.0)"/>
+                                </td>
+                            </tr>
+                            <!--                            <tr>-->
+                            <!--                                <td style="padding: 10px; border: 1px solid #000;">Performance Linked Pay</td>-->
+                            <!--                                <td style="padding: 10px; border: 1px solid #000; text-align: right">-->
+                            <!--                                    <t t-esc="'{:,}'.format(doc.performance_linked_pay_annum or 0.0)"/>-->
+                            <!--                                </td>-->
+                            <!--                                <td style="padding: 10px; border: 1px solid #000; text-align: right">-->
+                            <!--                                    <t t-esc="'{:,}'.format(doc.performance_linked_pay_month or 0.0)"/>-->
+                            <!--                                </td>-->
+                            <!--                            </tr>-->
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6;">
+                                    Sub-total (Part C)
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.sub_total_c_per_annum or 0.0)"/>
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.sub_total_c_per_month or 0.0)"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6;">
+                                    TOTAL SALARY (A + B + C)
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.total_salary_per_annum or 0.0)"/>
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.total_salary_per_month or 0.0)"/>
+                                </td>
+                            </tr>
+
+                            <!-- Details: Part D -->
+                            <tr>
+                                <td colspan="3" style="padding: 10px; border: 1px solid #000; font-weight: bold;">Part D
+                                    (Other Benefits)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #000;">Medical Insurance*</td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.medical_insurances or 0.0)"/>
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">-</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #000;">Group Personal Accidental
+                                    Insurance**
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.group_personal_acc_insurance or 0.0)"/>
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">-</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #000;">&#160;&#160;Health Benefit Plan***
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.health_ben_plan or 0.0)"/>
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; text-align: right">-</td>
+                            </tr>
+                            <!--                        <tr>-->
+                            <!--                            <td style="padding: 10px; border: 1px solid #000;">Solis Health Benefit Beacon Plan****-->
+                            <!--                            </td>-->
+                            <!--                            <td style="padding: 10px; border: 1px solid #000; text-align: right">-->
+                            <!--                                <t t-esc="'{:,}'.format(doc.solis_health_benefit_beacon_plan or 0.0)"/>-->
+                            <!--                            </td>-->
+                            <!--                            <td style="padding: 10px; border: 1px solid #000; text-align: right">-</td>-->
+                            <!--                        </tr>-->
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6;">
+                                    Sub-total (Part D)
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.sub_total_d or 0.0)"/>
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6; text-align: right">
+                                    -
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6;">
+                                    Total Cost to the Company (A + B + C + D)
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.total_ctc_annum or 0.0)"/>
+                                </td>
+                                <td style="padding: 10px; border: 1px solid #000; font-weight: bold; background-color: #add8e6; text-align: right">
+                                    <t t-esc="'{:,}'.format(doc.total_ctc_month or 0.0)"/>
+                                </td>
+                            </tr>
+
+                        </table>
+                        <div style="font-family: Times New Roman, sans-serif; font-size: 14px; margin-top: 20px;">
+                            <p>
+                                <b>*Variable pay payable as per the policy of the company</b>
+                                <br/>
+                                <b>**Medical and Accidental Insurance applicable as per the company policy</b>
+                                <br/>
+                                <b>***Apart from the above, you will be eligible for gratuity, leave, and other benefits
+                                    as
+                                    per
+                                    the company policy
+                                </b>
+                                <br/>
+                            </p>
+
+                            <ol>
+                                <li>This offer is contingent on you agreeing to join the Company and clearing the
+                                    background
+                                    checks and reference verifications by on or before
+                                    <b>
+                                        <t t-esc="doc.verification_date"/>
+                                    </b>
+                                    .
+                                </li>
+                                <br/>
+                                <li>Prior to the start of your employment with the Company, you will be required to
+                                    submit
+                                    to the Company a list of documents as detailed below to help conduct background
+                                    checks
+                                    and verifications. Your employment with the Company shall be contingent on you
+                                    clearing
+                                    any such checks and/or verifications.
+                                </li>
+                                <br/>
+                                <li>For the first six (6) months of your employment you will be placed in probation.
+                                    Post
+                                    the successful completion of your probation period you will receive a written
+                                    confirmation. This probation period may be extended if your performance is not
+                                    satisfactory.
+                                </li>
+                                <br/>
+                                <li>Your indicative compensation will be as mentioned above inclusive of all taxes and
+                                    benefits. Please refer annexure for detailed breakup.
+                                </li>
+                                <br/>
+                                <li>Upon acceptance of this offer, and execution of the Appointment Letter, you will be
+                                    subject to all the Company’s internal policies.
+                                </li>
+                                <br/>
+                                <li>Please execute and return this document to us if you wish to accept this offer of
+                                    employment.
+                                </li>
+                                <br/>
+                                <li>This is an official E-mail Offer.</li>
+                            </ol>
+
+                            <p>We hope that you'll accept this job offer and look forward to welcoming you aboard.</p>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

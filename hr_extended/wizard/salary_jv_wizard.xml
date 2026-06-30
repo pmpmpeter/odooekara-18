@@ -1,0 +1,41 @@
+<odoo>
+    <record id="view_salary_report_wizard_form" model="ir.ui.view">
+        <field name="name">salaryjv.report.wizard.form</field>
+        <field name="model">salaryjv.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Salary Report Wizard">
+                <group>
+                    <group>
+                        <field name="report_based_on"/>
+                        <field name="from_date" invisible="report_based_on not in ('department','date')" required="report_based_on in ('department','date')"/>
+                        <field name="to_date" invisible="report_based_on not in ('department','date')" required="report_based_on in ('department','date')"/>
+                        <field name="salary_structure_id" invisible='1'/>
+                    </group>
+                    <group>
+                        <field name="batch_id" invisible="report_based_on != 'batch'" required="report_based_on == 'batch'"/>
+                        <field name="department_id" invisible="report_based_on != 'department'" required="report_based_on == 'department'"/>
+                        <field name="state"/>
+                        <field name="partner_ids" widget="many2many_tags" options="{'no_open': True, 'no_quick_create':True,'no_create': True,}" invisible="1"/>
+                        <field name="file_name" invisible='1'/>
+                        <field name="report_file" filename="file_name" invisible="not file_name"/>
+                    </group>
+                </group>
+                <footer>
+<!--                    <button string="Send Mail" class="oe_highlight" type="object" name="action_send_salary_report_mail" data-hotkey="q"/>-->
+                    <button string="Generate Report" type="object" name="action_generate_report" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="action_salary_report_wizard" model="ir.actions.act_window">
+        <field name="name">Salary Report</field>
+        <field name="res_model">salaryjv.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+    <menuitem id="menu_salary_report" action='action_salary_report_wizard' name="Salary JV Report" parent="hr_payroll.menu_hr_payroll_report"/>
+
+</odoo>

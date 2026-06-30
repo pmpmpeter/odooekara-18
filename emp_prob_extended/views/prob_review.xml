@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="probation_review_form_tree_view" model="ir.ui.view">
+        <field name="name">prob.review.form.list</field>
+        <field name="model">prob.review.form</field>
+        <field name="arch" type="xml">
+            <list string="Probation Review" create="false">
+                <field name="employee_id"/>
+                <field name="job_title_id"/>
+                <field name="department_id"/>
+                <field name="reporting_manager_id"/>
+                <field name="state" widget='badge' decoration-info="state in ('review1_done','review2_done')"
+                       decoration-success="state =='done'" decoration-danger="state == 'cancel'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="probation_review_form_form_view" model="ir.ui.view">
+        <field name="name">prob.review.form.form</field>
+        <field name="model">prob.review.form</field>
+        <field name="arch" type="xml">
+            <form string="Probation Review Form" create="false">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,review1_done,review2_done,done"
+                           nolabel="1"/>
+                    <button name="reset_to_draft" string="Reset to Draft" type="object"
+                            groups="emp_prob_extended.group_employee_probation_manager,emp_prob_extended.group_employee_probation_supervisor"
+                            invisible="state == 'draft'"
+                    />
+                    <button name="mark_review1_done" string="Initial Review" type="object"
+                            groups="emp_prob_extended.group_employee_probation_manager,emp_prob_extended.group_employee_probation_supervisor"
+                            class="oe_highlight" invisible="state == 'done' or state != 'draft'"
+                    />
+                    <button name="mark_review2_done" string="Final Review" type="object"
+                            groups="emp_prob_extended.group_employee_probation_manager,emp_prob_extended.group_employee_probation_supervisor"
+                            class="oe_highlight" invisible="state == 'done' or state != 'review1_done'"
+                    />
+                    <button name="mark_done" string="Done" type="object"
+                            groups="emp_prob_extended.group_employee_probation_manager,emp_prob_extended.group_employee_probation_supervisor"
+                            class="oe_highlight" invisible="state == 'done' or state != 'review2_done'"
+                    />
+                    <button name="mark_cancel" string="Cancel" type="object"
+                            groups="emp_prob_extended.group_employee_probation_manager,emp_prob_extended.group_employee_probation_supervisor"
+                            class="btn-secondary" invisible="state in ('draft','cancel')"
+                    />
+                    <button name="print_employee_probation_review_form" string="Print" type="object"
+                            groups="emp_prob_extended.group_employee_probation_manager,emp_prob_extended.group_employee_probation_supervisor"
+                            class="oe_highlight" invisible="state not in ('done')"/>
+
+                </header>
+                <sheet>
+                    <div name="button_box" position="inside">
+                        <button class="oe_stat_button"
+                                type="object"
+                                icon="fa-external-link"
+                                string="Probation Form"
+                                name="action_open_probation_forms"
+                                groups="emp_prob_extended.group_employee_probation_user"
+                                invisible="probation_form_count == 0">
+                            <field name="probation_form_count" widget="statinfo" string="Probation Form"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Reviewed" bg-color="text-bg-success"
+                            invisible="state not in ['done']"/>
+                    <group>
+                        <group>
+                            <field name="employee_id"
+                                   options="{'no_open':True,'no_quick_create':True,'no_create': True,}" required="True"
+                                   readonly="1"/>
+                            <field name="job_title_id" required="True"
+                                   options="{'no_open':True,'no_quick_create':True,'no_create': True,}"
+                                   readonly="1"/>
+                            <field name="grade" readonly="state not in ('draft')"/>
+                            <field name="department_id" required="True"
+                                   options="{'no_open':True,'no_quick_create':True,'no_create': True,}"
+                                   readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="date_of_joining" required="True" readonly="1"/>
+                            <field name="reporting_manager_id" required="True"
+                                   options="{'no_open':True,'no_quick_create':True,'no_create': True,}"
+                                   readonly="1"/>
+                            <field name="reporting_manager_designation_id" required="True"
+                                   options="{'no_open':True,'no_quick_create':True,'no_create': True,}"
+                                   readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Three Month Review">
+                            <field name="three_month_review_due" readonly="state not in ('draft')"/>
+                            <field name="three_month_review_completed" readonly="state not in ('draft')"/>
+                        </group>
+                        <group string="Six Month Review">
+                            <field name="six_month_review_due" readonly="state in ('done','cancel')"/>
+                            <field name="six_month_review_completed" readonly="state in ('done','cancel')"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Part 1">
+                            <group string="First Review (3 Months from Date of Joining)">
+                                <group>
+                                    <field name="quality_of_work" readonly="state not in ('draft')"/>
+                                    <field name="efficiency" readonly="state not in ('draft')"/>
+                                    <field name="attendance" readonly="state not in ('draft')"/>
+                                </group>
+                                <group>
+                                    <field name="time_keeping" readonly="state not in ('draft')"/>
+                                    <field name="work_relationships" readonly="state not in ('draft')"/>
+                                    <field name="competency_in_role" readonly="state not in ('draft')"/>
+                                </group>
+                                <separator/>
+                                <label for="performance_improvement_details"/>
+                                <field name="performance_improvement_details"
+                                       placeholder="Enter Comments here..."
+                                       no_label="1" readonly="state not in ('draft')"/>
+                                <label for="concerns_addressed_summary"/>
+                                <field name="concerns_addressed_summary"
+                                       placeholder="Enter Comments here..."
+                                       no_label="1" readonly="state not in ('draft')"/>
+                                <label for="performance_progress_summary"/>
+                                <field name="performance_progress_summary"
+                                       placeholder="Enter Comments here..."
+                                       no_label="1" readonly="state not in ('draft')"/>
+                                <label for="objectives_met"/>
+                                <field name="objectives_met" readonly="state not in ('draft')"/>
+                                <div>
+                                    <label for="objectives_met_reason" invisible="objectives_met != 'no'"/>
+                                    <field name="objectives_met_reason" placeholder="Enter Comments here..."
+                                           invisible="objectives_met != 'no'" readonly="state not in ('draft')"/>
+                                </div>
+                                <div>
+                                    <label for="objectives_review_date" invisible="objectives_met != 'no'"/>
+                                    <field name="objectives_review_date" no_label="1"
+                                           invisible="objectives_met != 'no'" readonly="state not in ('draft')"/>
+                                </div>
+                                <label for="training_needs_met"/>
+                                <field name="training_needs_met" readonly="state not in ('draft')"/>
+                                <div>
+                                    <label for="training_needs_met_reason" invisible="training_needs_met != 'no'"/>
+                                    <field name="training_needs_met_reason" placeholder="Enter Comments here..."
+                                           invisible="training_needs_met != 'no'" readonly="state not in ('draft')"/>
+                                </div>
+                                <div>
+                                    <label for="training_review_date" invisible="training_needs_met != 'no'"/>
+                                    <field name="training_review_date" no_label="1"
+                                           invisible="training_needs_met != 'no'" readonly="state not in ('draft')"/>
+                                </div>
+                                <group>
+                                    <field name="employee_signature_id"
+                                           options="{'no_open':True,'no_quick_create':True,'no_create': True,}"
+                                           placeholder="Employee's Signature" readonly="state not in ('draft')"/>
+                                    <field name="manager_signature_id"
+                                           options="{'no_open':True,'no_quick_create':True,'no_create': True,}"
+                                           placeholder="Manager's Signature" readonly="state not in ('draft')"/>
+                                    <field name="date_part_1" readonly="state not in ('draft')"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="PART 2" invisible="state in ('draft')">
+                            <group string="Final Review">
+                                <group>
+                                    <field name="quality_of_work_fr"
+                                           readonly="state in ('draft','review2_done','done','cancel')"/>
+                                    <field name="efficiency_fr"
+                                           readonly="state in ('draft','review2_done','done','cancel')"/>
+                                    <field name="attendance_fr"
+                                           readonly="state in ('draft','review2_done','done','cancel')"/>
+                                </group>
+                                <group>
+                                    <field name="time_keeping_fr"
+                                           readonly="state in ('draft','review2_done','done','cancel')"/>
+                                    <field name="work_relationships_fr"
+                                           readonly="state in ('draft','review2_done','done','cancel')"/>
+                                    <field name="competency_in_role_fr"
+                                           readonly="state in ('draft','review2_done','done','cancel')"/>
+                                </group>
+                                <separator/>
+                                <label for="objectives_met_fr"
+                                       readonly="state in ('draft','review2_done','done','cancel')"/>
+                                <field name="objectives_met_fr"
+                                       readonly="state in ('draft','review2_done','done','cancel')"/>
+                                <label for="objectives_met_reason_fr" invisible="objectives_met_fr != 'no'"/>
+                                <field name="objectives_met_reason_fr" placeholder="Enter Comments here..."
+                                       invisible="objectives_met_fr != 'no'"
+                                       readonly="state in ('draft','review2_done','done','cancel')"/>
+                                <label for="training_needs_met_fr"/>
+                                <field name="training_needs_met_fr"
+                                       readonly="state in ('draft','review2_done','done','cancel')"/>
+                                <label for="training_needs_met_reason_fr" invisible="training_needs_met_fr != 'no'"/>
+                                <field name="training_needs_met_reason_fr" placeholder="Enter Comments here..."
+                                       invisible="training_needs_met_fr != 'no'"
+                                       readonly="state in ('draft','review2_done','done','cancel')"/>
+                                <label for="performance_progress_summary_fr"/>
+                                <field name="performance_progress_summary_fr" placeholder="Enter Comments here..."
+                                       no_label="1" readonly="state in ('draft','review2_done','done','cancel')"/>
+                                <label for="emp_appointment_fr"/>
+                                <field name="emp_appointment_fr" no_label="1"
+                                       readonly="state in ('draft','review2_done','done','cancel')"/>
+                                <label for="emp_appointment_reason_fr" invisible="emp_appointment_fr != 'no'"/>
+                                <field name="emp_appointment_reason_fr" placeholder="Enter Comments here..."
+                                       invisible="emp_appointment_fr != 'no'"
+                                       readonly="state in ('draft','review2_done','done','cancel')"/>
+                                <label for="employee_comment"/>
+                                <field name="employee_comment" placeholder="Enter Comments here..."
+                                       no_label="1" readonly="state in ('draft','review2_done','done','cancel')"/>
+                                <label for="emp_probation_extend"/>
+                                <field name="emp_probation_extend"
+                                       readonly="state in ('draft','review2_done','done','cancel')"/>
+                                <label for="emp_probation_extend_reason" invisible="emp_probation_extend == 'no'"/>
+                                <field name="emp_probation_extend_reason" placeholder="Enter Comments here..."
+                                       invisible="emp_probation_extend == 'no'"
+                                       readonly="state in ('draft','review2_done','done','cancel')"/>
+                                <label for="probation_extend_length_" invisible="emp_probation_extend == 'no'"/>
+                                <field name="probation_extend_length_"
+                                       placeholder="Enter the probation extend length here..."
+                                       invisible="emp_probation_extend == 'no'"
+                                       readonly="state in ('draft','review2_done','done','cancel')"/>
+                                <label for="completion_date" invisible="emp_probation_extend == 'no'"/>
+                                <field name="completion_date" placeholder="Enter the probation extend length here..."
+                                       invisible="emp_probation_extend == 'no'"
+                                       readonly="state in ('draft','review2_done','done','cancel')"/>
+                                <group>
+                                    <field name="employee_signature_fr_id"
+                                           readonly="state in ('draft','review2_done','done','cancel')"
+                                           options="{'no_create':True,'no_quick_create':True,'no_create': True,}"
+                                           placeholder="Employee's Signature"/>
+                                    <field name="manager_signature_fr_id"
+                                           readonly="state in ('draft','review2_done','done','cancel')"
+                                           options="{'no_create':True,'no_quick_create':True,'no_create': True,}"
+                                           placeholder="Manager's Signature"/>
+                                    <field name="date_fr" readonly="state in ('draft','review2_done','done','cancel')"/>
+                                </group>
+                                <label for="confirm_letter"/>
+                                <field name="confirm_letter"
+                                       readonly="state in ('draft','review2_done','done','cancel')"/>
+
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_emp_prob_review_form_search" model="ir.ui.view">
+        <field name="name">Employee Probation Review Form - Search</field>
+        <field name="model">prob.review.form</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter string="Draft" name="draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Reviewed" name="reviewed" domain="[('state', '=', 'review')]"/>
+                <filter string="Confirmed" name="confirmed" domain="[('state', '=', 'confirm')]"/>
+                <filter string="Canceled" name="canceled" domain="[('state', '=', 'cancel')]"/>
+
+                <group expand="0" string="Group By">
+                    <filter string="Employee" name="group_by_employee" context="{'group_by':'employee_id'}"/>
+                    <filter string="Department" name="group_by_department" context="{'group_by':'department_id'}"/>
+                    <filter string="Status" name="group_by_state" context="{'group_by':'state'}"/>
+                </group>
+
+                <field name="employee_id" string="Employee Name"/>
+                <field name="department_id" string="Department"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="probation_review_form_action" model="ir.actions.act_window">
+        <field name="name">Probation Review Form</field>
+        <field name="res_model">prob.review.form</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="emp_prob_extended.view_emp_prob_review_form_search"/>
+        <field name="context">{'search_default_draft': True}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No Probation Review!
+            </p>
+        </field>
+    </record>
+    <menuitem id="probation_review_form_menu"
+              parent="probation_menu_root"
+              name="Employee Probation Review Form"
+              action="probation_review_form_action"
+              groups="emp_prob_extended.group_employee_probation_manager,emp_prob_extended.group_employee_probation_supervisor"
+              sequence="8"
+    />
+</odoo>
+
+
+

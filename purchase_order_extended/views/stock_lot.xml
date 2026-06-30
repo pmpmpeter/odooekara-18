@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="inherit_view_production_lot_form" model="ir.ui.view">
+        <field name="name">inherit.stock.production.lot.form</field>
+        <field name="model">stock.lot</field>
+        <field name="inherit_id" ref="stock.view_production_lot_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group[@name='main_group']" position="inside">
+                <group string="General Details">
+                    <field name="reference_no"/>
+                    <field name="employee_id" options="{'no_open':True,'no_quick_create':True,'no_create': True,}"/>
+                </group>
+                <group string="Asset Details">
+                    <field name="asset_tag_no"/>
+                    <field name="end_date"/>
+                    <field name="life_of_asset"/>
+                    <field name="mobile_number"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="inherit_view_production_lot_tree" model="ir.ui.view">
+        <field name="name">inherit.view.production.lot.list</field>
+        <field name="model">stock.lot</field>
+        <field name="inherit_id" ref="stock.view_production_lot_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="after">
+                <field name="reference_no" optional="hide"/>
+                <field name="employee_id" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

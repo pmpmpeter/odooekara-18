@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="mail_variable_pay_letters" model="mail.template">
+            <field name="name">Variable Pay Letter</field>
+            <field name="model_id" ref="hr_appraisal_extended.model_self_rating"/>
+            <!--            <field name="email_from">{{ object.company_id.email }}</field>-->
+            <field name="email_to">{{object.employee_id.work_email}}</field>
+            <field name="subject">Variable Pay Letter</field>
+            <field name="body_html" type="html">
+                <div style="justify-content: center; padding:0.6rem;padding-left: 35px;text-decoration: none; font-size:13px;width: 100%;">
+                    <h4 align="center">
+                        <u>Confidential</u>
+                    </h4>
+                    <br/>
+                    <br/>
+                    <p>
+                        <span style="font-weight:bold;">Emp. Code:
+                            <t t-out="object.employee_id.id"/>
+                        </span>
+                        <br/>
+                        <span style="font-weight:bold;">
+                            Emp. Name:
+                            <t t-out="object.employee_id.name"/>
+                        </span>
+                        <br/>
+                        <span style="font-weight:bold;">Designation:
+                            <t t-out="object.designation_id.name"/>
+                        </span>
+                        <br/>
+                        <span style="font-weight:bold;">Job Level:
+                            <t t-out="object.job_level.name"/>
+                        </span>
+                        <br/>
+                        <br/>
+                        <span style="font-weight:bold;">Dear
+                            <t t-out="object.employee_id.name"/>,
+                        </span>
+                        <br/>
+                        <br/>
+                        <span style="font-weight:bold;">Subject : Variable Pay Letter.</span>
+                        <br/>
+                        <t t-set="current_year" t-value="datetime.datetime.now().year"/>
+                        <t t-set="next_year" t-value="str(current_year + 1)[-2:]"/>
+                        <br/>
+                        Consequent to the review of your performance and in recognition of your contribution during the
+                        last financial year. Your Variable pay amount for the year<t t-esc="current_year"/>-
+                        <t t-esc="next_year"/>
+                        is Rs. <t t-out="round(object.variable_pay_amount)"/>/- and will be
+                        credited along with the salary for <t t-out="object.appraisal_date.strftime('%B %Y')"/>.
+                        <br/>
+                        <br/>
+                        The variable pay is subject to tax deductions and other statutory levies as applicable. All
+                        other terms and conditions of your employment remain unaltered.
+                        <br/>
+                        <br/>
+                        Your salary details are strictly private and confidential and details in this letter must not be
+                        disclosed or discussed with others. Any deviation would lead to disciplinary action.
+                        <br/>
+                        <br/>
+                        We look forward to your valuable contribution and wish you all the very best for a rewarding
+                        career with the organization.
+                        <br/>
+                        <br/>
+                        Thank you for being part of
+                        <b>
+                            <t t-out="object.employee_id.company_id.name"/>
+                        </b>
+                        .
+                        <br/>
+                        <br/>
+                        <b>With Best Wishes,</b>
+                        <br/>
+                        <br/>
+                        <b>HEAD - HUMAN RESOURCES</b>
+                    </p>
+                </div>
+            </field>
+        </record>
+    </data>
+</odoo>

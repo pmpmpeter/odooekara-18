@@ -1,0 +1,12 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_employee_probation_base,access.employee.probation.base,model_employee_probation,base.group_user,1,0,0,0
+access_employee_probation_user,access.employee.probation.user,model_employee_probation,emp_prob_extended.group_employee_probation_user,1,1,1,0
+access_employee_probation_manager,access.employee.probation.manager,model_employee_probation,emp_prob_extended.group_employee_probation_manager,1,1,1,1
+access_employee_probation_supervisor,access.employee.probation.supervisor,model_employee_probation,emp_prob_extended.group_employee_probation_supervisor,1,1,1,1
+access_employee_reviews_details_base,access.employee.reviews.details.base,model_employee_reviews_details,base.group_user,1,0,0,0
+access_employee_reviews_details_user,access.employee.reviews.details.user,model_employee_reviews_details,emp_prob_extended.group_employee_probation_user,1,0,0,0
+access_employee_reviews_details_manager,access.employee.reviews.details.manager,model_employee_reviews_details,emp_prob_extended.group_employee_probation_manager,1,1,1,1
+access_prob_review_form_base,access.prob.review.form.base,model_prob_review_form,base.group_user,1,0,0,0
+access_prob_review_form_user,access.prob.review.form.user,model_prob_review_form,emp_prob_extended.group_employee_probation_user,1,1,1,0
+access_prob_review_form_manager,access.prob.review.form.manager,model_prob_review_form,emp_prob_extended.group_employee_probation_manager,1,1,1,1
+access_prob_review_form_supervisor,access.prob.review.form.supervisor,model_prob_review_form,emp_prob_extended.group_employee_probation_supervisor,1,1,1,1

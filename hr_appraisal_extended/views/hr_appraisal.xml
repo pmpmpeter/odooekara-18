@@ -1,0 +1,25 @@
+<odoo>
+    <data>
+        <!-- Not using -->
+        <record model="ir.ui.view" id="view_hr_appraisal_form_inherited">
+            <field name="name">hr.appraisal.form.inherited</field>
+            <field name="model">hr.appraisal</field>
+            <field name="inherit_id" ref="hr_appraisal.view_hr_appraisal_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//header/button[@name='action_confirm']" position="after">
+                    <button name="send_increment_letter_job_level_approved" string="Send Increment Mail" type="object" class="oe_highlight" />
+                    <button name="send_appraisal_letter" string="Send Appraisal Letter" type="object" class="oe_highlight" />
+                    <button name="send_annual_increment_promotion_letter" string="Send Annual Promotion Letter" type="object" class="oe_highlight" />
+                    <button name="send_increment_redesignation_letter" string="Send Increment Redesignation Letter" type="object" class="oe_highlight" />
+                </xpath>
+            </field>
+        </record>
+
+        <menuitem name="Appraisals"
+                  id="hr_appraisal.menu_hr_appraisal_root"
+                  groups="hr_appraisal_extended.group_appraisal_access_view"
+                  web_icon="hr_appraisal,static/description/icon.png"
+                  sequence="200"/>
+
+    </data>
+</odoo>

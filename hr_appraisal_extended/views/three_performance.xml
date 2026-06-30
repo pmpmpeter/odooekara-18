@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="three60_performance_tree_view" model="ir.ui.view">
+        <field name="name">threeperformance.review.list</field>
+        <field name="model">threeperformance.review</field>
+        <field name="arch" type="xml">
+            <list string="360 Performance Review">
+                <field name="employee_id"/>
+                <field name="job_id"/>
+                <field name="grade"/>
+                <field name="state" widget='badge' decoration-info="state == 'in_progress'"
+                       decoration-success="state =='completed'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="three60_performance_view" model="ir.ui.view">
+        <field name="name">threeperformance.review.form</field>
+        <field name="model">threeperformance.review</field>
+        <field name="arch" type="xml">
+            <form string="360 Performance Review">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,completed" nolabel="1"/>
+                    <button name="action_generate_review_lines" type="object"
+                            string="Generate Review Lines" class="btn-primary"
+                            groups="hr.group_hr_user"
+                            invisible="line_created"/>
+                    <button name="action_submit" type="object" string="Submit" class="oe_highlight"
+                            groups="hr.group_hr_user"
+                            invisible="not line_created or state in ('in_progress','completed')"/>
+                    <button name="action_mark_completed" type="object" string="Mark as Completed" class="oe_highlight"
+                            groups="hr.group_hr_user"
+                            invisible="state in ('draft','completed')"/>
+                    <button string="Print PDF" type="action"
+                            groups="hr.group_hr_user"
+                            invisible="state in ('draft', 'in_progress')"
+                            name="%(hr_appraisal_extended.360_performance_review_report)d" class="btn-primary"/>
+                    <button string="Print Excel" type="action"
+                            groups="hr.group_hr_user"
+                            invisible="state in ('draft', 'in_progress')"
+                            name="%(hr_appraisal_extended.get_360_performance_review)d" class="btn-primary"/>
+                    <button name="action_set_to_drat" type="object" string="Reset to Draft"
+                            groups="hr.group_hr_user"
+                            invisible="state in ('draft', 'in_progress')"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="company_id" invisible="1"/>
+                            <field name="line_created" invisible="1"/>
+                            <field name="communication_complete" invisible="1"/>
+                            <field name="team_working_complete" invisible="1"/>
+                            <field name="problem_solving_complete" invisible="1"/>
+                            <field name="continuous_improvement_complete" invisible="1"/>
+                            <field name="organisation_time_complete" invisible="1"/>
+                            <field name="customer_focus_complete" invisible="1"/>
+                            <field name="interpersonal_skills_complete" invisible="1"/>
+                            <field name="motivation_complete" invisible="1"/>
+                            <field name="employee_id" readonly="state not in ('draft')"
+                                   options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"/>
+                            <field name="job_id" readonly="state not in ('draft')"
+                                   options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"/>
+                            <field name="grade_selection" readonly="state not in ('draft')"/>
+                        </group>
+                        <group>
+                            <field name="review_submitted_by" readonly="state not in ('draft')"
+                                   options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                   required="True"/>
+                            <field name="emp_category" readonly="state not in ('draft')" />
+                            <field name="review_designation" readonly="state not in ('draft')"
+                                   options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                   required="True"/>
+                            <field name="review_department" readonly="state not in ('draft')"
+                                   options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                   required="True"/>
+                            <field name="review_bu_ids" readonly="state not in ('draft')" groups="hr.group_hr_user"
+                                   widget="many2many_tags_avatar" force_save="1"
+                                   options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                   required="True"/>
+                            <field name="review_date_time" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Communication" invisible="not line_created">
+                            <field name="review_line_ids_communication" nolabel="1" readonly="0">
+                                <list editable="bottom" create="0" delete="0">
+                                    <field name="review_type" readonly="1"/>
+                                    <field name="config_id" string="Review Type"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                           readonly="1"/>
+                                    <field name="rating" readonly="parent.state in ('completed')"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Team Working" invisible="not line_created or not communication_complete ">
+                            <field name="review_line_ids_team_working" nolabel="1" readonly="0">
+                                <list editable="bottom" create="0" delete="0">
+                                    <field name="review_type" readonly="1"/>
+                                    <field name="config_id" string="Review Type"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                           readonly="1"/>
+                                    <field name="rating" readonly="parent.state in ('completed')"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Problem-solving and Decision-Making" invisible="not line_created or not team_working_complete">
+                            <field name="review_line_ids_problem_solving" nolabel="1" readonly="0">
+                                <list editable="bottom" create="0" delete="0">
+                                    <field name="review_type" readonly="1"/>
+                                    <field name="config_id" string="Review Type"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                           readonly="1"/>
+                                    <field name="rating" readonly="parent.state in ('completed')"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Continuous Improvement" invisible="not line_created or not problem_solving_complete">
+                            <field name="review_line_ids_continuous" nolabel="1" readonly="0">
+                                <list editable="bottom" create="0" delete="0">
+                                    <field name="review_type" readonly="1"/>
+                                    <field name="config_id" string="Review Type"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                           readonly="1"/>
+                                    <field name="rating" readonly="parent.state in ('completed')"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Organisation and Time Management" invisible="not line_created or not continuous_improvement_complete">
+                            <field name="review_line_ids_organisation_time" nolabel="1" readonly="0">
+                                <list editable="bottom" create="0" delete="0">
+                                    <field name="review_type" readonly="1"/>
+                                    <field name="config_id" string="Review Type"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                           readonly="1"/>
+                                    <field name="rating" readonly="parent.state in ('completed')"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Customer Focus" invisible="not line_created or not organisation_time_complete">
+                            <field name="review_line_ids_customer_focus" nolabel="1" readonly="0">
+                                <list editable="bottom" create="0" delete="0">
+                                    <field name="review_type" readonly="1"/>
+                                    <field name="config_id" string="Review Type"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                           readonly="1"/>
+                                    <field name="rating" readonly="parent.state in ('completed')"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Interpersonal Skills" invisible="not line_created or not customer_focus_complete">
+                            <field name="review_line_ids_interpersonal_skills" nolabel="1" readonly="0">
+                                <list editable="bottom" create="0" delete="0">
+                                    <field name="review_type" readonly="1"/>
+                                    <field name="config_id" string="Review Type"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                           readonly="1"/>
+                                    <field name="rating" readonly="parent.state in ('completed')"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Motivation" invisible="not line_created or not interpersonal_skills_complete">
+                            <field name="review_line_ids_motivation" nolabel="1" readonly="0">
+                                <list editable="bottom" create="0" delete="0">
+                                    <field name="review_type" readonly="1"/>
+                                    <field name="config_id" string="Review Type"
+                                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"
+                                           readonly="1"/>
+                                    <field name="rating" readonly="parent.state in ('completed')"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="three60_performance_filter_search" model="ir.ui.view">
+        <field name="model">threeperformance.review</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter string="Draft" name="show_draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="In Progress" name="show_inprogress" domain="[('state', '=', 'in_progress')]"/>
+                <filter string="Completed" name="show_completed" domain="[('state', '=', 'completed')]"/>
+
+                <group expand="0" string="Group By">
+                    <filter string="Employee Name" name="group_by_employee_name"
+                            context="{'group_by':'employee_id'}"/>
+                    <filter string="Job" name="group_by_job_id"
+                            context="{'group_by':'job_id'}"/>
+                    <filter string="State" name="group_by_state"
+                            context="{'group_by':'state'}"/>
+                </group>
+
+                <field name="employee_id" string="Employee Name"/>
+                <field name="job_id" string="Job"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="three60_performance_action" model="ir.actions.act_window">
+        <field name="name">360 Performance Review</field>
+        <field name="res_model">threeperformance.review</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="three60_performance_filter_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                360 Performance Review!
+            </p>
+        </field>
+        <field name="context">
+            {
+            'search_default_show_draft': 1
+            }
+        </field>
+    </record>
+
+
+    <menuitem id="three60_performance_menu"
+              parent="hr_appraisal_extended.performance_review_main"
+              name="360 Performance Review"
+              action="three60_performance_action"
+              sequence="2"
+    />
+</odoo>

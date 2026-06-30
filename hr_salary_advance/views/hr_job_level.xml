@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="hr_job_levels_view_tree_inherited" model="ir.ui.view">
+        <field name="name">Hr Job Levels Tree View Inherited</field>
+        <field name="model">hr.job.levels</field>
+        <field name="inherit_id" ref="hr_extended.hr_job_levels_view_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='code']" position="after">
+                <field name="salary_advance_percentage" widget="percentage"/>
+                <field name="salary_advance_calculation_period"/>
+                <field name="eligibility_duration"/>
+                <field name="repayment_tenure"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

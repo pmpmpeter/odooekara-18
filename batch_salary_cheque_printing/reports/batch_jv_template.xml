@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+    <!--Cheque print template-->
+    <template id="cheque_batch_jv_document">
+         <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+
+             <div style="font-weight:bold;margin-top:30px;padding-bottom: 250px;">
+                 <!--<t t-set="data" t-value="o.action_print_cheque_payment()"/>-->
+                 <div t-attf-style="width:{{o.cheque_format_id.cheque_width}}px; height:{{o.cheque_format_id.cheque_height}}px; font-size:{{o.cheque_format_id.font_size}}px;">
+                    <!--Account payee cheque format-->
+                    <!--<div t-if="data.get('is_account_payee')">-->
+                    <!--    <img src="odoo_print_cheque/static/src/img/accountpay.png" t-attf-style="margin-left:{{a_c_payee_left_margin}}px; margin-top:{{a_c_payee_top_margin}}px; width:{{a_c_payee_width}}px; height:{{a_c_payee_height}}px"/>-->
+                    <!--</div>-->
+                    <!--Cheque sequence number format-->
+                    <div t-attf-style="position: absolute;margin-left:{{o.cheque_format_id.cheque_no_lm}}px; margin-top:{{cheque_no_tm}}px;">
+                        <t t-if="o.cheque_format_id.print_cheque_number">
+                            <span>
+                                <t t-esc="check_number"/>
+                            </span>
+                        </t>
+                        <t t-else=""/>
+                    </div>
+                    <!--Cheque date format-->
+                    <div t-attf-style="position: absolute;margin-left:{{o.cheque_format_id.date_left_margin}}px; margin-top:{{o.cheque_format_id.date_top_margin}}px; letter-spacing: {{o.cheque_format_id.date_letter_spacing}}em;">
+                        <t t-esc="datetime.datetime.today().strftime('%d%m%Y')" />
+                    </div>
+                    <!--Partner Name format-->
+                    <div t-attf-style="width:100%;position: absolute;margin-left:{{o.cheque_format_id.beneficiary_left_margin}}px; margin-top:{{o.cheque_format_id.beneficiary_top_margin}}px;">
+                        Y/s For NEFT/RTGS as per details attached
+                    </div>
+                    <!-- Amount in words format-->
+                    <div t-attf-style="width:100%;position: absolute;margin-left:{{o.cheque_format_id.amount_word_lm}}px; margin-top:{{o.cheque_format_id.amount_word_tm}}px; letter-spacing: {{o.cheque_format_id.amount_word_ls}}em;">
+                        <t t-esc="o.amount_total_words"/> Only
+                    </div>
+                    <!--Amount in digits format-->
+                    <div t-attf-style="position: absolute;margin-left:{{o.cheque_format_id.amount_digit_lm}}px; margin-top:{{o.cheque_format_id.amount_digit_tm}}px; letter-spacing: {{o.cheque_format_id.amount_digit_ls}}em; font-size:{{o.cheque_format_id.amount_digit_size}}px;">
+                        <t t-if="print_currency">
+                            <t t-esc="o.currency_id"/>
+                        </t>
+                        **<t t-esc="'{:,.2f}'.format(abs(o.salary_payable_amount))"/>
+                    </div>
+                </div>
+                <!--</t>-->
+            </div>
+
+
+
+
+            <div style="font-size:14px;width: 100%; border: 1px solid #000;margin-top:300px;">
+                <table style="font-size:14px;width: 100%;border-collapse: collapse;">
+                    <tr>
+                        <td style="padding: 4px; width: 20%;">Bank Name:</td>
+                        <td colspan="4" style="padding: 4px; width: 80%;"> <t t-esc="o.bank_id.bank_id.name"/> - <t t-esc="o.bank_id.acc_number"/> </td>
+                        <!--<td style="width:35%;"/>-->
+                        <!--<td style="padding: 4px;text-align: right;">NO:</td>-->
+                        <!--<td style="padding: 4px;"><t t-esc="o.name"/></td>-->
+                    </tr>
+                    <tr>
+                        <td style="padding: 4px;">Debit A/c No :</td>
+                        <td style="padding: 4px; width: 20%;"><t t-esc="o.bank_id   .acc_number"/></td>
+                        <td colspan="3" style="padding: 4px;font-weight: bold;text-align:left;">BANK PAYMENT VOUCHER</td>
+
+                    </tr>
+                    <tr>
+                        <td style="padding: 4px;">Cheque/Txn No:</td>
+                        <td colsapn="4" style="padding: 4px;"><t t-if="o.cheque_number" t-esc="o.cheque_number"/></td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 6px; text-align: left; border-top: 1px solid #000;">Paid to:</td>
+                        <td colspan="4" style="padding: 6px; text-align: left; border-top: 1px solid #000;">Y/s For NEFT/RTGS as per details attached</td>
+
+                    </tr>
+                    <tr>
+                        <td style="padding: 6px;">Towards:</td>
+                        <td colspan="4" style="padding: 6px;"><t t-if="o.towards" t-esc="o.towards"/></td>
+
+                    </tr>
+                    <tr>
+                        <td style="padding: 6px;">Amount Rs.:</td>
+                        <td colspan="4" style="padding: 6px;"><t t-esc="'{:,.2f}'.format(abs(o.salary_payable_amount))"/></td>
+
+                    </tr>
+                    <tr/>
+                    <tr>
+                        <td style="padding: 6px;">Prepared by :</td>
+                        <td colspan="2" style="padding: 6px;width: 30%;"><t t-esc="o.create_uid.name"/></td>
+                        <td style="padding: 6px;text-align:right;">Authorised by:</td>
+                        <td style="padding: 6px;"><t t-if="o.authorised_by" t-esc="o.authorised_by.name"/></td>
+                    </tr>
+                    <tr/>
+                    <tr/>
+                    <tr>
+                        <td style="padding: 6px;">Date:</td>
+                        <td colspan="2" style="padding: 6px;width: 30%;"><t t-esc="o.create_date.strftime('%d-%b-%y')"/></td>
+                        <td style="padding-left: 15px;text-align:center;">Date:</td>
+                        <td style="padding: 6px;"><t t-if="o.authorised_date" t-esc="o.authorised_date.strftime('%d-%b-%y')"/></td>
+                    </tr>
+                </table>
+            </div>
+
+            </t>
+        </t>
+    </template>
+</odoo>

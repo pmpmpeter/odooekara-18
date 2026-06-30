@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="employee_verification_form_template" model="ir.actions.report">
+        <field name="name">Employee Verification Form</field>
+        <field name="model">hr.employee</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_extended.print_employee_verification_form</field>
+        <field name="report_file">hr_extended.print_employee_verification_form</field>
+        <field name="print_report_name">'Employee Verification Form'</field>
+        <!--        <field name="binding_model_id" ref="hr_extended.model_hr_employee"/>-->
+        <field name="binding_model_id" eval="False"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="print_employee_verification_form">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="hr_extended.print_employee_verification_report" t-lang="o.user_id.lang"/>
+            </t>
+        </t>
+    </template>
+
+    <template id="print_employee_verification_report">
+        <t t-call="web.external_layout">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="doc" t-value="doc.with_context(lang=lang)"/>
+                <t t-set="company" t-value="doc.company_id"/>
+                <div style="margin-left: 25px; margin-right: 25px;">
+                    <h3 style="text-align: center; font-weight: bold;">
+                        Know Your Employee – Standard Input Form
+                    </h3>
+
+                    <table style="width: 100%; border-collapse: collapse; border: 1px solid black;">
+                        <tr>
+                            <td style="width: 30%; padding: 10px; font-weight: bold;">Name</td>
+                            <td style="width: 70%; padding: 10px;"></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; font-weight: bold;">Date of Birth</td>
+                            <td style="width: 70%; padding: 10px;"></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; font-weight: bold;">Marital Status</td>
+                            <td style="width: 70%; padding: 10px;"></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; font-weight: bold;">Father's Name</td>
+                            <td style="width: 70%; padding: 10px;"></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; font-weight: bold;">Telephone No</td>
+                            <td style="width: 70%; padding: 10px;"></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; font-weight: bold;">Address For Communication</td>
+                            <td style="width: 70%; height: 75px; padding: 10px;"></td>
+                        </tr>
+                    </table>
+
+                    <div style="page-break-before: always;">
+                        <h3 style="text-align: center; font-weight: bold;">
+                            Know Your Employee – Standard Input Form
+                        </h3>
+
+                        <table style="width: 100%; border-collapse: collapse; border: 1px solid black;">
+                            <tr>
+                                <th style="text-align: center; padding: 10px; width: 40%;">Permanent Address</th>
+                                <th style="text-align: center; padding: 10px; width: 50%;">Current Address</th>
+                            </tr>
+                            <tr>
+                                <td style="height:75px; padding: 10px;"></td>
+                                <td style="height:75px; padding: 10px;"></td>
+                            </tr>
+                            <tr>
+                                <td style="height:50px; padding: 10px;">Prominent Landmark:</td>
+                                <td style="height:50px; padding: 10px;">Prominent Landmark:</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px;">Residence Tel # +</td>
+                                <td style="padding: 10px;">Residence Tel # +</td>
+                            </tr>
+                            <tr>
+                                <td style="height:25px; padding: 10px;">Mobile Emergency
+                                    <br/>
+                                    Contact: +
+                                </td>
+                                <td style="height:25px; padding: 10px;">Mobile # +
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px;">Period of stay:</td>
+                                <td style="padding: 10px;">Period of stay:</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 10px;">PAN :
+                                    <br/>
+                                    Adhaar No:
+                                </td>
+                                <td style="padding: 10px;"></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div style="page-break-before: always;">
+                        <h3 style="text-align: center; font-weight: bold;">
+                            Know Your Employee – Standard Input Form
+                        </h3>
+                        <h3 style="text-align: center; font-weight: bold; text-decoration: underline;">
+                            Education Qualification Details
+                        </h3>
+
+                        <table style="width: 100%; border-collapse: collapse; border: 1px solid black;">
+                            <tr>
+                                <th style="text-align: center; width: 10%; padding: 10px;">Sr.</th>
+                                <th style="text-align: center; width: 40%; padding: 10px;">Details</th>
+                                <th style="text-align: center; width: 50%; padding: 10px;">Description</th>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center; padding: 10px;">1</td>
+                                <td style="padding: 10px;">University name &amp; Location</td>
+                                <td style="height:50px; padding: 10px; "></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center; padding: 10px;">2</td>
+                                <td style="padding: 10px;">College name &amp; Location</td>
+                                <td style="height:50px; padding: 10px;"></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center; padding: 10px;">3</td>
+                                <td style="padding: 10px;">Year of passing
+                                    <br/>
+                                    (DD/MM/YY)
+                                </td>
+                                <td style="padding: 10px;"></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center; padding: 10px;">4</td>
+                                <td style="padding: 10px;">Degree obtained</td>
+                                <td style="padding: 10px;"></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center; padding: 10px;">5</td>
+                                <td style="padding: 10px;">Seat Number</td>
+                                <td style="padding: 10px;"></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center; padding: 10px;">6</td>
+                                <td style="padding: 10px;">Period (From/To)</td>
+                                <td style="padding: 10px;"></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center; padding: 10px;">7</td>
+                                <td style="padding: 10px;">Main Subjects</td>
+                                <td style="height:50px; padding: 10px;"></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center; padding: 10px;">8</td>
+                                <td style="padding: 10px;">Grade Secured</td>
+                                <td style="padding: 10px;"></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center; padding: 10px;">9</td>
+                                <td style="padding: 10px;">Percentage</td>
+                                <td style="padding: 10px;"></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div style="page-break-before: always;">
+                        <h3 style="text-align: center; font-weight: bold;">
+                            Know Your Employee – Standard Input Form
+                        </h3>
+                        <h3 style="text-align: center; font-weight: bold; text-decoration: underline;">
+                            Previous Employment Details
+                        </h3>
+
+                        <table style="width: 100%; border-collapse: collapse; border: 1px solid black;">
+                            <tr>
+                                <th style="text-align: center; width: 10%; padding: 10px;">Sr.</th>
+                                <th style="text-align: center; width: 40%; padding: 10px;">Details</th>
+                                <th style="text-align: center; width: 50%; padding: 10px;">Previous Employment 1</th>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center; padding: 10px;">1</td>
+                                <td style="padding: 10px;">Employer Name and full address</td>
+                                <td style="height:75px; padding: 10px;"></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center; padding: 10px;">2</td>
+                                <td style="padding: 10px;">Office Landline Numbers</td>
+                                <td style="padding: 10px;"></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center; padding: 10px;">3</td>
+                                <td style="padding: 10px;">Dates Employed :
+                                    <br/>
+                                    Joining and Leaving date
+                                    <br/>
+                                    (DD/MM/YY)
+                                    <br/>
+                                </td>
+                                <td style="height:50px; padding: 10px;"></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center; padding: 10px;">4</td>
+                                <td style="padding: 10px;">Job Title / Designation</td>
+                                <td style="padding: 10px;"></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center; padding: 10px;">5</td>
+                                <td style="padding: 10px;">Gross Salary</td>
+                                <td style="padding: 10px;"></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center; padding: 10px;">6</td>
+                                <td style="padding: 10px;">Supervisor Name &amp; Contact Number</td>
+                                <td style="height:50px; padding: 10px;"></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center; padding: 10px;">7</td>
+                                <td style="padding: 10px;">Reason for Leaving</td>
+                                <td style="height:50px; padding: 10px;"></td>
+                            </tr>
+                            <tr>
+                                <td style="text-align: center; padding: 10px;">8</td>
+                                <td style="padding: 10px;">Employee Code</td>
+                                <td style="padding: 10px;"></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div style="page-break-before: always;">
+                        <h3 style="text-align: center; font-weight: bold;">
+                            Know Your Employee – Standard Input Form
+                        </h3>
+                        <h6>Letter of Authorization</h6>
+                        <h6>To whomsoever it may concern</h6>
+                        <p>
+                            I hereby authorize Solis Health Care and its representative to verify information provided
+                            in my resume and application of employment and to conduct enquiries as may be necessary, at
+                            the company’s discretion. I authorize all persons who may have information relevant to this
+                            enquiry to disclose it to Solis Health Care or its representative. I release all persons
+                            from liability on account of such disclosure. In case the organization finds any information
+                            contrary to that provided by me, I accept their decision to withdraw the job offer made to
+                            me. The job offer would thereby stand null and void.
+                        </p>
+                        <h6>Manual Signature: -</h6>
+                        <h6>Name in Block Capitals: -</h6>
+                        <h6>Date of Birth: -</h6>
+                        <h6>Date: -</h6>
+                        <h6>Note:</h6>
+                        <p>
+                            Please attach the following:
+                            <ol>
+                                <li>
+                                    <b>Photocopy of educational qualification mark sheet and degree certificate.</b>
+                                </li>
+                                <li>
+                                    <b>Photocopy of experience/ relieving/ Service certificate of ex-employments.</b>
+                                </li>
+                                <li>
+                                    <b>Government ID proof to be provided.(Aadhaar / Pan Copy)</b>
+                                </li>
+                            </ol>
+                        </p>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Inherit res.config.settings Form View -->
+        <record id="res_config_settings_purchase_levels" model="ir.ui.view">
+            <field name="name">res.config.settings.view.form.inherit.purchase.approval</field>
+            <field name="model">res.config.settings</field>
+            <field name="priority" eval="40"/>
+            <field name="inherit_id" ref="purchase.res_config_settings_view_form_purchase"/>
+            <field name="arch" type="xml">
+                <!-- Add a custom block after an existing one -->
+                <xpath expr="//block[@name='purchase_setting_container']" position="after">
+                    <div>
+                        <h2>Purchase Order Minimum Quote Rules</h2>
+                        <div class="row mt16 o_settings_container">
+                            <!-- PO Level 1 -->
+                            <div class="col-12 col-lg-6 o_setting_box" title="Level 1 Approval Configuration">
+                                <div class="o_setting_right_pane">
+                                    <div class="row">
+                                        <label for="po_value_1" class="col-lg-3 o_light_label"/>
+                                        <field name="po_value_1" string="PO Value Level 1"/>
+                                    </div>
+                                    <div class="row">
+                                        <label string="Quotes Required" for="quotes_required_1" 
+                                               class="col-lg-3 o_light_label"/>
+                                        <field name="quotes_required_1"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- PO Level 2 -->
+                            <div class="col-12 col-lg-6 o_setting_box" title="Level 2 Approval Configuration">
+                                <div class="o_setting_right_pane">
+                                    <div class="row">
+                                        <label for="po_value_2" class="col-lg-3 o_light_label"/>
+                                        <field name="po_value_2" string="PO Value Level 2"/>
+                                    </div>
+                                    <div class="row">
+                                        <label string="Quotes Required" for="quotes_required_2" 
+                                               class="col-lg-3 o_light_label"/>
+                                        <field name="quotes_required_2"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- PO Level 3 -->
+                            <div class="col-12 col-lg-6 o_setting_box" title="Level 3 Approval Configuration">
+                                <div class="o_setting_right_pane">
+                                    <div class="row">
+                                        <label for="po_value_3" class="col-lg-3 o_light_label"/>
+                                        <field name="po_value_3" string="PO Value Level 3"/>
+                                    </div>
+                                    <div class="row">
+                                        <label string="Quotes Required" for="quotes_required_3" 
+                                               class="col-lg-3 o_light_label"/>
+                                        <field name="quotes_required_3"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

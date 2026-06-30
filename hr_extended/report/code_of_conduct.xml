@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="code_of_conduct_template" model="ir.actions.report">
+        <field name="name">Code of Conduct Form</field>
+        <field name="model">hr.employee</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">hr_extended.print_code_of_conduct_form</field>
+        <field name="report_file">hr_extended.print_code_of_conduct_form</field>
+        <field name="print_report_name">'Code of Conduct Form'</field>
+        <!--        <field name="binding_model_id" ref="hr_extended.model_hr_employee"/>-->
+        <field name="binding_model_id" eval="False"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="print_code_of_conduct_form">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t
+                        t-call="hr_extended.print_code_of_conduct_report"
+                        t-lang="o.user_id.lang"
+                />
+            </t>
+        </t>
+    </template>
+
+
+    <template id="print_code_of_conduct_report">
+        <t t-call="web.external_layout">
+            <t t-foreach="docs" t-as="doc">
+                <t t-set="doc" t-value="doc.with_context(lang=lang)"/>
+                <t t-set="company" t-value="doc.company_id"/>
+                <div style="margin-left: 25px; margin-right: 25px;">
+                    <h3 style="text-align: center; font-weight: bold;  text-decoration: underline;">
+                        CODE OF CONDUCT
+
+                    </h3>
+                    <br/>
+                    <h4 style="text-align: center; font-weight: bold;">
+                        STATEMENT OF ACKNOWLEDGMENT
+                    </h4>
+                    <br/>
+                    <p>
+                        I have received and read the Innovations Code of Conduct and the policy on Anti-sexual
+                        harassment initiative. I understand the policies and standards contained therein. I acknowledge
+                        that as a resource employed at Ekara Partnership and its subsidiaries or divisions it is my
+                        obligation to abide by the Business Conduct guidelines in line with employment conditions as
+                        specified in Appointment letter.
+                    </p>
+                    <p>
+                        I understand that I should report any possible violation of the Code of Conduct and raise any
+                        question or concern through discussion with the line manager/ human resource representative
+                        /Business Head of the unit or through the Innovations Group HR.
+                    </p>
+                    <p>
+                        I understand Innovations reserves the right to introduce and modify code of conduct guidelines
+                        from time to time which will be updated on GPM/Portal regularly for reference.
+                    </p>
+                    <p>
+                        I further understand that my failure to comply with the policies and standards contained in the
+                        Business Code of Conduct may lead to disciplinary action up to and including possible
+                        termination of my assignment/ deputation.
+                    </p>
+                    <br/>
+                    <br/>
+                    <p>Signature: ___________________________</p>
+                    <p>Name: _________________________</p>
+                    <p>Company/Dept: ___________________________</p>
+                    <p>Date: _________________________</p>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

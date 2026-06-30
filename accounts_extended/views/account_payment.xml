@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_account_supplier_payment_tree_inherited" model="ir.ui.view">
+        <field name="name">view.account.payment.list.view.inherit</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_supplier_payment_tree"/>
+        <field name="arch" type="xml">
+            <field name="payment_method_line_id" position="after">
+                <field name="payment_type" column_invisible="1"/>
+                <field name="show_partner_bank_account" column_invisible="1"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="view_account_payment_form_inherit_view" model="ir.ui.view">
+        <field name="name">view.account.payment.form.view</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account_check_printing.view_account_payment_form_inherited"/>
+        <field name="arch" type="xml">
+            <button name='print_checks' position='attributes'>
+                <attribute name='invisible'>1</attribute>
+            </button>
+        </field>
+    </record>
+
+    
+
+    <record id="approval_view_extend_inherited" model="ir.ui.view">
+        <field name="name">view.account.payment.form.view</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <field name="x_need_approval" invisible="1"/>
+                <field name="x_review_result" invisible="1"/>
+                <field name="x_has_request_approval" invisible="1"/>
+                <field name="payment_type" invisible="1"/>
+                <field name="approval_state" invisible="1"/>
+                <field name="is_fund_requsiting" invisible="1"/>
+                <field name="is_contra_payment" invisible="1"/>
+                 <button name="597" type="action" string="Request Approval" invisible="x_has_request_approval or (payment_type =='inbound' and not is_fund_requsiting)" class="oe_highlight" approval_btn="1"/>
+                <button name="596" type="action" string="View Approval" invisible="not x_has_request_approval" approval_btn="1"/>
+                <button name="598" type="action" string="Rework" invisible="x_review_result != 'refused'" approval_btn="1"/>
+              </xpath>
+              <xpath expr="//header" position="after">
+                  <div invisible="1" class="alert alert-info" style="margin-top: 5px;" role="alert">This document need to be approved !</div>
+                  <div invisible="1" class="alert alert-info" style="margin-top: 5px;" role="alert">This document has been approved !</div>
+                  <div invisible="1" class="alert alert-danger" style="margin-top: 5px;" role="alert">This document has been refused !</div>
+              </xpath>
+        </field>
+    </record>
+
+    <record id="view_account_payment_form_view_inherit" model="ir.ui.view">
+        <field name="name">view.account.payment.form.view</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+            <!-- <xpath expr="//group[@name='main_group']/group[@name='group1']/field[@name='ref']" position="replace">
+                <field name="ref" readonly="state not in ('draft','to approve')"/>
+            </xpath> -->
+            <!-- <field name="ref" position="after">
+                <field name='utr_number'  readonly="is_cheque_details_freeze"/>
+                <field name='old_utr_number' invisible='1'/>
+            </field> -->
+            <xpath expr="//field[@name='partner_bank_id']" position="after">
+                <field name="type" invisible="payment_type != 'outbound'" readonly="state not in ('draft','to approve')"/>
+                <field name="partner_bank_id" string="Vendor Bank Account"
+                       options="{'no_quick_create':True,'no_create': True}"
+                       context="{'default_partner_id': partner_id, 'display_account_trust': True}"
+                       invisible="show_partner_bank_account or partner_type != 'supplier' or payment_type == 'inbound'"
+                       required="require_partner_bank_account"
+                       readonly="state not in ('draft','to approve')"/>
+                <field name="partner_cl_balance" readonly='1' force_save='1' invisible="payment_type != 'outbound'"/>
+                <field name="closing_balance" readonly='1' force_save='1' invisible="payment_type != 'outbound'"/>
+                <field name="recurring"  invisible="payment_type!='outbound'" readonly="state not in ('draft','to approve')"/>
+                <field name="recurring_days" invisible="recurring==False"/>
+                <field name="recurring_until_date" invisible="recurring==False" required="recurring!=False"/>
+            </xpath>
+            <xpath expr="//group[@name='main_group']" position="after">
+                <notebook>
+                    <page name="cheque_details" string="Cheque Details"
+                          invisible="show_partner_bank_account or payment_type != 'outbound'">
+                        <group>
+                            <group>
+                                <field name="sr_no" readonly="is_cheque_details_freeze"/>
+                                <field name="assigned_by" options="{'no_open':True,'no_create': True}" readonly="is_cheque_details_freeze"/>
+                                <field name="managed_by" options="{'no_open':True,'no_create': True}" readonly="is_cheque_details_freeze"/>
+                            </group>
+                            <group>
+                                <field name="authorised_by" options="{'no_open':True,'no_create': True}" readonly="is_cheque_details_freeze"/>
+                                <field name="authorised_date" readonly="is_cheque_details_freeze"/>
+                                <field name="comments" readonly="is_cheque_details_freeze"/>
+                                <field name="towards" readonly="is_cheque_details_freeze"/>
+                                <field name="rtgs_addition"/>
+                            </group>
+                            <group>
+                                <field name="trans_id" options="{'no_open':True,'no_create': True}" readonly="is_cheque_details_freeze"/>
+                                <field name="sender_account_type" options="{'no_open':True,'no_create': True}" readonly="is_cheque_details_freeze"/>
+                                <field name="beneficiary_account_type" options="{'no_open':True,'no_create': True}" readonly="is_cheque_details_freeze"/>
+                                <field name="sender_receiver_info" readonly="is_cheque_details_freeze"/>
+                                <field name="sms_email" readonly="is_cheque_details_freeze"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page name="Approval Comments" invisible="not is_fund_requsiting">
+                        <field name="reason_approved" invisible="not is_fund_requsiting" readonly="1"/>
+                    </page>
+                </notebook>
+            </xpath>
+            <field name="journal_id" position="before">
+                <field name="show_partner_bank_account" invisible="0"/>
+                <field name="print_assigned_true" invisible="0"/>
+                <field name="is_fund_requsiting" invisible="1"/>
+                <field name="approval_document" invisible="1"/>
+                <field name="x_need_approval" invisible="1"/>
+                <field name="x_has_request_approval" invisible="1"/>
+                <field name="is_contra_payment" invisible="1"/>
+                <field name="approval_state" invisible="is_contra_payment or (payment_type == 'inbound' and not is_fund_requsiting)"/>
+            </field>
+            <xpath expr="//button[@name='action_cancel']" position="replace">
+                <button name="action_cancel" string="Cancel" type="object" invisible="not id or state not in ('to approve','approved','posted')" data-hotkey="x" groups="accounts_extended.group_cancel_accounting_entry"/>
+            </xpath>
+            <xpath expr="//button[@name='action_post']" position="replace">
+                <button name="action_post" string="Confirm" type="object" class="oe_highlight"
+                        invisible="payment_type != 'inbound' or state != 'draft' or is_fund_requsiting"
+                        data-hotkey="q"/>
+                <button name="action_post" string="Confirm" type="object" class="oe_highlight"
+                        invisible="payment_type != 'outbound' or state != 'approved'" data-hotkey="q"/>
+                <button name="action_post" string="Confirm" type="object" class="oe_highlight"
+                        invisible="not is_fund_requsiting or state != 'approved'" data-hotkey="q"/>
+            </xpath>
+            <xpath expr="//button[@name='action_draft']" position="replace">
+                <button name="action_draft" string="Reset To Draft" type="object" class="btn btn-secondary" groups="accounts_extended.group_cancel_accounting_entry" data-hotkey="w"/>
+            </xpath>
+            <xpath expr="//button[@name='action_post']" position="after">
+                <field name="is_utr_updated" invisible="1"/>
+                <field name="is_cheque_details_freeze" invisible="1"/>
+                 <button name="action_update_utr_number" string="Update UTR Number" type="object" class="oe_highlight"
+                         invisible="state != 'posted' or (payment_type =='inbound') or not utr_number or is_cheque_details_freeze"/>
+                <button name="print_cheque_format" type="object" string="Print Cheque"
+                    invisible="not print_assigned_true"/>
+<!--                    invisible="(payment_type != 'outbound') and ((show_partner_bank_account) or (state not in ('draft', 'to approve', 'cancel')) or (not print_assigned_true))"/>-->
+                <button name="action_freeze_cheque_details" string="Lock Cheque Details" type="object" class="oe_highlight" invisible="1"/>
+                <button name="send_vendor_mail" string="Send By Mail" type="object" class="oe_highlight" invisible="state != 'posted'"/>
+            </xpath>
+
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="options">{'no_quick_create':True,'no_create': True}</attribute>
+                <attribute name="domain">[('company_ids', 'in', company_id),('state','=','approve')]</attribute>
+            </xpath>
+            <xpath expr="//label[@for='amount']" position="before">
+                <field name="other_charge_applicable" readonly="state != 'draft'"/>
+                <field name="payment_base_amount" readonly="state != 'draft'" invisible="not other_charge_applicable"/>
+                <field name="payment_purchase_id" domain="[('partner_id','=',partner_id),('company_id','=',company_id)]"
+                       readonly="state != 'draft'" invisible="payment_type != 'outbound'"/>
+                <field name="print_assigned" widget="many2many_tags" readonly="state != 'draft'" groups="account.group_account_manager"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_id'][2]" position="attributes">
+                <attribute name="options">{'no_quick_create':True,'no_create': True}</attribute>
+            </xpath>
+
+            <xpath expr="//group[@name='group2']/field[@name='partner_bank_id'][1]" position="attributes">
+                <attribute name="options">{'no_quick_create':True,'no_create': True}</attribute>
+            </xpath>
+            <xpath expr="//group[@name='group2']/field[@name='partner_bank_id'][2]" position="attributes">
+                <attribute name="options">{'no_quick_create':True,'no_create': True}</attribute>
+            </xpath>
+            <xpath expr="//group[@name='group2']/field[@name='partner_bank_id'][3]" position="attributes">
+                <attribute name="options">{'no_quick_create':True,'no_create': True}</attribute>
+            </xpath>
+            <xpath expr="//group[@name='group2']/field[@name='partner_bank_id'][4]" position="attributes">
+                <attribute name="options">{'no_quick_create':True,'no_create': True}</attribute>
+            </xpath>
+            <field name="journal_id" position="attributes">
+                <attribute name="options">{'no_quick_create':True,'no_create': True}</attribute>
+            </field>
+            <xpath expr="//sheet" position="inside">
+                <notebook invisible='is_internal_transfer'>
+                    <page id="other_charges"
+                          name="other_charges"
+                          string="Other Charges"
+                          invisible="is_internal_transfer">
+                        <field name="other_charges_lines" widget="section_and_note_one2many" readonly="state != 'draft'">
+                                <list editable="bottom" create="1" string="Other Charges">
+                                    <field name="tax_id" 
+                                        options="{'no_open': True, 'no_quick_create':True,'no_create': True,}" 
+                                        domain="[('company_id', '=', company_id)]"/>
+                                    <field name="company_id" column_invisible='1'
+                                        options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"/>
+                                    <field name="account_id" readonly="1" force_save="1"
+                                        options="{'no_open': True, 'no_quick_create':True,'no_create': True,}" />
+                                    <field name="other_charge" force_save='1' readonly='0'/>
+                                </list>
+                        </field>
+                    </page>
+                </notebook>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_account_batch_payment_form_inherited" model="ir.ui.view">
+        <field name="name">account.batch.payment.view.form.inherit.odoo.print.cheque</field>
+        <field name="model">account.batch.payment</field>
+        <field name="inherit_id" ref="account_batch_payment.view_batch_payment_form"/>
+        <field name="arch" type="xml">
+            <header>
+                <button name="action_export_payment_details_xlsx"
+                        string="Download Excel"
+                        type="object"
+                        class="oe_highlight"/>
+                <button name="action_print_batch_payment_pdf"
+                        type="object"
+                        string="Print Cheque"
+                        class="btn-primary"
+                        icon="fa-print"/>
+                <button name="action_open_mail_wizard"
+                        string="Send Mail"
+                        type="object"
+                        class="btn-primary"/>
+                <button name="action_print_bank_advice_payment_pdf"
+                        string="Print Bank Payment Advice"
+                        type="object"
+                        class="btn-primary"/>
+
+            </header>
+            
+            <xpath expr="//page[@name='batch_content']" position="after">
+                <page name="check_details" string="Cheque Details">
+                    <group>
+                        <group>
+                            <field name="authorised_by" options="{'no_open':True,'no_create': True}"/>
+                            <field name="authorised_date"/>
+                        </group>
+                        <group>
+                            <field name="towards"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- <record id="action_update_outstanding_payment_receipt_server" model="ir.actions.server">
+        <field name="name">Update Outstanding Payments</field>
+        <field name="model_id" ref="account.model_account_payment"/>
+        <field name="binding_model_id" ref="account.model_account_payment"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_update_account_payment_outstanding_payment()</field>
+    </record> -->
+
+</odoo>

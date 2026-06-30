@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_pre_employment_reference_check_form" model="ir.ui.view">
+        <field name="name">pre.employment.reference.check.form</field>
+        <field name="model">preemp.check</field>
+        <field name="arch" type="xml">
+            <form string="Pre Employment Reference Check">
+                <header>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="to_submit,done"/>
+                    <button name="action_done" type="object" string="Mark as Done" class="btn-primary"
+                            invisible="state in 'done'"/>
+                    <button string="Print" type="action"
+                            name="%(hr_extended.pre_employment_referral_report)d" class="btn-primary"/>
+                    <button name="action_send_form_pdf_mail" type="object" string="Send by Email" class="oe_highlight"
+                            invisible="state not in ('done')"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="applicant_id" invisible="1"/>
+                        <field name="candidate_name" required="True" readonly="True"/>
+                        <field name="candidate_email"/>
+                        <field name="date" readonly="True"/>
+                        <field name="location" readonly="state in 'done'"/>
+                    </group>
+                    <notebook>
+                        <page string="Referee Details">
+                            <group string="Referee Details">
+                                <field name="referee_id" readonly="True"/>
+                                <field name="referee_phone" widget="phone" readonly="state in 'done'"/>
+                                <field name="referee_email" widget="email" readonly="state in 'done'"/>
+                                <field name="referee_title" readonly="state in 'done'"/>
+                                <field name="referee_relationship" readonly="state in 'done'"/>
+                                <field name="recruiter_id" readonly="True"/>
+                            </group>
+                        </page>
+                        <page string="Comments">
+                            <group string="Comments">
+                                <field name="technical_skills_comments" placeholder="Enter your comments here..."
+                                       readonly="state in 'done'"/>
+                                <field name="job_duties_comments" placeholder="Enter your comments here..."
+                                       readonly="state in 'done'"/>
+                                <field name="professional_skills_comments" placeholder="Enter your comments here..."
+                                       readonly="state in 'done'"/>
+                            </group>
+                        </page>
+                        <page string="Professional Attributes">
+                            <group string="Candidate Evaluation: Competencies and Professional Attributes" colspan="4">
+                                <group>
+                                    <div style="width:500px">
+                                        <label for="integrity_resources"/>
+                                        <field name="integrity_resources" no_label="1" widget="radio"
+                                               readonly="state in 'done'"/>
+
+                                        <label for="integrity_interactions"/>
+                                        <field name="integrity_interactions" no_label="1" widget="radio"
+                                               readonly="state in 'done'"/>
+
+                                        <label for="responsibility_productivity"/>
+                                        <field name="responsibility_productivity" no_label="1" widget="radio"
+                                               readonly="state in 'done'"/>
+                                    </div>
+                                </group>
+                                <group>
+                                    <div style="width:500px;">
+                                        <label for="maturity_composure"/>
+                                        <field name="maturity_composure" no_label="1" widget="radio"
+                                               readonly="state in 'done'"/>
+
+                                        <label for="adaptability"/>
+                                        <field name="adaptability" no_label="1" widget="radio"
+                                               readonly="state in 'done'"/>
+                                    </div>
+                                </group>
+                            </group>
+                        </page>
+
+                        <page string="Additional Comments">
+                            <group string="Additional Comments">
+                                <field name="additional_comments" placeholder="Enter your comments here..."
+                                       readonly="state in 'done'"/>
+                                <field name="other_comments" placeholder="Enter your comments here..."
+                                       readonly="state in 'done'"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="activity_ids" widget="mail_activity"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_pre_employment_reference_check_tree" model="ir.ui.view">
+        <field name="name">pre.employment.reference.check.list</field>
+        <field name="model">preemp.check</field>
+        <field name="arch" type="xml">
+            <list string="Candidate Reference Checks">
+                <field name="candidate_name"/>
+                <field name="date"/>
+                <field name="referee_id"/>
+                <field name="location"/>
+                <field name="state" widget='badge' decoration-info="state == 'to_submit'"
+                       decoration-success="state =='done'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_pre_emp_form_search" model="ir.ui.view">
+        <field name="name">pre.emp.form.search</field>
+        <field name="model">preemp.check</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter string="To Submit" name="to_submit" domain="[('state', '=', 'to_submit')]"/>
+                <filter string="Done" name="done" domain="[('state', '=', 'done')]"/>
+
+                <group expand="0" string="Group By">
+                    <filter string="Referee" name="group_by_referee_id" context="{'group_by':'referee_id'}"/>
+                    <filter string="Date" name="group_by_date" context="{'group_by':'date'}"/>
+                    <filter string="Status" name="group_by_state" context="{'group_by':'state'}"/>
+                </group>
+
+                <field name="candidate_name" string="Name"/>
+                <field name="referee_id" string="Referee"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_pre_employment_reference_check" model="ir.actions.act_window">
+        <field name="name">Pre Employment Reference Check</field>
+        <field name="res_model">preemp.check</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_pre_employment_reference_check_tree"/>
+        <field name="search_view_id" ref="view_pre_emp_form_search"/>
+        <field name="target">current</field>
+        <field name="context">
+            {
+            'search_default_to_submit': 1
+            }
+        </field>
+
+    </record>
+
+    <!--    <menuitem-->
+    <!--            id="menu_pre_employ_reference_check"-->
+    <!--            name="Pre Employee Reference Check"-->
+    <!--            action="action_pre_employment_reference_check"-->
+    <!--            groups="hr.group_hr_user"-->
+    <!--            parent="hr.menu_hr_employee_payroll"-->
+    <!--            sequence="8"-->
+    <!--    />-->
+
+</odoo>
+
