@@ -11,6 +11,7 @@
         'account',
         'sale',
         'purchase',
+        'mail',
     ],
     'data': [
         "security/security.xml",
@@ -20,7 +21,9 @@
         "security/ir.model.access.csv",
         "views/contact_creation.xml",
         "views/res_company.xml",
-        "views/res_partner.xml",        
+        "views/res_partner.xml",  
+        "views/res_partner_view.xml",
+        "views/res_partner_approval_view.xml",      
     ],
     'installable': True,
     'application': True,

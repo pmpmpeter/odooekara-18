@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    	<record id="view_partner_approval_form_rpe" model="ir.ui.view">
+	        <field name="name">res.partner.approval.form</field>
+	        <field name="model">res.partner.approval</field>
+	        <field name="arch" type="xml">
+	            <form string="Contact Approval">
+	                <header>
+	                    <button name="action_submit" string="Submit" type="object" invisible="state != 'draft'"/>
+
+	                    <button name="action_approve" string="Approve" type="object" invisible="state != 'pending'" groups="res_partner_extended.group_contact_admin_access"/>
+
+	                    <button name="action_reject" string="Reject" type="object" invisible="state != 'pending'" groups="res_partner_extended.group_contact_admin_access"/>
+
+	                    <button name="action_reset_draft" string="Reset to Draft" type="object" invisible="state not in ['approved','rejected']"/>
+
+	                    <field name="state" widget="statusbar"/>
+	                </header>
+
+	                <sheet>
+	                    <group>
+	                        <field name="partner_id" readonly="state != 'draft'"/>
+	                        <field name="request_note" readonly="state != 'draft'"/>
+	                        <field name="rejection_reason" readonly="1" invisible="state != 'rejected'"/>
+	                    </group>
+	                </sheet>
+
+	                <chatter/>
+	            </form>
+	        </field>
+	    </record>
+	    <record id="view_partner_approval_tree" model="ir.ui.view">
+	        <field name="name">res.partner.approval.list</field>
+	        <field name="model">res.partner.approval</field>
+	        <field name="arch" type="xml">
+	            <list string="Contact Approvals">
+	                <field name="partner_id"/>
+	                <field name="request_note"/>
+	                <field name="state"/>
+	                <field name="create_date"/>
+	            </list>
+	        </field>
+	    </record>
+
+	    <!-- ACTION -->
+	    <record id="action_partner_approval" model="ir.actions.act_window">
+	        <field name="name">Contact Change Request</field>
+	        <field name="res_model">res.partner.approval</field>
+	        <field name="view_mode">list,form</field>
+	    </record>
+
+	    <!-- MENU -->
+	    <menuitem id="menu_partner_approval_root" name="Contact Approvals" parent="contacts.menu_contacts" action="action_partner_approval"/>
+    </data>
+</odoo>
