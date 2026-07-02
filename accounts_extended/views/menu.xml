@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<menuitem id="menu_contra_payment" action="open_create_contra_payment_form" parent="account.menu_finance_entries" sequence="3"/>
+    <menuitem id="menu_credit_payment" name="Credit Card" parent="account.menu_finance_entries" sequence="3"/>
+
+    <menuitem id="menu_credit_card_payments" name="Credit Card Payments" action="open_create_credit_card_payment_form" parent="accounts_extended.menu_credit_payment" sequence="3"/>
+
+    <menuitem id="menu_credit_card_expenses" name="Credit Card Expenses" action="open_create_credit_card_expense_form" parent="accounts_extended.menu_credit_payment" sequence="4"/>
+    <menuitem id="account.menu_action_move_in_refund_type" action="account.action_move_in_refund_type"
+              name="Debit Notes" parent="account.menu_finance_payables" sequence="2"/>
+    <menuitem id="account.menu_action_account_payments_receivable" name="Receipts" parent="account.menu_finance_receivables" action="account.action_account_payments" sequence="15"/>
+
+	<menuitem id="menu_account_supplier_accounts" name="Bank Accounts" action="account.action_account_supplier_accounts" parent="account.menu_finance_payables" sequence="80"/>
+</odoo>

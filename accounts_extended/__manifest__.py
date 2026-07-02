@@ -52,7 +52,7 @@
         'report/payment_mail_template.xml',
         # 'views/res_config_settings.xml',
         # 'views/crossoverd_budget.xml',
-        # 'views/account_move.xml',
+        'views/account_move.xml',
         'views/account_asset_views.xml',
         # 'views/account_payment.xml', uncomment this later
         'views/cash_management.xml',
@@ -61,7 +61,8 @@
         'views/cash_pool.xml',
         'views/budget_department.xml',
         'views/cash_requirement_report.xml',
-        # 'views/account_journal_dashboard_view.xml'
+        # 'views/account_journal_dashboard_view.xml',
+        'views/menu.xml'
     ],
     'license': 'LGPL-3',
     'installable': True,
