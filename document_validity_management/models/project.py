@@ -199,7 +199,8 @@ class ProjectTask(models.Model):
     stage_id = fields.Many2one('project.task.type', string="Stage")
     is_document_validity_management = fields.Boolean(string="Is Document Validity Management", default=False)
     days_left = fields.Integer(string="Days Left", compute="_compute_days_left")
-    x_review_result = fields.Char(string="")
+    x_has_request_approval = fields.Boolean(string="Has Request Approval",default=False)
+    x_review_result = fields.Char(string="Review Result",store=True)
 
     @api.depends('validity_end_date')
     def _compute_days_left(self):

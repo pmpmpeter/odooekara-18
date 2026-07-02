@@ -113,7 +113,5 @@
               parent="project_extended.open_create_project_menu" action="open_create_project_action_extend"/>
     <menuitem id="statuory_notice_management_menu" name="Statutory Notice Management" sequence="2"
               parent="project_extended.open_create_project_menu" action="open_create_project_statuory_action"/>
-<!--    <menuitem id="project.menu_project_management_all_tasks" action="project.action_view_all_task"-->
-<!--                name="All Tasks" parent="project.menu_project_management" groups="project.group_project_manager" sequence="2"/>-->
 
 </odoo>

@@ -11,6 +11,8 @@ class ProjectTask(models.Model):
     _inherit = 'project.task'
 
     is_credit_expense = fields.Boolean(string='Is Credit Expense',default=False)
+    x_has_request_approval = fields.Boolean(string="Has Request Approval",default=False)
+    x_review_result = fields.Char(string="Review Result",store=True)
 
     def write(self, vals):
         res = super().write(vals)
