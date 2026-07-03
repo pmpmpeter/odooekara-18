@@ -53,35 +53,7 @@ class Project(models.Model):
     has_task_stage_changed = fields.Boolean(string='Has Task Stage Changed', copy=False)
     document_count = fields.Integer(string="Documents", compute="_compute_document_count")
 
-    # @api.depends('date_of_notice', 'last_date')
-    # def _compute_reminder_dates(self):
-    #     for project in self:
-    #         if project.date_of_notice and project.last_date:
-    #             notice_date = fields.Date.from_string(project.date_of_notice)
-    #             last_date = fields.Date.from_string(project.last_date)
-    #
-    #             # Calculate total duration between `date_of_notice` and `last_date`
-    #             total_days = (last_date - notice_date).days
-    #
-    #             # Calculate First Reminder:
-    #             first_reminder_days = total_days // 3
-    #             first_reminder_date = notice_date + timedelta(days=first_reminder_days)
-    #             project.first_reminder_date = first_reminder_date
-    #             project.first_reminder = first_reminder_days
-    #
-    #             # Calculate Second Reminder: 2 days before `last_date`
-    #             second_reminder_date = last_date - timedelta(days=2)
-    #             project.second_reminder_date = second_reminder_date
-    #
-    #             # Calculate days between `date_of_notice` and `second_reminder_date`
-    #             second_reminder_days = (second_reminder_date - notice_date).days
-    #             project.second_reminder = second_reminder_days
-    #         else:
-    #             project.first_reminder_date = False
-    #             project.first_reminder = 0
-    #             project.second_reminder_date = False
-    #             project.second_reminder = 0
-
+    
     def _compute_document_count(self):
         Task = self.env['project.task']
         for record in self:

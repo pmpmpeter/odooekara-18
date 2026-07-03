@@ -21,6 +21,7 @@
         'data/mail_template_data.xml',
         'data/project_cron.xml',
         'wizard/project_task_assign_wizard.xml',
+        # 'views/project_studio_views.xml'
     ],
     'installable': True,
     'application': True,
