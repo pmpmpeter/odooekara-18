@@ -10,6 +10,14 @@ from odoo.tools.misc import format_date
 from dateutil.relativedelta import relativedelta
 from itertools import chain
 
+from odoo.exceptions import UserError
+from odoo.osv import expression
+
+from datetime import timedelta
+from collections import defaultdict
+from copy import deepcopy
+
+
 
 class AgedPartnerBalanceCustomHandlerInherit(models.AbstractModel):
     _inherit = 'account.aged.partner.balance.report.handler'
@@ -236,41 +244,62 @@ class AgedPartnerBalanceCustomHandlerInherit(models.AbstractModel):
 class PartnerLedgerCustomHandlerInherit(models.AbstractModel):
     _inherit = 'account.partner.ledger.report.handler'
 
-    def _get_query_sums(self, options):
+    def _get_query_sums(self, report, options) -> SQL:
         """ Construct a query retrieving all the aggregated sums to build the report. It includes:
         - sums for all partners.
         - sums for the initial balances.
         :param options:             The report options.
-        :return:                    (query, params)
+        :return:                    query as SQL object
         """
-        params = []
         queries = []
-        report = self.env.ref('account_reports.partner_ledger_report')
-        ###Avoid Employee expense in Partner Ledger - Ekara Request###
-        employee_partner_ids = self.env['hr.employee'].search([]).mapped('work_contact_id.id')
-        ###Avoid Employee expense in Partner Ledger - Ekara Request###
-        # Create the currency table.
-        ct_query = report._get_query_currency_table(options)
-        for column_group_key, column_group_options in report._split_options_per_column_group(options).items():
-            tables, where_clause, where_params = report._query_get(column_group_options, 'normal')
-            params.append(column_group_key)
-            params += where_params
-            ###Avoid Employee expense in Partner Ledger - Ekara Request###
-            if employee_partner_ids:
-                where_clause += " AND account_move_line.partner_id NOT IN %s"
-                params.append(tuple(employee_partner_ids))
-            ###Avoid Employee expense in Partner Ledger - Ekara Request###
-            queries.append(f"""
-                SELECT
-                    account_move_line.partner_id                                                          AS groupby,
-                    %s                                                                                    AS column_group_key,
-                    SUM(ROUND(account_move_line.debit * currency_table.rate, currency_table.precision))   AS debit,
-                    SUM(ROUND(account_move_line.credit * currency_table.rate, currency_table.precision))  AS credit,
-                    SUM(ROUND(account_move_line.balance * currency_table.rate, currency_table.precision)) AS balance
-                FROM {tables}
-                LEFT JOIN {ct_query} ON currency_table.company_id = account_move_line.company_id
-                WHERE {where_clause}
-                GROUP BY account_move_line.partner_id
-            """)
 
-        return ' UNION ALL '.join(queries), params
+        # Create the currency table.
+        for column_group_key, column_group_options in report._split_options_per_column_group(options).items():
+            query = report._get_report_query(column_group_options, 'from_beginning')
+            search_condition = query.where_clause
+
+            # Avoid Employee expense in Partner Ledger - Ekara Request
+            employee_partner_ids = self.env['hr.employee'].search([]).mapped('work_contact_id.id')
+
+            if employee_partner_ids:
+                search_condition = SQL(
+                    "%s AND account_move_line.partner_id NOT IN %s",
+                    search_condition,
+                    tuple(employee_partner_ids),
+                )
+            # search_condition=search_condition,
+            date_from = options['date']['date_from']
+            queries.append(SQL(
+                """
+                (WITH partner_sums AS (
+                    SELECT
+                        account_move_line.partner_id            AS groupby,
+                        %(column_group_key)s                    AS column_group_key,
+                        SUM(%(debit_select)s)                   AS debit,
+                        SUM(%(credit_select)s)                  AS credit,
+                        SUM(%(balance_select)s)                 AS amount,
+                        SUM(%(balance_select)s)                 AS balance,
+                        BOOL_AND(account_move_line.reconciled)  AS all_reconciled,
+                        MAX(account_move_line.date)             AS latest_date
+                    FROM %(table_references)s
+                    %(currency_table_join)s
+                    WHERE %(search_condition)s
+                    GROUP BY account_move_line.partner_id
+                )
+                SELECT *
+                FROM partner_sums
+                WHERE partner_sums.balance != 0
+                OR partner_sums.all_reconciled = FALSE
+                OR partner_sums.latest_date >= %(date_from)s
+                )""",
+                column_group_key=column_group_key,
+                debit_select=report._currency_table_apply_rate(SQL("account_move_line.debit")),
+                credit_select=report._currency_table_apply_rate(SQL("account_move_line.credit")),
+                balance_select=report._currency_table_apply_rate(SQL("account_move_line.balance")),
+                table_references=query.from_clause,
+                currency_table_join=report._currency_table_aml_join(column_group_options),
+                search_condition=query.where_clause,
+                date_from=date_from,
+            ))
+
+        return SQL(' UNION ALL ').join(queries)
