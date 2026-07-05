@@ -17,7 +17,7 @@
         'data/ir_cron.xml',
         'views/document_type_views.xml',
         # 'views/documents_share_views.xml',
-        # 'views/project_project_views.xml'
+        'views/project_project_views.xml'
 
     ],
     'installable': True,
