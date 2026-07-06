@@ -748,10 +748,5 @@ class HrExpenseSheet(models.Model):
             'expense_sheet_id': self.id,
         }
 
-class MultiApprovalType(models.Model):
-    _inherit = "multi.approval.type"
-
-
-    department_id = fields.Many2one('hr.department',string='Department')
 
 

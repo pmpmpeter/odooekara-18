@@ -1,3 +1,4 @@
 from . import contact_creation
 from . import res_company
+from . import res_partner_approval
 from . import res_partner

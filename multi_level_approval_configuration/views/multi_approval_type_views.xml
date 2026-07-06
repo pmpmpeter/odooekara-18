@@ -83,10 +83,8 @@
             </xpath>
             <xpath expr="//notebook" position="inside">
                 <page string="Possible Next Moves" invisible="not apply_for_model">
-                    <field
-                        name="next_move_ids"
-                        domain="[('model_id', '=', model_id)]"
-                    />
+                    <field name="next_move_ids" domain="[('model_id', '=', model_id)]"/>
+                    <field name="department_id" readonly="is_configured or state in ('cancelled')"/>
                 </page>
                 <page string="Description Template" invisible="not apply_for_model">
                     <field name="request_tmpl" />

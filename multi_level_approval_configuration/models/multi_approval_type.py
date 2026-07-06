@@ -26,6 +26,7 @@ class MultiApprovalType(models.Model):
     is_configured = fields.Boolean("Configured?", copy=False)
     approve_python_code = fields.Text("Approved Action")
     refuse_python_code = fields.Text("Refused Action")
+    department_id = fields.Many2one('hr.department',string='Department')
     state = fields.Selection([
         ('draft', 'Draft'),
         ('confirm', 'Confirm'),

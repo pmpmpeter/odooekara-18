@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="project_task_quick_create_approval_inherit" model="ir.ui.view">
+    <field name="name">project.task.quick.create.approval.inherit</field>
+    <field name="model">project.task</field>
+    <field name="inherit_id" ref="project.project_task_form_quick_create"/>
+    <field name="arch" type="xml">
+        <xpath expr="//form" position="inside">
+            <header>
+                <field name="x_need_approval" invisible="1"/>
+                <field name="x_review_result" invisible="1"/>
+                <field name="x_has_request_approval" invisible="1"/>
+                <button
+                    name="597"
+                    type="action"
+                    string="Request Approval"
+                    groups="multi_level_approval.group_approval_user"
+                    class="oe_highlight"
+                    invisible="not x_need_approval or x_has_request_approval"
+                    approval_btn="1"/>
+
+                <button
+                    name="596"
+                    type="action"
+                    string="View Approval"
+                    groups="multi_level_approval.group_approval_user"
+                    invisible="not x_has_request_approval"
+                    approval_btn="1"/>
+
+                <button
+                    name="598"
+                    type="action"
+                    string="Rework"
+                    groups="multi_level_approval.group_approval_user"
+                    invisible="x_review_result != 'refused'"
+                    approval_btn="1"/>
+            </header>
+
+            <div>
+                <div
+                    class="alert alert-info"
+                    role="alert"
+                    style="margin-top:5px;"
+                    invisible="not x_need_approval or x_review_result">
+                    This document need to be approved !
+                </div>
+
+                <div
+                    class="alert alert-info"
+                    role="alert"
+                    style="margin-top:5px;"
+                    invisible="not x_need_approval or x_review_result != 'approved'">
+                    This document has been approved !
+                </div>
+
+                <div
+                    class="alert alert-danger"
+                    role="alert"
+                    style="margin-top:5px;"
+                    invisible="not x_need_approval or x_review_result != 'refused'">
+                    This document has been refused !
+                </div>
+
+            </div>
+
+        </xpath>
+
+    </field>
+</record>
+
+<record id="project_task_form_approval_inherit" model="ir.ui.view">
+    <field name="name">project.task.form.approval.inherit</field>
+    <field name="model">project.task</field>
+    <field name="inherit_id" ref="project.view_task_form2"/>
+    <field name="arch" type="xml">
+
+        <!-- Hidden fields and buttons -->
+        <xpath expr="//form/header" position="inside">
+
+            <field name="x_need_approval" invisible="1"/>
+            <field name="x_review_result" invisible="1"/>
+            <field name="x_has_request_approval" invisible="1"/>
+
+            <button name="597"
+                    type="action"
+                    string="Request Approval"
+                    class="oe_highlight"
+                    groups="multi_level_approval.group_approval_user"
+                    invisible="not x_need_approval or x_has_request_approval"
+                    approval_btn="1"/>
+
+            <button name="596"
+                    type="action"
+                    string="View Approval"
+                    groups="multi_level_approval.group_approval_user"
+                    invisible="not x_has_request_approval"
+                    approval_btn="1"/>
+
+            <button name="598"
+                    type="action"
+                    string="Rework"
+                    groups="multi_level_approval.group_approval_user"
+                    invisible="x_review_result != 'refused'"
+                    approval_btn="1"/>
+
+        </xpath>
+
+        <!-- Approval Status Messages -->
+        <xpath expr="//form/header" position="after">
+
+            <div invisible="not x_need_approval or x_review_result"
+                 class="alert alert-info"
+                 role="alert"
+                 style="margin-top:5px;">
+                This document need to be approved !
+            </div>
+
+            <div invisible="not x_need_approval or x_review_result != 'approved'"
+                 class="alert alert-info"
+                 role="alert"
+                 style="margin-top:5px;">
+                This document has been approved !
+            </div>
+
+            <div invisible="not x_need_approval or x_review_result != 'refused'"
+                 class="alert alert-danger"
+                 role="alert"
+                 style="margin-top:5px;">
+                This document has been refused !
+            </div>
+
+        </xpath>
+
+    </field>
+</record>
+
+<record id="project_task_convert_to_subtask_approval_view" model="ir.ui.view">
+    <field name="name">project.task.convert.to.subtask.form.approval</field>
+    <field name="model">project.task</field>
+    <field name="inherit_id" ref="project.project_task_convert_to_subtask_form"/>
+    <field name="arch" type="xml">
+
+        <xpath expr="//form" position="inside">
+
+            <header>
+                <field name="x_need_approval" invisible="1"/>
+                <field name="x_review_result" invisible="1"/>
+                <field name="x_has_request_approval" invisible="1"/>
+
+                <button name="597"
+                        type="action"
+                        string="Request Approval"
+                        groups="multi_level_approval.group_approval_user"
+                        invisible="not x_need_approval or x_has_request_approval"
+                        class="oe_highlight"
+                        approval_btn="1"/>
+
+                <button name="596"
+                        type="action"
+                        string="View Approval"
+                        groups="multi_level_approval.group_approval_user"
+                        invisible="not x_has_request_approval"
+                        approval_btn="1"/>
+
+                <button name="598"
+                        type="action"
+                        string="Rework"
+                        groups="multi_level_approval.group_approval_user"
+                        invisible="x_review_result != 'refused'"
+                        approval_btn="1"/>
+
+            </header>
+
+            <div>
+                <div invisible="not x_need_approval or x_review_result"
+                     class="alert alert-info"
+                     style="margin-top:5px;"
+                     role="alert">
+                    This document need to be approved !
+                </div>
+
+                <div invisible="not x_need_approval or x_review_result != 'approved'"
+                     class="alert alert-info"
+                     style="margin-top:5px;"
+                     role="alert">
+                    This document has been approved !
+                </div>
+
+                <div invisible="not x_need_approval or x_review_result != 'refused'"
+                     class="alert alert-danger"
+                     style="margin-top:5px;"
+                     role="alert">
+                    This document has been refused !
+                </div>
+            </div>
+
+        </xpath>
+
+    </field>
+</record>
+<record id="project_task_view_todo_form_approval" model="ir.ui.view">
+    <field name="name">project.task.view.todo.form.approval</field>
+    <field name="model">project.task</field>
+    <field name="inherit_id" ref="project.project_task_view_todo_form"/>
+    <field name="arch" type="xml">
+
+        <xpath expr="//form/header" position="inside">
+            <field name="x_need_approval" invisible="1"/>
+            <field name="x_review_result" invisible="1"/>
+            <field name="x_has_request_approval" invisible="1"/>
+
+            <button name="597"
+                    type="action"
+                    string="Request Approval"
+                    groups="multi_level_approval.group_approval_user"
+                    invisible="not x_need_approval or x_has_request_approval"
+                    class="oe_highlight"
+                    approval_btn="1"/>
+
+            <button name="596"
+                    type="action"
+                    string="View Approval"
+                    groups="multi_level_approval.group_approval_user"
+                    invisible="not x_has_request_approval"
+                    approval_btn="1"/>
+
+            <button name="598"
+                    type="action"
+                    string="Rework"
+                    groups="multi_level_approval.group_approval_user"
+                    invisible="x_review_result != 'refused'"
+                    approval_btn="1"/>
+        </xpath>
+
+        <xpath expr="//form/header" position="after">
+            <div>
+                <div invisible="not x_need_approval or x_review_result"
+                     class="alert alert-info"
+                     style="margin-top:5px;"
+                     role="alert">
+                    This document need to be approved !
+                </div>
+
+                <div invisible="not x_need_approval or x_review_result != 'approved'"
+                     class="alert alert-info"
+                     style="margin-top:5px;"
+                     role="alert">
+                    This document has been approved !
+                </div>
+
+                <div invisible="not x_need_approval or x_review_result != 'refused'"
+                     class="alert alert-danger"
+                     style="margin-top:5px;"
+                     role="alert">
+                    This document has been refused !
+                </div>
+            </div>
+        </xpath>
+
+    </field>
+</record>
+<record id="project_sharing_task_form_approval_view" model="ir.ui.view">
+    <field name="name">project.sharing.project.task.view.form.approval</field>
+    <field name="model">project.task</field>
+    <field name="inherit_id" ref="project_sharing.project_sharing_project_task_view_form"/>
+    <field name="arch" type="xml">
+
+        <xpath expr="//form/header" position="inside">
+            <field name="x_need_approval" invisible="1"/>
+            <field name="x_review_result" invisible="1"/>
+            <field name="x_has_request_approval" invisible="1"/>
+
+            <button name="597"
+                    type="action"
+                    string="Request Approval"
+                    groups="multi_level_approval.group_approval_user"
+                    invisible="not x_need_approval or x_has_request_approval"
+                    class="oe_highlight"
+                    approval_btn="1"/>
+
+            <button name="596"
+                    type="action"
+                    string="View Approval"
+                    groups="multi_level_approval.group_approval_user"
+                    invisible="not x_has_request_approval"
+                    approval_btn="1"/>
+
+            <button name="598"
+                    type="action"
+                    string="Rework"
+                    groups="multi_level_approval.group_approval_user"
+                    invisible="x_review_result != 'refused'"
+                    approval_btn="1"/>
+        </xpath>
+
+        <xpath expr="//form/header" position="after">
+            <div>
+                <div invisible="not x_need_approval or x_review_result"
+                     class="alert alert-info"
+                     style="margin-top:5px;"
+                     role="alert">
+                    This document need to be approved !
+                </div>
+
+                <div invisible="not x_need_approval or x_review_result != 'approved'"
+                     class="alert alert-info"
+                     style="margin-top:5px;"
+                     role="alert">
+                    This document has been approved !
+                </div>
+
+                <div invisible="not x_need_approval or x_review_result != 'refused'"
+                     class="alert alert-danger"
+                     style="margin-top:5px;"
+                     role="alert">
+                    This document has been refused !
+                </div>
+            </div>
+        </xpath>
+
+    </field>
+</record>
+<record id="project_task_form_quick_create_approval_view" model="ir.ui.view">
+    <field name="name">project.task.form.quick.create.approval</field>
+    <field name="model">project.task</field>
+    <field name="inherit_id" ref="project.project_task_form_quick_create"/>
+    <field name="arch" type="xml">
+
+        <xpath expr="//form/header" position="inside">
+            <field name="x_need_approval" invisible="1"/>
+            <field name="x_review_result" invisible="1"/>
+            <field name="x_has_request_approval" invisible="1"/>
+
+            <button name="597"
+                    type="action"
+                    string="Request Approval"
+                    groups="multi_level_approval.group_approval_user"
+                    invisible="not x_need_approval or x_has_request_approval"
+                    class="oe_highlight"
+                    approval_btn="1"/>
+
+            <button name="596"
+                    type="action"
+                    string="View Approval"
+                    groups="multi_level_approval.group_approval_user"
+                    invisible="not x_has_request_approval"
+                    approval_btn="1"/>
+
+            <button name="598"
+                    type="action"
+                    string="Rework"
+                    groups="multi_level_approval.group_approval_user"
+                    invisible="x_review_result != 'refused'"
+                    approval_btn="1"/>
+        </xpath>
+
+        <xpath expr="//form/header" position="after">
+            <div>
+                <div invisible="not x_need_approval or x_review_result"
+                     class="alert alert-info"
+                     style="margin-top:5px;"
+                     role="alert">
+                    This document need to be approved !
+                </div>
+
+                <div invisible="not x_need_approval or x_review_result != 'approved'"
+                     class="alert alert-info"
+                     style="margin-top:5px;"
+                     role="alert">
+                    This document has been approved !
+                </div>
+
+                <div invisible="not x_need_approval or x_review_result != 'refused'"
+                     class="alert alert-danger"
+                     style="margin-top:5px;"
+                     role="alert">
+                    This document has been refused !
+                </div>
+            </div>
+        </xpath>
+
+    </field>
+</record>
+<record id="approval_view_extend_1321" model="ir.ui.view">
+    <field name="name">approval_view_extend_1321</field>
+    <field name="model">project.task</field>
+    <field name="inherit_id" ref="project.project_task_view_todo_conversion_form"/>
+    <field name="arch" type="xml">
+
+        <xpath expr="//form/sheet" position="before">
+            <header>
+                <field name="x_need_approval" invisible="1"/>
+                <field name="x_review_result" invisible="1"/>
+                <field name="x_has_request_approval" invisible="1"/>
+
+                <button name="597"
+                        type="action"
+                        string="Request Approval"
+                        groups="multi_level_approval.group_approval_user"
+                        invisible="not x_need_approval or x_has_request_approval"
+                        class="oe_highlight"
+                        approval_btn="1"/>
+
+                <button name="596"
+                        type="action"
+                        string="View Approval"
+                        groups="multi_level_approval.group_approval_user"
+                        invisible="not x_has_request_approval"
+                        approval_btn="1"/>
+
+                <button name="598"
+                        type="action"
+                        string="Rework"
+                        groups="multi_level_approval.group_approval_user"
+                        invisible="x_review_result != 'refused'"
+                        approval_btn="1"/>
+            </header>
+
+            <div>
+                <div invisible="not x_need_approval or x_review_result"
+                     class="alert alert-info"
+                     style="margin-top:5px;"
+                     role="alert">
+                    This document need to be approved !
+                </div>
+
+                <div invisible="not x_need_approval or x_review_result != 'approved'"
+                     class="alert alert-info"
+                     style="margin-top:5px;"
+                     role="alert">
+                    This document has been approved !
+                </div>
+
+                <div invisible="not x_need_approval or x_review_result != 'refused'"
+                     class="alert alert-danger"
+                     style="margin-top:5px;"
+                     role="alert">
+                    This document has been refused !
+                </div>
+            </div>
+        </xpath>
+
+    </field>
+</record>
+<record id="project_task_form_quick_create_approval" model="ir.ui.view">
+    <field name="name">project.task.form.quick.create.approval</field>
+    <field name="model">project.task</field>
+    <field name="inherit_id" ref="project.project_task_form_quick_create"/>
+    <field name="arch" type="xml">
+
+        <xpath expr="//form" position="inside">
+            <header>
+                <field name="x_need_approval" invisible="1"/>
+                <field name="x_review_result" invisible="1"/>
+                <field name="x_has_request_approval" invisible="1"/>
+
+                <button name="597"
+                        type="action"
+                        string="Request Approval"
+                        groups="multi_level_approval.group_approval_user"
+                        invisible="not x_need_approval or x_has_request_approval"
+                        class="oe_highlight"
+                        approval_btn="1"/>
+
+                <button name="596"
+                        type="action"
+                        string="View Approval"
+                        groups="multi_level_approval.group_approval_user"
+                        invisible="not x_has_request_approval"
+                        approval_btn="1"/>
+
+                <button name="598"
+                        type="action"
+                        string="Rework"
+                        groups="multi_level_approval.group_approval_user"
+                        invisible="x_review_result != 'refused'"
+                        approval_btn="1"/>
+            </header>
+
+            <div>
+                <div invisible="not x_need_approval or x_review_result"
+                     class="alert alert-info"
+                     style="margin-top:5px;"
+                     role="alert">
+                    This document need to be approved !
+                </div>
+
+                <div invisible="not x_need_approval or x_review_result != 'approved'"
+                     class="alert alert-info"
+                     style="margin-top:5px;"
+                     role="alert">
+                    This document has been approved !
+                </div>
+
+                <div invisible="not x_need_approval or x_review_result != 'refused'"
+                     class="alert alert-danger"
+                     style="margin-top:5px;"
+                     role="alert">
+                    This document has been refused !
+                </div>
+            </div>
+        </xpath>
+
+    </field>
+</record>
+<record id="approval_view_extend_1320" model="ir.ui.view">
+    <field name="name">approval_view_extend_1320</field>
+    <field name="model">project.task</field>
+    <field name="inherit_id" ref="project_todo.project_task_view_todo_quick_create_todo"/>
+    <field name="mode">extension</field>
+    <field name="priority">16</field>
+    <field name="arch" type="xml">
+        <xpath expr="//form" position="inside">
+            <header>
+                <field name="x_need_approval" invisible="1"/>
+                <field name="x_review_result" invisible="1"/>
+                <field name="x_has_request_approval" invisible="1"/>
+
+                <button name="597"
+                        type="action"
+                        string="Request Approval"
+                        groups="multi_level_approval.group_approval_user"
+                        invisible="not x_need_approval or x_has_request_approval"
+                        class="oe_highlight"
+                        approval_btn="1"/>
+
+                <button name="596"
+                        type="action"
+                        string="View Approval"
+                        groups="multi_level_approval.group_approval_user"
+                        invisible="not x_has_request_approval"
+                        approval_btn="1"/>
+
+                <button name="598"
+                        type="action"
+                        string="Rework"
+                        groups="multi_level_approval.group_approval_user"
+                        invisible="x_review_result != 'refused'"
+                        approval_btn="1"/>
+            </header>
+
+            <div>
+                <div invisible="not x_need_approval or x_review_result"
+                     class="alert alert-info"
+                     style="margin-top: 5px;"
+                     role="alert">
+                    This document need to be approved !
+                </div>
+
+                <div invisible="not x_need_approval or x_review_result != 'approved'"
+                     class="alert alert-info"
+                     style="margin-top: 5px;"
+                     role="alert">
+                    This document has been approved !
+                </div>
+
+                <div invisible="not x_need_approval or x_review_result != 'refused'"
+                     class="alert alert-danger"
+                     style="margin-top: 5px;"
+                     role="alert">
+                    This document has been refused !
+                </div>
+            </div>
+        </xpath>
+    </field>
+</record>
+
+
+</odoo>

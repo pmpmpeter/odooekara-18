@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+    	<record id="res_partner_master_extend" model="ir.ui.view">
+            <field name="name">res.partner.inherits</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='button_box']" position="inside">
+                    <button name="action_view_approvals" type="object" class="oe_stat_button" icon="fa-check-circle" string="Change Request"/>
+                </xpath>
+                <xpath expr="//sheet" position='before'>
+                    <header>
+                        <field name="has_to_review" invisible="0"/>
+                        <field name="is_request_approved" invisible="1"/>
+                        <field name="can_request" invisible="1"/>
+                        <button name="action_create_approval" type="object" string="Request Changes" class="btn-primary"/>
+                        <button name="action_validate" type="object" string="Validate"
+                                invisible="state != 'draft'" class="oe_highlight"
+                                groups="account.group_account_manager"/>
+                        <button name="action_approve" type="object" string="Approve"
+                                invisible="state != 'done'" class="oe_highlight"
+                                groups="account.group_account_manager"/>
+                        <button name="reset_to_draft" type="object"
+                                string="Reset To Draft" invisible="state not in ['approve', 'done'] or not is_request_approved"
+                                class="oe_highlight"
+                                />
+                        <button name="mark_as_reviewed" type="object" string="Mark As Reviewed" invisible="not has_to_review"/>
+                        <field name="state" widget="statusbar"/>
+                    </header>
+                </xpath>
+                <xpath expr="//page[@name='sales_purchases']/group/group[@name='misc']/field[@name='company_id']"
+                       position="attributes">
+                    <attribute name="invisible">0</attribute>
+                </xpath>
+                <xpath expr="//page[@name='sales_purchases']/group/group[@name='misc']/field[@name='company_id']"
+                       position="after">
+                    <field name="company_ids" widget="many2many_tags"
+                           options="{'no_open': True, 'no_quick_create':True,'no_create': True,}"/>
+                </xpath>
+                <xpath expr="//field[@name='phone']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='mobile']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='function']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@id='individual']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                    <attribute name="invisible">is_company</attribute>
+                </xpath>
+                <xpath expr="//field[@id='company']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                    <attribute name="invisible">not is_company</attribute>
+                </xpath>
+                <xpath expr="//field[@name='lang']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='category_id']" position="replace">
+                    <field name="category_id" widget="many2many_tags"
+                           options="{'color_field': 'color','no_open': True, 'no_quick_create':True,'no_create': True}"
+                           readonly="state not in ['approve','done']"
+                           placeholder='e.g. "B2B", "VIP", "Consulting", ...'/>
+                    <field name="approved_date" readonly="1"/>
+                    <field name="review_on" readonly="state == 'approve'"/>
+
+                </xpath>
+                <xpath expr="//field[@name='vat']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                    <attribute name="required">0</attribute>
+                    <attribute name="placeholder">'Eg:33AAHHK3869G1Z3'</attribute>
+                </xpath>
+                <xpath expr="//field[@name='property_account_receivable_id']" position="attributes">
+                    <attribute name="options">{'no_open': True, 'no_quick_create':True,'no_create': True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='property_account_payable_id']" position="attributes">
+                    <attribute name="options">{'no_open': True, 'no_quick_create':True,'no_create': True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='state_id']" position="attributes">
+                    <attribute name="options">{'no_open': True, 'no_quick_create':True,'no_create': True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='title']" position="attributes">
+                    <attribute name="options">{'no_open': True, 'no_quick_create':True,'no_create': True}</attribute>
+                </xpath>
+                <xpath expr="//field[@name='bank_ids']/list/field[@name='bank_id']" position="attributes">
+                    <attribute name="options">{'no_open': True, 'no_quick_create':True,'no_create': True}</attribute>
+                </xpath>
+                <xpath expr="//page[@name='accounting']/group//group[@name='accounting_entries']//field[@name='property_account_receivable_id']"
+                       position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                    <attribute name="required">0</attribute>
+                </xpath>
+                <xpath expr="//page[@name='accounting']/group//group[@name='accounting_entries']//field[@name='property_account_payable_id']"
+                       position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                    <attribute name="required">0</attribute>
+                </xpath>
+                <xpath expr="//page[@name='accounting']/group//group[@name='banks']//field[@name='bank_ids']"
+                       position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//page[@name='sales_purchases']//field[@name='user_id']" position="before">
+                    <field name="is_customer"/>
+                </xpath>
+                <xpath expr="//field[@name='company_id']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='company_type']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='parent_id']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='company_name']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='street']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='street2']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='city']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='state_id']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='zip']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='country_id']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='email']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='website']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='title']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='category_id']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='image_1920']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='avatar_128']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='company_registry']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='ref']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='company_id']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done') or parent_id</attribute>
+                </xpath>
+                <xpath expr="//field[@name='industry_id']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='use_partner_credit_limit']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='l10n_in_pan']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='l10n_in_gst_treatment']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+                <xpath expr="//field[@name='child_ids']" position="attributes">
+                    <attribute name="readonly">state in ('approve', 'done')</attribute>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

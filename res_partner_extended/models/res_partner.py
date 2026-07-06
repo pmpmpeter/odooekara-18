@@ -98,45 +98,21 @@ class ResPartner(models.Model):
             defaults['company_ids'] = [(6, 0, [self.env.company.id])]
         return defaults
 
-    # @api.model
-    # def name_get(self):
-    #     result = []
-    #     for record in self:
-    #         if record.vendor_code:
-    #             name = f"{record.vendor_code} {record.name}"
-    #         else:
-    #             name= record.name
-    #         result.append((record.id, name))
-    #     return result
 
     @api.model
     def name_search(self, name='', args=None, operator='ilike', limit=100):
         args = args or []
-        domain = ['|',('name', operator, name),('vendor_code', operator, name)]
-        return self.search(domain + args, limit=limit).name_get()
+        if name:
+            args = ['|',
+                    ('name', operator, name),
+                    ('vendor_code', operator, name)] + args
 
-    # @api.depends('complete_name', 'email', 'vat', 'state_id', 'country_id', 'commercial_company_name')
-    # @api.depends_context('show_address', 'partner_show_db_id', 'address_inline', 'show_email', 'show_vat', 'lang')
-    # def _compute_display_name(self):
-    #     for partner in self:
-    #         name = partner.with_context(lang=self.env.lang)._get_complete_name()
-    #         if not partner.vendor_code:
-    #             name = name
-    #         if partner.vendor_code:
-    #             name = partner.vendor_code + " " + name
-    #         if partner._context.get('show_address'):
-    #             name = name + "\n" + partner._display_address(without_company=True)
-    #         name = re.sub(r'\s+\n', '\n', name)
-    #         if partner._context.get('partner_show_db_id'):
-    #             name = f"{name} ({partner.id})"
-    #         if partner._context.get('address_inline'):
-    #             splitted_names = name.split("\n")
-    #             name = ", ".join([n for n in splitted_names if n.strip()])
-    #         if partner._context.get('show_email') and partner.email:
-    #             name = f"{name} <{partner.email}>"
-    #         if partner._context.get('show_vat') and partner.vat:
-    #             name = f"{name} ‒ {partner.vat}"
-    #         partner.display_name = name.strip()
+        return super().name_search(
+            name=name,
+            args=args,
+            operator=operator,
+            limit=limit,
+        )
 
     @api.constrains('msme_number')
     def _check_msme_number(self):
@@ -213,10 +189,6 @@ class ResPartner(models.Model):
 
     def action_validate(self):
         for record in self.filtered(lambda m: m.state in 'draft'):
-            # if record.is_vendor and not record.property_purchase_currency_id and record.type=='contact' and record.is_company==True:
-            #     raise UserError(_("Alert !! Kindly update Supplier Currency."))
-            # if record.is_vendor and not record.vendor_code:
-            #     raise UserError(_("Alert !! Kindly update Vendor Category."))
             record.write({'state': 'done'})
             record.is_request_approved = False
 
@@ -239,24 +211,7 @@ class ResPartner(models.Model):
                     record.write({'vendor_code': vendor_code})
             record.write({'state': 'approve',
                           'approved_date':datetime.today()})
-            # Retrieve the action with the ID 'contacts.action_contacts'
-        # domain1= [('id', '=', self.env.ref('contacts.action_contacts').id)]
-        # action = self.env['ir.actions.act_window'].sudo().search(domain1, limit=1)
-        # action.context = {'default_is_company': True,'edit':False}
-        # action_to_return = {
-        #     'type': 'ir.actions.act_window',
-        #     'name': 'Contacts',
-        #     'res_model': 'res.partner',
-        #     'view_mode': 'kanban,list,form,activity',
-        #     'context': action.context,
-        # }
-
-        # # Return the action with a page refresh
-        # return {
-        #     'type': 'ir.actions.client',
-        #     'tag': 'reload',  # This will refresh the page
-        #     'params': action_to_return  # Include the action that opens contacts
-        # }
+           
 
     def action_validate_partner_state(self):
         records = self.env['res.partner'].browse(self._context.get('active_ids', False))
@@ -285,30 +240,12 @@ class ResPartner(models.Model):
                 raise UserError(_("You do not have access to trigger this action."))
 
     def reset_to_draft(self):
-        # for record in self.filtered(lambda m: m.state not in 'draft'):
-        #     record.write({'state': 'draft'})
         for record in self.filtered(lambda m: m.state not in 'draft'):
             query = """
                 update res_partner set state='draft' where id = %s;
             """%(record.id)
             self.env.cr.execute(query)
-        # domain1 = [('id', '=', self.env.ref('contacts.action_contacts').id)]
-        # action = self.env['ir.actions.act_window'].sudo().search(domain1, limit=1)
-        # action.context = {'default_is_company': True,'edit':True}
-        # action_to_return = {
-        #     'type': 'ir.actions.act_window',
-        #     'name': 'Contacts',
-        #     'res_model': 'res.partner',
-        #     'view_mode': 'kanban,list,form,activity',
-        #     'context': action.context,
-        # }
-
-        # # Return the action with a page refresh
-        # return {
-        #     'type': 'ir.actions.client',
-        #     'tag': 'reload',  # This will refresh the page
-        #     'params': action_to_return  # Include the action that opens contacts
-        # }
+        
     def review_vendor(self):
         records = self.env['res.partner'].sudo().search([('state','=','approve')])
         for rec in records:
@@ -440,35 +377,7 @@ class ResPartner(models.Model):
 
         return super(ResPartner, self).write(vals)
 
-    # @api.model
-    # def create(self, vals):
-    #     if  vals.get('is_vendor'):
-    #         if vals.get('vendor_category'):
-    #             categ = self.env['category.res.partner.vendor'].sudo().search([('id','=',vals.get('vendor_category'))])
-    #             seq = self.env['ir.sequence'].sudo().search([('id','=',categ.sequence.id)])
-    #             vals['vendor_code'] = seq.next_by_code(seq.code)
-    #     if vals.get('is_customer'):
-    #         if vals.get('partner_category'):
-    #             categ = self.env['category.res.partner'].sudo().search([('id', '=', vals.get('partner_category'))])
-    #             seq = self.env['ir.sequence'].sudo().search([('id', '=', categ.sequence.id)])
-    #             vals['customer_code'] = seq.next_by_code(seq.code)
-    #     res = super(ResPartner, self).create(vals)
-    #     return res
-
-    # def write(self, vals):
-    #     if  vals.get('is_vendor'):
-    #         if vals.get('vendor_category'):
-    #             categ = self.env['category.res.partner.vendor'].sudo().search([('id','=',vals.get('vendor_category'))])
-    #             seq = self.env['ir.sequence'].sudo().search([('id','=',categ.sequence.id)])
-    #             vals['vendor_code'] = seq.next_by_code(seq.code)
-    #     if vals.get('is_customer'):
-    #         if vals.get('partner_category'):
-    #             categ = self.env['category.res.partner'].sudo().search([('id', '=', vals.get('partner_category'))])
-    #             seq = self.env['ir.sequence'].sudo().search([('id', '=', categ.sequence.id)])
-    #             vals['customer_code'] = seq.next_by_code(seq.code)
-    #     res = super(ResPartner, self).write(vals)
-    #     return res
-
+   
 class ReviewLines(models.Model):
         _name = "review.lines"
         _description = 'Review Lines'

@@ -1,0 +1,39 @@
+<odoo>
+    <record id="custom_view_hr_expense_sheet_inherited_list" model="ir.ui.view">
+        <field name="name">custom.hr.expense.sheet.list</field>
+        <field name="model">hr.expense.sheet</field>
+        <field name="arch" type="xml">
+            <list string="Expense Reports" multi_edit="1" sample="1" decoration-info="state == 'draft'" create="false" delete="false" edit="false">
+                <field name="product_ids" column_invisible="True"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field name="company_currency_id" column_invisible="True"/>
+                <field name="is_editable" column_invisible="True"/>
+                <field name="employee_id" widget="many2one_avatar_user" readonly="state != 'draft'"/>
+                <field name="accounting_date" optional="hide" groups="account.group_account_manager" readonly="not is_editable"/>
+                <field name="create_date" optional="hide"/>
+                <field name="name" string="Expense Report" readonly="not is_editable"/>
+                <field name="payment_mode" optional="hide"/>
+                <field name="user_id" optional="hide" widget="many2one_avatar_user" readonly="state != 'draft'"/>
+                <field name="company_id" optional="show" groups="base.group_multi_company" readonly="state != 'draft'"/>
+                <field name="activity_ids" widget="list_activity" optional="show" readonly="True"/>
+                <field name="journal_id" optional="hide" readonly="not is_editable"/>
+                <field name="total_amount" sum="Total Amount" decoration-bf="1" widget="monetary"/>
+                <field name="state" optional="show" decoration-info="state == 'draft'" decoration-success="state in ['approve', 'post', 'done']" decoration-warning="state == 'submit'" decoration-danger="state == 'cancel'" widget="badge"/>
+                <field name="payment_state" optional="show" decoration-info="payment_state in ('partial','in_payment')" decoration-success="payment_state == 'paid'" decoration-danger="payment_state in ('reversed','not_paid')" widget="badge" invisible="state in ['draft', 'submit', 'cancel']"/>
+            </list>
+        </field>
+    </record>
+    <record id="payment_approval_report_action_extend" model="ir.actions.act_window">
+	    <field name="name">Payment Approval Report</field>
+	    <field name="res_model">hr.expense.sheet</field>
+	    <field name="view_mode">list,form</field>
+	    <field name="view_ids" eval="[
+	        (5, 0, 0),
+	        (0, 0, {'view_mode': 'list', 'view_id': ref('hr_expense_extended.custom_view_hr_expense_sheet_inherited_list')})
+	        ]"/>
+	        <!-- (0, 0, {'view_mode': 'form', 'view_id': ref('hr_expense_extended.custom_hr_expense_sheet_report_inherited_form')}) -->
+	    
+	    <field name="context">{'is_payment_approval_option': True}</field>
+	    <field name="domain">[('is_payment_approval', '=', True)]</field>
+	</record>
+</odoo>

@@ -18,7 +18,7 @@
         'data/sequence.xml',
         'views/payment_approval_config.xml',
         'views/payment_approval.xml',
-        'views/payment_approval_report.xml',
+        'views/payment_approval_report_views.xml',
         'data/mail_template.xml',
         'views/menu.xml'
     ],

@@ -43,40 +43,13 @@ class ProjectProject(models.Model):
             else:
                 record.days_left = 0
 
-    # @api.model
-    # def _get_view(self, view_id=None, view_type='form', **options):
-    #     arch, view = super()._get_view(view_id, view_type, **options)
-    #     if view_type == 'form':
-    #         for node in arch.xpath("//field"):
-    #             node.set('readonly', "not active")
-    #     return arch, view
-
-    # @api.model
-    # def _get_view(self, view_id=None, view_type='form', **options):
-    #     arch, view = super()._get_view(view_id, view_type, **options)
-    #     print(self.id,'uuuuuuu')
-    #     if view_type == 'form':
-    #         print(self.stage_id.name,'lllllll')
-    #         for node in arch.xpath("//field"):
-    #             node.set('readonly', "stage_id.name == 'Done'")
-    #     return arch, view
-
-    # @api.model
-    # def _get_view(self, view_id=None, view_type='form', **options):
-    #     arch, view = super()._get_view(view_id, view_type, **options)
-    #
-    #     if view_type == 'form':
-    #         for node in arch.xpath("//field"):
-    #             node.set('attrs', "{'readonly': [('stage_id.name', '=', 'Done')]}")
-    #     return arch, view
 
     def document_closed(self):
         self.closed_date = date.today()
         self.closed_by = self.env.user
         self.stage_id = self.env['project.project.stage'].sudo().search([('name','=','Done')])
         self.is_done = True
-        #print(self.stage_id.name,'yyyyyyy')
-        # self.active=False
+
 
     def _create_default_task_stages(self):
         context = self.env.context
@@ -105,13 +78,6 @@ class ProjectProject(models.Model):
         projects._create_default_task_stages()
         return projects
 
-    # @api.onchange('document_type_id', 'validity_start_date')
-    # def _onchange_document_type(self):
-    #     if not self.document_type_id:
-    #         self.validity_end_date = self.validity_start_date = False
-    #     if self.document_type_id and self.validity_start_date:
-    #         self.validity_end_date = self.validity_start_date + timedelta(
-    #             days=self.document_type_id.default_validity_period)
 
     @api.onchange('validity_end_date','document_reminder')
     def _onchange_validity_dates(self):
@@ -151,13 +117,6 @@ class ProjectProject(models.Model):
             self._schedule_activities_first_reminder_document()
             self._send_first_reminder_email_notifications_document(projects_to_remind)
 
-        # document_first_reminder = self.sudo().search([
-        #     ('first_reminder_date', '=', today),('is_document_validity_management','=',True),('document_type_id.default_validity_period','>',0)
-        # ])
-        # if document_first_reminder:
-        #     self._schedule_activities_first_reminder_document()
-        #     self._send_first_reminder_email_notifications_document(document_first_reminder)
-
     def _send_first_reminder_email_notifications_document(self,document_first_reminder):
         for rec in document_first_reminder:
             account_manager_group = self.env.ref('account.group_account_manager')
@@ -169,9 +128,7 @@ class ProjectProject(models.Model):
 
     def _schedule_activities_first_reminder_document(self):
         today = fields.Date.today()
-        # projects = self.search([
-        #     ('first_reminder_date', '=', today),('is_document_validity_management','=',True),('document_type_id.default_validity_period','>',0)
-        # ])
+        
         projects = self.search([
             ('is_document_validity_management', '=', True),
             ('document_type_id.default_validity_period', '>', 0),
@@ -199,7 +156,8 @@ class ProjectTask(models.Model):
     stage_id = fields.Many2one('project.task.type', string="Stage")
     is_document_validity_management = fields.Boolean(string="Is Document Validity Management", default=False)
     days_left = fields.Integer(string="Days Left", compute="_compute_days_left")
-    x_review_result = fields.Char(string="")
+    x_has_request_approval = fields.Boolean(string="Has Request Approval",default=False)
+    x_review_result = fields.Char(string="Review Result",store=True)
 
     @api.depends('validity_end_date')
     def _compute_days_left(self):

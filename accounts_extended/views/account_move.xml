@@ -184,39 +184,9 @@
     </record>
 
 
-<!--    <menuitem-->
-<!--            id="menu_fund_requisting"-->
-<!--            action="open_create_fund_payment_form"-->
-<!--            sequence="2"-->
-<!--            parent="account.menu_finance_entries"/>-->
-    <menuitem
-            id="menu_contra_payment"
-            action="open_create_contra_payment_form"
-            parent="account.menu_finance_entries"
-            sequence="3"/>
-    <menuitem
-            id="menu_credit_payment"
-            name="Credit Card"
-            parent="account.menu_finance_entries"
-            sequence="3"/>
 
-    <menuitem
-            id="menu_credit_card_payments"
-            name="Credit Card Payments"
-            action="open_create_credit_card_payment_form"
-            parent="accounts_extended.menu_credit_payment"
-            sequence="3"/>
 
-    <menuitem
-            id="menu_credit_card_expenses"
-            name="Credit Card Expenses"
-            action="open_create_credit_card_expense_form"
-            parent="accounts_extended.menu_credit_payment"
-            sequence="4"/>
-    <menuitem id="account.menu_action_move_in_refund_type" action="account.action_move_in_refund_type"
-              name="Debit Notes" parent="account.menu_finance_payables" sequence="2"/>
-
-    <!-- <record id="account_move_form_extend_inherit1" model="ir.ui.view">
+    <record id="account_move_form_extend_inherit1" model="ir.ui.view">
         <field name="name">account.move.inherit</field>
         <field name="model">account.move</field>
         <field name="inherit_id" ref="account.view_move_form"/>
@@ -224,7 +194,7 @@
             <xpath expr="//button[@name='action_register_payment']" position="replace">
             </xpath>
         </field>
-    </record> -->
+    </record>
 
     <record id="account_analytic_plan_form_extend_inherit1" model="ir.ui.view">
         <field name="name">account.analytic.plan.inherit</field>
@@ -275,8 +245,7 @@
 
   
 
-    <menuitem id="account.menu_action_account_payments_receivable" name="Receipts" parent="account.menu_finance_receivables" action="account.action_account_payments" sequence="15"/>
-
+    
     <record id="account.action_account_payments" model="ir.actions.act_window">
             <field name="name">Customer Receipts</field>
             <field name="res_model">account.payment</field>

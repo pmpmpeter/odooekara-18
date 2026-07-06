@@ -1,9 +1,9 @@
 <odoo>
 	<menuitem id="expense_bill_request_sheet" name="Expense Bills" sequence="1" web_icon="hr_expense,static/description/icon.png"/>
 
-	<menuitem id="expense_request_sheet" name="Expense Bills" sequence="1" parent="expense_bill_request_sheet">
+	<menuitem id="expense_request_sheet" name="Expense Bills" sequence="1" parent="accountant.menu_accounting">
 		<menuitem id="payment_approval_sheet" name="Payment Approval" sequence="2" action="payment_approval_action_extend"/>
-		<!-- <menuitem id="payment_approval_report" name="Payment Approval Report" sequence="3" action="payment_approval_report_action_extend"/> -->
+		<menuitem id="payment_approval_report" name="Payment Approval Report" sequence="3" action="payment_approval_report_action_extend"/>
 	</menuitem>
 
     <menuitem id="menu_invoice_type" name="Invoice Types" parent="account.menu_finance_configuration" action="action_invoice_type" sequence="20"/>
@@ -12,5 +12,5 @@
 
    <menuitem id="hr_expense.menu_hr_expense_root" name="Expenses" sequence="230" groups="hr_expense_extended.group_expense_view" web_icon="hr_expense,static/description/icon.png"/>
     
-    <!-- <menuitem id="payment_approval_report_bill" name="Payment Approval Report" sequence="3" parent="hr_expense_extended.expense_bill_request_sheet" action="payment_approval_report_action_extend"/> -->
+    <menuitem id="payment_approval_report_bill" name="Payment Approval Report" sequence="3" parent="hr_expense_extended.expense_bill_request_sheet" action="payment_approval_report_action_extend"/>
 </odoo>
