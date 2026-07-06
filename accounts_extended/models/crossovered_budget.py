@@ -2052,36 +2052,6 @@ class RevisionHistory(models.Model):
         return super(RevisionHistory, self).create(vals)
 
 
-class BudgetaryPosition(models.Model):
-    _name = 'account.budget.post'
-    _inherit = ['account.budget.post', 'mail.thread', 'mail.activity.mixin']
-
-    name = fields.Char('Name', required=True, tracking=True)
-    sequence = fields.Integer(string='Sequence', tracking=True)
-    budget_type = fields.Selection([
-        ('capex', 'Capex'),
-        ('opex', 'Opex'),
-        ('ocif', 'OCIF'),
-        ('noocif', 'NOOCIF')
-    ], 'Budget Type', index=True, tracking=True)
-
-    budget_category = fields.Selection([('regular', 'Regular'),
-                                        ('consolidate', 'Consolidate')], 'Category', tracking=True)
-    state = fields.Selection([("locked", "Locked"),
-                              ("unlocked", "Unlocked")], string='Status', default='unlocked', tracking=True)
-    is_locked = fields.Integer(string='Is Lock')
-    company_id = fields.Many2one('res.company', 'Company', required=True, copy=False,
-                                 default=lambda self: self.env.company)
-
-    def action_lock(self):
-        for rec in self:
-            rec.state = 'locked'
-
-    def action_unlock(self):
-        for rec in self:
-            rec.state = 'unlocked'
-
-
 class CrrBudgetLine(models.Model):
     _name = 'crr.budget.line'
     _description = 'Crr Budget Line'

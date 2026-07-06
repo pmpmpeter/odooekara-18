@@ -1125,68 +1125,7 @@
             </field>
         </record>
 
-        <record id="account_budget_position_tree_view_extend" model="ir.ui.view">
-            <field name="name">account.budget.post.inherit</field>
-            <field name="model">account.budget.post</field>
-            <field name="inherit_id" ref="account_budget.view_budget_post_tree"/>
-            <field name="arch" type="xml">
-                <field name="company_id" position="after">
-                    <field name="state" string="Status" invisible="state != 'locked'" widget="badge"/>
-                </field>
-            </field>
-        </record>
-        <record id="account_budget_position_extend" model="ir.ui.view">
-            <field name="name">account.budget.post.inherit</field>
-            <field name="model">account.budget.post</field>
-            <field name="inherit_id" ref="account_budget.view_budget_post_form"/>
-            <field name="arch" type="xml">
-                <form position="replace">
-                    <form string="Budgetary Position">
-                        <header>
-                            <button name="action_lock" string="Lock" type="object" class="oe_highlight"
-                                    invisible="state == 'locked'"/>
-                            <button name="action_unlock" string="Unlock" type="object" class="oe_highlight"
-                                    invisible="state != 'locked'"/>
-                            <field name="state" widget="statusbar" statusbar_visible="locked"
-                                   invisible="state != 'locked'"/>
-                        </header>
-                        <field name="company_id" invisible="1"/>
-                        <sheet>
-                            <group>
-                                <group col="4">
-                                    <field name="name" readonly="state == 'locked'"/>
-                                    <field name="company_id" groups="base.group_multi_company"
-                                           options="{'no_create': True}" readonly="1" force_save="1"/>
-                                    <!--                                           options="{'no_create': True}" readonly="state == 'locked'"/>-->
-                                </group>
-                                <group col="4">
-                                    <field name="sequence" string="Sequence" readonly="state == 'locked'"/>
-                                    <field name="budget_type" readonly="state == 'locked'"/>
-                                    <field name="budget_category" readonly="state == 'locked'"/>
-                                </group>
-                            </group>
-
-                            <notebook>
-                                <page string="Accounts" name="accounts">
-                                    <field name="account_ids" readonly="state == 'locked'">
-                                        <list>
-                                            <field name="code"/>
-                                            <field name="name"/>
-                                        </list>
-                                    </field>
-                                </page>
-                            </notebook>
-                        </sheet>
-                    </form>
-                </form>
-
-                <xpath expr="//sheet" position="after">
-                    <chatter/>
-                </xpath>
-
-
-            </field>
-        </record>
+        
 
         <record id="seq_revision_history" model="ir.sequence">
             <field name="name">Revision History</field>
