@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_fund_mangemnt_view" model="ir.ui.view">
+            <field name="name">fund.management.form</field>
+            <field name="model">fund.management</field>
+            <field name="arch" type="xml">
+                <form string="Fund Management">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,inprogress,done"/>
+                        <button name="action_update_share_lines" string="Update Share Amount" type="object"
+                                class="btn-primary"
+                                invisible="te_consolidate_id or state not in ['draft','inprogress']">
+                        </button>
+                        <button name="reset_to_draft" type="object" string="Reset to Draft"/>
+                        
+                    </header>
+                    <sheet>
+                        
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1" force_save='1'/>
+                                <field name="is_share_updated" invisible="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <group>
+                                    <field name="start_date" readonly="te_consolidate_id or state in ['done']"
+                                           force_save="1"/>
+                                    <field name="end_date" readonly="te_consolidate_id or state in ['done']"
+                                           force_save="1"/>
+                                    <field name="company_id" options='{"no_open": True, "no_create": True}'
+                                           readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="te_consolidate_id" invisible="not te_consolidate_id" string="Source"
+                                           readonly="1"/>
+                                    <field name="version" readonly="1"/>
+                                    <field name="revision_date" invisible="not revision_date"
+                                           readonly="1" force_save="1"/>
+                                </group>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Share Amount">
+                                <field name="crr_share_line" readonly="state in ['done']">
+                                    <list editable="bottom" create="0" edit="0" delete='0'>
+                                        <field name="ref_company"/>
+                                        <field name="crr_share_april" sum="Total"/>
+                                        <field name="crr_share_may" sum="Total"/>
+                                        <field name="crr_share_june" sum="Total"/>
+                                        <field name="crr_share_q1" sum="Total"/>
+                                        <field name="crr_share_july" sum="Total"/>
+                                        <field name="crr_share_august" sum="Total"/>
+                                        <field name="crr_share_september" sum="Total"/>
+                                        <field name="crr_share_q2" sum="Total"/>
+                                        <field name="crr_share_october" sum="Total"/>
+                                        <field name="crr_share_november" sum="Total"/>
+                                        <field name="crr_share_december" sum="Total"/>
+                                        <field name="crr_share_q3" sum="Total"/>
+                                        <field name="crr_share_january" sum="Total"/>
+                                        <field name="crr_share_february" sum="Total"/>
+                                        <field name="crr_share_march" sum="Total"/>
+                                        <field name="crr_share_q4" sum="Total"/>
+
+                                    </list>
+                                </field>
+                            </page>
+                            
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+       
+
+        <record id="view_fund_mangemnt_view_tree" model="ir.ui.view">
+            <field name="name">fund.management.list</field>
+            <field name="model">fund.management</field>
+            <field name="arch" type="xml">
+                <list string="Fund Management">
+                    <field name="name"/>
+                    <field name="create_date" optional="hide"/>
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                    <field name="company_id"/>
+                    <field name="state"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="action_fund_managemnt" model="ir.actions.act_window">
+            <field name="name">Fund Management</field>
+            <field name="res_model">fund.management</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        
+
+        <record id="view_te_consolidation_view" model="ir.ui.view">
+            <field name="name">te.consolidation.form</field>
+            <field name="model">te.consolidation</field>
+            <field name="arch" type="xml">
+                <form string="TE Consolidation">
+                    <header>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,inprogress,done"/>
+                        <button name="action_update_consolidate_crr" string="Update Share Amount" type="object"
+                                class="btn-primary" invisible="state not in ['draft','inprogress']">
+                        </button>
+                        <button name="action_create_fund_management" string="Create Fund Management" type="object"
+                                class="btn-primary"
+                                invisible="not crr_share_line_ids or state != 'inprogress' or is_fund_management">
+                        </button>
+                        <button name="action_create_fund_management" string="Update Fund Management" type="object"
+                                class="btn-primary"
+                                invisible="state != 'inprogress' or not is_fund_management">
+                        </button>
+                        <button name="action_revise" string="Revise" type="object"
+                                class="btn-primary"
+                                invisible="state != 'done'">
+                        </button>
+                       
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_open_fund_management" invisible="is_fund_management != True"
+                                    string="Fund Management" type="object" class="oe_stat_button"/>
+                            <button name="action_open_consolidation" invisible="is_consolidate_updated != True"
+                                    string="Consolidation CRR" type="object" class="oe_stat_button"/>
+                            <button name="action_open_share_view" invisible="is_consolidate_updated != True"
+                                    string="View Share" type="object" class="oe_stat_button"/>
+                             <button name="action_open_budget_contribution" invisible="is_consolidate_updated != True"
+                                    string="Budget Contribution" type="object" class="oe_stat_button"/>
+
+                        </div>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                                <field name="is_consolidate_updated" invisible="1"/>
+                                <field name="is_fund_management" invisible="1"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <group>
+                                    <field name="start_date" required="1" readonly="state == 'done'"/>
+                                    <field name="end_date" required="1" readonly="state == 'done'"/>
+                                </group>
+                                <group>
+                                    <field name="revised_date" invisible="not revised_date" readonly="1"
+                                           force_save="1"/>
+                                    <field name="company_id" readonly="1" force_save="1"/>
+                                </group>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Share Amount">
+                                <field name="crr_share_line_ids" readonly="state in ['done']">
+                                    <list editable="bottom" create="0" edit="0" delete='0'>
+                                        <field name="version" width="500" column_invisible="1"/>
+                                        <field name="tax_entity_percentage" width="500"/>
+                                        <field name="entity" width="500" column_invisible="1"/>
+                                        <field name="share_rev_effective_from" width="500"/>
+                                        <field name="revision_date" width="500"/>
+                                        <field name="ref_company"/>
+                                        <field name="crr_share_april" sum="Total"/>
+                                        <field name="crr_share_may" sum="Total"/>
+                                        <field name="crr_share_june" sum="Total"/>
+                                        <field name="crr_share_q1" sum="Total"/>
+                                        <field name="crr_share_july" sum="Total"/>
+                                        <field name="crr_share_august" sum="Total"/>
+                                        <field name="crr_share_september" sum="Total"/>
+                                        <field name="crr_share_q2" sum="Total"/>
+                                        <field name="crr_share_october" sum="Total"/>
+                                        <field name="crr_share_november" sum="Total"/>
+                                        <field name="crr_share_december" sum="Total"/>
+                                        <field name="crr_share_q3" sum="Total"/>
+                                        <field name="crr_share_january" sum="Total"/>
+                                        <field name="crr_share_february" sum="Total"/>
+                                        <field name="crr_share_march" sum="Total"/>
+                                        <field name="crr_share_q4" sum="Total"/>
+
+                                    </list>
+                                </field>
+                            </page>
+
+                            <page string="Overall Share">
+                                <field name="crr_company_share">
+                                    <list editable="bottom" create="0" edit="0" delete='0'>
+                                        <field name="partner_ref" readonly="1"/>
+                                        <field name="april_crr_budget_plan" readonly="1"/>
+                                        <field name="may_crr_budget_plan" readonly="1"/>
+                                        <field name="june_crr_budget_plan" readonly="1"/>
+                                        <field name="quarter_1_crr_budget_plan" readonly="1"/>
+                                        <field name="july_crr_budget_plan" readonly="1"/>
+                                        <field name="august_crr_budget_plan" readonly="1"/>
+                                        <field name="september_crr_budget_plan" readonly="1"/>
+                                        <field name="quarter_2_crr_budget_plan" readonly="1"/>
+                                        <field name="september_crr_budget_plan" readonly="1"/>
+                                        <field name="november_crr_budget_plan" readonly="1"/>
+                                        <field name="december_crr_budget_plan" readonly="1"/>
+                                        <field name="quarter_3_crr_budget_plan" readonly="1"/>
+                                        <field name="january_crr_budget_plan" readonly="1"/>
+                                        <field name="febuary_crr_budget_plan" readonly="1"/>
+                                        <field name="march_crr_budget_plan" readonly="1"/>
+                                        <field name="quarter_4_crr_budget_plan" readonly="1"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <record id="view_crr_consolidation_line_tree" model="ir.ui.view">
+            <field name="name">crr.consolidation.line.list</field>
+            <field name="model">te.consolidation.line</field>
+            <field name="arch" type="xml">
+                <list editable="bottom" edit="0" create="0" delete='0' decoration-bf="is_budget_sum_line == True">
+                    <field name="company_id" column_invisible='1'/>
+                    <field name="user_type" column_invisible='1'/>
+                    <field name="is_budget_sum_line" column_invisible='1'/>
+                    <field name="budget_name" force_save='1'/>
+                    <field name="budget_type"/>
+                    <field name="crr_budget_total" decoration-success='1'/>
+                    <field name="april_crr_budget_plan"/>
+                    <field name="may_crr_budget_plan"/>
+                    <field name="june_crr_budget_plan"/>
+                    <field name="quarter_1_crr_budget_plan" decoration-success='1'/>
+                    <field name="july_crr_budget_plan"/>
+                    <field name="august_crr_budget_plan"/>
+                    <field name="september_crr_budget_plan"/>
+                    <field name="quarter_2_crr_budget_plan" decoration-success='1'/>
+                    <field name="october_crr_budget_plan"/>
+                    <field name="november_crr_budget_plan"/>
+                    <field name="december_crr_budget_plan"/>
+                    <field name="quarter_3_crr_budget_plan" decoration-success='1'/>
+                    <field name="january_crr_budget_plan"/>
+                    <field name="febuary_crr_budget_plan"/>
+                    <field name="march_crr_budget_plan"/>
+                    <field name="quarter_4_crr_budget_plan" decoration-success='1'/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_te_consolidation_view_tree" model="ir.ui.view">
+            <field name="name">te.consolidation.list</field>
+            <field name="model">te.consolidation</field>
+            <field name="arch" type="xml">
+                <list string="TE Consolidation">
+                    <field name="name"/>
+                    <field name="start_date"/>
+                    <field name="end_date"/>
+                    <field name="state"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="action_te_consolidation" model="ir.actions.act_window">
+            <field name="name">TE Consolidation</field>
+            <field name="res_model">te.consolidation</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        
+
+        <record id="view_budget_contribution_report_line" model="ir.ui.view">
+            <field name="name">budget.contribution.te.line.form</field>
+            <field name="model">budget.contribution.te.line</field>
+            <field name="arch" type="xml">
+                <list string="Budget Contribution Report" create="0" edit="0" delete="0" expand="1">
+                    <field name="company_id" />
+                    <field name="month" />
+                    <field name="budget_contribution"/>
+                    <field name="budget_percent"/>
+                    <field name="crr_requirement"/>
+                    <field name="crr_percent"/>
+                    <field name="actual_contribution"/>
+                    <field name="actual_percent"/>
+                    <field name="diff"/>
+                    <field name="diff_percent"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="action_budget_contribution_report" model="ir.actions.act_window">
+            <field name="name">Budget Contribution Report</field>
+            <field name="res_model">budget.contribution.te.line</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</odoo>

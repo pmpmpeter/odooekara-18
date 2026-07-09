@@ -13,7 +13,7 @@ class DepartmentBudget(models.Model):
     department_id = fields.Many2one('hr.department', string='Department', required=True)
     analytic_account_id = fields.Many2one('account.analytic.account', required=True, string="Analytic Account")
     company_id = fields.Many2one('res.company', string='Company', default=lambda self: self.env.company)
-    # crossovered_budget_id = fields.Many2one('crossovered.budget', 'Budget', required=True)
+    budget_analytic_id = fields.Many2one('budget.analytic', 'Budget', required=True)
     user_id = fields.Many2one('res.users', string='Responsible', default=lambda self: self.env.user)
     active = fields.Boolean('Active', default=True)
     state = fields.Selection(selection=[
@@ -21,7 +21,7 @@ class DepartmentBudget(models.Model):
         ('submit', 'Submitted'),
         ('cancel', 'Cancelled'),
     ], string='Status', copy=False, tracking=True, default='draft')
-    # cash_payment_ids = fields.One2many('crr.budget.line', 'budget_department_id', string="CRR Lines")
+    cash_payment_ids = fields.One2many('crr.budget.line', 'budget_department_id', string="CRR Lines")
     cash_type = fields.Selection([('cash_payment', 'Cash Payment'),
                                   ('cash_receipt', 'Cash Receipt')], string="Cash Type")
 
@@ -50,8 +50,8 @@ class DepartmentBudget(models.Model):
     def action_submit(self):
         for rec in self:
             rec._check_budget_position_configuration()
-            # if rec.crossovered_budget_id.state == 'done':
-            #     raise UserError('The Budget: %s is in done stage.' % rec.crossovered_budget_id.name)
+            if rec.budget_analytic_id.state == 'done':
+                raise UserError('The Budget: %s is in done stage.' % rec.budget_analytic_id.name)
             if not rec.cash_payment_ids:
                 raise UserError('Please Add Monthly Breakups.')
             for line in rec.cash_payment_ids:
@@ -60,11 +60,11 @@ class DepartmentBudget(models.Model):
                     'budget_name': line.budget_position_id.name,
                     'analytic_account_id': rec.analytic_account_id.id,
                     'department_id': rec.department_id.id,
-                    # 'budget_id': rec.crossovered_budget_id.id,
-                    # 'version': rec.crossovered_budget_id.version,
+                    'budget_id': rec.budget_analytic_id.id,
+                    'version': rec.budget_analytic_id.version,
                 })
 
-            # rec.cash_payment_ids.write({'budget_id':rec.crossovered_budget_id.id})
+            rec.cash_payment_ids.write({'budget_id':rec.budget_analytic_id.id})
             rec.state = 'submit'
 
     def action_cancel(self):
