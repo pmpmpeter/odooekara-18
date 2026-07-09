@@ -66,7 +66,7 @@ class AccountPayment(models.Model):
     x_need_approval = fields.Boolean(string="Need Approval",default=False)
     x_has_request_approval = fields.Char(string="Has request approval")
     x_review_result = fields.Char(string="Review Result",related="move_id.x_review_result")
-    # ref = fields.Text()
+    ref = fields.Text()
 
     @api.depends('print_assigned')
     def compute_print_assigned(self):
