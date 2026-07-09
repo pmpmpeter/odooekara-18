@@ -105,6 +105,9 @@
             <field name="source_id" position="attributes">
                 <attribute name="options">{'no_quick_create':True,'no_create': True}</attribute>
             </field>
+            <xpath expr="//group[1]/group[1]" position="inside">
+                <field name="budget_analytic_id"/>
+            </xpath>
 
 
         </field>

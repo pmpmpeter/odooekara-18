@@ -125,8 +125,8 @@ class AccountMoveInherit(models.Model):
         compute='_compute_partner_ldc_warning',
         groups="account.group_account_invoice,account.group_account_readonly",
     )
-    # budget_id = fields.Many2one('crossovered.budget.lines', 'Budget Code', copy=False, required=0)
-    # crossovered_budget = fields.Many2one('crossovered.budget',string='Budget',copy=False,default=lambda self: self.env['crossovered.budget'].sudo().search([('user_type','=','odoo'),('company_id','=',self.env.company.id)]),limit=1)
+    budget_id = fields.Many2one('budget.line', 'Budget Code', copy=False, required=0)
+    budget_analytic_id = fields.Many2one('budget.analytic',string='Budget',copy=False,default=lambda self: self.env['budget.analytic'].sudo().search([('user_type','=','odoo'),('company_id','=',self.env.company.id)]),limit=1)
     budget_update = fields.Boolean("Is Budget Updated?",copy=False,default=False)
     journal_type = fields.Selection(related='journal_id.type')
     active = fields.Boolean(string="Active",default=True, copy=False)
@@ -448,7 +448,7 @@ class AccountMoveInherit(models.Model):
     #     for move in self.filtered(lambda l: not l.journal_id.is_opening_balance and not l.statement_line_id):
     #         for line1 in move.invoice_line_ids.filtered(lambda l:l.account_id.is_cash_rounding == False):
     #             if not move.company_id.disable_budget_company:
-    #                 if not move.crossovered_budget:
+    #                 if not move.budget_analytic_id:
     #                     raise UserError('Warning!! Kindly select a Budget.')
     #                 if line1.budget_id and not line1.filtered(lambda e: e.analytic_distribution):
     #                     raise UserError(_("Alert !! Analytic Account not Mapped to %s for Entry -%s")%(
@@ -471,7 +471,7 @@ class AccountMoveInherit(models.Model):
                 #     raise UserError(_("Alert !! Wrong Analytic Account Mapped to %s.\n%s is mapped to %s Budgetry Position.")%(
                 #         line1.account_id.display_name,move.budget_id.analytic_account_id.display_name,move.budget_id.display_name))
 
-    # @api.onchange('crossovered_budget')
+    # @api.onchange('budget_analytic_id')
     # def update_budget_lines(self):
     #     for rec in self.line_ids:
     #         rec.update_budget_code()
@@ -479,10 +479,10 @@ class AccountMoveInherit(models.Model):
     # def update_budget_code_id(self):
     #     for rec in self.line_ids:
     #             # if rec.move_id.move_type == 'entry':
-    #             if rec.move_id.crossovered_budget:
+    #             if rec.move_id.budget_analytic_id:
     #                 if rec.account_id:
     #                     budget_post = self.env['account.budget.post'].sudo().search([('account_ids.name','in',[rec.account_id.name])])
-    #                     budget_id = rec.move_id.crossovered_budget.crossovered_budget_line.filtered(lambda l:l.general_budget_id in budget_post)
+    #                     budget_id = rec.move_id.budget_analytic_id.budget_analytic_id_line.filtered(lambda l:l.general_budget_id in budget_post)
     #                     rec.write({'budget_id':budget_id.ids})
 
     def update_actual_cur_figure_server_action(self):
@@ -515,9 +515,9 @@ class AccountMoveInherit(models.Model):
                 
     #             if rec.state == 'posted':
     #                 entry = self.env['account.move.line'].sudo().search([
-    #                     ('move_id', '=', rec.id), ('date', '>=', rec.crossovered_budget.date_from),
-    #                     ('date', '<=', rec.crossovered_budget.date_to),  # Ensure we fetch lines from this move
-    #                     ('account_id', 'in', rec.crossovered_budget.crossovered_budget_line.general_budget_id.account_ids.ids),
+    #                     ('move_id', '=', rec.id), ('date', '>=', rec.budget_analytic_id.date_from),
+    #                     ('date', '<=', rec.budget_analytic_id.date_to),  # Ensure we fetch lines from this move
+    #                     ('account_id', 'in', rec.budget_analytic_id.budget_analytic_id_line.general_budget_id.account_ids.ids),
     #                 ]).filtered(lambda e: {str(e.budget_id.analytic_account_id.id): 100} == e.analytic_distribution)
     #                 for v1 in entry:
     #                     balance = sum(v1.mapped('balance'))
@@ -532,7 +532,7 @@ class AccountMoveInherit(models.Model):
     #         if month_field:
     #                 # Budget code is moved to line items.
     #                 # rec.budget_id_selection_validation()
-    #                 domain12 = [('move_id', '=', rec.id), ('date', '>=', rec.crossovered_budget.date_from),('date', '<=', rec.crossovered_budget.date_to),('account_id', 'in', rec.crossovered_budget.crossovered_budget_line.general_budget_id.account_ids.ids)]
+    #                 domain12 = [('move_id', '=', rec.id), ('date', '>=', rec.budget_analytic_id.date_from),('date', '<=', rec.budget_analytic_id.date_to),('account_id', 'in', rec.budget_analytic_id.budget_analytic_id_line.general_budget_id.account_ids.ids)]
     #                 entry = self.env['account.move.line'].sudo().search(domain12).filtered(lambda e: {str(e.budget_id.analytic_account_id.id): 100} == e.analytic_distribution)
     #                 for v1 in entry:
     #                     balance = sum(v1.mapped('balance'))
