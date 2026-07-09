@@ -111,24 +111,16 @@ class ResCompanyInherited(models.Model):
         else:
             self.account_opening_move_id = self.env['account.move'].create(move_values)
 
+
+
 class ResCompanyTaxEntity(models.Model):
-    _name = "res.company.tax.entity"
-    _description = "Tax Entity Master"
+    _inherit = "res.company.tax.entity"
 
     company_id = fields.Many2one("res.company",string="Company",required=True,ondelete="cascade")
-    # budget_id = fields.Many2one("crossovered.budget",string="Company",ondelete="cascade")
-    entity_id = fields.Many2one("res.company",string="Entity",required=True)
-    share = fields.Float(string="Share (%)",required=True)
-    sequence = fields.Integer(string="Sequence",default=1)
-    loan_account_id = fields.Many2one("account.account",string="Loan Account")
 
     @api.constrains("share", "company_id")
     def _check_share_sum(self):
         for rec in self:
             if rec.company_id:
                 total_share = sum(rec.company_id.tax_entity_ids.mapped("share"))
-                # if total_share != 100 :
-                #     raise ValidationError(
-                #         f"Total Tax Entity share for {rec.company_id.display_name} "
-                #         f"cannot exceed or lesser than 100%. Current total: {total_share}%"
-                #     )
+                

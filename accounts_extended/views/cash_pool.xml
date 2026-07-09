@@ -68,7 +68,35 @@
         </field>
     </record>
 
-    
+    <record id="cash_pool_tree_view_extend" model="ir.ui.view">
+            <field name="name">cash.pool.list.view.inherit</field>
+            <field name="model">cash.pool.lines</field>
+            <field name="arch" type="xml">
+                <list editable="bottom" edit="0" create="0" delete='0'>
+                    <field name="cash_pool" width='800' options="{'no_quick_create':True,'no_create': True}"/>
+                    <!--                    <field name="version" optional="hide"/>-->
+                    <field name="version_name" column_invisible="1"/>
+                    <field name="revision_date" optional="hide" readonly="1" force_save="1"/>
+                    <field name="april_cash_pool" sum="Total"/>
+                    <field name="may_cash_pool" sum="Total"/>
+                    <field name="june_cash_pool" sum="Total"/>
+                    <field name="quarter_1_cash_pool" sum="Total"/>
+                    <field name="july_cash_pool" sum="Total"/>
+                    <field name="august_cash_pool" sum="Total"/>
+                    <field name="september_cash_pool" sum="Total"/>
+                    <field name="quarter_2_cash_pool" sum="Total"/>
+                    <field name="october_cash_pool" sum="Total"/>
+                    <field name="november_cash_pool" sum="Total"/>
+                    <field name="december_cash_pool" sum="Total"/>
+                    <field name="quarter_3_cash_pool" sum="Total"/>
+                    <field name="january_cash_pool" sum="Total"/>
+                    <field name="febuary_cash_pool" sum="Total"/>
+                    <field name="march_cash_pool" sum="Total"/>
+                    <field name="quarter_4_cash_pool" sum="Total"/>
+                </list>
+
+            </field>
+        </record>
 
     <record id="action_cash_pool" model="ir.actions.act_window">
         <field name="name">Cash Pool</field>

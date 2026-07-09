@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_budget_department" name="Department Budget Odoo" parent="account.menu_finance_entries" action="action_budget_department" sequence="96"/>
+
+
+        <menuitem id="menu_open_budget_odoo"
+                  name="Budget Odoo"
+                  parent="account.menu_finance_entries"
+                  action="open_budget_odoo"
+                  sequence="97"/>
+
+        <menuitem id="menu_open_budget_nonodoo"
+                  name="Budget Non-Odoo"
+                  parent="account.menu_finance_entries"
+                  action="open_budget_nonodoo"
+                  sequence="98"/>
+
+                  <menuitem id="menu_te_consolidation"
+                  name="TE Consolidation"
+                  parent="account.menu_finance_entries"
+                  action="action_te_consolidation"
+                  sequence="99"/>
+
+        <menuitem id="menu_fund_managemnt"
+                  name="Fund Management"
+                  parent="account.menu_finance_entries"
+                  action="action_fund_managemnt"
+                  sequence="100"/>
+</odoo>

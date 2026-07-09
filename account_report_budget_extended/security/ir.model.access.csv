@@ -1,0 +1,16 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_budget_department,access_budget_department,model_budget_department,base.group_user,1,1,1,1
+access_revision_history,access_revision_history,model_revision_history,base.group_user,1,1,1,1
+access_crr_budget_line,access_crr_budget_line,model_crr_budget_line,base.group_user,1,1,1,1
+access_crr_budget_line_consolidate,access_crr_budget_line_consolidated,model_crr_budget_line_consolidate,base.group_user,1,1,1,1
+access_crr_share_line,access_crr_share_line,model_crr_share_line,base.group_user,1,1,1,1
+access_crr_other_share_line,access_crr_other_share_line,model_crr_other_share_line,base.group_user,1,1,1,1
+access_doc_attach,access_doc_attach,model_doc_attach,base.group_user,1,1,1,1
+access_fund_management,access_fund_management,model_fund_management,base.group_user,1,1,1,1
+access_te_consolidation,access_te_consolidation,model_te_consolidation,base.group_user,1,1,1,1
+access_te_consolidation_line,access_te_consolidation_line,model_te_consolidation_line,base.group_user,1,1,1,1
+access_crr_company_share,access_crr_company_share,model_crr_company_share,base.group_user,1,1,1,1
+access_budget_contribution_te_line,access_budget_contribution_te_line,model_budget_contribution_te_line,base.group_user,1,1,1,1
+access_res_company_tax_entity,access_res_company_tax_entity,model_res_company_tax_entity,base.group_user,1,1,1,1
+access_cash_management,access_cash_management,model_cash_management,base.group_user,1,1,1,1
+access_cash_management_line,access_cash_management_line,model_cash_management_line,base.group_user,1,1,1,1

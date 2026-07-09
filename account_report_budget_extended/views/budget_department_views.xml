@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_budget_department_tree" model="ir.ui.view">
+        <field name="name">budget.department.tree</field>
+        <field name="model">budget.department</field>
+        <field name="arch" type="xml">
+            <list string="Department Budget">
+                <field name="name"/>
+                <field name="department_id"/>
+                <field name="budget_analytic_id"/>
+                <field name="analytic_account_id"/>
+                <field name="create_date"/>
+                <field name="user_id"/>
+                <field name="company_id"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'"
+                       decoration-muted="state == 'cancel'" decoration-success="state == 'submit'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_budget_department_form" model="ir.ui.view">
+        <field name="name">budget.department.form</field>
+        <field name="model">budget.department</field>
+        <field name="arch" type="xml">
+            <form string="Department Budget">
+                <header>
+                    <button name="action_submit" string="Submit" type="object"
+                            class="btn-primary" invisible="state not in ('draft')"/>
+                    <!--                    <button name="action_cancel" string="Cancel" type="object"-->
+                    <!--                            invisible="state in ('cancel')"/>-->
+                    <button name="action_draft" string="Reset to Draft" type="object"
+                            class="btn-primary" invisible="state not in ('cancel')"/>
+
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,submit"/>
+                </header>
+                <sheet>
+                    <div class="oe_title" width="100">
+                        <label for="name"/>
+                        <h1>
+
+                            <field name="name" placeholder="e.g. Budget 2025: Finance Department" required="1"
+                                   readonly="state != 'draft'"
+                                   options="{'no_quick_create':True,'no_create': True,'no_open': True}"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="budget_analytic_id" readonly="state != 'draft'"
+                                   domain="[('company_id','=',company_id),('user_type','=','odoo'),('state','not in',['done'])]"
+
+                                   options="{'no_quick_create':True,'no_create': True}"/>
+                            <!--                            <field name="department_id"/>-->
+
+                            <field name="department_id" placeholder="Finance and Accounts" required="1"
+                                   readonly="state != 'draft'"  domain="[('company_id','=',company_id)]"
+                                   options="{'no_quick_create':True,'no_create': True,'no_open': True}"/>
+
+                            <field name="analytic_account_id" readonly="state != 'draft'"  domain="[('company_id','=',company_id)]"
+                                   options="{'no_quick_create':True,'no_create': True,'no_open': True}"/>
+                            <field name="company_id" readonly="1"
+                                   options="{'no_quick_create':True,'no_create': True,'no_open': True}"/>
+                        </group>
+                        <group>
+                            <field name="user_id" readonly="state != 'draft'"
+                                   options="{'no_quick_create':True,'no_create': True,'no_open': True}"/>
+
+                            <field name="cash_type" width='800'
+                                   invisible='1'
+                                   force_save='1'/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="CRR Monthly Breakup">
+                            <field name="cash_payment_ids" no_label='1' readonly="state == 'submit'">
+                                <list editable="bottom" delete='0' default_order='sequence'
+                                      decoration-bf="is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True ">
+                                    <field name="is_budget_out_sum_line" column_invisible='1'/>
+                                    <field name="is_budget_in_sum_line" column_invisible='1'/>
+                                    <field name="is_budget_surples_sum_line" column_invisible='1'/>
+                                    <field name="is_budget_total" column_invisible='1'/>
+                                    <field name="is_buget_categ" column_invisible='1'/>
+                                    <field name="company_id" column_invisible='1'/>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="cash_type" width='800'
+                                           column_invisible='1' readonly='0'
+                                           force_save='1'/>
+
+                                    <!--                                    <field name="analytic_account_id" options='{"no_open": True, "no_create": True}'-->
+                                    <!--                                           width='800' required="1"-->
+                                    <!--                                           readonly="parent.state in ('done','cancel','validated')"/>-->
+                                    <!--                                    <field name="department_id" options='{"no_open": True, "no_create": True}'-->
+                                    <!--                                           width='800' required="1"-->
+                                    <!--                                           readonly="parent.state in ('done','cancel','validated')"/>-->
+                                    <!--                                    <field name="budget_name" width='800' force_save='1' readonly='1'-->
+                                    <!--                                    />-->
+                                    <field name="budget_position_id" options='{"no_open": True, "no_create": True}'
+                                           width='800' required="1"
+                                           readonly="parent.state in ('done','cancel','validated')"/>
+                                    <field name="budget_type" width='800' force_save="1"
+                                           readonly="1"/>
+                                    <field name="crr_budget_total" width='450'/>
+                                    <field name="april_crr_budget_plan" width='350'
+                                           readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True "/>
+                                    <field name="may_crr_budget_plan" width='350'
+                                           readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                                    <field name="june_crr_budget_plan" width='350'
+                                           readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True "/>
+                                    <field name="quarter_1_crr_budget_plan"
+                                           decoration-success="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == False and is_budget_in_sum_line == False and is_budget_surples_sum_line == False"
+                                           width='450'/>
+                                    <field name="july_crr_budget_plan" width='350'
+                                           readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                                    <field name="august_crr_budget_plan" width='350'
+                                           readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                                    <field name="september_crr_budget_plan" width='350'
+                                           readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True "/>
+                                    <field name="quarter_2_crr_budget_plan"
+                                           decoration-success="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == False and is_budget_in_sum_line == False and is_budget_surples_sum_line == False"
+                                           width='450'/>
+                                    <field name="october_crr_budget_plan" width='350'
+                                           readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                                    <field name="november_crr_budget_plan" width='350'
+                                           readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                                    <field name="december_crr_budget_plan" width='350'
+                                           readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                                    <field name="quarter_3_crr_budget_plan"
+                                           decoration-success="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == False and is_budget_in_sum_line == False and is_budget_surples_sum_line == False"
+                                           width='450'/>
+                                    <field name="january_crr_budget_plan" width='350'
+                                           readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True "/>
+                                    <field name="febuary_crr_budget_plan" width='350'
+                                           readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                                    <field name="march_crr_budget_plan" width='350'
+                                           readonly="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == True or is_budget_in_sum_line == True or is_budget_surples_sum_line == True"/>
+                                    <field name="quarter_4_crr_budget_plan"
+                                           decoration-success="is_budget_total == True or is_buget_categ == True or is_budget_out_sum_line == False and is_budget_in_sum_line == False and is_budget_surples_sum_line == False"
+                                           width='450'/>
+                                </list>
+                            </field>
+
+                        </page>
+                    </notebook>
+
+
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" groups="base.group_user"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids" options="{'post_refresh': 'always'}"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_budget_department" model="ir.actions.act_window">
+        <field name="name">Department Budget</field>
+        <field name="res_model">budget.department</field>
+        <field name="view_mode">list,form</field>
+        <!--        <field name="help" type="html">-->
+        <!--            <p>-->
+        <!--                Create and configure Department Budget.-->
+        <!--            </p>-->
+        <!--        </field>-->
+    </record>
+
+</odoo>
