@@ -126,7 +126,8 @@ class AccountMoveInherit(models.Model):
         groups="account.group_account_invoice,account.group_account_readonly",
     )
     budget_id = fields.Many2one('budget.line', 'Budget Code', copy=False, required=0)
-    budget_analytic_id = fields.Many2one('budget.analytic',string='Budget',copy=False,default=lambda self: self.env['budget.analytic'].sudo().search([('user_type','=','odoo'),('company_id','=',self.env.company.id)]),limit=1)
+    budget_analytic_id = fields.Many2one('budget.analytic',string='Budget',copy=False)
+    
     budget_update = fields.Boolean("Is Budget Updated?",copy=False,default=False)
     journal_type = fields.Selection(related='journal_id.type')
     active = fields.Boolean(string="Active",default=True, copy=False)
@@ -158,6 +159,19 @@ class AccountMoveInherit(models.Model):
         for rec in self:
             if rec.state == 'posted':
                 rec.is_cheque_details_freeze = True
+
+    @api.onchange('date', 'company_id')
+    def _onchange_budget(self):
+        for move in self:
+            if move.move_type not in ('in_invoice', 'in_refund'):
+                continue
+
+            budget = self.env['budget.analytic'].search([
+                ('company_id', '=', move.company_id.id),
+                ('date_from', '<=', move.date),
+                ('date_to', '>=', move.date),
+            ], limit=1)
+            move.budget_analytic_id = budget
 
 
     def send_vendor_mail(self):
