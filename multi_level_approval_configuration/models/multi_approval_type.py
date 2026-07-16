@@ -368,7 +368,6 @@ for rec in self:
         wiz_rework_act = self.env.ref(
             "multi_level_approval_configuration.rework_approval_action", False
         )
-        if wiz_act:
         if not wiz_act or not wiz_view_act or not wiz_rework_act:
             raise UserError(_("Not found the action !"))
 
