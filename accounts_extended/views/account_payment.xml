@@ -133,7 +133,7 @@
                         invisible="not is_fund_requsiting or state != 'approved'" data-hotkey="q"/>
             </xpath>
             <xpath expr="//button[@name='action_draft']" position="replace">
-                <button name="action_draft" string="Reset To Draft" type="object" class="btn btn-secondary" groups="accounts_extended.group_cancel_accounting_entry" data-hotkey="w"/>
+                <button name="action_draft" string="Reset To Draft" type="object" class="btn btn-secondary" groups="accounts_extended.group_cancel_accounting_entry" data-hotkey="w" invisible="state in ('draft','paid')"/>
             </xpath>
             <xpath expr="//button[@name='action_post']" position="after">
                 <field name="is_utr_updated" invisible="1"/>
