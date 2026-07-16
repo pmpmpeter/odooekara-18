@@ -11,4 +11,6 @@
     <menuitem id="account.menu_action_account_payments_receivable" name="Receipts" parent="account.menu_finance_receivables" action="account.action_account_payments" sequence="15"/>
 
 	<menuitem id="menu_account_supplier_accounts" name="Bank Accounts" action="account.action_account_supplier_accounts" parent="account.menu_finance_payables" sequence="80"/>
+  <menuitem id="customer_statements_menu" name="Follow-up Reports" parent="account.menu_finance_receivables" groups="account.group_account_invoice"
+                action="action_view_list_customer_statements" sequence="20"/>
 </odoo>

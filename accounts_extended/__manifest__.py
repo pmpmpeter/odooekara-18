@@ -60,7 +60,7 @@
         'views/accounts_subgroup.xml',
         'views/cash_pool.xml',
         'views/cash_requirement_report.xml',
-        # 'views/account_journal_dashboard_view.xml',
+        'views/account_followup.xml',
         'views/menu.xml'
     ],
     'license': 'LGPL-3',
