@@ -66,10 +66,10 @@ class RequestApproval(models.TransientModel):
         # Add the link to the source document inside the description.
         # in order to bypass the record rule on it
         record = self.env[model_name].browse(res_id)
-        if model_name == 'budget.analytic' and record.budget_id:
-            for line in record.budget_id:
-                if not line.analytic_account_id and line.user_type == 'odoo':
-                    raise UserError('Kindly add a Analytic Account for a Budget Line')
+        # if model_name == 'budget.analytic' and record.budget_id:
+        #     for line in record.budget_id:
+        #         if not line.analytic_account_id and line.user_type == 'odoo':
+        #             raise UserError('Kindly add a Analytic Account for a Budget Line')
 
         record_name = record.display_name or _("this object")
         model_display_name = self.env['ir.model'].sudo().search([('model', '=', model_name)], limit=1).name or _("Unknown Model")
@@ -200,7 +200,6 @@ class RequestApproval(models.TransientModel):
             for move in account_move_id.filtered(lambda l: l.move_type in  ['in_invoice']):
                 move.action_validate_no_bill()
             for move in account_move_id.filtered(lambda l: not l.journal_id.is_opening_balance and not l.statement_line_id):
-                    # print(move.company_id.disable_budget_company,'pppppppppppppppppppp')
                     # stop
                     if move.move_type == 'entry' and not move.company_id.disable_budget_company:
                         for line1 in move.line_ids.filtered(lambda l: l.account_id.account_type in ['asset_receivable','asset_cash','asset_current','asset_non_current','asset_prepayments','asset_fixed', 'expense'] and l.account_id.is_cash_rounding == False):
@@ -210,9 +209,9 @@ class RequestApproval(models.TransientModel):
                             if line1.budget_id and not line1.filtered(lambda e: e.analytic_distribution):
                                 raise UserError(_("Alert !! Analytic Account not Mapped to %s for Entry -%s")%(
                                     line1.account_id.display_name,move.display_name))
-                            if line1.budget_id and not line1.filtered(lambda e: {str(line1.budget_id.analytic_account_id.id): 100} == e.analytic_distribution):
-                                raise UserError(_("Alert !! Wrong Analytic Account Mapped to %s.\n%s is mapped to %s Budgetry Position.")%(
-                                    line1.account_id.display_name,line1.budget_id.analytic_account_id.display_name,line1.budget_id.display_name))
+                            # if line1.budget_id and not line1.filtered(lambda e: {str(line1.budget_id.analytic_account_id.id): 100} == e.analytic_distribution):
+                            #     raise UserError(_("Alert !! Wrong Analytic Account Mapped to %s.\n%s is mapped to %s Budgetry Position.")%(
+                            #         line1.account_id.display_name,line1.budget_id.analytic_account_id.display_name,line1.budget_id.display_name))
 
                     elif move.move_type != 'entry' and not move.company_id.disable_budget_company:
                         for line1 in move.invoice_line_ids.filtered(lambda l:l.account_id.is_cash_rounding == False):
@@ -221,9 +220,9 @@ class RequestApproval(models.TransientModel):
                             if not line1.filtered(lambda e: e.analytic_distribution):
                                 raise UserError(_("Alert !! Analytic Account not Mapped to %s for Entry -%s")%(
                                     line1.account_id.display_name,move.display_name))
-                            if not line1.filtered(lambda e: {str(line1.budget_id.analytic_account_id.id): 100} == e.analytic_distribution):
-                                raise UserError(_("Alert !! Wrong Analytic Account Mapped to %s.\n%s is mapped to %s Budgetry Position.")%(
-                                    line1.account_id.display_name,line1.budget_id.analytic_account_id.display_name,line1.budget_id.display_name))
+                            # if not line1.filtered(lambda e: {str(line1.budget_id.analytic_account_id.id): 100} == e.analytic_distribution):
+                            #     raise UserError(_("Alert !! Wrong Analytic Account Mapped to %s.\n%s is mapped to %s Budgetry Position.")%(
+                            #         line1.account_id.display_name,line1.budget_id.analytic_account_id.display_name,line1.budget_id.display_name))
         elif active_res_model == 'project.task':
             task_id = self.env['project.task'].sudo().browse(self.origin_ref.id)
             # self.type_id.line_ids.update({'user_id':task_id.raise_request_to_id})
