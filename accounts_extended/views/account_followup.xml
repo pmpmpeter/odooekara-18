@@ -1,0 +1,18 @@
+<odoo>
+        <record id="action_view_list_customer_statements" model="ir.actions.act_window">
+            <field name="name">Follow-up Reports</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="account_followup.customer_statements_search_view"/>
+            <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('account_followup.customer_statements_tree_view')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('account_followup.view_partner_property_form_followup')})]"/>
+            <field name="domain">['|', ('parent_id', '=', False), ('is_company', '=', True), ('customer_rank', '>', 0)]</field>
+            <field name="context">{'search_default_filter_with_overdue_invoices': 1, 'res_partner_search_mode': 'customer'}</field>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                No follow-up to send!
+              </p>
+            </field>
+        </record>
+</odoo>
