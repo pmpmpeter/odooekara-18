@@ -160,14 +160,14 @@ class RequestApproval(models.TransientModel):
         """
         self.ensure_one()
 
-        if (
-            not self.type_id.active
-            or not self.type_id.is_configured
-            or not self.origin_ref.x_need_approval
-        ):
-            raise UserError(
-                _("Data is changed! Please refresh your browser in order to continue !")
-            )
+        # if (
+        #     not self.type_id.active
+        #     or not self.type_id.is_configured
+        #     or not self.origin_ref.x_need_approval
+        # ):
+        #     raise UserError(
+        #         _("Data is changed! Please refresh your browser in order to continue !")
+        #     )
         if self.origin_ref.x_has_request_approval and not self.type_id.is_free_create:
             raise UserError(_("Request has been created before !"))
         active_res_model = self._context.get('active_model')
@@ -256,7 +256,7 @@ class RequestApproval(models.TransientModel):
             self.origin_ref.message_post(body='Document is submitted for approval')
         if res_model == 'account.payment':
             self.origin_ref.approval_document = request
-            self.origin_ref.state = 'to approve'
+            self.origin_ref.move_id.state = 'to approve'
             self.origin_ref.message_post(body='Document is submitted for approval')
         if res_model == 'hr.expense.sheet':
             self.origin_ref.approval_document = request
