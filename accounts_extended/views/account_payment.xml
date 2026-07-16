@@ -204,31 +204,20 @@
         <field name="model">account.batch.payment</field>
         <field name="inherit_id" ref="account_batch_payment.view_batch_payment_form"/>
         <field name="arch" type="xml">
-            <header>
-                <button name="action_export_payment_details_xlsx"
-                        string="Download Excel"
-                        type="object"
-                        class="oe_highlight"/>
-                <button name="action_print_batch_payment_pdf"
-                        type="object"
-                        string="Print Cheque"
-                        class="btn-primary"
-                        icon="fa-print"/>
-                <button name="action_open_mail_wizard"
-                        string="Send Mail"
-                        type="object"
-                        class="btn-primary"/>
-                <button name="action_print_bank_advice_payment_pdf"
-                        string="Print Bank Payment Advice"
-                        type="object"
-                        class="btn-primary"/>
-
-            </header>
-            
+            <xpath expr="//header" position="inside">
+                <button name="action_export_payment_details_xlsx" string="Download Excel" type="object" class="oe_highlight"/>
+                <button name="action_print_batch_payment_pdf" type="object" string="Print Cheque" class="btn-primary" icon="fa-print"/>
+                <button name="action_open_mail_wizard" string="Send Mail" type="object" class="btn-primary"/>
+                <button name="action_print_bank_advice_payment_pdf" string="Print Bank Payment Advice" type="object" class="btn-primary"/>
+            </xpath>
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="cheque_format_id" options="{'no_open':True,'no_create': True}"/>
+            </xpath>
             <xpath expr="//page[@name='batch_content']" position="after">
                 <page name="check_details" string="Cheque Details">
                     <group>
                         <group>
+                            <field name="cheque_number"/>
                             <field name="authorised_by" options="{'no_open':True,'no_create': True}"/>
                             <field name="authorised_date"/>
                         </group>
