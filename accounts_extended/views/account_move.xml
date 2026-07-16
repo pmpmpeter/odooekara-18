@@ -51,10 +51,276 @@
             </xpath>
         </field>
     </record> -->
+    <record id="view_move_form_inherit_header" model="ir.ui.view">
+        <field name="name">account.move.form.header.inherit</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
 
-    <!-- <record id="account.view_move_form" model="ir.ui.view"> -->
-        <!-- code completly removed as its overridded -->
+            <!-- Post -->
+            <xpath expr="//header/button[@name='action_post'][1]" position="attributes">
+                <attribute name="context">{'validate_analytic': True}</attribute>
+                <attribute name="invisible">1</attribute>
+            </xpath>
 
+            <!-- Confirm -->
+            <xpath expr="//header/button[@name='action_post'][2]" position="attributes">
+                <attribute name="context">{'validate_analytic': True}</attribute>
+                <attribute name="invisible">state not in ('approved')</attribute>
+            </xpath>
+
+            <!-- Send -->
+            <xpath expr="//header/button[@name='action_invoice_sent'][1]" position="attributes">
+                <attribute name="string">Send &amp; Print</attribute>
+            </xpath>
+
+            <xpath expr="//header/button[@name='action_invoice_sent'][2]" position="attributes">
+                <attribute name="string">Send &amp; Print</attribute>
+            </xpath>
+
+            <!-- Remove Odoo18 Print buttons -->
+            <xpath expr="//header/button[@name='action_print_pdf'][1]" position="replace"/>
+
+            <!-- Register Payment -->
+            <xpath expr="//header/button[@name='action_register_payment'][1]" position="attributes">
+                <attribute name="string">Register Payment</attribute>
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Remove secondary Pay button -->
+            <!-- <xpath expr="//header/button[@name='action_register_payment'][2]" position="replace"/> -->
+
+            <!-- Preview -->
+            <xpath expr="//header/button[@name='preview_invoice']" position="attributes">
+                <attribute name="invisible">move_type not in ('out_invoice', 'out_refund')</attribute>
+            </xpath>
+
+            <!-- Reverse Entry action -->
+           <!--  <xpath expr="//header/button[contains(@name,'action_view_account_move_reversal')]" position="attributes">
+                <attribute name="name">%(account.action_view_account_move_reversal)d</attribute>
+            </xpath> -->
+
+            <!-- Credit Note -->
+            <xpath expr="//header/button[@name='action_reverse']" position="attributes">
+                <attribute name="data-hotkey"/>
+            </xpath>
+
+            <!-- Cancel Entry -->
+            <xpath expr="//header/button[@name='button_cancel'][1]" position="attributes">
+                <attribute name="groups">accounts_extended.group_cancel_accounting_entry</attribute>
+            </xpath>
+
+            <!-- Cancel -->
+            <xpath expr="//header/button[@name='button_cancel'][1]" position="attributes">
+                <attribute name="groups">accounts_extended.group_cancel_accounting_entry</attribute>
+                <attribute name="invisible">
+                    not id or state != 'draft' or move_type in ('entry','out_invoice')
+                </attribute>
+            </xpath>
+
+            <!-- Add third Cancel button -->
+            <xpath expr="//header/button[@name='button_cancel'][last()]" position="after">
+                <button name="button_cancel" string="Cancel" type="object" groups="accounts_extended.group_cancel_accounting_entry" data-hotkey="x" invisible="not id or state not in ['to approve','approved','posted']"/>
+            </xpath>
+
+            <!-- Reset to Draft -->
+            <xpath expr="//header/button[@name='button_draft']" position="attributes">
+                <attribute name="groups">account.group_account_manager</attribute>
+                <attribute name="invisible">state != 'cancel'</attribute>
+            </xpath>
+
+            <!-- Remove Lock button -->
+            <xpath expr="//header/button[@name='button_hash']" position="replace"/>
+
+            <!-- Custom buttons -->
+            <xpath expr="//header/button[@name='button_request_cancel']" position="after">
+
+                <button name="action_export_salary_jv_xlsx" string="Download Salary JV" type="object" class="oe_highlight" invisible="1"/>
+
+                <button name="action_print_invoice_template" string="Print" type="object" class="oe_highlight" invisible="move_type not in ('in_invoice','out_invoice')"/>
+
+                <button name="action_print_jv_cheque" string="Print Cheque" type="object" class="oe_highlight" invisible="not is_bank_entry or state in ('draft','to approve','cancel')"/>
+
+                <button name="action_update_utr_number" string="Update UTR Number" type="object" class="oe_highlight" invisible="state != 'posted' or move_type != 'entry' or not is_bank_entry or not utr_number or is_cheque_details_freeze"/>
+
+                <button name="send_vendor_mail" string="Send By Mail" type="object" class="oe_highlight" invisible="state != 'posted' or move_type != 'entry' or not is_bank_entry"/>
+
+            </xpath>
+
+            <!-- State field -->
+            <xpath expr="//header/field[@name='state'][1]" position="replace">
+                <field name="state" widget="statusbar" statusbar_visible="draft,posted"/>
+            </xpath>
+
+            <xpath expr="//header/field[@name='state'][2]" position="replace"/>
+            <!-- Replace duplicate bill warning -->
+            
+            <!-- Partner TCS Warning -->
+            <xpath expr="//div[field[@name='partner_credit_warning']]" position="after">
+                <div groups="account.group_account_invoice,account.group_account_readonly" class="alert alert-warning mb-0" role="alert" invisible="partner_tcs_warning == ''">
+                    <field name="partner_tcs_warning"/>
+                </div>
+
+                <div groups="account.group_account_invoice,account.group_account_readonly" class="alert alert-warning mb-0" role="alert" invisible="partner_ldc_warning == '' or state in ('posted','cancel')">
+                    <field name="partner_ldc_warning"/>
+                </div>
+
+                <div groups="account.group_account_invoice,account.group_account_readonly" class="alert alert-warning mb-0" role="alert" invisible="partner_tds_warning == ''">
+                    <field name="partner_tds_warning"/>
+                </div>
+            </xpath>
+            <xpath expr="//div[@class='oe_title']/h1/span" position="attributes">
+                <attribute name="invisible">state != 'draft' or name != '/' or posted_before or quick_edit_mode</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_shipping_id']" position="before">
+                <field name="x_has_request_approval" invisible="1"/>
+                <field name="x_review_result" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='partner_shipping_id']" position="attributes">
+                <attribute name="domain">[('state','=','approve'),('company_ids','in',company_id)]</attribute>
+                <attribute name="options">{'no_quick_create':True,'no_create':True}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='ref'][1]" position="attributes">
+                <attribute name="readonly">state not in ('draft','to approve')</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='ref'][2]" position="attributes">
+                <attribute name="readonly">state not in ('draft','to approve')</attribute>
+            </xpath>
+            <xpath expr="//field[@name='ref'][2]" position="after">
+                <field name="journal_type" invisible="1"/>
+                <field name="budget_id" invisible="1" readonly="state in ('posted')" domain="[('budget_analytic_id.state','=','done')]" options="{'no_open':True,'no_quick_create':True,'no_create':True}" context="{'search_default_filter_field':True}"/>
+
+                <field name="budget_analytic_id" readonly="state in ('posted')" domain="[('user_type','=','odoo'),('company_id','=',company_id)]" options="{'no_open':True,'no_quick_create':True,'no_create':True}" context="{'search_default_filter_field':True}"/>
+
+                <field name="expense_sequence" invisible="move_type not in ['in_invoice'] or not is_payment_approval" readonly="1"/>
+
+                <field name="is_payment_approval" invisible="1"/>
+
+                <field name="expense_invoice_no" invisible="move_type not in ['in_invoice'] or not is_payment_approval" readonly="state != 'draft'"/>
+
+            </xpath>
+            <xpath expr="//field[@name='invoice_date']" position="attributes">
+                <attribute name="readonly">state not in ('draft','to approve','approved')</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_bank_id']" position="attributes">
+                <attribute name="readonly">state != 'draft'</attribute>
+
+                <attribute name="options">{'no_quick_create':True,'no_create':True}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='invoice_date_due']" position="attributes">
+                <attribute name="readonly">state not in ('draft','to approve')</attribute>
+            </xpath>
+            <xpath expr="//field[@name='invoice_payment_term_id']" position="attributes">
+                <attribute name="context">{'example_date': invoice_date, 'example_amount': tax_totals['amount_total']}</attribute>
+
+                <attribute name="options">{'no_quick_create':True,'no_create':True}</attribute>
+            </xpath>
+            <xpath expr="//div[@name='journal_div']" position="after">
+                <field name="approval_state" invisible="move_type not in ['in_invoice','out_invoice','entry']"/>
+                <field name="advance_payment_ids" widget="many2many_tags"/>
+                <field name="expense_type" invisible="move_type not in ['in_invoice'] or not is_payment_approval" readonly="state != 'draft'"/>
+                <field name="expense_invoice_type_id" invisible="move_type not in ['in_invoice'] or not is_payment_approval" readonly="state != 'draft'"/>
+                <field name="expense_user_id" invisible="move_type not in ['in_invoice'] or not is_payment_approval" readonly="state != 'draft'" options="{'no_quick_create':True,'no_create':True}"/>
+            </xpath>
+
+            <xpath expr="//page[@id='invoice_tab']//field[@name='invoice_line_ids']/list//field[@name='account_id']" position="after">
+                <field name="budget_id" widget="many2many_tags" options="{'no_quick_create': True, 'no_create': True}" domain="[('budget_analytic_id', '=', parent.budget_analytic_id)]"/>
+            </xpath>
+            <xpath expr="//page[@id='invoice_tab']//field[@name='invoice_line_ids']/list//field[@name='product_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create': True}</attribute>
+            </xpath>
+            
+            <xpath expr="//page[@id='invoice_tab']//field[@name='invoice_line_ids']/list//field[@name='product_uom_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create': True}</attribute>
+            </xpath>
+            <xpath expr="//page[@id='invoice_tab']//field[@name='narration']" position="attributes">
+                <attribute name="readonly">state not in ('draft','to approve')</attribute>
+            </xpath>
+
+            <xpath expr="//page[@id='aml_tab']//field[@name='line_ids']/list//field[@name='name']" position="after">
+                <field name="move_type" invisible="1"/>
+                <field name="budget_id" widget="many2many_tags" options="{'no_quick_create': True, 'no_create': True}" domain="[('budget_analytic_id', '=', parent.budget_analytic_id)]"/>
+            </xpath>
+            <xpath expr="//page[@id='aml_tab']//field[@name='line_ids']/list//field[@name='account_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create': True}</attribute>
+            </xpath>
+            <xpath expr="//page[@id='aml_tab']//field[@name='line_ids']/list//field[@name='partner_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create': True}</attribute>
+            </xpath>
+            <xpath expr="//page[@id='aml_tab']//form//field[@name='account_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create': True}</attribute>
+            </xpath>
+            <xpath expr="//page[@id='aml_tab']//form//field[@name='partner_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create': True}</attribute>
+            </xpath>
+            <xpath expr="//page[@id='other_tab']//field[@name='ref']" position="attributes">
+                <attribute name="readonly">state not in ('draft', 'to approve')</attribute>
+            </xpath>
+            <xpath expr="//page[@id='other_tab']//field[@name='invoice_user_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create': True}</attribute>
+            </xpath>
+            <xpath expr="//page[@id='other_tab']//field[@name='partner_bank_id']" position="attributes">
+                <attribute name="readonly">state != 'draft'</attribute>
+                <attribute name="options">{'no_quick_create': True, 'no_create': True}</attribute>
+            </xpath>
+            <xpath expr="//page[@id='other_tab']//field[@name='company_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create': True}</attribute>
+            </xpath>
+            <xpath expr="//page[@id='other_tab']//field[@name='company_id']" position="after">
+                <field name="task_id" invisible="1"/>
+            </xpath>
+            <xpath expr="//page[@id='other_tab']//field[@name='invoice_incoterm_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create': True}</attribute>
+            </xpath>
+            <xpath expr="//page[@id='other_tab']//field[@name='fiscal_position_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create': True}</attribute>
+            </xpath>
+            <xpath expr="//page[@id='other_tab_entry']//field[@name='company_id']" position="attributes">
+                <attribute name="options">{'no_quick_create': True, 'no_create': True}</attribute>
+            </xpath>
+            <xpath expr="//page[@id='other_tab_entry']" position="after">
+                <page name="cheque_details" string="Cheque Details" invisible="move_type != 'entry' or not is_bank_entry">
+                    <group>
+                        <group>
+                            <field name="is_cheque_details_freeze" invisible="1"/>
+                            <field name="is_bank_entry" invisible="1"/>
+                            <field name="check_amount_in_num" invisible="move_type != 'entry'" readonly="is_cheque_details_freeze"/>
+                            <field name="check_amount_in_words" invisible="1"/>
+                            <field name="payment_type" invisible="move_type != 'entry' or not is_bank_entry" readonly="state != 'draft'"/>
+                            <field name="cheque_format_id" invisible="not is_bank_entry or payment_type != 'outbound'" options="{'no_open': True, 'no_create': True}" readonly="is_cheque_details_freeze"/>
+                            <field name="is_cheque_cleared" invisible="not is_bank_entry or payment_type != 'outbound'" readonly="is_cheque_details_freeze"/>
+                            <field name="cheque_cleared_date" invisible="not is_bank_entry or not is_cheque_cleared" readonly="is_cheque_details_freeze"/>
+                        </group>
+                        <group>
+                            <field name="sr_no" readonly="is_cheque_details_freeze"/>
+                            <field name="cheque_number" readonly="is_cheque_details_freeze"/>
+                            <field name="assigned_by" options="{'no_open': True, 'no_create': True}" readonly="is_cheque_details_freeze"/>
+                            <field name="managed_by" options="{'no_open': True, 'no_create': True}" readonly="is_cheque_details_freeze"/>
+                        </group>
+                        <group>
+                            <field name="authorised_by" options="{'no_open': True, 'no_create': True}" readonly="is_cheque_details_freeze"/>
+                            <field name="authorised_date" readonly="is_cheque_details_freeze"/>
+                            <field name="comments" readonly="is_cheque_details_freeze"/>
+                            <field name="towards" readonly="is_cheque_details_freeze"/>
+                            <field name="utr_number" readonly="is_cheque_details_freeze"/>
+                            <field name="rtgs_addition" readonly="is_cheque_details_freeze"/>
+                        </group>
+                        <group>
+                            <field name="trans_id" options="{'no_open': True, 'no_create': True}" readonly="is_cheque_details_freeze"/>
+                            <field name="sender_account_type" options="{'no_open': True, 'no_create': True}" readonly="is_cheque_details_freeze"/>
+                            <field name="beneficiary_account_type" options="{'no_open': True, 'no_create': True}" readonly="is_cheque_details_freeze"/>
+                            <field name="partner_id" options="{'no_open': True, 'no_create': True}" readonly="is_cheque_details_freeze"/>
+                            <field name="partner_bank_id" options="{'no_open': True, 'no_create': True}" readonly="is_cheque_details_freeze"/>
+                            <field name="sender_receiver_info" readonly="is_cheque_details_freeze"/>
+                            <field name="sms_email" readonly="is_cheque_details_freeze"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
     <record id="account_move_view_form_inherit_l10n_in_withholding_inherited" model="ir.ui.view">
         <field name="name">account_move_view_form_inherit_l10n_in_withholding.inherited</field>
         <field name="model">account.move</field>
@@ -63,13 +329,11 @@
             <xpath expr="//field[@name='l10n_in_withholding_line_ids']" position="attributes">
                 <attribute name="readonly">state != 'draft'</attribute>
             </xpath>
-            <xpath expr="//field[@name='l10n_in_withholding_line_ids']/list"
-                   position="attributes">
+            <xpath expr="//field[@name='l10n_in_withholding_line_ids']/list" position="attributes">
                 <attribute name="create">0</attribute>
             </xpath>
 
-            <xpath expr="//field[@name='l10n_in_withholding_line_ids']/list/field[@name='tax_ids']"
-                   position="attributes">
+            <xpath expr="//field[@name='l10n_in_withholding_line_ids']/list/field[@name='tax_ids']" position="attributes">
                 <attribute name="domain">[('l10n_in_tds_tax_type','=','purchase')]</attribute>
             </xpath>
         </field>
@@ -105,11 +369,6 @@
             <field name="source_id" position="attributes">
                 <attribute name="options">{'no_quick_create':True,'no_create': True}</attribute>
             </field>
-            <xpath expr="//group[1]/group[1]" position="inside">
-                <field name="budget_analytic_id"/>
-            </xpath>
-
-
         </field>
     </record>
 
