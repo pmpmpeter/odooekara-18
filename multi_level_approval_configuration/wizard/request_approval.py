@@ -66,12 +66,10 @@ class RequestApproval(models.TransientModel):
         # Add the link to the source document inside the description.
         # in order to bypass the record rule on it
         record = self.env[model_name].browse(res_id)
-        # if model_name == 'crossovered.budget' and record.crossovered_budget_line:
-        #     for line in record.crossovered_budget_line:
-        #         if not line.analytic_account_id and line.user_type == 'odoo':
-        #             raise UserError('Kindly add a Analytic Account for a Budget Line')
-                # if line.planned_amount <= 0:
-                #     raise UserError('Warning !! Planned Amount Should be greater than Zero')
+        if model_name == 'budget.analytic' and record.budget_id:
+            for line in record.budget_id:
+                if not line.analytic_account_id and line.user_type == 'odoo':
+                    raise UserError('Kindly add a Analytic Account for a Budget Line')
 
         record_name = record.display_name or _("this object")
         model_display_name = self.env['ir.model'].sudo().search([('model', '=', model_name)], limit=1).name or _("Unknown Model")
@@ -175,27 +173,27 @@ class RequestApproval(models.TransientModel):
         active_res_model = self._context.get('active_model')
         if active_res_model == 'purchase.order':
             domain1 = [('id', '=', self.origin_ref.budget_id.id)]
-            # budget_allocated_id = self.env['crossovered.budget.lines'].sudo().search(domain1, limit=1)
-            # if budget_allocated_id:
-            #     allocated_amount = budget_allocated_id.planned_amount
-            #     spent_amount = (abs(budget_allocated_id.practical_amount) + budget_allocated_id.reserved_amount)
-            #     available_amount = allocated_amount - spent_amount
-            #     allocated_amount_formatted = formatLang(self.env, allocated_amount,
-            #                                             currency_obj=self.origin_ref.company_id.currency_id)
-            #     available_amount_formatted = formatLang(self.env, available_amount,
-            #                                             currency_obj=self.origin_ref.company_id.currency_id)
-            #     if self.origin_ref.amount_total > available_amount:
-            #         raise UserError(
-            #             _("Alert !! Budget is exceeding for %s."
-            #                   "Allocated budget is %s and Available balance is %s.")% (self.origin_ref.budget_id.display_name, allocated_amount_formatted, available_amount_formatted)
-                    # )
-        # elif active_res_model == 'crossovered.budget':
-            # budget_id = self.env['crossovered.budget'].sudo().browse(self.origin_ref.id)
-            # if not budget_id.cash_payment_ids:
-            #     raise UserError('Please Add Monthly breakup Lines for the Budget: %s.' %budget_id.name)
+            budget_allocated_id = self.env['budget.line'].sudo().search(domain1, limit=1)
+            if budget_allocated_id:
+                allocated_amount = budget_allocated_id.budget_amount
+                spent_amount = (abs(budget_allocated_id.committed_amount) + budget_allocated_id.reserved_amount)
+                available_amount = allocated_amount - spent_amount
+                allocated_amount_formatted = formatLang(self.env, allocated_amount,
+                                                        currency_obj=self.origin_ref.company_id.currency_id)
+                available_amount_formatted = formatLang(self.env, available_amount,
+                                                        currency_obj=self.origin_ref.company_id.currency_id)
+                if self.origin_ref.amount_total > available_amount:
+                    raise UserError(
+                        _("Alert !! Budget is exceeding for %s."
+                              "Allocated budget is %s and Available balance is %s.")% (self.origin_ref.budget_id.display_name, allocated_amount_formatted, available_amount_formatted)
+                    )
+        elif active_res_model == 'budget.analytic':
+            budget_id = self.env['budget.analytic'].sudo().browse(self.origin_ref.id)
+            if not budget_id.cash_payment_ids:
+                raise UserError('Please Add Monthly breakup Lines for the Budget: %s.' %budget_id.name)
 
-            # elif not budget_id.show_budget_sum:
-            #     raise UserError('Please Get the Cash Outflow/Inflow.')
+            elif not budget_id.show_budget_sum:
+                raise UserError('Please Get the Cash Outflow/Inflow.')
         #checking budget Code for Accounts
         elif active_res_model == 'account.move':
             account_move_id = self.env['account.move'].sudo().browse(self.origin_ref.id)
@@ -207,12 +205,8 @@ class RequestApproval(models.TransientModel):
                     if move.move_type == 'entry' and not move.company_id.disable_budget_company:
                         for line1 in move.line_ids.filtered(lambda l: l.account_id.account_type in ['asset_receivable','asset_cash','asset_current','asset_non_current','asset_prepayments','asset_fixed', 'expense'] and l.account_id.is_cash_rounding == False):
                         # for line1 in move.line_ids.filtered(lambda l: l.account_id.is_cash_rounding == False):
-                            if not move.crossovered_budget:
+                            if not move.budget_analytic_id:
                                 raise UserError('Warning!! Kindly select a Budget.')
-                            if not line1.budget_id.general_budget_id.account_ids:
-                                raise UserError(
-                                    _("Budget Code is mandatory.\n"
-                                      "To proceed without a Budget Code, please enable Disable Budget Code in the respective COA."))
                             if line1.budget_id and not line1.filtered(lambda e: e.analytic_distribution):
                                 raise UserError(_("Alert !! Analytic Account not Mapped to %s for Entry -%s")%(
                                     line1.account_id.display_name,move.display_name))
@@ -222,12 +216,8 @@ class RequestApproval(models.TransientModel):
 
                     elif move.move_type != 'entry' and not move.company_id.disable_budget_company:
                         for line1 in move.invoice_line_ids.filtered(lambda l:l.account_id.is_cash_rounding == False):
-                            if not move.crossovered_budget:
+                            if not move.budget_analytic_id:
                                 raise UserError('Warning!! Kindly select a Budget.')
-                            if not line1.budget_id.general_budget_id.account_ids:
-                                raise UserError(
-                                    _("Budget Code is mandatory.\n"
-                                      "To proceed without a Budget Code, please enable Disable Budget Code in the respective COA."))
                             if not line1.filtered(lambda e: e.analytic_distribution):
                                 raise UserError(_("Alert !! Analytic Account not Mapped to %s for Entry -%s")%(
                                     line1.account_id.display_name,move.display_name))
@@ -251,12 +241,12 @@ class RequestApproval(models.TransientModel):
         request.write({'request_date': self.request_date})
         request.action_submit()
         res_model = self._context.get('active_model')
-        # if res_model == 'crossovered.budget':
-        #     if not self.origin_ref.crr_share_ids:
-        #         raise UserError(_("Can not submit for request approval without share amount."))
-        #     self.origin_ref.approval_document = request
-        #     self.origin_ref.state = 'to approve'
-        #     self.origin_ref.message_post(body='Document is submitted for approval')
+        if res_model == 'budget.analytic':
+            if not self.origin_ref.crr_share_ids:
+                raise UserError(_("Can not submit for request approval without share amount."))
+            self.origin_ref.approval_document = request
+            self.origin_ref.state = 'to approve'
+            self.origin_ref.message_post(body='Document is submitted for approval')
         if res_model == 'account.move':
             self.origin_ref.approval_document = request
             self.origin_ref.state = 'to approve'
