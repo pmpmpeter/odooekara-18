@@ -74,6 +74,11 @@
                 <field name="recurring_days" invisible="recurring==False"/>
                 <field name="recurring_until_date" invisible="recurring==False" required="recurring!=False"/>
             </xpath>
+            <xpath expr="//field[@name='payment_method_line_id']" position="after">
+                <field name="cheque_format_id" invisible="show_partner_bank_account or payment_type != 'outbound'" options="{'no_open':True,'no_create': True}" readonly="state not in ('draft','to approve')"/>
+                <field name="is_cheque_cleared" invisible="1" readonly="is_cheque_details_freeze"/>
+                <field name="cheque_cleared_date" invisible="1" readonly="is_cheque_details_freeze"/>
+            </xpath>
             <xpath expr="//group[@name='main_group']" position="after">
                 <notebook>
                     <page name="cheque_details" string="Cheque Details"
