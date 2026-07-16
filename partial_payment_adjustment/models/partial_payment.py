@@ -106,7 +106,7 @@ class AccountPayment(models.Model):
             # ✅ compute ref AFTER updating all lines
             ref_value = rec._prepare_ref_from_invoices()
 
-            update_vals = {'ref': ref_value}
+            update_vals = {'memo': ref_value}
 
             # CONDITION → update towards also
             if (not rec.show_partner_bank_account) or rec.payment_type == 'inbound':
