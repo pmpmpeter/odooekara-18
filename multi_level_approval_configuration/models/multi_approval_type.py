@@ -369,7 +369,6 @@ for rec in self:
             "multi_level_approval_configuration.rework_approval_action", False
         )
         if wiz_act:
-            print(wiz_act,"testingggggggggggg")
         if not wiz_act or not wiz_view_act or not wiz_rework_act:
             raise UserError(_("Not found the action !"))
 
@@ -554,9 +553,9 @@ for rec in self:
         self.create_views(compute_field, f_names[0], f_names[1])
         self.is_configured = True
         self.state = 'confirm'
-        # if self.model_id == 'crossovered.budget':
-        #     po_ids = self.env['crossovered.budget'].search([('state','=','draft')])
-        #     po_ids.write({'approval_state':'To Submit for Approval'})
+        if self.model_id == 'budget.analytic':
+            po_ids = self.env['budget.analytic'].search([('state','=','draft')])
+            po_ids.write({'approval_state':'To Submit for Approval'})
         if self.model_id == 'account.move':
             move_ids = self.env['account.move'].search([('state','=','draft')])
             move_ids.write({'approval_state':'To Submit for Approval'})
@@ -577,9 +576,9 @@ for rec in self:
             move_ids.write({'approval_state':'To Submit for Approval'})
     def action_draft(self):
         self.state='draft'
-        # if self.model_id == 'crossovered.budget':
-        #     po_ids = self.env['crossovered.budget'].search([('state','=','draft')])
-        #     po_ids.write({'approval_state':'Not Applicable'})
+        if self.model_id == 'budget.analytic':
+            po_ids = self.env['budget.analytic'].search([('state','=','draft')])
+            po_ids.write({'approval_state':'Not Applicable'})
         if self.model_id == 'account.move':
             move_ids = self.env['account.move'].search([('state','=','draft')])
             move_ids.write({'approval_state':'Not Applicable'})
@@ -601,9 +600,9 @@ for rec in self:
         self.is_configured = False
     def action_cancelled(self):
         self.state='cancelled'
-        # if self.model_id == 'crossovered.budget':
-        #     po_ids = self.env['crossovered.budget'].search([('state','=','draft')])
-        #     po_ids.write({'approval_state':'Not Applicable'})
+        if self.model_id == 'budget.analytic':
+            po_ids = self.env['budget.analytic'].search([('state','=','draft')])
+            po_ids.write({'approval_state':'Not Applicable'})
         if self.model_id == 'account.move':
             move_ids = self.env['account.move'].search([('state','=','draft')])
             move_ids.write({'approval_state':'Not Applicable'})

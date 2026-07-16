@@ -56,6 +56,10 @@
         <field name="model">account.payment</field>
         <field name="inherit_id" ref="account.view_account_payment_form"/>
         <field name="arch" type="xml">
+            <field name="memo" position="after">
+                <field name='utr_number'  readonly="is_cheque_details_freeze"/>
+                <field name='old_utr_number' invisible='1'/>
+            </field>
             <xpath expr="//field[@name='partner_bank_id']" position="after">
                 <field name="type" invisible="payment_type != 'outbound'" readonly="state not in ('draft','to approve')"/>
                 <field name="partner_bank_id" string="Vendor Bank Account"
@@ -227,6 +231,11 @@
                         </group>
                     </group>
                 </page>
+            </xpath>
+            <xpath expr="//page/field[@name='payment_ids']/list/field[@name='state']" position="before">
+                <field name="is_cheque_cleared" column_invisible=""/>
+                <field name="cheque_cleared_date" column_invisible=""/>
+                <field name="utr_number" optional='hide'/>
             </xpath>
         </field>
     </record>
