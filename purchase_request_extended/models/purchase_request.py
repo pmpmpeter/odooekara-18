@@ -11,10 +11,10 @@ class PurchaseRequest(models.Model):
     _inherit = "purchase.request"
     _description = "Purchase Request"
 
-    # budget_id = fields.Many2one('crossovered.budget.lines', 'Budget Code', copy=False, required=1)
-    # budget_balance_warning = fields.Html(
-    #     compute='_compute_budget_balance_warning',
-    # )
+    budget_id = fields.Many2one('budget.line', 'Budget Code', copy=False, required=1)
+    budget_balance_warning = fields.Html(
+        compute='_compute_budget_balance_warning',
+    )
     approval_state = fields.Char(string='Approval Status', compute='compute_approval_state', store=True, copy=False,
                                  tracking=True)
     approval_document = fields.Many2one('multi.approval', string='Approval Record', copy=False)
@@ -57,40 +57,38 @@ class PurchaseRequest(models.Model):
                     record.approval_state = 'Not Applicable'
 
 
-    # @api.depends('budget_id','company_id', 'estimated_cost', 'currency_id', 'line_ids.product_qty', 'line_ids.estimated_cost')
-    # def _compute_budget_balance_warning(self):
-    #     msg=''
-    #     for order in self.filtered(lambda s: s.budget_id):
-    #         order.with_company(order.company_id)
-    #         order.budget_balance_warning = ''
-    #         #po_date = order.date_order or fields.Date.today()
-    #         # domain1 = [('date_from', '<=', po_date), ('date_to', '>=', po_date),('id', '=', order.budget_id.id)]
-    #         domain1 = [('id', '=', order.budget_id.id)]
-    #         budget_allocated_id = self.env['crossovered.budget.lines'].sudo().search(domain1, limit=1)
-    #         if budget_allocated_id:
-    #             allocated_amount= budget_allocated_id.planned_amount
-    #             spent_amount = (abs(budget_allocated_id.practical_amount)+budget_allocated_id.reserved_amount)
-    #             available_amount = allocated_amount - spent_amount
-    #             allocated_amount_formatted = formatLang(self.env, allocated_amount, currency_obj=order.company_id.currency_id)
-    #             available_amount_formatted = formatLang(self.env, available_amount, currency_obj=order.company_id.currency_id)
-    #             if order.estimated_cost > available_amount:
-    #                 msg = Markup(
-    #                           "<span style='color: red;'>Alert !! Budget is exceeding for %s."
-    #                           "Allocated budget is %s and Available balance is %s.</span>"
-    #                       ) % (order.budget_id.display_name, allocated_amount_formatted, available_amount_formatted)
-    #             else:
-    #                 msg = Markup(
-    #                           "For %s Allocated budget is %s and Available balance is %s."
-    #                       ) % (order.budget_id.display_name, allocated_amount_formatted, available_amount_formatted)
-    #         else:
-    #             msg = Markup("Alert !! No active budget found.</span>")
-    #     self.budget_balance_warning = msg
+    @api.depends('budget_id','company_id', 'estimated_cost', 'currency_id', 'line_ids.product_qty', 'line_ids.estimated_cost')
+    def _compute_budget_balance_warning(self):
+        msg=''
+        for order in self.filtered(lambda s: s.budget_id):
+            order.with_company(order.company_id)
+            order.budget_balance_warning = ''
+            domain1 = [('id', '=', order.budget_id.id)]
+            budget_allocated_id = self.env['budget.line'].sudo().search(domain1, limit=1)
+            if budget_allocated_id:
+                allocated_amount= budget_allocated_id.planned_amount
+                spent_amount = (abs(budget_allocated_id.practical_amount)+budget_allocated_id.reserved_amount)
+                available_amount = allocated_amount - spent_amount
+                allocated_amount_formatted = formatLang(self.env, allocated_amount, currency_obj=order.company_id.currency_id)
+                available_amount_formatted = formatLang(self.env, available_amount, currency_obj=order.company_id.currency_id)
+                if order.estimated_cost > available_amount:
+                    msg = Markup(
+                              "<span style='color: red;'>Alert !! Budget is exceeding for %s."
+                              "Allocated budget is %s and Available balance is %s.</span>"
+                          ) % (order.budget_id.display_name, allocated_amount_formatted, available_amount_formatted)
+                else:
+                    msg = Markup(
+                              "For %s Allocated budget is %s and Available balance is %s."
+                          ) % (order.budget_id.display_name, allocated_amount_formatted, available_amount_formatted)
+            else:
+                msg = Markup("Alert !! No active budget found.</span>")
+        self.budget_balance_warning = msg
 
 class PurchaseRequestLineMakePurchaseOrder(models.TransientModel):
         _inherit = "purchase.request.line.make.purchase.order"
         _description = "Purchase Request Line Make Purchase Order"
 
-        budget_id = fields.Many2one(comodel_name="crossovered.budget.lines", string='Budget')
+        budget_id = fields.Many2one(comodel_name="budget.line", string='Budget')
         purchase_type = fields.Many2one(comodel_name='purchase.orders.type')
 
         @api.model
