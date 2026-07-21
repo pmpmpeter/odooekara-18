@@ -74,12 +74,7 @@
                         </page>
                     </notebook>
                 </sheet>
-                <div class="oe_chatter">
-                    <field name="message_follower_ids" widget="mail_followers"
-                           groups="base.group_user"/>
-                    <field name="activity_ids" widget="mail_activity"/>
-                    <field name="message_ids" widget="mail_thread"/>
-                </div>
+                <chatter/>
             </form>
         </field>
     </record>
@@ -103,6 +98,10 @@
         <field name="search_view_id" ref="employee_training_view_search"/>
         <field name="domain">[]</field>
         <field name="context">{}</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('employee_orientation.employee_training_view_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('employee_orientation.employee_training_view_form')}),
+        ]"/>
         <field name="help" type="html">
             <field class="oe_view_nocontent_create">
                 Create Employee Training Program.
