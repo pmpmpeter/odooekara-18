@@ -7,7 +7,6 @@
         <field name="priority" eval="8"/>
         <field name="arch" type="xml">
             <list string="Employee Separation" decoration-danger="state in ('cancel')">
-                <!--                <field name="status_boolean" column_invisible="1"/>-->
                 <field name="employee_id"/>
                 <field name="department_id"/>
                 <field name="employee_contract"/>
@@ -17,8 +16,6 @@
                 <field name="resignation_type"/>
                 <field name="notice_period"/>
                 <field name="state" column_invisible="1"/>
-                <!--                <field name="state" widget='badge' decoration-info="state in ('confirm','manager_approved')"-->
-                <!--                       decoration-success="state =='hr_approved'" decoration-danger="state == 'cancel'"/>-->
             </list>
         </field>
     </record>
@@ -118,6 +115,10 @@
         <field name="domain">[('state', 'in', ('draft',
             'confirm', 'manager_approved', 'cancel'))]
         </field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('hr_resignation.hr_resignation_view_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('hr_resignation.hr_resignation_view_form')}),
+        ]"/>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">Create the First Separation
             </p>
@@ -129,6 +130,10 @@
         <field name="res_model">hr.resignation</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[('state', '=', 'hr_approved')]</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'list', 'view_id': ref('hr_resignation.hr_resignation_view_tree')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('hr_resignation.hr_resignation_view_form')}),
+        ]"/>
         <field name="help" type="html">
             <p class="oe_view_nocontent_create">Approved Separation
             </p>
@@ -140,7 +145,7 @@
               sequence="9"/>
     <!-- Menu item for Resignation Request -->
     <menuitem id="hr_resignation_menu_request"
-              parent="hr_resignation_menu_root" name="Separation Request"
+              parent="hr_resignation_menu_root" name="Separation Requests"
               action="hr_resignation_action" groups="base.group_user"
               sequence="1"/>
     <!-- Menu item for Approved Resignation -->
