@@ -132,7 +132,6 @@ class HrEmployeeBase(models.AbstractModel):
         if ignore_future:
             leaves_domain.append(('date_from', '<=', target_date))
         leaves = self.env['hr.leave'].search(leaves_domain)
-
         leaves_per_employee_type = defaultdict(lambda: defaultdict(lambda: self.env['hr.leave']))
         for leave in leaves:
             leaves_per_employee_type[leave.employee_id][leave.holiday_status_id] |= leave
@@ -141,12 +140,14 @@ class HrEmployeeBase(models.AbstractModel):
             ('employee_id', 'in', employees.ids),
             ('holiday_status_id', 'in', leave_types.ids),
             ('state', '=', 'validate'),
-        ]).filtered(lambda al: al.active or not al.employee_id.active)
+        ])
         allocations_per_employee_type = defaultdict(lambda: defaultdict(lambda: self.env['hr.leave.allocation']))
         for allocation in allocations:
             allocations_per_employee_type[allocation.employee_id][allocation.holiday_status_id] |= allocation
 
+        
         allocations_leaves_consumed = defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: defaultdict(lambda: 0))))
+
         to_recheck_leaves_per_leave_type = defaultdict(lambda:
             defaultdict(lambda: {
                 'excess_days': defaultdict(lambda: {
@@ -174,6 +175,7 @@ class HrEmployeeBase(models.AbstractModel):
                 'leaves_taken': 0,
                 'virtual_leaves_taken': 0,
             })
+
         for employee in employees:
             for leave_type in leave_types:
                 allocations_with_date_to = self.env['hr.leave.allocation']
@@ -189,15 +191,13 @@ class HrEmployeeBase(models.AbstractModel):
                     leave_duration_field = 'number_of_days'
                     leave_unit = 'days'
                 else:
-                    leave_duration_field = 'number_of_hours_display'
+                    leave_duration_field = 'number_of_hours'
                     leave_unit = 'hours'
 
                 leave_type_data = allocations_leaves_consumed[employee][leave_type]
-
                 for leave in leaves_per_employee_type[employee][leave_type].sorted('date_from'):
                     leave_duration = leave[leave_duration_field]
                     skip_excess = False
-
 
                     # if sorted_leave_allocations.filtered(lambda alloc: alloc.allocation_type == 'accrual') and leave.date_from.date() > target_date:
                     #     to_recheck_leaves_per_leave_type[employee][leave_type]['to_recheck_leaves'] |= leave
@@ -238,6 +238,7 @@ class HrEmployeeBase(models.AbstractModel):
                             if leave.state == 'validate':
                                 leave_type_data[allocation]['leaves_taken'] += allocated_time
                                 leave_type_data[allocation]['remaining_leaves'] -= allocated_time
+
                             leave_duration -= allocated_time
                             if not leave_duration:
                                 break
@@ -249,9 +250,9 @@ class HrEmployeeBase(models.AbstractModel):
                             }
                     else:
                         if leave_unit == 'hours':
-                            allocated_time = leave.number_of_hours_display
+                            allocated_time = leave.number_of_hours
                         else:
-                            allocated_time = leave.number_of_days_display
+                            allocated_time = leave.number_of_days
                         leave_type_data[False]['virtual_leaves_taken'] += allocated_time
                         leave_type_data[False]['virtual_remaining_leaves'] = 0
                         leave_type_data[False]['remaining_leaves'] = 0
