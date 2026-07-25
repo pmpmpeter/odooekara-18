@@ -167,7 +167,7 @@
     <record id="action_director_approve_manpower" model="ir.actions.act_window">
         <field name="name">Manpower Approval</field>
         <field name="res_model">director.approve.manpower</field>
-        <field name="view_mode">tree</field>
+        <field name="view_mode">list</field>
         <field name="view_id" ref="view_director_approve_manpower_tree"/>
     </record>
     <!-- Menu -->
