@@ -79,7 +79,7 @@ class CashManagement(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'CRR Line Items',
-            'view_mode': 'tree',
+            'view_mode': 'list',
             'res_model': 'cash.management.line',
             'domain': [('id', 'in', self.cash_payment_ids.ids)],
             'context': {

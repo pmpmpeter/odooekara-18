@@ -661,7 +661,7 @@ class CRRShareLines(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'CRR Line Items',
-            'view_mode': 'tree',
+            'view_mode': 'list',
             # 'view_id': view_id,
             'res_model': 'crr.budget.line.consolidate',
             'domain': [('id', 'in', consolidate_ids.ids)],

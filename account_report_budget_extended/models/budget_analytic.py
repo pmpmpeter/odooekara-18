@@ -588,7 +588,7 @@ class BudgetAnalytic(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'CRR Line Items',
-            'view_mode': 'tree',
+            'view_mode': 'list',
             'view_id': view_id,
             'res_model': 'crr.budget.line',
             'domain': [('id', 'in', crr_ids.ids)],
@@ -602,7 +602,7 @@ class BudgetAnalytic(models.Model):
         action = {
             'type': 'ir.actions.act_window',
             'name': 'Share Amount',
-            'view_mode': 'tree',
+            'view_mode': 'list',
             # 'view_id': view_id,
             'res_model': 'crr.share.line',
             'context': {'group_by': ['version_name']},
@@ -919,7 +919,7 @@ class BudgetAnalytic(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'Consolidate CRR',
-            'view_mode': 'tree',
+            'view_mode': 'list',
             'res_model': 'crr.budget.line.consolidate',
             'domain': [('id', 'in', self.crr_consolidate.ids)],
         }
@@ -937,7 +937,7 @@ class BudgetAnalytic(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'Consolidate CRR Total',
-            'view_mode': 'tree',
+            'view_mode': 'list',
             'res_model': 'crr.budget.line',
             'domain': ['&', ('budget_id', '=', self.id), '|', '|',
                        ('is_budget_in_sum_line', '=', True),

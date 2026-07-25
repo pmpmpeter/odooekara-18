@@ -82,7 +82,7 @@ class CashRequirementReport(models.Model):
     #     action = {
     #         'type': 'ir.actions.act_window',
     #         'name': 'CRR Report',
-    #         'view_mode': 'tree',
+    #         'view_mode': 'list',
     #         'res_model': 'cash.requirement.lines',
     #         # 'context': {'group_by': ['version_name']},
     #     }

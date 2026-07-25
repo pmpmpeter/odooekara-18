@@ -153,7 +153,7 @@ class FundManagementCRR(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'Cash Pool',
-            'view_mode': 'tree',
+            'view_mode': 'list',
             'view_id': self.env.ref('accounts_extended.cash_pool_tree_view_extend').id,
             'res_model': 'cash.pool.lines',
             'context': {'group_by': ['version_name']},
