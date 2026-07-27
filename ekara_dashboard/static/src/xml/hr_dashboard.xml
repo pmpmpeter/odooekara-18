@@ -352,7 +352,7 @@ t-key="g.id">
 t-on-click=
 "openGrade.bind(this,g.id)">
 
-<span class="badge">
+<span class="grade_badge">
 
 <t t-esc="g.count"/>
 
