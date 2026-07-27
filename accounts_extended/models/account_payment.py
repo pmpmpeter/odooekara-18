@@ -220,7 +220,7 @@ class AccountPayment(models.Model):
     @api.model
     def _get_trigger_fields_to_synchronize(self):
         return (
-            'date', 'amount', 'payment_type', 'partner_type', 'payment_reference', 'is_internal_transfer',
+            'date', 'amount', 'payment_type', 'partner_type', 'payment_reference',
             'partner_id', 'partner_bank_id', 'journal_id','analytic_account_id', 'other_charges_lines',
             'payment_base_amount','other_charge_applicable'
         )
@@ -498,16 +498,16 @@ class AccountPayment(models.Model):
                 else:
                     record.approval_state = 'Not Applicable'
 
-    @api.depends('partner_id', 'journal_id', 'destination_journal_id')
-    def _compute_is_internal_transfer(self):
-        for payment in self:
-            if 'is_internal_transfer' in self.env.context:
-                if self.env.context['is_internal_transfer']:
-                    payment.is_internal_transfer = True
-            else:
-                payment.is_internal_transfer = payment.partner_id \
-                                               and payment.partner_id == payment.journal_id.company_id.partner_id \
-                                               and payment.destination_journal_id
+    # @api.depends('partner_id', 'journal_id', 'destination_journal_id')
+    # def _compute_is_internal_transfer(self):
+    #     for payment in self:
+    #         if 'is_internal_transfer' in self.env.context:
+    #             if self.env.context['is_internal_transfer']:
+    #                 payment.is_internal_transfer = True
+    #         else:
+    #             payment.is_internal_transfer = payment.partner_id \
+    #                                            and payment.partner_id == payment.journal_id.company_id.partner_id \
+    #                                            and payment.destination_journal_id
 
     @api.onchange('type')
     def onchange_type(self):

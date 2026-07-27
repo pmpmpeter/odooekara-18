@@ -100,7 +100,7 @@
                                 Only
                             </td>
                         </tr>
-                        <t t-if="not o.is_internal_transfer">
+                        <!-- <t t-if="not o.is_internal_transfer"> -->
                             <tr>
                                 <td style="font-weight: bold;">Beneficiary Account Number:</td>
                                 <td style="border: 1px solid #000; padding: 2px;">
@@ -111,8 +111,8 @@
                                     <t t-esc="o.partner_bank_id.acc_number"/>
                                 </td>
                             </tr>
-                        </t>
-                        <t t-else="">
+                        <!-- </t> -->
+                        <!-- <t t-else="">
                             <tr>
                                 <td style="font-weight: bold;">Beneficiary Account Number:</td>
                                 <td style="border: 1px solid #000; padding: 2px;">
@@ -123,7 +123,7 @@
                                     <t t-esc="o.destination_journal_id.bank_account_id.acc_number"/>
                                 </td>
                             </tr>
-                        </t>
+                        </t> -->
 
                         <tr>
                             <td style="font-weight: bold;">Beneficiary Name:</td>
@@ -131,7 +131,7 @@
                                 <t t-esc="o.partner_bank_id.acc_holder_name"/>
                             </td>
                         </tr>
-                        <t t-if="not o.is_internal_transfer">
+                        <!-- <t t-if="not o.is_internal_transfer"> -->
                             <tr>
                                 <td style="font-weight: bold;">Beneficiary Bank Name:</td>
                                 <td style="border: 1px solid #000; padding: 2px;line-height: 8px; height: 8px;">
@@ -142,8 +142,8 @@
                                     <t t-esc="o.partner_bank_id.bank_id.ifsc_code"/>
                                 </td>
                             </tr>
-                        </t>
-                        <t t-else="">
+                        <!-- </t> -->
+                        <!-- <t t-else="">
                             <tr>
                                 <td style="font-weight: bold;">Beneficiary Bank Name:</td>
                                 <td style="border: 1px solid #000; padding: 2px;line-height: 8px; height: 8px;">
@@ -154,8 +154,8 @@
                                     <t t-esc="o.destination_journal_id.bank_account_id.bank_id.ifsc_code"/>
                                 </td>
                             </tr>
-                        </t>
-                        <t t-if="not o.is_internal_transfer">
+                        </t> -->
+                        <!-- <t t-if="not o.is_internal_transfer"> -->
                             <tr>
                                 <td style="font-weight: bold;">Beneficiary Branch:</td>
                                 <td style="border: 1px solid #000; padding: 2px;">
@@ -166,8 +166,8 @@
                                     <t t-esc="o.partner_bank_id.bank_id.city"/>
                                 </td>
                             </tr>
-                        </t>
-                        <t t-else="">
+                        <!-- </t> -->
+                        <!-- <t t-else="">
                             <tr>
                                 <td style="font-weight: bold;">Beneficiary Branch:</td>
                                 <td style="border: 1px solid #000; padding: 2px;">
@@ -178,7 +178,7 @@
                                     <t t-esc="o.destination_journal_id.bank_account_id.bank_id.city"/>
                                 </td>
                             </tr>
-                        </t>
+                        </t> -->
                     </table>
                     <p style="font-weight: bold; margin: 5px 0;">I have read and understood the terms and conditions
                         mentioned overleaf:
