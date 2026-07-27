@@ -10,7 +10,7 @@ class HrPayslipRun(models.Model):
         return {
             "type": "ir.actions.act_window",
             "res_model": "hr.payslip",
-            "views": [[False, "tree"], [False, "form"]],
+            "views": [[False, "list"], [False, "form"]],
             "domain": [['id', 'in', self.slip_ids.ids]],
             "context": {'default_payslip_run_id': self.id},
             "name": "Payroll Input Sheet",

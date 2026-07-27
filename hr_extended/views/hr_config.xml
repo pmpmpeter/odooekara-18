@@ -49,7 +49,7 @@
         <record id="hr_job_levels_action" model="ir.actions.act_window">
             <field name="name">Job Levels</field>
             <field name="res_model">hr.job.levels</field>
-            <field name="view_mode">tree</field>
+            <field name="view_mode">list</field>
             <field name="search_view_id" ref="view_job_level_search"/>
             <field name="target">current</field>
             <field name="context">{}</field>
@@ -114,7 +114,7 @@
         <record id="hr_position_names_action" model="ir.actions.act_window">
             <field name="name">Position Names</field>
             <field name="res_model">hr.position.names</field>
-            <field name="view_mode">tree</field>
+            <field name="view_mode">list</field>
             <field name="search_view_id" ref="view_position_names_search"/>
             <field name="target">current</field>
             <field name="context">{}</field>
@@ -179,7 +179,7 @@
         <record id="business_units_action" model="ir.actions.act_window">
             <field name="name">Business Units</field>
             <field name="res_model">business.units</field>
-            <field name="view_mode">tree</field>
+            <field name="view_mode">list</field>
             <field name="search_view_id" ref="view_business_units_search"/>
             <field name="target">current</field>
             <field name="context">{}</field>
@@ -244,7 +244,7 @@
         <record id="location_master_action" model="ir.actions.act_window">
             <field name="name">Location</field>
             <field name="res_model">location.master</field>
-            <field name="view_mode">tree</field>
+            <field name="view_mode">list</field>
             <field name="search_view_id" ref="view_location_master_search"/>
             <field name="target">current</field>
             <field name="context">{}</field>

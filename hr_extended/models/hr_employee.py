@@ -15,9 +15,8 @@ class HrLeave(models.Model):
         default_domain = [
             '|',
             ('employee_id.company_id', 'in', self.env.context.get('allowed_company_ids', [])),
-            '&', ('multi_employee', '=', True),
             ('state', 'in', ['draft', 'confirm', 'validate1']),
-            ('employee_ids.company_id', 'in', self.env.context.get('allowed_company_ids', [])),
+            ('employee_id.company_id', 'in', self.env.context.get('allowed_company_ids', [])),
         ]
 
         # Admin → see everything (keep default domain)

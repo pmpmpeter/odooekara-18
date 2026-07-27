@@ -82,7 +82,7 @@ class FundManagementCRR(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'Budget(Non-Odoo)',
-            'view_mode': 'tree',
+            'view_mode': 'list',
             'view_id': self.env.ref('account_budget.view_budget_analytic_tree').id,
             'res_model': 'account.report.budget',
             'domain': [('id', 'in', budget_id.ids)],
@@ -95,7 +95,7 @@ class FundManagementCRR(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'Budget(Odoo)',
-            'view_mode': 'tree',
+            'view_mode': 'list',
             'view_id': self.env.ref('account_budget.view_budget_analytic_tree').id,
             'res_model': 'account.report.budget',
             'domain': [('id', 'in', budget_id.ids)],
@@ -110,7 +110,7 @@ class FundManagementCRR(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'CRR Line Items',
-            'view_mode': 'tree',
+            'view_mode': 'list',
             'view_id': self.env.ref('accounts_extended.crr_budget_line_extend1').id,
             'res_model': 'crr.budget.line',
             'domain': [('id', 'in', crr_ids.ids)],
@@ -847,7 +847,7 @@ class TeConsolidation(models.Model):
             return {
                 'type': 'ir.actions.act_window',
                 'name': 'Budget Contribution',
-                'view_mode': 'tree',
+                'view_mode': 'list',
                 'res_model': 'budget.contribution.te.line',
                 'domain': [('id', 'in', contribution_ids.ids)],
                 'context': {'group_by': ['company_id']},
@@ -862,7 +862,7 @@ class TeConsolidation(models.Model):
             return {
                 'type': 'ir.actions.act_window',
                 'name': 'View Share',
-                'view_mode': 'tree',
+                'view_mode': 'list',
                 'res_model': 'crr.share.line',
                 'domain': [('id', 'in', share_ids.ids)],
                 'context': {'group_by': ['ref_company']},
@@ -902,7 +902,7 @@ class TeConsolidation(models.Model):
         return {
             'type': 'ir.actions.act_window',
             'name': 'CRR Consolidation',
-            'view_mode': 'tree',
+            'view_mode': 'list',
             'res_model': 'te.consolidation.line',
             'domain': [('id', 'in', self.crr_consolidate_ids.ids)],
             'context': {'group_by': ['user_type', 'requested_from']},
