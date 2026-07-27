@@ -421,7 +421,7 @@
         <field name="name">Intra Bank Transfer</field>
         <field name="res_model">account.payment</field>
         <field name="view_mode">list,form</field>
-        <field name="context">{'default_is_fund_requsiting': True,'is_internal_transfer': True,'default_payment_type':'outbound'}</field>
+        <field name="context">{'default_is_fund_requsiting': True,'default_payment_type':'outbound'}</field>
         <field name="domain">[('is_fund_requsiting', '=', True)]</field>
     </record>
 
@@ -429,7 +429,7 @@
         <field name="name">Contra Payment</field>
         <field name="res_model">account.payment</field>
         <field name="view_mode">list,form</field>
-        <field name="context">{'default_is_contra_payment': True,'is_internal_transfer': True,'default_payment_type':'outbound'}</field>
+        <field name="context">{'default_is_contra_payment': True,'default_payment_type':'outbound'}</field>
         <field name="domain">[('is_contra_payment','=',True)]</field>
     </record>
 
@@ -437,7 +437,7 @@
         <field name="name">Credit Card Payment</field>
         <field name="res_model">account.payment</field>
         <field name="view_mode">list,form</field>
-        <field name="context">{'default_is_credit_payment': True,'is_internal_transfer': True,'default_payment_type':'outbound'}</field>
+        <field name="context">{'default_is_credit_payment': True,'default_payment_type':'outbound'}</field>
         <field name="domain">[('is_credit_payment','=', True),('payment_type','=','outbound')]</field>
     </record>
 

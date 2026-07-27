@@ -66,16 +66,16 @@ class AccountPayment(models.Model):
                 # pdb.set_trace()
                 line.managed_by = employee.parent_id.user_id.id or False
 
-    @api.depends('partner_id', 'journal_id', 'destination_journal_id')
-    def _compute_is_internal_transfer(self):
-        for payment in self:
-            if 'is_internal_transfer' in self.env.context:
-                if self.env.context['is_internal_transfer']:
-                    payment.is_internal_transfer = True
-            else:
-                payment.is_internal_transfer = payment.partner_id \
-                                               and payment.partner_id == payment.journal_id.company_id.partner_id \
-                                               and payment.destination_journal_id
+    # @api.depends('partner_id', 'journal_id', 'destination_journal_id')
+    # def _compute_is_internal_transfer(self):
+    #     for payment in self:
+    #         if 'is_internal_transfer' in self.env.context:
+    #             if self.env.context['is_internal_transfer']:
+    #                 payment.is_internal_transfer = True
+    #         else:
+    #             payment.is_internal_transfer = payment.partner_id \
+    #                                            and payment.partner_id == payment.journal_id.company_id.partner_id \
+    #                                            and payment.destination_journal_id
 
     def print_checks(self):
         """

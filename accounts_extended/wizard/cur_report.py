@@ -1160,7 +1160,7 @@ class AccountCURReportWizard(models.TransientModel):
         #internal transfer entry
         pay_rec = self.env['account.payment'].sudo().search([
             ('state', '=', 'posted'),
-            ('is_internal_transfer','=', True),
+            # ('is_internal_transfer','=', True),
             ('company_id', '=', company_id.id),
             ('move_id.state', '=', 'posted')])
         groups_by_match = defaultdict(set)
@@ -1205,7 +1205,8 @@ class AccountCURReportWizard(models.TransientModel):
                                         'mov_id': r.id,
                                         'partner_id': (
                                             r.move_id.journal_id.name
-                                            if r.move_id.payment_id and r.move_id.payment_id.is_internal_transfer
+                                            # if r.move_id.payment_id and r.move_id.payment_id.is_internal_transfer
+                                            if r.move_id.payment_id
                                             else r.partner_id.name if r.partner_id
                                             else r.account_id.name
                                         ),
@@ -1223,7 +1224,8 @@ class AccountCURReportWizard(models.TransientModel):
                                         'mov_id': r.id,
                                         'partner_id': (
                                             r.move_id.journal_id.name
-                                            if r.move_id.payment_id and r.move_id.payment_id.is_internal_transfer
+                                            # if r.move_id.payment_id and r.move_id.payment_id.is_internal_transfer
+                                            if r.move_id.payment_id
                                             else r.partner_id.name if r.partner_id
                                             else r.account_id.name
                                         ),
@@ -1281,7 +1283,7 @@ class AccountCURReportWizard(models.TransientModel):
                         if move_line.journal_id.type in ('bank','cash'):
                             for rec in move_line.line_ids:
                                 if rec.debit > 0 and rec.account_id.code not in ('100202','100203','100204'):
-                                    if not rec.move_id.payment_id.is_credit_payment and not rec.move_id.payment_id.is_internal_transfer and not rec.move_id.is_payment_approval and not rec.move_id.journal_id.is_credit_card_bank:
+                                    if not rec.move_id.payment_id.is_credit_payment and not rec.move_id.is_payment_approval and not rec.move_id.journal_id.is_credit_card_bank:
                                         l.add((rec.move_id.name, rec.id))
                                         key = (rec.account_id.id, line.move_id.expense_type)
 
@@ -1292,7 +1294,7 @@ class AccountCURReportWizard(models.TransientModel):
                                         result[key]['entries'].append({
                                             'move_name':rec.move_id.name,
                                             'mov_id':rec.id,
-                                            'partner_id': rec.move_id.journal_id.name if rec.move_id.payment_id and rec.move_id.payment_id.is_internal_transfer
+                                            'partner_id': rec.move_id.journal_id.name if rec.move_id.payment_id
                                                           else rec.partner_id.name if rec.partner_id
                                                           else rec.account_id.name,
                                             'debit': rec.debit,
@@ -1323,7 +1325,7 @@ class AccountCURReportWizard(models.TransientModel):
                                             'mov_id': rec.id,
                                             'partner_id': (
                                                 rec.move_id.journal_id.name
-                                                if rec.move_id.payment_id and rec.move_id.payment_id.is_internal_transfer
+                                                if rec.move_id.payment_id
                                                 else rec.partner_id.name if rec.partner_id
                                                 else rec.account_id.name
                                             ),
@@ -1510,7 +1512,7 @@ class AccountCURReportWizard(models.TransientModel):
                         if move_line.journal_id.type in ('bank','cash'):
                             for rec in move_line.line_ids:
                                 if rec.credit > 0 and rec.account_id.code not in ('100203','100204','100801'):
-                                    if not rec.move_id.payment_id.is_internal_transfer and rec.account_id.account_type not in ('asset_cash'):
+                                    if rec.account_id.account_type not in ('asset_cash'):
                                         l.add((rec.move_id.name, rec.id))
                                         key = (rec.account_id.id, line.move_id.expense_type)
                                         result[key]['account_name'] = rec.account_id.name
@@ -1520,7 +1522,7 @@ class AccountCURReportWizard(models.TransientModel):
                                         result[key]['entries'].append({
                                             'move_name':rec.move_id.name,
                                             'mov_id':rec.id,
-                                            'partner_id': rec.move_id.journal_id.name if rec.move_id.payment_id and rec.move_id.payment_id.is_internal_transfer
+                                            'partner_id': rec.move_id.journal_id.name if rec.move_id.payment_id
                                                           else rec.partner_id.name if rec.partner_id
                                                           else rec.account_id.name,
                                             'credit': rec.credit,
@@ -1553,7 +1555,7 @@ class AccountCURReportWizard(models.TransientModel):
                                             'mov_id': rec.id,
                                             'partner_id': (
                                                 rec.move_id.journal_id.name
-                                                if rec.move_id.payment_id and rec.move_id.payment_id.is_internal_transfer
+                                                if rec.move_id.payment_id
                                                 else rec.partner_id.name if rec.partner_id
                                                 else rec.account_id.name
                                             ),
@@ -1564,7 +1566,7 @@ class AccountCURReportWizard(models.TransientModel):
         #Bank To Bank Transfer
         pay_rec = self.env['account.payment'].sudo().search([
             ('state', '=', 'posted'),
-            ('is_internal_transfer','=', True),
+            # ('is_internal_transfer','=', True),
             ('company_id', '=', company_id.id),
             ('move_id.state', '=', 'posted')])
         groups_by_match = defaultdict(set)
@@ -1643,7 +1645,7 @@ class AccountCURReportWizard(models.TransientModel):
                                 result[key]['entries'].append({
                                     'move_name': r.move_id.name,
                                     'mov_id': r.id,
-                                    'partner_id': r.move_id.journal_id.name if r.move_id.payment_id and r.move_id.payment_id.is_internal_transfer
+                                    'partner_id': r.move_id.journal_id.name if r.move_id.payment_id
                                     else r.partner_id.name if r.partner_id
                                     else r.account_id.name,
                                     'debit': r.debit,
