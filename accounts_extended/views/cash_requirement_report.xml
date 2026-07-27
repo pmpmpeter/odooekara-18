@@ -38,6 +38,7 @@
                                 <field name="bank_balance_date" readonly="state in 'done'"/>
                                 <field name="journal_bank" options="{'no_quick_create':True,'no_create': True}" readonly="state in 'done'"  domain="[('type', '=', 'bank'),('company_id','=',company_id)]" widget="many2many_tags"/>
                                 <field name="available_balance" readonly="1" force_save="1" />
+                                <field name="budget_id" required="1" readonly="state in 'done'"/>
                             </group>
                         </group>
                         <notebook>
