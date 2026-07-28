@@ -133,7 +133,7 @@
         <field name="state">code</field>
         <field name="code">action = model.action_send_export_excel_for_approval()</field>
     </record>
-
+<!-- make this as a button for sending approval - send for approval -->
     <!-- Tree/List View -->
     <record id="view_director_approve_manpower_tree" model="ir.ui.view">
         <field name="name">director.approve.manpower.list</field>

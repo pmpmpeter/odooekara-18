@@ -478,9 +478,9 @@ class EmployeeIndent(models.Model):
 
             pdf_name = f"{record.name}_Job_Description.pdf"
 
-            folder = self.env['documents.folder'].search([('name', '=', 'Job Descriptions')], limit=1)
-            if not folder:
-                folder = self.env['documents.folder'].create({'name': 'Job Descriptions'})
+            # folder = self.env['documents.folder'].search([('name', '=', 'Job Descriptions')], limit=1)
+            # if not folder:
+            #     folder = self.env['documents.folder'].create({'name': 'Job Descriptions'})
 
             attachment = self.env['documents.document'].create({
                 'name': pdf_name,
@@ -489,7 +489,7 @@ class EmployeeIndent(models.Model):
                 'mimetype': 'application/pdf',
                 'res_model': 'employee.indent',
                 'res_id': record.id,
-                'folder_id': folder.id,
+                # 'folder_id': folder.id,
             })
 
             record.document_id = attachment.id
@@ -537,16 +537,16 @@ class EmployeeIndent(models.Model):
 class DocumentsDocument(models.Model):
     _inherit = 'documents.document'
 
-    def action_archive(self):
-        job_description_folder = self.env['documents.folder'].search([('name', '=', 'Job Descriptions')], limit=1)
-        if job_description_folder:
-            restricted_documents = self.filtered(lambda doc: doc.folder_id == job_description_folder)
-            if restricted_documents:
-                raise ValidationError(_(
-                    "You cannot move the documents to Trash that belong to the 'Job Descriptions' folder."
-                ))
+    # def action_archive(self):
+    #     job_description_folder = self.env['documents.folder'].search([('name', '=', 'Job Descriptions')], limit=1)
+    #     if job_description_folder:
+    #         restricted_documents = self.filtered(lambda doc: doc.folder_id == job_description_folder)
+    #         if restricted_documents:
+    #             raise ValidationError(_(
+    #                 "You cannot move the documents to Trash that belong to the 'Job Descriptions' folder."
+    #             ))
 
-        return super(DocumentsDocument, self).action_archive()
+    #     return super(DocumentsDocument, self).action_archive()
 
     @api.model
     def get_view(self, view_id=None, view_type='form', **options):
