@@ -523,7 +523,7 @@ class Job_Applicant(models.Model):
         for applicant in self:
             applicant.interviewer_ids = applicant.job_id.interviewer_ids.ids
 
-    @api.constrains('email_from', 'email_cc', 'partner_phone', 'partner_mobile')
+    @api.constrains('email_from', 'email_cc', 'partner_phone')
     def validate_contact_info(self):
         email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
         phone_regex = r'^(\+91)?[6-9][0-9]{9}$'
@@ -549,12 +549,12 @@ class Job_Applicant(models.Model):
                                           "Expected format: A 10-digit number starting with 6-9, "
                                           "optionally prefixed with +91. Example: +919876543210")
 
-            if record.partner_mobile:
-                record.partner_mobile = record.partner_mobile.replace(" ", "")
-                if not re.match(phone_regex, record.partner_mobile):
-                    raise ValidationError(f"Invalid Mobile Number: '{record.partner_mobile}'.\n"
-                                          "Expected format: A 10-digit number starting with 6-9, "
-                                          "optionally prefixed with +91. Example: +919876543210")
+            # if record.partner_mobile:
+            #     record.partner_mobile = record.partner_mobile.replace(" ", "")
+            #     if not re.match(phone_regex, record.partner_mobile):
+            #         raise ValidationError(f"Invalid Mobile Number: '{record.partner_mobile}'.\n"
+            #                               "Expected format: A 10-digit number starting with 6-9, "
+            #                               "optionally prefixed with +91. Example: +919876543210")
 
             if not record.linkedin_profile:
                 raise ValidationError("Please fill the LinkedIn Profile")
