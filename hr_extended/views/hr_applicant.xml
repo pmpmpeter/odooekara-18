@@ -186,7 +186,7 @@
                             invisible="document_sent == 'no' or offer_letter_approved == 'no' or application_status == 'refused' or
                              offer_letter_sent == 'yes'"/>
                     <button name="action_create_interview_assessment" type="object" class="oe_highlight"
-                            string="Create Interview Assessmnt"
+                            string="Create Interview Assessment"
                             invisible="application_status == 'refused' or interview_assessment_letter_count > 0"/>
                      <button name="action_approve_employee_documents" type="object" class="oe_highlight"
                             string="Approve Documents"
