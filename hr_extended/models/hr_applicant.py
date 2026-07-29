@@ -384,7 +384,7 @@ class Job_Applicant(models.Model):
         ('lilac2', 'Lilac 2'),
         ('tta', 'TTA'),
         ('tvm_obt', 'TVM/OBT'),
-    ], default='corporate', string="Location", tracking=True, required=True)
+    ], default='corporate', string="Location", tracking=True, required=False)
     locations_id = fields.Many2one('location.master', string="Location", tracking=True)
     grade = fields.Selection([
         ('spl_grade', 'Spl Grade'),

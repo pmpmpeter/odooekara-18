@@ -69,6 +69,19 @@
             </field>
         </record>
 
+        <record id="contract_inherit_hr_applicant_view_form" model="ir.ui.view">
+            <field name="name">Recruitment Form</field>
+            <field name="model">hr.applicant</field>
+            <field name="inherit_id" ref="hr_contract_salary.hr_applicant_view_form"/>
+            <field name="arch" type="xml">
+                <button name="action_generate_offer" position="replace">
+                    <button name="action_generate_offer" type="object" string="Generate Offer"
+                        class="oe_highlight" invisible="stage_status not in ('document_validated','offer_accepted')"
+                        data-hotkey="q" groups="hr_recruitment.group_hr_recruitment_user" />
+                </button>
+            </field>
+        </record>
+
         <!-- Hr Applicant view Inherited-->
         <record id="inherit_hr_applicant_view_form" model="ir.ui.view">
             <field name="name">Inherit Jobs - Recruitment Form</field>
@@ -100,6 +113,32 @@
                     <attribute name="options">{'fold_field': 'fold'}</attribute>
                 </xpath>
                 <xpath expr="//div[@class='oe_button_box']" position="inside">
+                    <button name="action_open_invitation_letter"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-envelope"
+                            invisible="first_invitation_letter_count == 0">
+                        <field name="first_invitation_letter_count" widget="statinfo" string="Invitation Letters"/>
+                    </button>
+                    <button name="action_open_interview_assessment_letter"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-bars"
+                            invisible="interview_assessment_letter_count == 0">
+                        <field name="interview_assessment_letter_count" widget="statinfo" string="Assessment Form"/>
+                    </button>
+                    <button name="action_view_documents"
+                        type="object"
+                        class="oe_stat_button"
+                        icon="fa-file">
+                    <field string="Documents" name="document_ids" widget="statinfo"/>
+                    </button>
+                     <button type="action"
+                                class="oe_stat_button"
+                                name="%(action_hr_applicant_refuse_log)d"
+                                icon="fa-ban">
+                            <field string="Refusals" name="refuse_count" widget="statinfo"/>
+                        </button>
                     <!--                    <field name="is_pre_emp_form_clicked" invisible="1"/>-->
                     <field name="last_stage_id" invisible="1"/>
                     <field name="stage_status" invisible="1"/>
@@ -116,12 +155,16 @@
                     <!--                    </button>-->
                 </xpath>
                 <xpath expr="//button[@name='archive_applicant']" position="before">
+                    <button name="action_send_first_invitiation" type="object" class="oe_highlight"
+                            string="Send Invitation"
+                            invisible="stage_status not in ('first_level','new','initial') or application_status == 'refused'"/>
                     <button name="action_first_stage_new" string="New" type="object"
                             invisible="stage_status != False"
                             class="btn-primary"/>
                 </xpath>
                 <xpath expr="//button[@name='archive_applicant']" position="after">
                     <field name="interview_assessment_letter_count" invisible="1"/>
+                    
                     <button name="action_send_document_update_mail" type="object" class="oe_highlight"
                             string="Send Document Update"
                             invisible="stage_status not in ('shortlist','offer_accepted') or application_status == 'refused' or
@@ -143,7 +186,7 @@
                             invisible="document_sent == 'no' or offer_letter_approved == 'no' or application_status == 'refused' or
                              offer_letter_sent == 'yes'"/>
                     <button name="action_create_interview_assessment" type="object" class="oe_highlight"
-                            string="Create Interview Assessment"
+                            string="Create Interview Assessmnt"
                             invisible="application_status == 'refused' or interview_assessment_letter_count > 0"/>
                      <button name="action_approve_employee_documents" type="object" class="oe_highlight"
                             string="Approve Documents"
@@ -151,6 +194,7 @@
                      <button name="action_refuse_employee_documents" type="object" class="oe_highlight"
                             string="Refuse Documents"
                             invisible = "stage_status not in ('shortlist') or application_status == 'refused' or document_sent == 'no'"/>
+                    
                     <button name="action_offer_accepted" string="Offer Accept" type="object"
                             invisible="document_sent == 'no' or offer_letter_sent == 'no' or stage_status not in ('director_approval') or application_status == 'refused'"
                             class="btn-primary"/>
@@ -183,6 +227,9 @@
                 </xpath>
 
                 <xpath expr="//field[@name='department_id']" position="after">
+                    <field name="locations_id"/>
+                    <field name="application_status" invisible="1"/>
+                    <field name="interview_assessment_letter_count" invisible="1"/>
                     <field name="grade_job_level_id" options="{'no_quick_create':True,'no_create': True,}"/>
                 </xpath>
                 <xpath expr="//field[@name='interviewer_ids']" position="before">
@@ -200,80 +247,11 @@
                 <xpath expr="//group[@name='recruitment_contract']" position="before">
                     <group string="Additional Information">
                         <field name="verification_date"/>
-                        <!--                        <field name="sourcing_type" readonly="is_pre_emp_form_clicked"/>-->
-                        <!--                        <field name="referred_by" invisible="sourcing_type not in ('internal_sourcing')"-->
-                        <!--                               readonly="is_pre_emp_form_clicked"-->
-                        <!--                               options="{'no_quick_create':True,'no_create': True,}"/>-->
-                        <!--                        <button name="action_create_pre_form" string="Pre-Employment Form"-->
-                        <!--                                type="object"-->
-                        <!--                                class="oe_highlight pre-emp-form-btn"-->
-                        <!--                                invisible="sourcing_type not in ('internal_sourcing') or is_pre_emp_form_clicked"/>-->
-                        <!--                        <style>-->
-                        <!--                            .pre-emp-form-btn{-->
-                        <!--                            width:175px;-->
-                        <!--                            }-->
-                        <!--                        </style>-->
+                        
                     </group>
                 </xpath>
-            </field>
-        </record>
 
-        
-
-
-        <!--salary breakup page -->
-        <record id="hr_applicant_view_form_inherit" model="ir.ui.view">
-            <field name="name">hr.applicant.view.form.inherit.additional.info</field>
-            <field name="model">hr.applicant</field>
-            <field name="inherit_id" ref="hr_recruitment.hr_applicant_view_form"/>
-            <field name="arch" type="xml">
-                <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
-                    <button name="action_open_invitation_letter"
-                            type="object"
-                            class="oe_stat_button"
-                            icon="fa-envelope"
-                            invisible="first_invitation_letter_count == 0">
-                        <field name="first_invitation_letter_count" widget="statinfo" string="Invitation Letters"/>
-                    </button>
-                    <button name="action_open_interview_assessment_letter"
-                            type="object"
-                            class="oe_stat_button"
-                            icon="fa-bars"
-                            invisible="interview_assessment_letter_count == 0">
-                        <field name="interview_assessment_letter_count" widget="statinfo" string="Assessment Form"/>
-                    </button>
-                    <button name="action_view_documents"
-                        type="object"
-                        class="oe_stat_button"
-                        icon="fa-file">
-                    <field string="Documents" name="document_ids" widget="statinfo"/>
-                    </button>
-                     <button type="action"
-                                class="oe_stat_button"
-                                name="%(action_hr_applicant_refuse_log)d"
-                                icon="fa-ban">
-                            <field string="Refusals" name="refuse_count" widget="statinfo"/>
-                        </button>
-                </xpath>
-                <xpath expr="//button[@name='create_employee_from_applicant']" position="after">
-                    <button name="action_send_first_invitiation" type="object" class="oe_highlight"
-                            string="Send Invitation"
-                            invisible="stage_status not in ('first_level','new','initial') or application_status == 'refused'"/>
-                </xpath>
-                <!-- <xpath expr="//group[@name='recruitment_contract']/div/field[@name='salary_proposed']" position="attributes">
-                    <attribute name="invisible">not salary_breakup_approved</attribute>
-                </xpath> -->
-                <!-- commented due to access rights issue -->
-                <xpath expr="//group[@name='recruitment_contract']/div/span[preceding-sibling::field[@name='salary_proposed']]" position="attributes">
-                   <attribute name="invisible">not salary_breakup_approved</attribute>
-                </xpath>
-                <xpath expr="//group[@name='recruitment_contract']/div/field[@name='salary_proposed_extra']" position="attributes">
-                    <attribute name="invisible">not salary_breakup_approved</attribute>
-                </xpath>
-                <!-- <field name="salary_proposed" position="attributes">
-                    <attribute name="invisible">not salary_breakup_approved</attribute>
-                </field> -->
-                <!-- commented due to access rights issue -->
+              
                 <notebook position="inside">
                     <field name="salary_breakup_approved" invisible="1"/>
                     <page string="Salary Breakup" invisible="stage_status not in ('shortlist','offer_accepted') or not salary_breakup_approved">
@@ -360,6 +338,11 @@
                 </notebook>
             </field>
         </record>
+
+        
+
+
+       
 
         <record id="hr_recruitment_stage_form_inherit" model="ir.ui.view">
             <field name="name">hr.recruitment.stage.form.inherit</field>
