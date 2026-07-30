@@ -1088,6 +1088,8 @@ class Job_Applicant(models.Model):
             raise UserError(_("No active interview update subject found."))
         return document_update.name
 
+    
+
     def action_send_document_update_mail(self):
         for applicant in self.filtered(lambda s: not s.stage_id.stage):
             raise UserError(_("Alert !! Configure %s stage properly.") % (applicant.stage_id.display_name))

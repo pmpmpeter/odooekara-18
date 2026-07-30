@@ -455,101 +455,82 @@ class HrEmployeeSmartButton(models.Model):
     #     return super(HrEmployeeSmartButton, self).create(vals)
 
     # Pass applicant_id values to context of hr_contract
-    def action_open_contract(self):
-        self.ensure_one()
-        action = self.env["ir.actions.actions"]._for_xml_id('hr_contract.action_hr_contract')
-        action['views'] = [(False, 'form')]
-        if not self.contract_ids:
-            action['context'] = {
-                'default_employee_id': self.id,
-                'default_basic_da_per_annum': self.applicant_id.basic_da_per_annum,
-                'default_basic_da_per_month': self.applicant_id.basic_da_per_month,
-                'default_hra_per_annum': self.applicant_id.hra_per_annum,
-                'default_hra_per_month': self.applicant_id.hra_per_month,
-                'default_special_allowance_per_annum': self.applicant_id.special_allowance_per_annum,
-                'default_special_allowance_per_month': self.applicant_id.special_allowance_per_month,
-                'default_sub_total_a_per_annum': self.applicant_id.sub_total_a_per_annum,
-                'default_sub_total_a_per_month': self.applicant_id.sub_total_a_per_month,
-                'default_statutory_bonus_per_annum': self.applicant_id.statutory_bonus_per_annum,
-                'default_statutory_bonus_per_month': self.applicant_id.statutory_bonus_per_month,
-                'default_pf_employer_per_annum': self.applicant_id.pf_employer_per_annum,
-                'default_pf_employer_per_month': self.applicant_id.pf_employer_per_month,
-                'default_esic_employer_per_annum': self.applicant_id.esic_employer_per_annum,
-                'default_esic_employer_per_month': self.applicant_id.esic_employer_per_month,
-                'default_sub_total_b_per_annum': self.applicant_id.sub_total_b_per_annum,
-                'default_sub_total_b_per_month': self.applicant_id.sub_total_b_per_month,
-                'default_variable_pay_per_annum': self.applicant_id.variable_pay_per_annum,
-                'default_variable_pay_per_month': self.applicant_id.variable_pay_per_month,
-                'default_sub_total_c_per_annum': self.applicant_id.sub_total_c_per_annum,
-                'default_sub_total_c_per_month': self.applicant_id.sub_total_c_per_month,
-                'default_total_salary_per_annum': self.applicant_id.total_salary_per_annum,
-                'default_total_salary_per_month': self.applicant_id.total_salary_per_month,
-                'default_medical_insurances': self.applicant_id.medical_insurances,
-                'default_group_personal_acc_insurance': self.applicant_id.group_personal_acc_insurance,
-                'default_health_ben_plan': self.applicant_id.health_ben_plan,
-                'default_sub_total_d': self.applicant_id.sub_total_d,
-                'default_total_ctc_annum': self.applicant_id.total_ctc_annum,
-                'default_total_ctc_month': self.applicant_id.total_ctc_month,
-                'default_monthly_fixed_salary': self.applicant_id.monthly_fixed_salary,
-                'default_stat_bonus_amount': self.applicant_id.stat_bonus_amount,
-                'default_provident_fund': self.applicant_id.provident_fund,
-                'default_esi_amount': self.applicant_id.esi_amount,
-                'default_variable_pay_percentage': self.applicant_id.variable_pay_percentage,
-                'default_annual_store_performance_incentive': self.applicant_id.annual_store_performance_incentive,
-                'default_store_performance_incentive_annum': self.applicant_id.store_performance_incentive_annum,
-                'default_store_performance_incentive_month': self.applicant_id.store_performance_incentive_month,
-                'default_annual_performance_linked_pay': self.applicant_id.annual_performance_linked_pay,
-                'default_performance_linked_pay_annum': self.applicant_id.performance_linked_pay_annum,
-                'default_performance_linked_pay_month': self.applicant_id.performance_linked_pay_month,
-                'default_monthly_performance_incentive': self.applicant_id.monthly_performance_incentive,
-                'default_monthly_performance_incentive_annum': self.applicant_id.monthly_performance_incentive_annum,
-                'default_monthly_performance_incentive_month': self.applicant_id.monthly_performance_incentive_month,
-                'default_medical_insurance': self.applicant_id.medical_insurance,
-                'default_group_personal_accident_insurance': self.applicant_id.group_personal_accident_insurance,
-                'default_health_benefit_plan': self.applicant_id.health_benefit_plan,
-                # 'default_solis_health_benefit_beacon_plan': self.applicant_id.solis_health_benefit_beacon_plan,
-                'default_indicative_take_home_salary': self.applicant_id.indicative_take_home_salary,
-                'default_statutory_bonus_applicable': self.applicant_id.statutory_bonus_applicable,
-                'default_provident_fund_applicable': self.applicant_id.provident_fund_applicable,
-                'default_esi_applicable': self.applicant_id.esi_applicable,
-                'default_location_id': self.applicant_id.locations_id.id,
-                'default_grade': self.applicant_id.grade,
+    # def action_open_contract(self):
+    #     self.ensure_one()
+    #     action = self.env["ir.actions.actions"]._for_xml_id('hr_contract.action_hr_contract')
+    #     action['views'] = [(False, 'form')]
+    #     if not self.contract_ids:
+    #         action['context'] = {
+    #             'default_employee_id': self.id,
+    #             'default_basic_da_per_annum': self.applicant_id.basic_da_per_annum,
+    #             'default_basic_da_per_month': self.applicant_id.basic_da_per_month,
+    #             'default_hra_per_annum': self.applicant_id.hra_per_annum,
+    #             'default_hra_per_month': self.applicant_id.hra_per_month,
+    #             'default_special_allowance_per_annum': self.applicant_id.special_allowance_per_annum,
+    #             'default_special_allowance_per_month': self.applicant_id.special_allowance_per_month,
+    #             'default_sub_total_a_per_annum': self.applicant_id.sub_total_a_per_annum,
+    #             'default_sub_total_a_per_month': self.applicant_id.sub_total_a_per_month,
+    #             'default_statutory_bonus_per_annum': self.applicant_id.statutory_bonus_per_annum,
+    #             'default_statutory_bonus_per_month': self.applicant_id.statutory_bonus_per_month,
+    #             'default_pf_employer_per_annum': self.applicant_id.pf_employer_per_annum,
+    #             'default_pf_employer_per_month': self.applicant_id.pf_employer_per_month,
+    #             'default_esic_employer_per_annum': self.applicant_id.esic_employer_per_annum,
+    #             'default_esic_employer_per_month': self.applicant_id.esic_employer_per_month,
+    #             'default_sub_total_b_per_annum': self.applicant_id.sub_total_b_per_annum,
+    #             'default_sub_total_b_per_month': self.applicant_id.sub_total_b_per_month,
+    #             'default_variable_pay_per_annum': self.applicant_id.variable_pay_per_annum,
+    #             'default_variable_pay_per_month': self.applicant_id.variable_pay_per_month,
+    #             'default_sub_total_c_per_annum': self.applicant_id.sub_total_c_per_annum,
+    #             'default_sub_total_c_per_month': self.applicant_id.sub_total_c_per_month,
+    #             'default_total_salary_per_annum': self.applicant_id.total_salary_per_annum,
+    #             'default_total_salary_per_month': self.applicant_id.total_salary_per_month,
+    #             'default_medical_insurances': self.applicant_id.medical_insurances,
+    #             'default_group_personal_acc_insurance': self.applicant_id.group_personal_acc_insurance,
+    #             'default_health_ben_plan': self.applicant_id.health_ben_plan,
+    #             'default_sub_total_d': self.applicant_id.sub_total_d,
+    #             'default_total_ctc_annum': self.applicant_id.total_ctc_annum,
+    #             'default_total_ctc_month': self.applicant_id.total_ctc_month,
+    #             'default_monthly_fixed_salary': self.applicant_id.monthly_fixed_salary,
+    #             'default_stat_bonus_amount': self.applicant_id.stat_bonus_amount,
+    #             'default_provident_fund': self.applicant_id.provident_fund,
+    #             'default_esi_amount': self.applicant_id.esi_amount,
+    #             'default_variable_pay_percentage': self.applicant_id.variable_pay_percentage,
+    #             'default_annual_store_performance_incentive': self.applicant_id.annual_store_performance_incentive,
+    #             'default_store_performance_incentive_annum': self.applicant_id.store_performance_incentive_annum,
+    #             'default_store_performance_incentive_month': self.applicant_id.store_performance_incentive_month,
+    #             'default_annual_performance_linked_pay': self.applicant_id.annual_performance_linked_pay,
+    #             'default_performance_linked_pay_annum': self.applicant_id.performance_linked_pay_annum,
+    #             'default_performance_linked_pay_month': self.applicant_id.performance_linked_pay_month,
+    #             'default_monthly_performance_incentive': self.applicant_id.monthly_performance_incentive,
+    #             'default_monthly_performance_incentive_annum': self.applicant_id.monthly_performance_incentive_annum,
+    #             'default_monthly_performance_incentive_month': self.applicant_id.monthly_performance_incentive_month,
+    #             'default_medical_insurance': self.applicant_id.medical_insurance,
+    #             'default_group_personal_accident_insurance': self.applicant_id.group_personal_accident_insurance,
+    #             'default_health_benefit_plan': self.applicant_id.health_benefit_plan,
+    #             # 'default_solis_health_benefit_beacon_plan': self.applicant_id.solis_health_benefit_beacon_plan,
+    #             'default_indicative_take_home_salary': self.applicant_id.indicative_take_home_salary,
+    #             'default_statutory_bonus_applicable': self.applicant_id.statutory_bonus_applicable,
+    #             'default_provident_fund_applicable': self.applicant_id.provident_fund_applicable,
+    #             'default_esi_applicable': self.applicant_id.esi_applicable,
+    #             'default_location_id': self.applicant_id.locations_id.id,
+    #             'default_grade': self.applicant_id.grade,
 
-                # 'default_basic_da': self.applicant_id.basic_da,
-                # 'default_house_rent_allowance': self.applicant_id.house_rent_allowance,
-                # 'default_special_allowance': self.applicant_id.special_allowance,
-                # 'default_monthly_fixed_salary': self.applicant_id.monthly_fixed_salary,
-                # 'default_stat_bonus_amount': self.applicant_id.stat_bonus_amount,
-                # 'default_provident_fund': self.applicant_id.provident_fund,
-                # 'default_esi_amount': self.applicant_id.esi_amount,
-                # 'default_variable_pay_percentage': self.applicant_id.variable_pay_percentage,
-                # 'default_variable_pay_amount': self.applicant_id.variable_pay_amount,
-                # 'default_annual_store_performance_incentive': self.applicant_id.annual_store_performance_incentive,
-                # 'default_annual_performance_linked_pay': self.applicant_id.annual_performance_linked_pay,
-                # 'default_monthly_performance_incentive': self.applicant_id.monthly_performance_incentive,
-                # 'default_medical_insurance': self.applicant_id.medical_insurance,
-                # 'default_group_personal_accident_insurance': self.applicant_id.group_personal_accident_insurance,
-                # 'default_solis_health_benefit_beacon_plan': self.applicant_id.solis_health_benefit_beacon_plan,
-                # 'default_indicative_take_home_salary': self.applicant_id.indicative_take_home_salary,
-                # 'default_statutory_bonus_applicable': self.applicant_id.statutory_bonus_applicable,
-                # 'default_provident_fund_applicable': self.applicant_id.provident_fund_applicable,
-                # 'default_esi_applicable': self.applicant_id.esi_applicable,
-            }
-            action['target'] = 'new'
-            return action
+    #         }
+    #         action['target'] = 'new'
+    #         return action
 
-        target_contract = self.contract_id
-        if target_contract:
-            action['res_id'] = target_contract.id
-            return action
+    #     target_contract = self.contract_id
+    #     if target_contract:
+    #         action['res_id'] = target_contract.id
+    #         return action
 
-        target_contract = self.contract_ids.filtered(lambda c: c.state == 'draft')
-        if target_contract:
-            action['res_id'] = target_contract[0].id
-            return action
+    #     target_contract = self.contract_ids.filtered(lambda c: c.state == 'draft')
+    #     if target_contract:
+    #         action['res_id'] = target_contract[0].id
+    #         return action
 
-        action['res_id'] = self.contract_ids[0].id
-        return action
+    #     action['res_id'] = self.contract_ids[0].id
+    #     return action
 
     def _compute_project_records(self):
         for employee in self:

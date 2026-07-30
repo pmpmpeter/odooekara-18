@@ -115,7 +115,7 @@ class HrContract(models.Model):
         ('tta', 'TTA'),
         ('tvm_obt', 'TVM/OBT'),
     ], default='corporate', string="Location", tracking=True, required=False)
-    location_id = fields.Many2one('location.master', string="Location", tracking=True, required=True)
+    location_id = fields.Many2one('location.master', string="Location", tracking=True, required=False)
     grade = fields.Selection([
         ('spl_grade', 'Spl Grade'),
         ('grade_a', 'Grade A'),
