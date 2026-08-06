@@ -185,7 +185,7 @@ class AccountCURReportWizard(models.TransientModel):
                         SELECT
                         am.journal_id AS journal_id,
                         aj.name->>'en_US' AS account_name,
-                        aa.code AS account_code,
+                        aa.report_code AS account_code,
                         SUM(absl.amount) AS balance
                     FROM account_bank_statement_line absl
                     JOIN account_move am ON am.id = absl.move_id
@@ -197,7 +197,7 @@ class AccountCURReportWizard(models.TransientModel):
                 if self.company_id:
                     query9 += " AND am.company_id = %s"
 
-                query9 += " GROUP BY aa.code,am.journal_id, aj.name ORDER BY aa.code"
+                query9 += " GROUP BY aa.report_code,am.journal_id, aj.name ORDER BY aa.report_code"
 
                 if self.company_id:
                     query_params9 = (self.start_date, self.company_id.id)
@@ -220,7 +220,7 @@ class AccountCURReportWizard(models.TransientModel):
                              SELECT
                                 am.journal_id AS journal_id,
                                 aj.name->>'en_US' AS account_name,
-                                aa.code AS account_code,
+                                aa.report_code AS account_code,
                                 am.date AS first_date,
                                 absl.amount AS balance
                             FROM account_bank_statement_line absl
@@ -230,7 +230,7 @@ class AccountCURReportWizard(models.TransientModel):
                             WHERE aa.account_type = 'asset_cash'"""
             if self.company_id:
                 first_tx_query += " AND am.company_id = %s"
-                first_tx_query += " GROUP BY aa.code,am.journal_id, aj.name,am.date,absl.amount ORDER BY am.date ASC LIMIT 1"
+                first_tx_query += " GROUP BY aa.report_code,am.journal_id, aj.name,am.date,absl.amount ORDER BY am.date ASC LIMIT 1"
                 self.env.cr.execute(first_tx_query, (self.company_id.id,))
             else:
                 self.env.cr.execute(first_tx_query)
@@ -242,7 +242,7 @@ class AccountCURReportWizard(models.TransientModel):
                     SELECT
                         am.journal_id AS journal_id,
                         aj.name->>'en_US' AS account_name,
-                        aa.code AS account_code,
+                        aa.report_code AS account_code,
                         SUM(absl.amount) AS balance
                     FROM account_bank_statement_line absl
                     JOIN account_move am ON am.id = absl.move_id
@@ -254,7 +254,7 @@ class AccountCURReportWizard(models.TransientModel):
                 if self.company_id:
                     first_balance_query += " AND am.company_id = %s"
 
-                first_balance_query += " GROUP BY am.journal_id, aa.code,am.date, aj.name ORDER BY am.date ASC LIMIT 1"
+                first_balance_query += " GROUP BY am.journal_id, aa.report_code,am.date, aj.name ORDER BY am.date ASC LIMIT 1"
                 if self.company_id:
                     self.env.cr.execute(first_balance_query, (first_date, self.company_id.id))
                 else:
@@ -278,7 +278,7 @@ class AccountCURReportWizard(models.TransientModel):
                     SELECT
                         am.journal_id AS journal_id,
                         aj.name->>'en_US' AS account_name,
-                        aa.code AS account_code,
+                        aa.report_code AS account_code,
                         SUM(absl.amount) AS balance
                     FROM account_bank_statement_line absl
                     JOIN account_move am ON am.id = absl.move_id
@@ -289,7 +289,7 @@ class AccountCURReportWizard(models.TransientModel):
                 """
                 if self.company_id:
                     query81 += " AND am.company_id = %s"
-                query81 += " GROUP BY am.journal_id,aa.code, aj.name ORDER BY aa.code"
+                query81 += " GROUP BY am.journal_id,aa.report_code, aj.name ORDER BY aa.report_code"
 
                 if self.company_id:
                     query_params81 = (month_start, self.company_id.id)
@@ -309,7 +309,7 @@ class AccountCURReportWizard(models.TransientModel):
                     SELECT
                         am.journal_id AS journal_id,
                         aj.name->>'en_US' AS account_name,
-                        aa.code AS account_code,
+                        aa.report_code AS account_code,
                         SUM(absl.amount) AS balance
                     FROM account_bank_statement_line absl
                     JOIN account_move am ON am.id = absl.move_id
@@ -320,7 +320,7 @@ class AccountCURReportWizard(models.TransientModel):
                 """
                 if self.company_id:
                     query91 += " AND am.company_id = %s"
-                query91 += " GROUP BY am.journal_id,aa.code, aj.name ORDER BY aa.code"
+                query91 += " GROUP BY am.journal_id,aa.report_code, aj.name ORDER BY aa.report_code"
 
                 if self.company_id:
                     query_params91 = (self.end_date, self.company_id.id)
@@ -365,7 +365,7 @@ class AccountCURReportWizard(models.TransientModel):
                                             SELECT
                                                 am.journal_id AS journal_id,
                                                 aj.name->>'en_US' AS account_name,
-                                                aa.code AS account_code,
+                                                aa.report_code AS account_code,
                                                 SUM(absl.amount) AS balance
                                             FROM account_bank_statement_line absl
                                             JOIN account_move am ON am.id = absl.move_id
@@ -376,7 +376,7 @@ class AccountCURReportWizard(models.TransientModel):
                                         """
             if self.company_id:
                 query91 += " AND am.company_id = %s"
-            query91 += " GROUP BY am.journal_id,aa.code, aj.name ORDER BY aa.code"
+            query91 += " GROUP BY am.journal_id,aa.report_code, aj.name ORDER BY aa.report_code"
 
             if self.company_id:
                 query_params91 = (self.end_date, self.company_id.id)
@@ -392,7 +392,7 @@ class AccountCURReportWizard(models.TransientModel):
                                     am.id AS move_id,
                                     am.journal_id AS journal_id,
                                     aj.name->>'en_US' AS account_name,
-                                    aa.code AS account_code,
+                                    aa.report_code AS account_code,
                                     am.date AS first_date,
                                     absl.amount AS balance
                                 FROM account_bank_statement_line absl
@@ -403,7 +403,7 @@ class AccountCURReportWizard(models.TransientModel):
                             """
                 if self.company_id:
                     first_tx_query += " AND am.company_id = %s AND aj.id=%s"
-                    first_tx_query += " GROUP BY aa.code,am.journal_id,am.id, aj.name,am.date,absl.amount ORDER BY am.date ASC"
+                    first_tx_query += " GROUP BY aa.report_code,am.journal_id,am.id, aj.name,am.date,absl.amount ORDER BY am.date ASC"
                     self.env.cr.execute(first_tx_query, (self.company_id.id,acc['journal_id']))
                 else:
                     self.env.cr.execute(first_tx_query)
@@ -420,15 +420,15 @@ class AccountCURReportWizard(models.TransientModel):
                                             SELECT
                                                 am.journal_id AS journal_id,
                                                 aj.name->>'en_US' AS account_name,
-                                                aa.code AS account_code,
+                                                aa.report_code AS account_code,
                                                 SUM(absl.amount) AS balance
                                             FROM account_bank_statement_line absl
                                             JOIN account_move am ON am.id = absl.move_id
                                             JOIN account_journal aj ON aj.id = am.journal_id
                                             JOIN account_account aa ON aa.id = aj.default_account_id
                                             WHERE aa.account_type = 'asset_cash' AND am.id = %s
-                                            GROUP BY am.journal_id, aa.code, aj.name
-                                            ORDER BY aa.code
+                                            GROUP BY am.journal_id, aa.report_code, aj.name
+                                            ORDER BY aa.report_code
                                         """
                             # journal_ids = [item['journal_id'] for item in accounts]
                             self.env.cr.execute(first_balance_query, (first_tx['move_id'],))
@@ -456,7 +456,7 @@ class AccountCURReportWizard(models.TransientModel):
             #         am.id AS move_id,
             #         am.journal_id AS journal_id,
             #         aj.name->>'en_US' AS account_name,
-            #         aa.code AS account_code,
+            #         aa.report_code AS account_code,
             #         am.date AS first_date,
             #         absl.amount AS balance
             #     FROM account_bank_statement_line absl
@@ -467,7 +467,7 @@ class AccountCURReportWizard(models.TransientModel):
             # """
             # if self.company_id:
             #     first_tx_query += " AND am.company_id = %s"
-            #     first_tx_query += " GROUP BY aa.code,am.journal_id,am.id, aj.name,am.date,absl.amount ORDER BY am.date ASC LIMIT 1"
+            #     first_tx_query += " GROUP BY aa.report_code,am.journal_id,am.id, aj.name,am.date,absl.amount ORDER BY am.date ASC LIMIT 1"
             #     self.env.cr.execute(first_tx_query, (self.company_id.id,))
             # else:
             #     self.env.cr.execute(first_tx_query)
@@ -484,15 +484,15 @@ class AccountCURReportWizard(models.TransientModel):
             #                 SELECT
             #                     am.journal_id AS journal_id,
             #                     aj.name->>'en_US' AS account_name,
-            #                     aa.code AS account_code,
+            #                     aa.report_code AS account_code,
             #                     SUM(absl.amount) AS balance
             #                 FROM account_bank_statement_line absl
             #                 JOIN account_move am ON am.id = absl.move_id
             #                 JOIN account_journal aj ON aj.id = am.journal_id
             #                 JOIN account_account aa ON aa.id = aj.default_account_id
             #                 WHERE aa.account_type = 'asset_cash' AND am.id = %s
-            #                 GROUP BY am.journal_id, aa.code, aj.name
-            #                 ORDER BY aa.code
+            #                 GROUP BY am.journal_id, aa.report_code, aj.name
+            #                 ORDER BY aa.report_code
             #             """
             #             self.env.cr.execute(first_balance_query, (first_tx['move_id'],))
             #             first_month_lines = self.env.cr.dictfetchall()
@@ -513,7 +513,7 @@ class AccountCURReportWizard(models.TransientModel):
         end_balance1 = """SELECT
                     am.journal_id AS journal_id,
                     aj.name->>'en_US' AS account_name,
-                    aa.code AS account_code,
+                    aa.report_code AS account_code,
                     SUM(absl.amount) AS balance
                 FROM account_bank_statement_line absl
                 JOIN account_move am ON am.id = absl.move_id
@@ -524,7 +524,7 @@ class AccountCURReportWizard(models.TransientModel):
             """
         if self.company_id:
             end_balance1 += " AND am.company_id = %s"
-            end_balance1 += " GROUP BY am.journal_id,aa.code, aj.name ORDER BY aa.code"
+            end_balance1 += " GROUP BY am.journal_id,aa.report_code, aj.name ORDER BY aa.report_code"
             end_balance_params = (self.end_date, self.company_id.id)
             end_balance_params1 = (self.end_date, self.company_id.id)
         else:
@@ -1062,7 +1062,7 @@ class AccountCURReportWizard(models.TransientModel):
                 SELECT
                     am.journal_id AS journal_id,
                     aj.name->>'en_US' AS account_name,
-                    aa.code AS account_code,
+                    aa.report_code AS account_code,
                     SUM(absl.amount) AS balance
                 FROM account_bank_statement_line absl
                 JOIN account_move am ON am.id = absl.move_id
@@ -1074,7 +1074,7 @@ class AccountCURReportWizard(models.TransientModel):
             if self.company_id:
                 end_balance_query += " AND am.company_id = %s"
 
-            end_balance_query += " GROUP BY am.journal_id,aj.name,aa.code"
+            end_balance_query += " GROUP BY am.journal_id,aj.name,aa.report_code"
 
             if self.company_id:
                 query_params = (self.end_date, self.company_id.id)
@@ -1277,62 +1277,100 @@ class AccountCURReportWizard(models.TransientModel):
                 if not (date_from <= stmt_date <= date_to):
                     continue
                 for line in group_lines:
-
                     if not line.statement_line_id:
                         move_line = line.move_id
-                        if move_line.journal_id.type in ('bank','cash'):
+
+                        if move_line.journal_id.type in ('bank', 'cash'):
                             for rec in move_line.line_ids:
-                                if rec.debit > 0 and rec.account_id.code not in ('100202','100203','100204'):
-                                    if not rec.move_id.payment_id.is_credit_payment and not rec.move_id.is_payment_approval and not rec.move_id.journal_id.is_credit_card_bank:
+
+                                payments = rec.move_id.matched_payment_ids
+                                is_credit_payment = any(
+                                    payment.is_credit_payment for payment in payments
+                                )
+
+                                if (
+                                    rec.debit > 0
+                                    and rec.account_id.code not in ('100202', '100203', '100204')
+                                ):
+                                    if (
+                                        not is_credit_payment
+                                        and not rec.move_id.is_payment_approval
+                                        and not rec.move_id.journal_id.is_credit_card_bank
+                                    ):
                                         l.add((rec.move_id.name, rec.id))
+
                                         key = (rec.account_id.id, line.move_id.expense_type)
 
                                         result[key]['account_name'] = rec.account_id.name
                                         result[key]['account_code'] = rec.account_id.code
                                         result[key]['expense_type'] = rec.move_id.expense_type
                                         result[key]['total_debit'] += rec.debit
-                                        result[key]['entries'].append({
-                                            'move_name':rec.move_id.name,
-                                            'mov_id':rec.id,
-                                            'partner_id': rec.move_id.journal_id.name if rec.move_id.payment_id
-                                                          else rec.partner_id.name if rec.partner_id
-                                                          else rec.account_id.name,
-                                            'debit': rec.debit,
-                                            'date': rec.date,
-                                            'statement_date': stmt_date
-                                        })
-                                elif rec.debit > 0 and rec.account_id.code in ('100203') and not rec.move_id.payment_id:
-                                    skip_entry = False
-                                    if rec.matching_number:
-                                        matching_lines = self.env['account.move.line'].sudo().search([
-                                            ('matching_number', '=', rec.matching_number)
-                                        ])
-                                        for m in matching_lines.move_id:
-                                            if not m.statement_line_id:
-                                                for lines in m.line_ids:
-                                                    if lines.credit > 0 and lines.account_id.account_type != 'asset_cash':
-                                                        skip_entry = True
-                                        if skip_entry:
-                                            continue
-                                        l.add((rec.move_id.name, rec.id))
-                                        key = (rec.account_id.id, line.move_id.expense_type)
-                                        result[key]['account_name'] = rec.account_id.name
-                                        result[key]['account_code'] = rec.account_id.code
-                                        result[key]['expense_type'] = rec.move_id.expense_type
-                                        result[key]['total_debit'] += rec.debit
+
                                         result[key]['entries'].append({
                                             'move_name': rec.move_id.name,
                                             'mov_id': rec.id,
                                             'partner_id': (
                                                 rec.move_id.journal_id.name
-                                                if rec.move_id.payment_id
-                                                else rec.partner_id.name if rec.partner_id
+                                                if payments
+                                                else rec.partner_id.name
+                                                if rec.partner_id
                                                 else rec.account_id.name
                                             ),
                                             'debit': rec.debit,
                                             'date': rec.date,
-                                            'statement_date': stmt_date
+                                            'statement_date': stmt_date,
                                         })
+
+                                elif (
+                                    rec.debit > 0
+                                    and rec.account_id.code == '100203'
+                                    and not payments
+                                ):
+                                    skip_entry = False
+
+                                    if rec.matching_number:
+                                        matching_lines = self.env['account.move.line'].sudo().search([
+                                            ('matching_number', '=', rec.matching_number)
+                                        ])
+
+                                        for m in matching_lines.move_id:
+                                            if not m.statement_line_id:
+                                                for lines in m.line_ids:
+                                                    if (
+                                                        lines.credit > 0
+                                                        and lines.account_id.account_type != 'asset_cash'
+                                                    ):
+                                                        skip_entry = True
+                                                        break
+                                                if skip_entry:
+                                                    break
+
+                                    if skip_entry:
+                                        continue
+
+                                    l.add((rec.move_id.name, rec.id))
+
+                                    key = (rec.account_id.id, line.move_id.expense_type)
+
+                                    result[key]['account_name'] = rec.account_id.name
+                                    result[key]['account_code'] = rec.account_id.code
+                                    result[key]['expense_type'] = rec.move_id.expense_type
+                                    result[key]['total_debit'] += rec.debit
+
+                                    result[key]['entries'].append({
+                                        'move_name': rec.move_id.name,
+                                        'mov_id': rec.id,
+                                        'partner_id': (
+                                            rec.move_id.journal_id.name
+                                            if payments
+                                            else rec.partner_id.name
+                                            if rec.partner_id
+                                            else rec.account_id.name
+                                        ),
+                                        'debit': rec.debit,
+                                        'date': rec.date,
+                                        'statement_date': stmt_date,
+                                    })
         #outstanding entries
         # for rec in outstanding:
         #     if rec.debit > 0 and rec.account_id.account_type != 'asset_cash' and rec.move_id.has_reconciled_entries:
@@ -1509,60 +1547,92 @@ class AccountCURReportWizard(models.TransientModel):
                 for line in group_lines:
                     if not line.statement_line_id:
                         move_line = line.move_id
-                        if move_line.journal_id.type in ('bank','cash'):
-                            for rec in move_line.line_ids:
-                                if rec.credit > 0 and rec.account_id.code not in ('100203','100204','100801'):
-                                    if rec.account_id.account_type not in ('asset_cash'):
-                                        l.add((rec.move_id.name, rec.id))
-                                        key = (rec.account_id.id, line.move_id.expense_type)
-                                        result[key]['account_name'] = rec.account_id.name
-                                        result[key]['account_code'] = rec.account_id.code
-                                        result[key]['expense_type'] = rec.move_id.expense_type
-                                        result[key]['total_credit'] += rec.credit
-                                        result[key]['entries'].append({
-                                            'move_name':rec.move_id.name,
-                                            'mov_id':rec.id,
-                                            'partner_id': rec.move_id.journal_id.name if rec.move_id.payment_id
-                                                          else rec.partner_id.name if rec.partner_id
-                                                          else rec.account_id.name,
-                                            'credit': rec.credit,
-                                            'date':rec.date,
-                                            'statement_date':stmt_date
-                                        })
 
-                                elif rec.credit > 0 and rec.account_id.code in (
-                                '100204') and not rec.move_id.payment_id:
-                                    skip_entry = False
-                                    if rec.matching_number:
-                                        matching_lines = self.env['account.move.line'].sudo().search([
-                                            ('matching_number', '=', rec.matching_number)
-                                        ])
-                                        for m in matching_lines.move_id:
-                                            if not m.statement_line_id:
-                                                for lines in m.line_ids:
-                                                    if lines.debit > 0 and lines.account_id.account_type != 'asset_cash':
-                                                        skip_entry = True
-                                        if skip_entry:
-                                            continue
+                        if move_line.journal_id.type in ('bank', 'cash'):
+                            for rec in move_line.line_ids:
+
+                                payments = rec.move_id.matched_payment_ids
+
+                                if (
+                                    rec.credit > 0
+                                    and rec.account_id.code not in ('100203', '100204', '100801')
+                                ):
+                                    if rec.account_id.account_type != 'asset_cash':
+
                                         l.add((rec.move_id.name, rec.id))
+
                                         key = (rec.account_id.id, line.move_id.expense_type)
+
                                         result[key]['account_name'] = rec.account_id.name
                                         result[key]['account_code'] = rec.account_id.code
                                         result[key]['expense_type'] = rec.move_id.expense_type
                                         result[key]['total_credit'] += rec.credit
+
                                         result[key]['entries'].append({
                                             'move_name': rec.move_id.name,
                                             'mov_id': rec.id,
                                             'partner_id': (
                                                 rec.move_id.journal_id.name
-                                                if rec.move_id.payment_id
-                                                else rec.partner_id.name if rec.partner_id
+                                                if payments
+                                                else rec.partner_id.name
+                                                if rec.partner_id
                                                 else rec.account_id.name
                                             ),
                                             'credit': rec.credit,
                                             'date': rec.date,
-                                            'statement_date': stmt_date
+                                            'statement_date': stmt_date,
                                         })
+
+                                elif (
+                                    rec.credit > 0
+                                    and rec.account_id.code == '100204'
+                                    and not rec.move_id.matched_payment_ids
+                                ):
+                                    skip_entry = False
+
+                                    if rec.matching_number:
+                                        matching_lines = self.env['account.move.line'].sudo().search([
+                                            ('matching_number', '=', rec.matching_number)
+                                        ])
+
+                                        for m in matching_lines.move_id:
+                                            if not m.statement_line_id:
+                                                for lines in m.line_ids:
+                                                    if (
+                                                        lines.debit > 0
+                                                        and lines.account_id.account_type != 'asset_cash'
+                                                    ):
+                                                        skip_entry = True
+                                                        break
+                                                if skip_entry:
+                                                    break
+
+                                    if skip_entry:
+                                        continue
+
+                                    l.add((rec.move_id.name, rec.id))
+
+                                    key = (rec.account_id.id, line.move_id.expense_type)
+
+                                    result[key]['account_name'] = rec.account_id.name
+                                    result[key]['account_code'] = rec.account_id.code
+                                    result[key]['expense_type'] = rec.move_id.expense_type
+                                    result[key]['total_credit'] += rec.credit
+
+                                    result[key]['entries'].append({
+                                        'move_name': rec.move_id.name,
+                                        'mov_id': rec.id,
+                                        'partner_id': (
+                                            rec.move_id.journal_id.name
+                                            if rec.move_id.matched_payment_ids
+                                            else rec.partner_id.name
+                                            if rec.partner_id
+                                            else rec.account_id.name
+                                        ),
+                                        'credit': rec.credit,
+                                        'date': rec.date,
+                                        'statement_date': stmt_date,
+                                    })
         #Bank To Bank Transfer
         pay_rec = self.env['account.payment'].sudo().search([
             ('state', '=', 'posted'),

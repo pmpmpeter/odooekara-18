@@ -12,6 +12,7 @@
             </field>
         </record>
 
+
     <record id="tds_entry_view_form_inherit_editable" model="ir.ui.view">
             <field name="name">l10n_in.withhold.wizard.view.form.inherit</field>
             <field name="model">l10n_in.withhold.wizard</field>

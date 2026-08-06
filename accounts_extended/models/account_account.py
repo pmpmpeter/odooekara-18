@@ -19,9 +19,23 @@ bypass_token = object()
 class AccountAccount(models.Model):
     _inherit = 'account.account'
 
+    report_code = fields.Char(
+        compute="_compute_report_code",
+        store=True,
+    )
+
     active = fields.Boolean(string="Active",default=True, copy=False)
     is_cash_rounding = fields.Boolean(string="Disable Budget Code",copy=False,default=False)
     subgroup = fields.Many2one('account.subgroup',string='SubGroup',company_dependent = True)
+
+    @api.depends("code")
+    def _compute_report_code(self):
+        for rec in self:
+            rec.report_code = rec.code
+
+    @api.model
+    def cron_sync_report_code(self):
+        self.search([]).action_sync_report_code()
 
     @api.constrains('opening_debit', 'opening_credit')
     def _check_opening_credit_balance(self):
