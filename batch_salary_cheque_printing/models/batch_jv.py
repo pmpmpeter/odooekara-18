@@ -150,8 +150,8 @@ class AccountBatchJV(models.Model):
                             line.name,
                         )
                         if key not in grouped_lines:
-                            budget_id = journal_entry.crossovered_budget.crossovered_budget_line \
-                                .filtered(lambda x: x.general_budget_id.name == '70110001 Employee Salary')
+                            budget_id = journal_entry.budget_analytic_id.budget_line_ids \
+                                .filtered(lambda x: x.budget_analytic_id.name == '70110001 Employee Salary')
                             corporate_account = self.env['account.analytic.account'].search(
                                 [('name', '=', 'Corporate')], limit=1)
                             grouped_lines[key] = {
