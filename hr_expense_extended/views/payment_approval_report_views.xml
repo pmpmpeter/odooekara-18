@@ -31,7 +31,6 @@
 	        (5, 0, 0),
 	        (0, 0, {'view_mode': 'list', 'view_id': ref('hr_expense_extended.custom_view_hr_expense_sheet_inherited_list')})
 	        ]"/>
-	        <!-- (0, 0, {'view_mode': 'form', 'view_id': ref('hr_expense_extended.custom_hr_expense_sheet_report_inherited_form')}) -->
 	    
 	    <field name="context">{'is_payment_approval_option': True}</field>
 	    <field name="domain">[('is_payment_approval', '=', True)]</field>
