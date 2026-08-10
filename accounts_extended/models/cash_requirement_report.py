@@ -41,6 +41,7 @@ class CashRequirementReport(models.Model):
     @api.depends('journal_bank','bank_balance_date')
     def compute_available_balance(self):
         for rec1 in self:
+            print("--------------entered cash requirement report------------")
             if rec1.journal_bank:
                 total_val = 0
                 till_date = rec1.bank_balance_date
