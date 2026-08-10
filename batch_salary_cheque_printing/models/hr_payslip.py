@@ -21,7 +21,7 @@ class HRPayslipInherit(models.Model):
             for rec in self:
                 ent = rec.move_id.id
                 entry_id.append(ent)
-            batch = self.env['account.batch.jv'].create({
+            batch = self.env['account.batch.jv'].sudo().create({
                 'journal_id': self[0].journal_id.id,
                 'journal_ids':[(4, eid) for eid in entry_id],
                 'hr_payslip_run_id' : payslip_run_ids.id
