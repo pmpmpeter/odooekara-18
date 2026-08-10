@@ -24,9 +24,6 @@
                 <attribute name="invisible">
                     state != 'cancel' or x_has_request_approval
                 </attribute>
-                <attribute name="groups">
-                    purchase.group_purchase_manager
-                </attribute>
             </xpath>
             <xpath expr="//header/field[@name='state']" position="after">
                 <button name="button_send_for_approval" type="object" string="Send for a Min Quotes Revision" invisible="quote_matrix_approval_state in ('draft','approved','to_tax_entity_head') or not x_has_request_approval or state not in ('draft','sent','to approve')"/>
