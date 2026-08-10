@@ -367,11 +367,11 @@
         id="menu_action_account_report_aged_receivable_invoice_date" 
         name="Aged Receivable-Invoice Date" action="action_account_report_ar_invoice_date" 
         groups="account.group_account_readonly" 
-        parent="account_reports.account_reports_partners_reports_menu" sequence='11'/>
+        parent="account.account_reports_partners_reports_menu" sequence='11'/>
 
     <menuitem id="menu_action_account_report_aged_payable_invoice_date" 
         name="Aged Payable-Invoice Date" action="action_account_report_ap_invoice_date" 
         groups="account.group_account_readonly"
-        parent="account_reports.account_reports_partners_reports_menu" sequence='12'/>
+        parent="account.account_reports_partners_reports_menu" sequence='12'/>
 
 </odoo>
