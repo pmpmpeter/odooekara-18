@@ -721,7 +721,7 @@ class AccountMoveInherit(models.Model):
         return res
 
     def action_print_invoice_template(self):
-        return self.env.ref('accounts_extended.print_invoice_template1').report_action(self)
+        return self.env.ref('account.account_invoices').report_action(self)
 
     def _compute_l10n_in_total_withholding_amount(self):
         for move in self:

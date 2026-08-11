@@ -472,7 +472,7 @@
                     <td class="text-end">
                         <span
                             t-att-class="oe_subtotal_footer_separator"
-                            t-out="subtotal['formatted_amount']"
+                            t-out="subtotal['base_amount_currency']" t-options='{"widget": "monetary", "display_currency": currency}'
                         >27.00</span>
                     </td>
                 </tr>
@@ -492,7 +492,7 @@
             <tr class="border-black o_total">
                 <td><strong>Total</strong></td>
                 <td  class="text-end">
-                    <span t-out="tax_totals.get('formatted_amount_total')">31.05</span>
+                    <span t-out="tax_totals.get('total_amount_currency')">31.05</span>
                 </td>
             </tr>
         </template>

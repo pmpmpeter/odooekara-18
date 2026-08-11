@@ -238,25 +238,25 @@ class AccountBankStatementLine(models.Model):
 
     x_review_result = fields.Char(string="Review Result",related="move_id.x_review_result")
 
-    def _get_default_amls_matching_domain(self):
-        self.ensure_one()
-        domain = super()._get_default_amls_matching_domain()
-        if self.journal_id:
-            # domain.append(('journal_id', '=', self.journal_id.id))
-            domain.extend([('journal_id', '=', self.journal_id.id),('statement_line_id', '=', False)])
-            account_ids = []
-            if self.company_id.account_journal_payment_debit_account_id:
-                account_ids.append(self.company_id.account_journal_payment_debit_account_id.id)
-            if self.company_id.account_journal_payment_credit_account_id:
-                account_ids.append(self.company_id.account_journal_payment_credit_account_id.id)
-            param = self.env['ir.config_parameter'].sudo().get_param('brs_account_ids')
-            if param:
-                try:
-                    account_ids.extend([int(x) for x in param.split(',') if x])
-                except ValueError:
-                    pass  # ignore bad values
-            if account_ids:
-                domain.append(('account_id', 'in', account_ids))
+    # def _get_default_amls_matching_domain(self):
+    #     self.ensure_one()
+    #     domain = super()._get_default_amls_matching_domain()
+    #     if self.journal_id:
+    #         # domain.append(('journal_id', '=', self.journal_id.id))
+    #         domain.extend([('journal_id', '=', self.journal_id.id),('statement_line_id', '=', False)])
+    #         account_ids = []
+    #         if self.company_id.account_journal_payment_debit_account_id:
+    #             account_ids.append(self.company_id.account_journal_payment_debit_account_id.id)
+    #         if self.company_id.account_journal_payment_credit_account_id:
+    #             account_ids.append(self.company_id.account_journal_payment_credit_account_id.id)
+    #         param = self.env['ir.config_parameter'].sudo().get_param('brs_account_ids')
+    #         if param:
+    #             try:
+    #                 account_ids.extend([int(x) for x in param.split(',') if x])
+    #             except ValueError:
+    #                 pass  # ignore bad values
+    #         if account_ids:
+    #             domain.append(('account_id', 'in', account_ids))
 
-        return domain
+    #     return domain
 

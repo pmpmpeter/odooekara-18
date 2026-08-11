@@ -49,7 +49,7 @@
         'report/batch_payment_view.xml',
         'report/tax_invoice.xml',
         'report/tax_invoice_view.xml',
-        'report/ekara_print_template.xml',
+        # 'report/ekara_print_template.xml',
         'report/ekara_invoice_report.xml',
         'report/payment_mail_template.xml',
         # 'views/res_config_settings.xml',
