@@ -123,255 +123,566 @@ class PayrollReportWizard(models.TransientModel):
         }
 
     def _prepare_excel_workbook(self):
+        """
+        Prepare Payroll Batch JV Excel report.
+
+        The report is generated employee/payslip-wise so that:
+            - Worked days
+            - Components
+            - Deductions
+            - Payments
+
+        are always taken from the same payslip.
+
+        Salary rule codes are used where available for reliable
+        identification of payroll lines.
+        """
+
         buffer = BytesIO()
         workbook = xlsxwriter.Workbook(buffer)
         sheet = workbook.add_worksheet('Payroll Data')
 
-        # Define styles
-        title_format = workbook.add_format({'bold': True, 'align': 'left', 'font_size': 14})
-        header_format = workbook.add_format({'bold': True, 'align': 'center', 'border': 1})
-        data_format = workbook.add_format({'align': 'left', 'border': 1,'num_format': '0.00'})
-        char_format = workbook.add_format({'align': 'left', 'border': 1})
-        merge_format = workbook.add_format({
-                'align': 'center',
-                'valign': 'vcenter',
-                'bold': True,
-                'border': 1
-            })
+        # -------------------------------------------------------------------------
+        # Formats
+        # -------------------------------------------------------------------------
 
-        # Title
-        sheet.merge_range('A1:Z1','ENTITY - '+self.env.company.name, title_format)
+        title_format = workbook.add_format({'bold': True,'align': 'left','font_size': 14,})
+
+        header_format = workbook.add_format({'bold': True,'align': 'center','valign': 'vcenter','border': 1,'text_wrap': True,})
+
+        data_format = workbook.add_format({'align': 'right','border': 1,'num_format': '0.00',})
+
+        char_format = workbook.add_format({'align': 'left','border': 1,})
+
+        merge_format = workbook.add_format({'align': 'center','valign': 'vcenter','bold': True,'border': 1,})
+
+        date_format = workbook.add_format({'align': 'left','border': 1,'num_format': 'dd-mm-yyyy',})
+
+        # -------------------------------------------------------------------------
+        # Report Title
+        # -------------------------------------------------------------------------
+
+        sheet.merge_range('A1:Z1','ENTITY - %s' % self.env.company.name,title_format,)
+
         if self.report_based_on == 'batch':
-            sheet.merge_range('A2:E2','Payroll Data for Batch'+' - '+self.batch_id.name , title_format)
-        elif self.report_based_on =='date':
-            sheet.merge_range('A2:E2','Payroll Data From'+' '+datetime.strftime(self.from_date,"%d-%m-%Y")+' '+'To' +' ' +datetime.strftime(self.to_date,"%d-%m-%Y") , title_format)
+            sheet.merge_range('A2:E2','Payroll Data for Batch - %s' % self.batch_id.name,title_format,)
+
+        elif self.report_based_on == 'date':
+            sheet.merge_range('A2:E2','Payroll Data From %s To %s' % (self.from_date.strftime('%d-%m-%Y'),self.to_date.strftime('%d-%m-%Y'),),title_format,)
+
         elif self.report_based_on == 'department':
-            sheet.merge_range('A2:Z2', f'Payroll Data for Department {self.department_id.name}', title_format)
-        sheet.set_column('A:A',7)
+            sheet.merge_range('A2:Z2','Payroll Data for Department %s' % self.department_id.name,title_format,)
+
+        # -------------------------------------------------------------------------
+        # Column Widths
+        # -------------------------------------------------------------------------
+
+        sheet.set_column('A:A', 7)
         sheet.set_column('B:C', 20)
-        sheet.set_column('D:E',10)
-        sheet.set_column('F:F',15)
-        sheet.set_column('G:H',20)
-        sheet.set_column('I:I',15)
-        sheet.set_column('J:J',25)
-        sheet.set_column('K:AN',20)
-        sheet.set_row(3,28)
-        # Headers
-        headers = [
-            "Sl #", "Employee","Employment Status", "Empl. No.", "UAN", "Date of Joining",
-            "Last Working Day", "Location", "Annual Fixed Compensation",
-            "Days Paid \nThis Month"]
+        sheet.set_column('D:E', 15)
+        sheet.set_column('F:F', 15)
+        sheet.set_column('G:H', 20)
+        sheet.set_column('I:I', 20)
+        sheet.set_column('J:J', 25)
+        sheet.set_column('K:AN', 20)
+
+        sheet.set_row(2, 28)
+        sheet.set_row(3, 40)
+
+        # -------------------------------------------------------------------------
+        # Get Payslips
+        # -------------------------------------------------------------------------
+
+        payslip_domain = [
+            ('state', '=', self.state),
+        ]
+
         if self.report_based_on == 'batch':
-            payslips = self.env['hr.payslip'].search([
-                ('payslip_run_id', '=', self.batch_id.id),
-                ('state', '=', self.state)
-            ])
+            payslip_domain.append(('payslip_run_id', '=', self.batch_id.id))
+
         elif self.report_based_on == 'department':
-            payslips = self.env['hr.payslip'].search([
-                ('date_from','>=', self.from_date),
+            payslip_domain += [
+                ('date_from', '>=', self.from_date),
                 ('date_to', '<=', self.to_date),
                 ('employee_id.department_id', '=', self.department_id.id),
-                ('state', '=', self.state)
-            ])
-        elif self.report_based_on =='date':
-            payslips = self.env['hr.payslip'].search([
-                ('date_from','>=', self.from_date),
+            ]
+
+        elif self.report_based_on == 'date':
+            payslip_domain += [
+                ('date_from', '>=', self.from_date),
                 ('date_to', '<=', self.to_date),
-                ('state', '=', self.state)
-            ])
-        row = 3
+            ]
+
+        payslips = self.env['hr.payslip'].search(
+            payslip_domain,
+            order='employee_id, date_from, id',
+        )
+
+        # -------------------------------------------------------------------------
+        # Basic Headers
+        # -------------------------------------------------------------------------
+
+        headers = [
+            'Sl #',
+            'Employee',
+            'Employment Status',
+            'Empl. No.',
+            'UAN',
+            'Date of Joining',
+            'Last Working Day',
+            'Location',
+            'Annual Fixed Compensation',
+            'Days Paid\nThis Month',
+        ]
+
+        row = 2
         col = 0
+
         for header in headers:
-            sheet.merge_range(2,col,3,col,header, merge_format)
+            sheet.merge_range(row,col,row + 1,col,header,merge_format,)
             col += 1
+
+        # -------------------------------------------------------------------------
+        # Worked and Leave Days
+        # -------------------------------------------------------------------------
+
+        worked_day_names = [
+            'CL this month',
+            'EL this month',
+            'LoP this month',
+        ]
+
         work_col = col
-        for leave_name in ['CL this month','EL this month','LoP this month']:
-            sheet.write(row,work_col,leave_name,header_format)
-            work_col +=1
-        wrk_names =['CL this month','EL this month','LoP this month']
+
+        for work_name in worked_day_names:
+            sheet.write(row + 1,work_col,work_name,header_format,)
+            work_col += 1
+
+        sheet.merge_range(row,col,row,work_col - 1,'Worked and Leave Days',merge_format,)
+
+        # -------------------------------------------------------------------------
+        # Salary Rules
+        # -------------------------------------------------------------------------
+
+        # Get all salary rules used by the selected payslips.
+        #
+        # We use the actual payslip line salary rules instead of relying only
+        # on the structure. This makes the report work even if multiple salary
+        # structures are present in the selected payslips.
+        salary_rules = payslips.mapped('line_ids.salary_rule_id').filtered(
+            lambda rule: rule and rule.appears_on_payslip
+        )
+
+        # -------------------------------------------------------------------------
+        # Components
+        # -------------------------------------------------------------------------
+
+        component_rules = salary_rules.filtered(
+            lambda rule: rule.category_id.name in ('Basic', 'Allowance')
+        ).sorted(
+            key=lambda rule: (rule.sequence, rule.id)
+        )
+
+        component_names = component_rules.mapped('name')
+
         comp_col = work_col
-        components = payslips.struct_id.rule_ids.filtered(
-            lambda l: any(rule.category_id.name in ['Basic', 'Allowance'] and rule.appears_on_payslip for rule in l)
-        )
-        for comp_name in components.mapped('name'):
-            sheet.write(row, comp_col, comp_name, header_format)
+
+        for component_name in component_names:
+            sheet.write(row + 1,comp_col,component_name,header_format,)
             comp_col += 1
-        sheet.write(row, comp_col,'Total', header_format)
+
+        sheet.write(row + 1,comp_col,'Total',header_format,)
+
+        component_total_col = comp_col
         comp_col += 1
+
+        sheet.merge_range(row,work_col,row,comp_col - 1,'Components',merge_format,)
+
+        # -------------------------------------------------------------------------
+        # Deductions
+        # -------------------------------------------------------------------------
+
+        deduction_rules = salary_rules.filtered(
+            lambda rule: rule.category_id.name == 'Deduction'
+        ).sorted(
+            key=lambda rule: (rule.sequence, rule.id)
+        )
+
+        deduction_names = deduction_rules.mapped('name')
+
         ded_col = comp_col
-        deduction = payslips.struct_id.rule_ids.filtered(
-            lambda l: any(rule.category_id.name in ['Deduction'] and rule.appears_on_payslip for rule in l)
-        )
-        for comp_name in deduction.mapped('name'):
-            sheet.write(row, ded_col, comp_name, header_format)
+
+        for deduction_name in deduction_names:
+            sheet.write(row + 1,ded_col,deduction_name,header_format,)
             ded_col += 1
-        sheet.write(row, ded_col,'Total Deductions', header_format)
+
+        sheet.write(row + 1,ded_col,'Total Deductions',header_format,)
+
+        deduction_total_col = ded_col
         ded_col += 1
+
+        sheet.merge_range(row,comp_col,row,ded_col - 1,'Deductions',merge_format,)
+
+        # -------------------------------------------------------------------------
+        # Payments
+        # -------------------------------------------------------------------------
+
+        payment_rules = salary_rules.filtered(lambda rule: rule.category_id.name == 'Payments').sorted(key=lambda rule: (rule.sequence, rule.id))
+
+        payment_names = payment_rules.mapped('name')
+
         pay_col = ded_col
-        payments = payslips.struct_id.rule_ids.filtered(
-            lambda l: any(rule.category_id.name in ['Payments'] and rule.appears_on_payslip for rule in l)
-        )
-        for comp_name in payments.mapped('name'):
-            sheet.write(row, pay_col, comp_name, header_format)
+
+        for payment_name in payment_names:
+            sheet.write(row + 1,pay_col,payment_name,header_format,)
             pay_col += 1
-        sheet.write(row, pay_col, 'Batch Payments', header_format)
+
+        # Batch Payments
+        batch_payment_col = pay_col
+
+        sheet.write(row + 1,batch_payment_col,'Batch Payments',header_format,)
+
         pay_col += 1
-        sheet.write(row, pay_col,'Total Payments', header_format)
-        # for comp_name in payslips.struct_id.rule_ids.mapped('name'):
-        #     sheet.write(row,comp_col,comp_name,header_format)
-        #     comp_col +=1
-        sheet.merge_range(2,col,2,work_col-1, 'Worked and Leave Days', merge_format) if len(wrk_names) > 1 else sheet.write(2,col,'Worked and Leave Days',header_format)
-        sheet.merge_range(2,work_col,2,comp_col-1, 'Components', merge_format)
-        sheet.merge_range(2,comp_col,2,ded_col-1, 'Deductions', merge_format)
-        sheet.merge_range(2, ded_col, 2, pay_col, 'Payments', merge_format)
-        comp_names = components.mapped('name')
-        ded_names = deduction.mapped('name')
-        pay_names = payments.mapped('name')
-        row = 4
-        comp_fin_list = []
-        wrk_fin_list = []
-        ded_fin_list = []
-        pay_fin_list = []
-        for slip in payslips.filtered(
-                lambda l: any(rule.category_id.name in ['Basic', 'Allowance'] for rule in l.struct_id.rule_ids)
-        ).sorted(key=lambda l: min(
-                (rule.sequence for rule in l.struct_id.rule_ids if rule.category_id.name in ['Basic', 'Allowance']),
-                default=0)):
-            comp_list = []
-            wrk_list = []
+
+        # Total Payments
+        total_payment_col = pay_col
+
+        sheet.write(row + 1,total_payment_col,'Total Payments',header_format,)
+
+        pay_col += 1
+
+        sheet.merge_range(row,ded_col,row,pay_col - 1,'Payments',merge_format,)
+
+        # -------------------------------------------------------------------------
+        # Helper Methods
+        # -------------------------------------------------------------------------
+
+        def get_line_values_by_code(slip):
+            """
+            Return payslip values indexed by salary rule code.
+
+            Example:
+
+                {
+                    'BASIC': 84981.00,
+                    'HRA': 42491.00,
+                    'FOOD': 4400.00,
+                    'FOOD-R': 4400.00,
+                    'FC': 4400.00,
+                }
+
+            This is preferred over matching only by line name.
+            """
+
+            values = {}
+
             for line in slip.line_ids:
-                comp_list.append({line.name:line.total})
-            comp_fin_list.append(comp_list)
-            for line in slip.worked_days_line_ids:
-                lv_name = ''
-                code = (line.work_entry_type_id.external_code or '').strip().upper()
-                #if line.work_entry_type_id.code == 'CL':
-                if code == 'CL':
-                    lv_name = 'CL this month'
-                elif code == 'LOP':
-                    lv_name = 'LoP this month'
-                elif code == 'EL':
-                    lv_name = 'EL this month' 
-                wrk_list.append({lv_name:line.number_of_days})
-            wrk_fin_list.append(wrk_list)
-        for slip in payslips.filtered(
-            lambda l: any(rule.category_id.name in ['Deduction'] for rule in l.struct_id.rule_ids)).sorted(key=lambda l: min(
-                (rule.sequence for rule in l.struct_id.rule_ids if rule.category_id.name in ['Deduction']),
-                default=0)):
-            ded_list = []
-            total = 0
+                rule = line.salary_rule_id
+
+                if not rule:
+                    continue
+
+                code = (rule.code or '').strip()
+
+                if not code:
+                    continue
+
+                values[code] = values.get(code, 0.0) + line.total
+
+            return values
+
+        def get_line_values_by_name(slip):
+            """
+            Fallback mapping by salary rule/line name.
+
+            This is useful if a salary rule does not have a code.
+            """
+
+            values = {}
+
             for line in slip.line_ids:
-                ded_list.append({line.name:line.total})
-                total = total + line.total
-            ded_fin_list.append(ded_list)
-        for slip in payslips.filtered(
-            lambda l: any(rule.category_id.name in ['Payments'] for rule in l.struct_id.rule_ids)).sorted(key=lambda l: min(
-                (rule.sequence for rule in l.struct_id.rule_ids if rule.category_id.name in ['Payments']),
-                default=0)):
-            pay_list = []
-            for line in slip.line_ids:
-                pay_list.append({line.name:line.total})
-            pay_fin_list.append(pay_list)
-        start_row = row
-        start_col = col
-        value = 0
-        for wrk in wrk_fin_list:
-            for idx, work in enumerate(wrk_names):
-                for item in wrk:
-                    value = 0
-                    if work in item:
-                        value = item[work]
-                        break
-                sheet.write(start_row, start_col + idx, value, data_format)
-            start_row += 1
-        start_row = row
-        start_col = work_col
-        comp_list = []
-        for comp in comp_fin_list:
-            total = 0
-            for idx, component in enumerate(comp_names):
-                for item in comp:
-                    value = 0
-                    if component in item:
-                        value = item[component]
-                        total = total + int(item[component])
+                rule = line.salary_rule_id
 
-                        break
-                sheet.write(start_row, start_col + idx, value, data_format)
-                sheet.write(start_row, start_col+1 + idx, total, data_format)
-            comp_list.append(total)
-            start_row += 1
-        start_row = row
-        start_col = comp_col
-        ded_list = []
-        for comp in ded_fin_list:
-            total = 0
-            for idx, component in enumerate(ded_names):
-                for item in comp:
-                    value = 0
-                    if component in item:
-                        value = item[component]
-                        total = total + int(item[component])
+                name = rule.name if rule else line.name
 
-                        break
-                sheet.write(start_row, start_col + idx, value, data_format)
-                sheet.write(start_row, start_col + 1 + idx, total, data_format)
-            ded_list.append(total)
-            start_row += 1
-        start_row = row
-        start_col = ded_col
-        index = 0
-        for comp in pay_fin_list:
-            total = 0
+                if not name:
+                    continue
 
-            for idx, component in enumerate(pay_names):
-                for item in comp:
-                    value = 0
+                values[name] = values.get(name, 0.0) + line.total
 
-                    if component in item:
-                        value = item[component]
+            return values
 
-                        break
-                diff_value = comp_list[index] - ded_list[index]
-                total = total + int(item[component])+diff_value
-                sheet.write(start_row, start_col + idx, value, data_format)
-                sheet.write(start_row, start_col + 1 + idx, diff_value, data_format)
-                sheet.write(start_row, start_col + 2 + idx, total, data_format)
-                index =index+1
-            start_row += 1
-        for idx, slip in enumerate(payslips, start=1):
-            col = 0
-            resig_date = self.env['hr.resignation'].search([('employee_id','=',slip.employee_id.id),('state','=','hr_approved')])
-            payroll_status_field = slip.employee_id._fields['employee_status_payroll']
-            payroll_status_label = dict(payroll_status_field.selection).get(slip.employee_id.employee_status_payroll, '')
-            sheet.write(row, col, idx, char_format)  # Sl #
-            sheet.write(row, col + 1, slip.employee_id.name, char_format)  # Employee
-            sheet.write(row, col + 2, payroll_status_label,char_format)  # Employment Status
-            sheet.write(row, col + 3, slip.employee_id.new_emp_no if slip.employee_id.new_emp_no else '', char_format)  # Employee No.
-            sheet.write(row, col + 4, slip.employee_id.uan_no if slip.employee_id.uan_no else '', char_format)  # UAN
-            sheet.write(row, col + 5, datetime.strftime((slip.employee_id.joining_date),"%d-%m-%Y") if slip.employee_id.joining_date else '' , char_format)  # Date of Joining
-            # sheet.write(row, col + 6, datetime.strftime((resig_date.hr_approved_reliving_date),"%d-%m-%Y") if resig_date else '', char_format)  # Date of Resignation Acceptance
-            sheet.write(row, col + 6, datetime.strftime(resig_date.expected_revealing_date,"%d-%m-%Y") if resig_date.expected_revealing_date else '' , char_format)  # Last Working Day
-            sheet.write(row, col + 7, slip.employee_id.work_location_id.name if slip.employee_id.work_location_id else '', char_format)  # Location
-            sheet.write(row, col + 8, slip.contract_id.final_yearly_costs, data_format)  # Annual Compensation
-            # sheet.write(row, col + 9, sum(slip.worked_days_line_ids.mapped('number_of_days')), data_format)  # Days Paid
-            total_days = sum(slip.worked_days_line_ids.mapped('number_of_days'))
-            lop_days = sum(
-                line.number_of_days
-                for line in slip.worked_days_line_ids
-                if (line.work_entry_type_id.external_code or '').strip().upper() == 'LOP'
-            )
-            # days_paid = total_days - lop_days
-            date = self.batch_id.date_start  # current date
-            year = date.year
-            month = date.month
-            days_in_month = calendar.monthrange(year, month)[1]
+        def get_rule_value(slip, rule):
+            """
+            Get a specific salary rule value from a payslip.
+
+            Rule code is preferred.
+            Rule name is used as fallback.
+            """
+
+            code_values = get_line_values_by_code(slip)
+            name_values = get_line_values_by_name(slip)
+
+            rule_code = (rule.code or '').strip()
+
+            if rule_code:
+                return code_values.get(rule_code, 0.0)
+
+            return name_values.get(rule.name, 0.0)
+
+        # -------------------------------------------------------------------------
+        # Data Rows
+        # -------------------------------------------------------------------------
+
+        data_row = 4
+
+        for sequence, slip in enumerate(payslips, start=1):
+
+            employee = slip.employee_id
+
+            # ---------------------------------------------------------------------
+            # Salary Rule Values
+            # ---------------------------------------------------------------------
+
+            component_values = {}
+            component_total = 0.0
+
+            for rule in component_rules:
+                value = get_rule_value(slip, rule)
+
+                component_values[rule.id] = value
+                component_total += value
+
+            deduction_values = {}
+            deduction_total = 0.0
+
+            for rule in deduction_rules:
+                value = get_rule_value(slip, rule)
+
+                deduction_values[rule.id] = value
+                deduction_total += value
+
+            payment_values = {}
+            payment_total = 0.0
+
+            for rule in payment_rules:
+                value = get_rule_value(slip, rule)
+
+                payment_values[rule.id] = value
+                payment_total += value
+
+            # ---------------------------------------------------------------------
+            # Net / Batch Payment
+            # ---------------------------------------------------------------------
+
+            batch_payment = component_total - deduction_total
+
+            total_payments = batch_payment + payment_total
+
+            # ---------------------------------------------------------------------
+            # Worked Days
+            # ---------------------------------------------------------------------
+
+            worked_day_values = {
+                'CL this month': 0.0,
+                'EL this month': 0.0,
+                'LoP this month': 0.0,
+            }
+
+            for worked_day in slip.worked_days_line_ids:
+                external_code = (
+                    worked_day.work_entry_type_id.external_code or ''
+                ).strip().upper()
+
+                if external_code == 'CL':
+                    worked_day_values['CL this month'] += (
+                        worked_day.number_of_days
+                    )
+
+                elif external_code == 'EL':
+                    worked_day_values['EL this month'] += (
+                        worked_day.number_of_days
+                    )
+
+                elif external_code == 'LOP':
+                    worked_day_values['LoP this month'] += (
+                        worked_day.number_of_days
+                    )
+
+            # ---------------------------------------------------------------------
+            # Days Paid
+            # ---------------------------------------------------------------------
+
+            lop_days = worked_day_values['LoP this month']
+
+            if slip.date_from:
+                days_in_month = calendar.monthrange(
+                    slip.date_from.year,
+                    slip.date_from.month,
+                )[1]
+            else:
+                days_in_month = 0
+
             days_paid = days_in_month - lop_days
-            sheet.write(row, col + 9, days_paid, data_format)
-            # sheet.write(row, col + comp_col,'', data_format)
-            row += 1
+
+            # ---------------------------------------------------------------------
+            # Last Working Day
+            # ---------------------------------------------------------------------
+
+            last_working_day = ''
+
+            resignation = self.env['hr.resignation'].search(
+                [
+                    ('employee_id', '=', employee.id),
+                    ('state', '=', 'hr_approved'),
+                ],
+                order='id desc',
+                limit=1,
+            )
+
+            if resignation and resignation.expected_revealing_date:
+                last_working_day = resignation.expected_revealing_date.strftime(
+                    '%d-%m-%Y'
+                )
+
+            # ---------------------------------------------------------------------
+            # Employment Status
+            # ---------------------------------------------------------------------
+
+            payroll_status_label = ''
+
+            if 'employee_status_payroll' in employee._fields:
+                payroll_status_field = employee._fields[
+                    'employee_status_payroll'
+                ]
+
+                payroll_status_label = dict(
+                    payroll_status_field.selection
+                ).get(
+                    employee.employee_status_payroll,
+                    '',
+                )
+
+            # ---------------------------------------------------------------------
+            # Employee Information
+            # ---------------------------------------------------------------------
+
+            current_col = 0
+
+            sheet.write(data_row,current_col,sequence,char_format,)
+            current_col += 1
+
+            sheet.write(data_row,current_col,employee.name or '',char_format,)
+            current_col += 1
+
+            sheet.write(data_row,current_col,payroll_status_label,char_format,)
+            current_col += 1
+
+            sheet.write(data_row,current_col,employee.new_emp_no or '',char_format,)
+            current_col += 1
+
+            sheet.write(data_row,current_col,employee.uan_no or '',char_format,)
+            current_col += 1
+
+            sheet.write(
+                data_row,
+                current_col,
+                employee.joining_date.strftime('%d-%m-%Y')
+                if employee.joining_date
+                else '',
+                char_format,
+            )
+            current_col += 1
+
+            sheet.write(data_row,current_col,last_working_day,char_format,)
+            current_col += 1
+
+            sheet.write(
+                data_row,
+                current_col,
+                employee.work_location_id.name
+                if employee.work_location_id
+                else '',
+                char_format,
+            )
+            current_col += 1
+
+            annual_compensation = (
+                slip.contract_id.final_yearly_costs
+                if slip.contract_id
+                else 0.0
+            )
+
+            sheet.write(data_row,current_col,annual_compensation,data_format,)
+            current_col += 1
+
+            sheet.write(data_row,current_col,days_paid,data_format,)
+            current_col += 1
+
+            # ---------------------------------------------------------------------
+            # Worked and Leave Days
+            # ---------------------------------------------------------------------
+
+            for work_name in worked_day_names:
+                sheet.write(
+                    data_row,
+                    current_col,
+                    worked_day_values[work_name],
+                    data_format,
+                )
+                current_col += 1
+
+            # ---------------------------------------------------------------------
+            # Components
+            # ---------------------------------------------------------------------
+
+            for rule in component_rules:
+                sheet.write(data_row,current_col,component_values[rule.id],data_format,)
+                current_col += 1
+
+            sheet.write(data_row,current_col,component_total,data_format,)
+            current_col += 1
+
+            # ---------------------------------------------------------------------
+            # Deductions
+            # ---------------------------------------------------------------------
+
+            for rule in deduction_rules:
+                sheet.write(data_row,current_col,deduction_values[rule.id],data_format,)
+                current_col += 1
+
+            sheet.write(data_row,current_col,deduction_total,data_format,)
+            current_col += 1
+
+            # ---------------------------------------------------------------------
+            # Payments
+            # ---------------------------------------------------------------------
+
+            for rule in payment_rules:
+                sheet.write(data_row,current_col,payment_values[rule.id],data_format,)
+                current_col += 1
+
+            # Batch Payments
+            sheet.write(data_row,current_col,batch_payment,data_format,)
+            current_col += 1
+
+            # Total Payments
+            sheet.write(data_row,current_col,total_payments,data_format,)
+
+            data_row += 1
+
+        # -------------------------------------------------------------------------
+        # Freeze Panes
+        # -------------------------------------------------------------------------
+
+        sheet.freeze_panes(4, 0)
+
+        # -------------------------------------------------------------------------
+        # Workbook
+        # -------------------------------------------------------------------------
 
         workbook.close()
         buffer.seek(0)
+
         return buffer.read()
 
