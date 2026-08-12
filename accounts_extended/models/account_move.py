@@ -127,6 +127,23 @@ class AccountMoveInherit(models.Model):
     )
     budget_id = fields.Many2one('budget.line', 'Budget Code', copy=False, required=0)
     budget_analytic_id = fields.Many2one('budget.analytic',string='Budget',copy=False)
+
+    @api.onchange('invoice_date')
+    def _onchange_invoice_date_budget(self):
+        for move in self:
+            move.budget_analytic_id = False
+
+            if not move.invoice_date:
+                continue
+
+            budget = self.env['budget.analytic'].search([
+                ('company_id', '=', move.company_id.id),
+                ('date_from', '<=', move.invoice_date),
+                ('date_to', '>=', move.invoice_date),
+            ], order='date_from desc, id desc', limit=1)
+
+            if budget:
+                move.budget_analytic_id = budget
     
     budget_update = fields.Boolean("Is Budget Updated?",copy=False,default=False)
     journal_type = fields.Selection(related='journal_id.type')
