@@ -95,12 +95,8 @@ class AccountMoveLine(models.Model):
             if not rec.move_id.budget_analytic_id or not rec.account_id:
                 continue
 
-            budget_positions = self.env['account.report.budget'].sudo().search([
-                ('account_ids', 'in', rec.account_id.id)
-            ])
-
-            budget_lines = rec.move_id.budget_analytic_id.budget_id.filtered(
-                lambda l: l.budget_position_id in budget_positions
+            budget_lines = rec.move_id.budget_analytic_id.budget_line_ids.filtered(
+                lambda line: line.account_id == rec.account_id
             )
 
             rec.budget_id = [(6, 0, budget_lines.ids)]
