@@ -94,13 +94,11 @@ class AccountMoveLine(models.Model):
 
             if not rec.move_id.budget_analytic_id or not rec.account_id:
                 continue
-
             budget_lines = rec.move_id.budget_analytic_id.budget_line_ids.filtered(
                 lambda line: line.account_id == rec.account_id
             )
-
             rec.budget_id = [(6, 0, budget_lines.ids)]
-    
+
 
     def update_actual_aml_cur_figure_server_action(self):
         record_ids = self._context.get('active_ids')

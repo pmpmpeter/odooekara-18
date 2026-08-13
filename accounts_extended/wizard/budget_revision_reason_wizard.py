@@ -7,15 +7,15 @@ class BudgetRevisionWizard(models.TransientModel):
     _description = 'Budget Revision Wizard'
 
     reason = fields.Char(string="Revision Reason", required=True)
-    # budget_id = fields.Many2one('crossovered.budget',string='Budget')
+    budget_id = fields.Many2one('budget.analytic',string='Budget')
 
     def action_confirm_revision(self):
         active_model = self.env.context.get('active_model')
         active_id = self.env.context.get('active_id')  # Get the active budget record
         record = self.env[active_model].browse(active_id)
         if active_id:
-            # budget = self.env['crossovered.budget'].browse(active_id)
-            # self.budget_id = budget.id
+            budget = self.env['budget.analytic'].browse(active_id)
+            self.budget_id = budget.id
             # Get current user and timestamp
             user_name = self.env.user.name  # Current user's name
             current_time = datetime.now()  # Current date and time

@@ -169,7 +169,7 @@ class AccountMoveInherit(models.Model):
     advance_payment_ids = fields.Many2many('account.payment',string='Advance Payment')
     utr_number =fields.Char(string='UTR Number')
     is_cheque_details_freeze = fields.Boolean(string='Is Cheque Details Freezed',default=False)
-    x_has_request_approval = fields.Boolean(string="Has Request Approval",default=False)
+    x_has_request_approval = fields.Boolean(string="Has Request Approval",default=False,copy=False)
     x_review_result = fields.Char(string="Review Result",store=True)
 
     def action_update_utr_number(self):

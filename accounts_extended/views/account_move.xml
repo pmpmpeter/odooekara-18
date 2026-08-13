@@ -112,7 +112,7 @@
             </xpath>
 
             <!-- Cancel -->
-            <xpath expr="//header/button[@name='button_cancel'][1]" position="attributes">
+            <xpath expr="//header/button[@name='button_cancel'][2]" position="attributes">
                 <attribute name="groups">accounts_extended.group_cancel_accounting_entry</attribute>
                 <attribute name="invisible">
                     not id or state != 'draft' or move_type in ('entry','out_invoice')
@@ -120,7 +120,7 @@
             </xpath>
 
             <!-- Add third Cancel button -->
-            <xpath expr="//header/button[@name='button_cancel'][last()]" position="after">
+            <xpath expr="//header/button[@name='button_cancel'][2]" position="after">
                 <button name="button_cancel" string="Cancel" type="object" groups="accounts_extended.group_cancel_accounting_entry" data-hotkey="x" invisible="not id or state not in ['to approve','approved','posted']"/>
             </xpath>
 
@@ -218,7 +218,7 @@
                 <attribute name="options">{'no_quick_create':True,'no_create':True}</attribute>
             </xpath>
             <xpath expr="//div[@name='journal_div']" position="after">
-                <field name="payment_reference"/>
+                <!-- <field name="payment_reference"/> -->
                 <field name="approval_state" invisible="move_type not in ['in_invoice','out_invoice','entry']"/>
                 <field name="advance_payment_ids" widget="many2many_tags"/>
                 <field name="expense_type" invisible="move_type not in ['in_invoice'] or not is_payment_approval" readonly="state != 'draft'"/>

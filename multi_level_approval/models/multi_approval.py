@@ -236,20 +236,26 @@ class MultiApproval(models.Model):
                         rec.origin_ref.approved_date = datetime.now() 
                         rec.origin_ref.approved_file = rec.origin_ref.submitted_file 
                         rec.origin_ref.approved_name = rec.origin_ref.submitted_name 
-                    # if rec.type_id.model_id == "crossovered.budget":
-                    #     for budget_line in rec.origin_ref.crossovered_budget_line:
-                    #         if budget_line.additional_amount > 0:
-                    #             self.env['revision.history'].create({
-                    #                 'budget_post_id': budget_line.general_budget_id.id,
-                    #                 'budget_code': budget_line.budget_code,
-                    #                 'analytic_account_id': budget_line.analytic_account_id.id,
-                    #                 'initial_allocate': budget_line.planned_amount,
-                    #                 'additional_amount': budget_line.additional_amount,
-                    #                 'budget_id':rec.origin_ref.id,
-                    #                 'revision_date':fields.Datetime.now()
-                    #                 })
-                    #             budget_line.planned_amount += budget_line.additional_amount
-                    #             budget_line.additional_amount = 0
+                    if rec.type_id.model_id == "budget.analytic":
+                        for budget_line in rec.origin_ref.budget_line_ids:
+                            if budget_line.additional_amount <= 0:
+                                continue
+
+                            additional_amount = budget_line.additional_amount
+
+                            for item in budget_line.item_ids:
+                                self.env['revision.history'].create({
+                                    'budget_post_id': budget_line.budget_position_id.id,
+                                    'budget_code': budget_line.budget_code,
+                                    'analytic_account_id': item.account_id.id,
+                                    'initial_allocate': budget_line.planned_amount,
+                                    'additional_amount': additional_amount,
+                                    'budget_id': rec.origin_ref.id,
+                                    'revision_date': fields.Datetime.now(),
+                                })
+
+                            budget_line.planned_amount += additional_amount
+                            budget_line.additional_amount = 0
                 else:
                     next_line = other_lines.sorted("sequence")[0]
                     next_line.write(
