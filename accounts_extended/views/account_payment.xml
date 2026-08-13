@@ -49,6 +49,9 @@
                   <div invisible="1" class="alert alert-info" style="margin-top: 5px;" role="alert">This document has been approved !</div>
                   <div invisible="1" class="alert alert-danger" style="margin-top: 5px;" role="alert">This document has been refused !</div>
               </xpath>
+              <xpath expr="//field[@name='memo']" position='attributes'>
+                <attribute name="string">Reference</attribute>
+              </xpath>
         </field>
     </record>
 
