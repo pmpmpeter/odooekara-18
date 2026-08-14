@@ -63,6 +63,7 @@
             <field name="memo" position="after">
                 <field name='utr_number'  readonly="is_cheque_details_freeze"/>
                 <field name='old_utr_number' invisible='1'/>
+                <field name="x_need_approval" invisible="1"/>
             </field>
             <xpath expr="//field[@name='partner_bank_id']" position="after">
                 <field name="type" invisible="payment_type != 'outbound'" readonly="state not in ('draft','to approve')"/>
