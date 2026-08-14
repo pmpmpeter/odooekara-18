@@ -63,7 +63,7 @@ class AccountPayment(models.Model):
     other_charges_lines = fields.One2many('payment.other.charges.lines', 'payment_id', string="Other Charges", copy=True)
     print_assigned = fields.Many2many('res.users',string='Print Assigned To')
     print_assigned_true = fields.Boolean(string='Print Assigned True',compute='compute_print_assigned',default=False)
-    x_need_approval = fields.Boolean(string="Need Approval",default=False)
+    x_need_approval = fields.Boolean(string="Need Approval",default=True)
     x_has_request_approval = fields.Char(string="Has request approval")
     x_review_result = fields.Char(string="Review Result",related="move_id.x_review_result")
     ref = fields.Text()
