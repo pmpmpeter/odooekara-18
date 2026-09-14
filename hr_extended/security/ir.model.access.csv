@@ -22,10 +22,15 @@ access_employee_join_doc_config,employee.join.doc.config,model_employee_join_doc
 access_joining_documents_user,joining.documents.user,model_joining_documents,base.group_user,1,1,0,0
 access_joining_documents_hr,joining.documents.hr,model_joining_documents,hr.group_hr_user,1,1,1,0
 access_joining_documents_manager,joining.documents.manager,model_joining_documents,hr.group_hr_manager,1,1,1,1
+
+access_documents_document_hr,documents.document.hr,documents.model_documents_document,hr.group_hr_manager,1,1,1,0
+access_documents_document_hr_admin,documents.document.admin,documents.model_documents_document,hr.group_hr_user,1,1,1,1
+access_documents_document_user,documents.document.user,documents.model_documents_document,hr_extended.group_hr_employee,1,0,0,0
+
 access_employee_insurance,employee.insurance,model_employee_insurance,base.group_user,1,1,1,1
 access_assets_category,assets.category,model_assets_category,base.group_user,1,1,1,1
 access_assets_details,assets.details,model_assets_details,base.group_user,1,1,1,1
-access_hr_employee_group_user,hr.employee.group.user,hr.model_hr_employee,base.group_user,1,0,0,0
+access_hr_employee_group_user,hr.employee.own.record,hr.model_hr_employee,hr_extended.group_hr_employee,1,0,0,0
 access_manpower_budget,access_manpower_budget,model_manpower_budget,base.group_user,1,1,1,1
 access_manpower_budget_employee_monthly,access_manpower_budget_employee_monthly,model_manpower_budget_employee_monthly,base.group_user,1,1,1,1
 access_manpower_budget_wizard,access_manpower_budget_wizard,model_manpower_budget_wizard,base.group_user,1,1,1,1

@@ -165,6 +165,13 @@ class HrEmployeeSmartButton(models.Model):
                                              groups="base.group_user")
     message_main_attachment_id = fields.Many2one(groups="base.group_user")
     birthday = fields.Date('Date of Birth', groups="base.group_user", tracking=True)
+    activity_ids = fields.One2many(groups="hr.group_hr_user,hr_extended.group_hr_employee")
+    activity_exception_decoration = fields.Selection(groups="hr.group_hr_user,hr_extended.group_hr_employee")
+    activity_exception_icon = fields.Char(groups="hr.group_hr_user,hr_extended.group_hr_employee")
+    activity_state = fields.Selection(groups="hr.group_hr_user,hr_extended.group_hr_employee")
+    activity_summary = fields.Char(groups="hr.group_hr_user,hr_extended.group_hr_employee")
+    activity_type_id = fields.Many2one(groups="hr.group_hr_user,hr_extended.group_hr_employee")
+    activity_type_icon = fields.Char(groups="hr.group_hr_user,hr_extended.group_hr_employee")
 
     # Tax Related
     pf_no = fields.Char(

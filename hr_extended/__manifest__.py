@@ -41,7 +41,8 @@
         'hr_appraisal',
         'hr_insurance',
         'website_hr_recruitment',
-        'employee_stages'
+        'employee_stages',
+        'hr_work_entry',
     ],
     'data': [
         'security/security.xml',
