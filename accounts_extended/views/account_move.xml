@@ -69,6 +69,9 @@
                 <attribute name="context">{'validate_analytic': True}</attribute>
                 <attribute name="invisible">state not in ('approved')</attribute>
             </xpath>
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="required">1</attribute>
+            </xpath>
 
             <!-- Send -->
             <xpath expr="//header/button[@name='action_invoice_sent'][1]" position="attributes">
@@ -217,10 +220,14 @@
 
                 <attribute name="options">{'no_quick_create':True,'no_create':True}</attribute>
             </xpath>
+            <xpath expr="//field[@name='payment_reference']" position="attributes">
+                <attribute name="readonly">state not in ('draft','to approve')</attribute>
+            </xpath>
+
             <xpath expr="//div[@name='journal_div']" position="after">
-                <!-- <field name="payment_reference"/> -->
+                
                 <field name="approval_state" invisible="move_type not in ['in_invoice','out_invoice','entry']"/>
-                <field name="advance_payment_ids" widget="many2many_tags"/>
+                <field name="advance_payment_ids" widget="many2many_tags" readonly="state not in ('draft','to approve')"/>
                 <field name="expense_type" invisible="move_type not in ['in_invoice'] or not is_payment_approval" readonly="state != 'draft'"/>
                 <field name="expense_invoice_type_id" invisible="move_type not in ['in_invoice'] or not is_payment_approval" readonly="state != 'draft'"/>
                 <field name="expense_user_id" invisible="move_type not in ['in_invoice'] or not is_payment_approval" readonly="state != 'draft'" options="{'no_quick_create':True,'no_create':True}"/>
