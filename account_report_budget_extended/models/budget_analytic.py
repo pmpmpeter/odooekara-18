@@ -1330,6 +1330,7 @@ class BudgetLines(models.Model):
 
     name = fields.Char(compute="_compute_line_name", store=True)
     budget_code = fields.Char('Budget Code')
+    general_budget_id = fields.Many2one('account.report.budget', 'Budgetary Position')
     is_budget_code = fields.Boolean('Is Budget Code',default=False)
     reserved_amount = fields.Float('Reserved Amount')
     balance_amount = fields.Float('Balance Amount', compute='_compute_balance_amount')

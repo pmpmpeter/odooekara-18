@@ -72,6 +72,12 @@
                 <xpath expr="//page[@name='budget_lines']" position="attributes">
                     <attribute name="string">Consolidated Budget Lines</attribute>
                 </xpath>
+                <xpath expr="//page[@name='budget_lines']/field[@name='budget_line_ids']/list/field[@name='budget_amount']" position="attributes">
+                    <attribute name="string">Planned Amount</attribute>
+                </xpath>
+                <xpath expr="//page[@name='budget_lines']/field[@name='budget_line_ids']/list/field[@name='account_id']" position="attributes">
+                    <attribute name="string">Analytic account</attribute>
+                </xpath>
 
                 
              
@@ -90,6 +96,14 @@
                     <field name='department_id' column_invisible="parent.user_type == 'non_odoo'" optional='hide'
                            options='{"no_open": True, "no_create": True}'/>
                     <field name='capex_opex' string="Budget Type"/>
+                </xpath>
+                <xpath expr="//page[@name='budget_lines']/field[@name='budget_line_ids']/list/field[@name='account_id']" position="before">
+                    <field name="general_budget_id"/>
+                    <field name='budget_code'/>
+                </xpath>
+                <xpath expr="//page[@name='budget_lines']/field[@name='budget_line_ids']/list/field[@name='capex_opex']" position="after">
+                    <field name="date_from"/>
+                    <field name="date_to"/>
                 </xpath>
                 <field name='budget_line_ids' position="attributes">
                     <attribute name="readonly">1</attribute>

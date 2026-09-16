@@ -7,10 +7,10 @@ from odoo import api, SUPERUSER_ID
 
 # Update this if your config path is different
 odoo.tools.config.parse_config([
-    "--config=/opt/odoo18/ekara.conf"
+    "--config=/opt/odoo18/ekara_18_test_5.conf"
 ])
 
-registry = odoo.registry("ekara_18_test")
+registry = odoo.registry("ekara_18_test_5")
 
 with registry.cursor() as cr:
     env = api.Environment(cr, SUPERUSER_ID, {})
