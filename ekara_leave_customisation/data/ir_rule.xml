@@ -1,0 +1,17 @@
+<odoo>
+
+    <record id="leave_encashment_employee_rule" model="ir.rule">
+    	<field name="name">Employee own requests</field>
+    	<field name="model_id" ref="ekara_leave_customisation.model_leave_encashment"/>
+    	<field name="domain_force">[('employee_id.user_id','=',user.id)]</field>
+    	<field name="groups" eval="[(4,ref('base.group_user'))]"/>
+    </record>
+
+    <record id="leave_encashment_hr_rule" model="ir.rule">
+    	<field name="name">HR full access</field>
+        <field name="model_id" ref="ekara_leave_customisation.model_leave_encashment"/>
+        <field name="domain_force">[(1,'=',1)]</field>
+        <field name="groups" eval="[(4,ref('hr.group_hr_manager'))]"/>
+    </record>
+
+</odoo>

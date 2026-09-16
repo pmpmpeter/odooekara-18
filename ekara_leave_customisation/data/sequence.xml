@@ -1,0 +1,10 @@
+<odoo>
+
+    <record id="leave_encashment_seq" model="ir.sequence">
+        <field name="name">Leave Encashment</field>
+        <field name="code">leave.encashment.seq</field>
+        <field name="prefix">LE/</field>
+        <field name="padding">4</field>
+    </record>
+
+</odoo>
