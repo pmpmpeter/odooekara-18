@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_group_balance_line_tree" model="ir.ui.view">
+        <field name="name">account.group.balance.line.list</field>
+        <field name="model">account.group.balance.line</field>
+        <field name="arch" type="xml">
+            <list string="Group Journal Items" create="false" edit="false" delete="false">
+                <field name="company_id" string="Company" optional="show"/>
+                <field name="date" string="Date"/>
+                <field name="journal_id" string="Journal"/>
+                <field name="move_id" string="Journal Entry"/>
+                <field name="account_id" string="Account"/>
+                <field name="partner_id" string="Partner" optional="show"/>
+                <field name="label" string="Label" optional="show"/>
+                <field name="debit" string="Debit" sum="Total Debit"/>
+                <field name="credit" string="Credit" sum="Total Credit"/>
+                <field name="balance" string="Balance" sum="Total Balance"/>
+            </list>
+        </field>
+    </record>
+
+
+    <record id="action_group_balance_line" model="ir.actions.act_window">
+        <field name="name">Group Journal Items</field>
+        <field name="res_model">account.group.balance.line</field>
+        <field name="view_mode">list</field>
+    </record>
+</odoo>
