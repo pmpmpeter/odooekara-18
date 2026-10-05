@@ -57,6 +57,21 @@
         <field name="model">account.move</field>
         <field name="inherit_id" ref="account.view_move_form"/>
         <field name="arch" type="xml">
+            <xpath expr="//form/header" position="inside">
+                <field name="x_need_approval" invisible="1"/>
+                <field name="x_review_result" invisible="1"/>
+                <field name="x_has_request_approval" invisible="1"/>
+                <button name="%(multi_level_approval_configuration.request_approval_action)d" type="action" string="Request Approval" groups="multi_level_approval.group_approval_user" invisible="not x_need_approval or x_has_request_approval" class="oe_highlight" approval_btn="1"/>
+                <button name="596" type="action" string="View Approval" groups="multi_level_approval.group_approval_user" invisible="not x_has_request_approval" approval_btn="1"/>
+                <button name="598" type="action" string="Rework" groups="multi_level_approval.group_approval_user" invisible="x_review_result != 'refused'" approval_btn="1"/>
+              </xpath>
+              <xpath expr="//form/header" position="after">
+                <div>
+                  <div invisible="1" class="alert alert-info" style="margin-top: 5px;" role="alert">This document need to be approved !</div>
+                  <div invisible="1" class="alert alert-info" style="margin-top: 5px;" role="alert">This document has been approved !</div>
+                  <div invisible="1" class="alert alert-danger" style="margin-top: 5px;" role="alert">This document has been refused !</div>
+                </div>
+              </xpath>
 
             <!-- Post -->
             <xpath expr="//header/button[@name='action_post'][1]" position="attributes">
@@ -69,9 +84,7 @@
                 <attribute name="context">{'validate_analytic': True}</attribute>
                 <attribute name="invisible">state not in ('approved')</attribute>
             </xpath>
-            <xpath expr="//field[@name='partner_id']" position="attributes">
-                <attribute name="required">1</attribute>
-            </xpath>
+
 
             <!-- Send -->
             <xpath expr="//header/button[@name='action_invoice_sent'][1]" position="attributes">
@@ -319,7 +332,7 @@
                             <field name="trans_id" options="{'no_open': True, 'no_create': True}" readonly="is_cheque_details_freeze"/>
                             <field name="sender_account_type" options="{'no_open': True, 'no_create': True}" readonly="is_cheque_details_freeze"/>
                             <field name="beneficiary_account_type" options="{'no_open': True, 'no_create': True}" readonly="is_cheque_details_freeze"/>
-                            <field name="partner_id" options="{'no_open': True, 'no_create': True}" readonly="is_cheque_details_freeze"/>
+                            <field name="partner_id" options="{'no_open': True, 'no_create': True}" readonly="is_cheque_details_freeze" string="Beneficiary Name"/>
                             <field name="partner_bank_id" options="{'no_open': True, 'no_create': True}" readonly="is_cheque_details_freeze"/>
                             <field name="sender_receiver_info" readonly="is_cheque_details_freeze"/>
                             <field name="sms_email" readonly="is_cheque_details_freeze"/>

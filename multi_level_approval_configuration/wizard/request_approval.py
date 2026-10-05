@@ -17,7 +17,7 @@ class RequestApproval(models.TransientModel):
     _name = "request.approval"
     _description = "Request Approval"
 
-    name = fields.Char(string="Title", required=True)
+    name = fields.Char(string="Title", required=False)
     priority = fields.Selection(
         [("0", "Normal"), ("1", "Medium"), ("2", "High"), ("3", "Very High")],
         default="0",

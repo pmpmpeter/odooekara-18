@@ -1,0 +1,1573 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="ekara_balance_sheet" model="account.report">
+        <field name="name">Ekara Balance Sheet</field>
+        <field name="root_report_id" ref="account_reports.balance_sheet"/>
+        <field name="country_id" ref="base.in"/>
+        <field name="column_ids">
+            <record id="ekara_balance_sheet_column_balance" model="account.report.column">
+                <field name="name">Balance</field>
+                <field name="expression_label">balance</field>
+            </record>
+        </field>
+        <field name="line_ids">
+            <record id="ekara_bs_line_010_TA" model="account.report.line">
+                <field name="name">ASSETS</field>
+                <field name="sequence">10</field>
+                <field name="hierarchy_level">0</field>
+                <field name="code">TA</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="children_ids">
+                    <record id="ekara_bs_line_020_FA" model="account.report.line">
+                        <field name="name">Fixed Assets</field>
+                        <field name="sequence">20</field>
+                        <field name="code">FA</field>
+                        <field name="foldable" eval="True"/>
+                        <field name="hide_if_zero" eval="False"/>
+                        <field name="print_on_new_page" eval="False"/>
+                        <field name="children_ids">
+                            <record id="ekara_bs_line_030_LD" model="account.report.line">
+                                <field name="name">2010100 Land</field>
+                                <field name="sequence">30</field>
+                                <field name="code">LD</field>
+                                <field name="foldable" eval="True"/>
+                                <field name="hide_if_zero" eval="False"/>
+                                <field name="print_on_new_page" eval="False"/>
+                                <field name="children_ids">
+                                    <record id="ekara_bs_line_040_LAND" model="account.report.line">
+                                        <field name="name">2010100 Land - Krudampalyam Village</field>
+                                        <field name="sequence">40</field>
+                                        <field name="code">LAND</field>
+                                        <field name="foldable" eval="True"/>
+                                        <field name="hide_if_zero" eval="False"/>
+                                        <field name="print_on_new_page" eval="False"/>
+                                        <field name="expression_ids">
+                                            <record id="ekara_bs_line_040_LAND_balance" model="account.report.expression">
+                                                <field name="label">balance</field>
+                                                <field name="engine">domain</field>
+                                                <field name="formula">[('account_id.subgroup.name', '=', '20101000 Land - Krudampalyam Village')]</field>
+                                                <field name="date_scope">strict_range</field>
+                                                <field name="subformula">sum</field>
+                                                <field name="blank_if_zero" eval="False"/>
+                                                <field name="green_on_positive" eval="True"/>
+                                            </record>
+                                        </field>
+                                    </record>
+                                    <record id="ekara_bs_line_050_LANDM" model="account.report.line">
+                                        <field name="name">20101000 Land - Malumichampatty Village</field>
+                                        <field name="sequence">50</field>
+                                        <field name="code">LANDM</field>
+                                        <field name="foldable" eval="True"/>
+                                        <field name="hide_if_zero" eval="False"/>
+                                        <field name="print_on_new_page" eval="False"/>
+                                        <field name="expression_ids">
+                                            <record id="ekara_bs_line_050_LANDM_balance" model="account.report.expression">
+                                                <field name="label">balance</field>
+                                                <field name="engine">domain</field>
+                                                <field name="formula">[('account_id.subgroup.name', '=', '20101000 Land - Malumichampatty Village')]</field>
+                                                <field name="date_scope">strict_range</field>
+                                                <field name="subformula">sum</field>
+                                                <field name="blank_if_zero" eval="False"/>
+                                                <field name="green_on_positive" eval="True"/>
+                                            </record>
+                                        </field>
+                                    </record>
+                                </field>
+                                <field name="expression_ids">
+                                    <record id="ekara_bs_line_030_LD_balance" model="account.report.expression">
+                                        <field name="label">balance</field>
+                                        <field name="engine">aggregation</field>
+                                        <field name="formula">LAND.balance+LANDM.balance</field>
+                                        <field name="date_scope">strict_range</field>
+                                        <field name="blank_if_zero" eval="False"/>
+                                        <field name="green_on_positive" eval="True"/>
+                                    </record>
+                                </field>
+                            </record>
+                            <record id="ekara_bs_line_060_BUILD" model="account.report.line">
+                                <field name="name">2010200 Building</field>
+                                <field name="sequence">60</field>
+                                <field name="code">BUILD</field>
+                                <field name="foldable" eval="True"/>
+                                <field name="hide_if_zero" eval="False"/>
+                                <field name="print_on_new_page" eval="False"/>
+                                <field name="children_ids">
+                                    <record id="ekara_bs_line_070_OBUILD" model="account.report.line">
+                                        <field name="name">20102001 Building - BGRT</field>
+                                        <field name="sequence">70</field>
+                                        <field name="code">OBUILD</field>
+                                        <field name="foldable" eval="True"/>
+                                        <field name="hide_if_zero" eval="False"/>
+                                        <field name="print_on_new_page" eval="False"/>
+                                        <field name="expression_ids">
+                                            <record id="ekara_bs_line_070_OBUILD_balance" model="account.report.expression">
+                                                <field name="label">balance</field>
+                                                <field name="engine">domain</field>
+                                                <field name="formula">[('account_id.subgroup.name', '=', 'Building - BGRT')]</field>
+                                                <field name="date_scope">strict_range</field>
+                                                <field name="subformula">sum</field>
+                                                <field name="blank_if_zero" eval="False"/>
+                                                <field name="green_on_positive" eval="True"/>
+                                            </record>
+                                        </field>
+                                    </record>
+                                </field>
+                                <field name="expression_ids">
+                                    <record id="ekara_bs_line_060_BUILD_balance" model="account.report.expression">
+                                        <field name="label">balance</field>
+                                        <field name="engine">aggregation</field>
+                                        <field name="formula">OBUILD.balance</field>
+                                        <field name="date_scope">strict_range</field>
+                                        <field name="blank_if_zero" eval="False"/>
+                                        <field name="green_on_positive" eval="True"/>
+                                    </record>
+                                </field>
+                            </record>
+                            <record id="ekara_bs_line_080_GB" model="account.report.line">
+                                <field name="name">20100000 Gross block</field>
+                                <field name="sequence">80</field>
+                                <field name="code">GB</field>
+                                <field name="foldable" eval="True"/>
+                                <field name="hide_if_zero" eval="False"/>
+                                <field name="print_on_new_page" eval="False"/>
+                                <field name="children_ids">
+                                    <record id="ekara_bs_line_090_F_F" model="account.report.line">
+                                        <field name="name">20104000 Furniture &amp; Fixtures</field>
+                                        <field name="sequence">90</field>
+                                        <field name="code">F&amp;F</field>
+                                        <field name="foldable" eval="True"/>
+                                        <field name="hide_if_zero" eval="False"/>
+                                        <field name="print_on_new_page" eval="False"/>
+                                        <field name="expression_ids">
+                                            <record id="ekara_bs_line_090_F_F_balance" model="account.report.expression">
+                                                <field name="label">balance</field>
+                                                <field name="engine">domain</field>
+                                                <field name="formula">[('account_id.subgroup.name', '=', 'Furniture &amp; Fixtures')]</field>
+                                                <field name="date_scope">strict_range</field>
+                                                <field name="subformula">sum</field>
+                                                <field name="blank_if_zero" eval="False"/>
+                                                <field name="green_on_positive" eval="True"/>
+                                            </record>
+                                        </field>
+                                    </record>
+                                    <record id="ekara_bs_line_100_DPE" model="account.report.line">
+                                        <field name="name">20106000 Data Processing Equipment</field>
+                                        <field name="sequence">100</field>
+                                        <field name="code">DPE</field>
+                                        <field name="foldable" eval="True"/>
+                                        <field name="hide_if_zero" eval="False"/>
+                                        <field name="print_on_new_page" eval="False"/>
+                                        <field name="expression_ids">
+                                            <record id="ekara_bs_line_100_DPE_balance" model="account.report.expression">
+                                                <field name="label">balance</field>
+                                                <field name="engine">domain</field>
+                                                <field name="formula">[('account_id.subgroup.name', '=', 'Data Processing Equipment')]</field>
+                                                <field name="date_scope">strict_range</field>
+                                                <field name="subformula">sum</field>
+                                                <field name="blank_if_zero" eval="False"/>
+                                                <field name="green_on_positive" eval="True"/>
+                                            </record>
+                                        </field>
+                                    </record>
+                                    <record id="ekara_bs_line_110_CWIP" model="account.report.line">
+                                        <field name="name">20300000 Capital work in progress</field>
+                                        <field name="sequence">110</field>
+                                        <field name="code">CWIP</field>
+                                        <field name="foldable" eval="True"/>
+                                        <field name="hide_if_zero" eval="False"/>
+                                        <field name="print_on_new_page" eval="False"/>
+                                        <field name="children_ids">
+                                            <record id="ekara_bs_line_120_IACWIP" model="account.report.line">
+                                                <field name="name">20301000 Intangible assets(CWIP)</field>
+                                                <field name="sequence">120</field>
+                                                <field name="code">IACWIP</field>
+                                                <field name="foldable" eval="True"/>
+                                                <field name="hide_if_zero" eval="False"/>
+                                                <field name="print_on_new_page" eval="False"/>
+                                                <field name="expression_ids">
+                                                    <record id="ekara_bs_line_120_IACWIP_balance" model="account.report.expression">
+                                                        <field name="label">balance</field>
+                                                        <field name="engine">domain</field>
+                                                        <field name="formula">[('account_id.subgroup.name', '=', 'Capital work in progress')]</field>
+                                                        <field name="date_scope">strict_range</field>
+                                                        <field name="subformula">sum</field>
+                                                        <field name="blank_if_zero" eval="False"/>
+                                                        <field name="green_on_positive" eval="True"/>
+                                                    </record>
+                                                </field>
+                                            </record>
+                                        </field>
+                                        <field name="expression_ids">
+                                            <record id="ekara_bs_line_110_CWIP_balance" model="account.report.expression">
+                                                <field name="label">balance</field>
+                                                <field name="engine">aggregation</field>
+                                                <field name="formula">IACWIP.balance</field>
+                                                <field name="date_scope">strict_range</field>
+                                                <field name="blank_if_zero" eval="False"/>
+                                                <field name="green_on_positive" eval="True"/>
+                                            </record>
+                                        </field>
+                                    </record>
+                                    <record id="ekara_bs_line_130_OE" model="account.report.line">
+                                        <field name="name">20105000 Office Equipment</field>
+                                        <field name="sequence">130</field>
+                                        <field name="code">OE</field>
+                                        <field name="foldable" eval="True"/>
+                                        <field name="hide_if_zero" eval="False"/>
+                                        <field name="print_on_new_page" eval="False"/>
+                                        <field name="expression_ids">
+                                            <record id="ekara_bs_line_130_OE_balance" model="account.report.expression">
+                                                <field name="label">balance</field>
+                                                <field name="engine">domain</field>
+                                                <field name="formula">[('account_id.subgroup.name', '=', 'Office Equipment')]</field>
+                                                <field name="date_scope">strict_range</field>
+                                                <field name="subformula">sum</field>
+                                                <field name="blank_if_zero" eval="False"/>
+                                                <field name="green_on_positive" eval="True"/>
+                                            </record>
+                                        </field>
+                                    </record>
+                                    <record id="ekara_bs_line_140_IA" model="account.report.line">
+                                        <field name="name">20108000 Intangible assets</field>
+                                        <field name="sequence">140</field>
+                                        <field name="code">IA</field>
+                                        <field name="foldable" eval="True"/>
+                                        <field name="hide_if_zero" eval="False"/>
+                                        <field name="print_on_new_page" eval="False"/>
+                                        <field name="expression_ids">
+                                            <record id="ekara_bs_line_140_IA_balance" model="account.report.expression">
+                                                <field name="label">balance</field>
+                                                <field name="engine">domain</field>
+                                                <field name="formula">[('account_id.subgroup.name', '=', 'Intangible assets')]</field>
+                                                <field name="date_scope">strict_range</field>
+                                                <field name="subformula">sum</field>
+                                                <field name="blank_if_zero" eval="False"/>
+                                                <field name="green_on_positive" eval="True"/>
+                                            </record>
+                                        </field>
+                                    </record>
+                                    <record id="ekara_bs_line_150_ACCD" model="account.report.line">
+                                        <field name="name">20200000 Accumulated Depreciation</field>
+                                        <field name="sequence">150</field>
+                                        <field name="code">ACCD</field>
+                                        <field name="foldable" eval="True"/>
+                                        <field name="hide_if_zero" eval="False"/>
+                                        <field name="print_on_new_page" eval="False"/>
+                                        <field name="expression_ids">
+                                            <record id="ekara_bs_line_150_ACCD_balance" model="account.report.expression">
+                                                <field name="label">balance</field>
+                                                <field name="engine">domain</field>
+                                                <field name="formula">[('account_id.subgroup.name', '=', 'Accumulated Depreciation')]</field>
+                                                <field name="date_scope">strict_range</field>
+                                                <field name="subformula">sum</field>
+                                                <field name="blank_if_zero" eval="False"/>
+                                                <field name="green_on_positive" eval="True"/>
+                                            </record>
+                                        </field>
+                                    </record>
+                                    <record id="ekara_bs_line_160_ANAHS" model="account.report.line">
+                                        <field name="name">20119000 Assets Not in Active Use Held for Sale</field>
+                                        <field name="sequence">160</field>
+                                        <field name="code">ANAHS</field>
+                                        <field name="foldable" eval="True"/>
+                                        <field name="hide_if_zero" eval="False"/>
+                                        <field name="print_on_new_page" eval="False"/>
+                                        <field name="expression_ids">
+                                            <record id="ekara_bs_line_160_ANAHS_balance" model="account.report.expression">
+                                                <field name="label">balance</field>
+                                                <field name="engine">domain</field>
+                                                <field name="formula">[('account_id.subgroup.name', '=','Assets Not in Active Use Held for Sale')]</field>
+                                                <field name="date_scope">strict_range</field>
+                                                <field name="subformula">sum</field>
+                                                <field name="blank_if_zero" eval="False"/>
+                                                <field name="green_on_positive" eval="True"/>
+                                            </record>
+                                        </field>
+                                    </record>
+                                </field>
+                                <field name="expression_ids">
+                                    <record id="ekara_bs_line_080_GB_balance" model="account.report.expression">
+                                        <field name="label">balance</field>
+                                        <field name="engine">aggregation</field>
+                                        <field name="formula">OE.balance+DPE.balance+IA.balance+CWIP.balance+ACCD.balance+F&amp;F.balance</field>
+                                        <field name="date_scope">strict_range</field>
+                                        <field name="blank_if_zero" eval="False"/>
+                                        <field name="green_on_positive" eval="True"/>
+                                    </record>
+                                </field>
+                            </record>
+                        </field>
+                        <field name="expression_ids">
+                            <record id="ekara_bs_line_020_FA_balance" model="account.report.expression">
+                                <field name="label">balance</field>
+                                <field name="engine">aggregation</field>
+                                <field name="formula">GB.balance+LD.balance+BUILD.balance</field>
+                                <field name="date_scope">strict_range</field>
+                                <field name="blank_if_zero" eval="False"/>
+                                <field name="green_on_positive" eval="True"/>
+                            </record>
+                        </field>
+                    </record>
+                    <record id="ekara_bs_line_170_INVT" model="account.report.line">
+                        <field name="name">Investements</field>
+                        <field name="sequence">170</field>
+                        <field name="code">INVT</field>
+                        <field name="foldable" eval="True"/>
+                        <field name="hide_if_zero" eval="False"/>
+                        <field name="print_on_new_page" eval="False"/>
+                        <field name="children_ids">
+                            <record id="ekara_bs_line_180_INVTSH" model="account.report.line">
+                                <field name="name">20602000 Investment - Shares</field>
+                                <field name="sequence">180</field>
+                                <field name="code">INVTSH</field>
+                                <field name="foldable" eval="True"/>
+                                <field name="hide_if_zero" eval="False"/>
+                                <field name="print_on_new_page" eval="False"/>
+                                <field name="expression_ids">
+                                    <record id="ekara_bs_line_180_INVTSH_balance" model="account.report.expression">
+                                        <field name="label">balance</field>
+                                        <field name="engine">domain</field>
+                                        <field name="formula">[('account_id.subgroup.name', '=', '20602000 Investment - Shares')]</field>
+                                        <field name="date_scope">strict_range</field>
+                                        <field name="subformula">sum</field>
+                                        <field name="blank_if_zero" eval="False"/>
+                                        <field name="green_on_positive" eval="True"/>
+                                    </record>
+                                </field>
+                            </record>
+                        </field>
+                        <field name="expression_ids">
+                            <record id="ekara_bs_line_170_INVT_balance" model="account.report.expression">
+                                <field name="label">balance</field>
+                                <field name="engine">aggregation</field>
+                                <field name="formula">INVTSH.balance</field>
+                                <field name="date_scope">strict_range</field>
+                                <field name="blank_if_zero" eval="False"/>
+                                <field name="green_on_positive" eval="True"/>
+                            </record>
+                        </field>
+                    </record>
+                    <record id="ekara_bs_line_190_CA" model="account.report.line">
+                        <field name="name">Current Assets</field>
+                        <field name="sequence">190</field>
+                        <field name="code">CA</field>
+                        <field name="foldable" eval="True"/>
+                        <field name="hide_if_zero" eval="False"/>
+                        <field name="print_on_new_page" eval="False"/>
+                        <field name="children_ids">
+                            <record id="ekara_bs_line_200_SUDE" model="account.report.line">
+                                <field name="name">Sundry Debtors</field>
+                                <field name="sequence">200</field>
+                                <field name="code">SUDE</field>
+                                <field name="foldable" eval="True"/>
+                                <field name="hide_if_zero" eval="False"/>
+                                <field name="print_on_new_page" eval="False"/>
+                                <field name="children_ids">
+                                    <record id="ekara_bs_line_210_SD" model="account.report.line">
+                                        <field name="name">30400000 Sundry Debtors</field>
+                                        <field name="sequence">210</field>
+                                        <field name="code">SD</field>
+                                        <field name="foldable" eval="True"/>
+                                        <field name="hide_if_zero" eval="False"/>
+                                        <field name="print_on_new_page" eval="False"/>
+                                        <field name="expression_ids">
+                                            <record id="ekara_bs_line_210_SD_balance" model="account.report.expression">
+                                                <field name="label">balance</field>
+                                                <field name="engine">domain</field>
+                                                <field name="formula">[('account_id.subgroup.name', '=', 'Sundry Debtors')]</field>
+                                                <field name="date_scope">strict_range</field>
+                                                <field name="subformula">sum</field>
+                                                <field name="blank_if_zero" eval="False"/>
+                                                <field name="green_on_positive" eval="True"/>
+                                            </record>
+                                        </field>
+                                    </record>
+                                </field>
+                                <field name="expression_ids">
+                                    <record id="ekara_bs_line_200_SUDE_balance" model="account.report.expression">
+                                        <field name="label">balance</field>
+                                        <field name="engine">aggregation</field>
+                                        <field name="formula">SD.balance</field>
+                                        <field name="date_scope">strict_range</field>
+                                        <field name="blank_if_zero" eval="False"/>
+                                        <field name="green_on_positive" eval="True"/>
+                                    </record>
+                                </field>
+                            </record>
+                            <record id="ekara_bs_line_220_LA" model="account.report.line">
+                                <field name="name">30300000 Loans &amp; Advances (Asset)</field>
+                                <field name="sequence">220</field>
+                                <field name="code">LA</field>
+                                <field name="foldable" eval="True"/>
+                                <field name="hide_if_zero" eval="False"/>
+                                <field name="print_on_new_page" eval="False"/>
+                                <field name="expression_ids">
+                                    <record id="ekara_bs_line_220_LA_balance" model="account.report.expression">
+                                        <field name="label">balance</field>
+                                        <field name="engine">domain</field>
+                                        <field name="formula">[('account_id.subgroup.name', '=', '30300000 Loans &amp; Advances (Asset)')]</field>
+                                        <field name="date_scope">strict_range</field>
+                                        <field name="subformula">sum</field>
+                                        <field name="blank_if_zero" eval="False"/>
+                                        <field name="green_on_positive" eval="True"/>
+                                    </record>
+                                </field>
+                            </record>
+                            <record id="ekara_bs_line_230_ATV" model="account.report.line">
+                                <field name="name">Advance to Vendors</field>
+                                <field name="sequence">230</field>
+                                <field name="code">ATV</field>
+                                <field name="foldable" eval="True"/>
+                                <field name="hide_if_zero" eval="False"/>
+                                <field name="print_on_new_page" eval="False"/>
+                                <field name="expression_ids">
+                                    <record id="ekara_bs_line_230_ATV_balance" model="account.report.expression">
+                                        <field name="label">balance</field>
+                                        <field name="engine">domain</field>
+                                        <field name="formula">[('account_id.subgroup.name', '=', 'Advance to Vendors')]</field>
+                                        <field name="date_scope">strict_range</field>
+                                        <field name="subformula">sum</field>
+                                        <field name="blank_if_zero" eval="False"/>
+                                        <field name="green_on_positive" eval="True"/>
+                                    </record>
+                                </field>
+                            </record>
+                            <record id="ekara_bs_line_240_UR" model="account.report.line">
+                                <field name="name">Unbilled revenue</field>
+                                <field name="sequence">240</field>
+                                <field name="code">UR</field>
+                                <field name="foldable" eval="True"/>
+                                <field name="hide_if_zero" eval="False"/>
+                                <field name="print_on_new_page" eval="False"/>
+                                <field name="expression_ids">
+                                    <record id="ekara_bs_line_240_UR_balance" model="account.report.expression">
+                                        <field name="label">balance</field>
+                                        <field name="engine">domain</field>
+                                        <field name="formula">[('account_id.subgroup.name', '=', 'Unbilled revenue')]</field>
+                                        <field name="date_scope">strict_range</field>
+                                        <field name="subformula">sum</field>
+                                        <field name="blank_if_zero" eval="False"/>
+                                        <field name="green_on_positive" eval="True"/>
+                                    </record>
+                                </field>
+                            </record>
+                            <record id="ekara_bs_line_250_PRE" model="account.report.line">
+                                <field name="name">Prepayments</field>
+                                <field name="sequence">250</field>
+                                <field name="code">PRE</field>
+                                <field name="foldable" eval="False"/>
+                                <field name="hide_if_zero" eval="False"/>
+                                <field name="print_on_new_page" eval="False"/>
+                                <field name="expression_ids">
+                                    <record id="ekara_bs_line_250_PRE_balance" model="account.report.expression">
+                                        <field name="label">balance</field>
+                                        <field name="engine">domain</field>
+                                        <field name="formula">[('account_id.account_type', '=', 'asset_prepayments')]</field>
+                                        <field name="date_scope">strict_range</field>
+                                        <field name="subformula">sum</field>
+                                        <field name="blank_if_zero" eval="False"/>
+                                        <field name="green_on_positive" eval="True"/>
+                                    </record>
+                                </field>
+                            </record>
+                            <record id="ekara_bs_line_260_DOPA" model="account.report.line">
+                                <field name="name">30200000 Deposits (Asset)</field>
+                                <field name="sequence">260</field>
+                                <field name="code">DOPA</field>
+                                <field name="foldable" eval="True"/>
+                                <field name="hide_if_zero" eval="False"/>
+                                <field name="print_on_new_page" eval="False"/>
+                                <field name="expression_ids">
+                                    <record id="ekara_bs_line_260_DOPA_balance" model="account.report.expression">
+                                        <field name="label">balance</field>
+                                        <field name="engine">domain</field>
+                                        <field name="formula">[('account_id.subgroup.name', '=', 'Deposits (Asset)')]</field>
+                                        <field name="date_scope">strict_range</field>
+                                        <field name="subformula">sum</field>
+                                        <field name="blank_if_zero" eval="False"/>
+                                        <field name="green_on_positive" eval="True"/>
+                                    </record>
+                                </field>
+                            </record>
+                            <record id="ekara_bs_line_270_OAC" model="account.report.line">
+                                <field name="name">Outstanding Accounts</field>
+                                <field name="sequence">270</field>
+                                <field name="code">OAC</field>
+                                <field name="foldable" eval="True"/>
+                                <field name="hide_if_zero" eval="False"/>
+                                <field name="print_on_new_page" eval="False"/>
+                                <field name="expression_ids">
+                                    <record id="ekara_bs_line_270_OAC_balance" model="account.report.expression">
+                                        <field name="label">balance</field>
+                                        <field name="engine">domain</field>
+                                        <field name="formula">[('account_id.subgroup.name', '=', 'Outstanding Accounts')]</field>
+                                        <field name="date_scope">strict_range</field>
+                                        <field name="subformula">sum</field>
+                                        <field name="blank_if_zero" eval="False"/>
+                                        <field name="green_on_positive" eval="True"/>
+                                    </record>
+                                </field>
+                            </record>
+                            <record id="ekara_bs_line_280_BA" model="account.report.line">
+                                <field name="name">Bank and Cash Accounts</field>
+                                <field name="sequence">280</field>
+                                <field name="code">BA</field>
+                                <field name="foldable" eval="True"/>
+                                <field name="hide_if_zero" eval="False"/>
+                                <field name="print_on_new_page" eval="False"/>
+                                <field name="expression_ids">
+                                    <record id="ekara_bs_line_280_BA_balance" model="account.report.expression">
+                                        <field name="label">balance</field>
+                                        <field name="engine">domain</field>
+                                        <field name="formula">[('account_id.subgroup.name', '=', 'Bank and Cash')]</field>
+                                        <field name="date_scope">strict_range</field>
+                                        <field name="subformula">sum</field>
+                                        <field name="blank_if_zero" eval="False"/>
+                                        <field name="green_on_positive" eval="True"/>
+                                    </record>
+                                </field>
+                            </record>
+                            <record id="ekara_bs_line_290_IAD" model="account.report.line">
+                                <field name="name">Interest Accured But Not Due</field>
+                                <field name="sequence">290</field>
+                                <field name="code">IAD</field>
+                                <field name="foldable" eval="True"/>
+                                <field name="hide_if_zero" eval="False"/>
+                                <field name="print_on_new_page" eval="False"/>
+                                <field name="expression_ids">
+                                    <record id="ekara_bs_line_290_IAD_balance" model="account.report.expression">
+                                        <field name="label">balance</field>
+                                        <field name="engine">domain</field>
+                                        <field name="formula">[('account_id.subgroup.name', '=', 'Interest Accured But Not Due')]</field>
+                                        <field name="date_scope">strict_range</field>
+                                        <field name="subformula">sum</field>
+                                        <field name="blank_if_zero" eval="False"/>
+                                        <field name="green_on_positive" eval="True"/>
+                                    </record>
+                                </field>
+                            </record>
+                            <record id="ekara_bs_line_300_PTR" model="account.report.line">
+                                <field name="name">70670003 Property Tax - Receivable</field>
+                                <field name="sequence">300</field>
+                                <field name="code">PTR</field>
+                                <field name="foldable" eval="True"/>
+                                <field name="hide_if_zero" eval="False"/>
+                                <field name="print_on_new_page" eval="False"/>
+                                <field name="expression_ids">
+                                    <record id="ekara_bs_line_300_PTR_balance" model="account.report.expression">
+                                        <field name="label">balance</field>
+                                        <field name="engine">domain</field>
+                                        <field name="formula">[('account_id.subgroup.name', '=', 'Property Tax - Receivable')]</field>
+                                        <field name="date_scope">strict_range</field>
+                                        <field name="subformula">sum</field>
+                                        <field name="blank_if_zero" eval="False"/>
+                                        <field name="green_on_positive" eval="True"/>
+                                    </record>
+                                </field>
+                            </record>
+                            <record id="ekara_bs_line_310_ADT" model="account.report.line">
+                                <field name="name">Advance Tax</field>
+                                <field name="sequence">310</field>
+                                <field name="code">ADT</field>
+                                <field name="foldable" eval="True"/>
+                                <field name="hide_if_zero" eval="False"/>
+                                <field name="print_on_new_page" eval="False"/>
+                                <field name="expression_ids">
+                                    <record id="ekara_bs_line_310_ADT_balance" model="account.report.expression">
+                                        <field name="label">balance</field>
+                                        <field name="engine">domain</field>
+                                        <field name="formula">[('account_id.subgroup.name', '=', 'Advance Tax')]</field>
+                                        <field name="date_scope">strict_range</field>
+                                        <field name="subformula">sum</field>
+                                        <field name="blank_if_zero" eval="False"/>
+                                        <field name="green_on_positive" eval="True"/>
+                                    </record>
+                                </field>
+                            </record>
+                            <record id="ekara_bs_line_320_REC" model="account.report.line">
+                                <field name="name">Receivables</field>
+                                <field name="sequence">320</field>
+                                <field name="code">REC</field>
+                                <field name="foldable" eval="True"/>
+                                <field name="hide_if_zero" eval="False"/>
+                                <field name="print_on_new_page" eval="False"/>
+                                <field name="expression_ids">
+                                    <record id="ekara_bs_line_320_REC_balance" model="account.report.expression">
+                                        <field name="label">balance</field>
+                                        <field name="engine">domain</field>
+                                        <field name="formula">[('account_id.subgroup.name', '=', 'TDS - Receivable')]</field>
+                                        <field name="date_scope">strict_range</field>
+                                        <field name="subformula">sum</field>
+                                        <field name="blank_if_zero" eval="False"/>
+                                        <field name="green_on_positive" eval="True"/>
+                                    </record>
+                                </field>
+                            </record>
+                        </field>
+                        <field name="expression_ids">
+                            <record id="ekara_bs_line_190_CA_balance" model="account.report.expression">
+                                <field name="label">balance</field>
+                                <field name="engine">aggregation</field>
+                                <field name="formula">BA.balance + REC.balance + PRE.balance+SUDE.balance+LA.balance+ATV.balance+UR.balance+OAC.balance+IAD.balance+PTR.balance+ADT.balance+IAD.balance+DOPA.balance</field>
+                                <field name="date_scope">strict_range</field>
+                                <field name="blank_if_zero" eval="False"/>
+                                <field name="green_on_positive" eval="True"/>
+                            </record>
+                        </field>
+                    </record>
+                    <record id="ekara_bs_line_330_PNCA" model="account.report.line">
+                        <field name="name">Non-current Assets</field>
+                        <field name="sequence">330</field>
+                        <field name="code">PNCA</field>
+                        <field name="foldable" eval="True"/>
+                        <field name="hide_if_zero" eval="False"/>
+                        <field name="print_on_new_page" eval="False"/>
+                        <field name="expression_ids">
+                            <record id="ekara_bs_line_330_PNCA_balance" model="account.report.expression">
+                                <field name="label">balance</field>
+                                <field name="engine">domain</field>
+                                <field name="formula">[('account_id.account_type', '=', 'asset_non_current')]</field>
+                                <field name="date_scope">strict_range</field>
+                                <field name="subformula">sum</field>
+                                <field name="blank_if_zero" eval="False"/>
+                                <field name="green_on_positive" eval="True"/>
+                            </record>
+                        </field>
+                    </record>
+                </field>
+                <field name="expression_ids">
+                    <record id="ekara_bs_line_010_TA_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">aggregation</field>
+                        <field name="formula">CA.balance + FA.balance+PNCA.balance+INVT.balance</field>
+                        <field name="date_scope">strict_range</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_bs_line_340_L" model="account.report.line">
+                <field name="name">LIABILITIES</field>
+                <field name="sequence">340</field>
+                <field name="hierarchy_level">0</field>
+                <field name="code">L</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="children_ids">
+                    <record id="ekara_bs_line_350_CL" model="account.report.line">
+                        <field name="name">10300000 Current Liabilities</field>
+                        <field name="sequence">350</field>
+                        <field name="code">CL</field>
+                        <field name="foldable" eval="True"/>
+                        <field name="hide_if_zero" eval="False"/>
+                        <field name="print_on_new_page" eval="False"/>
+                        <field name="children_ids">
+                            <record id="ekara_bs_line_360_DAT" model="account.report.line">
+                                <field name="name">10310000 Duties &amp; Taxes</field>
+                                <field name="sequence">360</field>
+                                <field name="code">DAT</field>
+                                <field name="foldable" eval="True"/>
+                                <field name="hide_if_zero" eval="False"/>
+                                <field name="print_on_new_page" eval="False"/>
+                                <field name="children_ids">
+                                    <record id="ekara_bs_line_370_TP" model="account.report.line">
+                                        <field name="name">10311000 Taxes (Payroll)</field>
+                                        <field name="sequence">370</field>
+                                        <field name="code">TP</field>
+                                        <field name="foldable" eval="True"/>
+                                        <field name="hide_if_zero" eval="False"/>
+                                        <field name="print_on_new_page" eval="False"/>
+                                        <field name="expression_ids">
+                                            <record id="ekara_bs_line_370_TP_balance" model="account.report.expression">
+                                                <field name="label">balance</field>
+                                                <field name="engine">domain</field>
+                                                <field name="formula">[('account_id.subgroup.name', '=', 'Taxes (Payroll)')]</field>
+                                                <field name="date_scope">strict_range</field>
+                                                <field name="subformula">sum</field>
+                                                <field name="blank_if_zero" eval="False"/>
+                                                <field name="green_on_positive" eval="True"/>
+                                            </record>
+                                        </field>
+                                    </record>
+                                    <record id="ekara_bs_line_380_TTDS" model="account.report.line">
+                                        <field name="name">10312000 Taxes (TDS)</field>
+                                        <field name="sequence">380</field>
+                                        <field name="code">TTDS</field>
+                                        <field name="foldable" eval="True"/>
+                                        <field name="hide_if_zero" eval="False"/>
+                                        <field name="print_on_new_page" eval="False"/>
+                                        <field name="expression_ids">
+                                            <record id="ekara_bs_line_380_TTDS_balance" model="account.report.expression">
+                                                <field name="label">balance</field>
+                                                <field name="engine">domain</field>
+                                                <field name="formula">[('account_id.subgroup.name', '=', 'Taxes (TDS)')]</field>
+                                                <field name="date_scope">strict_range</field>
+                                                <field name="subformula">sum</field>
+                                                <field name="blank_if_zero" eval="False"/>
+                                                <field name="green_on_positive" eval="True"/>
+                                            </record>
+                                        </field>
+                                    </record>
+                                    <record id="ekara_bs_line_390_GST" model="account.report.line">
+                                        <field name="name">10314000-GST</field>
+                                        <field name="sequence">390</field>
+                                        <field name="code">GST</field>
+                                        <field name="foldable" eval="True"/>
+                                        <field name="hide_if_zero" eval="False"/>
+                                        <field name="print_on_new_page" eval="False"/>
+                                        <field name="children_ids">
+                                            <record id="ekara_bs_line_400_GSTO" model="account.report.line">
+                                                <field name="name">10314100-GST-Output</field>
+                                                <field name="sequence">400</field>
+                                                <field name="code">GSTO</field>
+                                                <field name="foldable" eval="True"/>
+                                                <field name="hide_if_zero" eval="False"/>
+                                                <field name="print_on_new_page" eval="False"/>
+                                                <field name="expression_ids">
+                                                    <record id="ekara_bs_line_400_GSTO_balance" model="account.report.expression">
+                                                        <field name="label">balance</field>
+                                                        <field name="engine">domain</field>
+                                                        <field name="formula">[('account_id.subgroup.name', '=', 'GST-Output')]</field>
+                                                        <field name="date_scope">strict_range</field>
+                                                        <field name="subformula">sum</field>
+                                                        <field name="blank_if_zero" eval="False"/>
+                                                        <field name="green_on_positive" eval="True"/>
+                                                    </record>
+                                                </field>
+                                            </record>
+                                            <record id="ekara_bs_line_410_DATO" model="account.report.line">
+                                                <field name="name">10317000-Duties &amp; Taxes ( Others )</field>
+                                                <field name="sequence">410</field>
+                                                <field name="code">DATO</field>
+                                                <field name="foldable" eval="True"/>
+                                                <field name="hide_if_zero" eval="False"/>
+                                                <field name="print_on_new_page" eval="False"/>
+                                                <field name="expression_ids">
+                                                    <record id="ekara_bs_line_410_DATO_balance" model="account.report.expression">
+                                                        <field name="label">balance</field>
+                                                        <field name="engine">domain</field>
+                                                        <field name="formula">[('account_id.subgroup.name', '=', 'Duties &amp; Taxes ( Others )')]</field>
+                                                        <field name="date_scope">strict_range</field>
+                                                        <field name="subformula">sum</field>
+                                                        <field name="blank_if_zero" eval="False"/>
+                                                        <field name="green_on_positive" eval="True"/>
+                                                    </record>
+                                                </field>
+                                            </record>
+                                            <record id="ekara_bs_line_420_GSTI" model="account.report.line">
+                                                <field name="name">10314200-GST-Input</field>
+                                                <field name="sequence">420</field>
+                                                <field name="code">GSTI</field>
+                                                <field name="foldable" eval="True"/>
+                                                <field name="hide_if_zero" eval="False"/>
+                                                <field name="print_on_new_page" eval="False"/>
+                                                <field name="expression_ids">
+                                                    <record id="ekara_bs_line_420_GSTI_balance" model="account.report.expression">
+                                                        <field name="label">balance</field>
+                                                        <field name="engine">domain</field>
+                                                        <field name="formula">[('account_id.subgroup.name', '=', 'GST-Input')]</field>
+                                                        <field name="date_scope">strict_range</field>
+                                                        <field name="subformula">sum</field>
+                                                        <field name="blank_if_zero" eval="False"/>
+                                                        <field name="green_on_positive" eval="True"/>
+                                                    </record>
+                                                </field>
+                                            </record>
+                                            <record id="ekara_bs_line_430_GSTDT" model="account.report.line">
+                                                <field name="name">10314400 -GST -Deffred Tax</field>
+                                                <field name="sequence">430</field>
+                                                <field name="code">GSTDT</field>
+                                                <field name="foldable" eval="True"/>
+                                                <field name="hide_if_zero" eval="False"/>
+                                                <field name="print_on_new_page" eval="False"/>
+                                                <field name="expression_ids">
+                                                    <record id="ekara_bs_line_430_GSTDT_balance" model="account.report.expression">
+                                                        <field name="label">balance</field>
+                                                        <field name="engine">domain</field>
+                                                        <field name="formula">[('account_id.subgroup.name', '=', 'GST -Deffred Tax')]</field>
+                                                        <field name="date_scope">strict_range</field>
+                                                        <field name="subformula">sum</field>
+                                                        <field name="blank_if_zero" eval="False"/>
+                                                        <field name="green_on_positive" eval="True"/>
+                                                    </record>
+                                                </field>
+                                            </record>
+                                            <record id="ekara_bs_line_440_GSTRCM" model="account.report.line">
+                                                <field name="name">10314300-GST-RCM</field>
+                                                <field name="sequence">440</field>
+                                                <field name="code">GSTRCM</field>
+                                                <field name="foldable" eval="True"/>
+                                                <field name="hide_if_zero" eval="False"/>
+                                                <field name="print_on_new_page" eval="False"/>
+                                                <field name="expression_ids">
+                                                    <record id="ekara_bs_line_440_GSTRCM_balance" model="account.report.expression">
+                                                        <field name="label">balance</field>
+                                                        <field name="engine">domain</field>
+                                                        <field name="formula">[('account_id.subgroup.name', '=', 'GST-RCM')]</field>
+                                                        <field name="date_scope">strict_range</field>
+                                                        <field name="subformula">sum</field>
+                                                        <field name="blank_if_zero" eval="False"/>
+                                                        <field name="green_on_positive" eval="True"/>
+                                                    </record>
+                                                </field>
+                                            </record>
+                                            <record id="ekara_bs_line_450_GSTPY" model="account.report.line">
+                                                <field name="name">10316000-GST Payable</field>
+                                                <field name="sequence">450</field>
+                                                <field name="code">GSTPY</field>
+                                                <field name="foldable" eval="True"/>
+                                                <field name="hide_if_zero" eval="False"/>
+                                                <field name="print_on_new_page" eval="False"/>
+                                                <field name="expression_ids">
+                                                    <record id="ekara_bs_line_450_GSTPY_balance" model="account.report.expression">
+                                                        <field name="label">balance</field>
+                                                        <field name="engine">domain</field>
+                                                        <field name="formula">[('account_id.subgroup.name', '=', 'GST Payable')]</field>
+                                                        <field name="date_scope">strict_range</field>
+                                                        <field name="subformula">sum</field>
+                                                        <field name="blank_if_zero" eval="False"/>
+                                                        <field name="green_on_positive" eval="True"/>
+                                                    </record>
+                                                </field>
+                                            </record>
+                                        </field>
+                                        <field name="expression_ids">
+                                            <record id="ekara_bs_line_390_GST_balance" model="account.report.expression">
+                                                <field name="label">balance</field>
+                                                <field name="engine">aggregation</field>
+                                                <field name="formula">GSTO.balance + GSTI.balance + GSTRCM.balance + GSTDT.balance + DATO.balance +GSTPY.balance</field>
+                                                <field name="date_scope">strict_range</field>
+                                                <field name="blank_if_zero" eval="False"/>
+                                                <field name="green_on_positive" eval="True"/>
+                                            </record>
+                                        </field>
+                                    </record>
+                                </field>
+                                <field name="expression_ids">
+                                    <record id="ekara_bs_line_360_DAT_balance" model="account.report.expression">
+                                        <field name="label">balance</field>
+                                        <field name="engine">aggregation</field>
+                                        <field name="formula">TTDS.balance + TP.balance+GST.balance</field>
+                                        <field name="date_scope">strict_range</field>
+                                        <field name="blank_if_zero" eval="False"/>
+                                        <field name="green_on_positive" eval="True"/>
+                                    </record>
+                                </field>
+                            </record>
+                            <record id="ekara_bs_line_460_PRS" model="account.report.line">
+                                <field name="name">10400000 Provisions</field>
+                                <field name="sequence">460</field>
+                                <field name="code">PRS</field>
+                                <field name="foldable" eval="True"/>
+                                <field name="hide_if_zero" eval="False"/>
+                                <field name="print_on_new_page" eval="False"/>
+                                <field name="children_ids">
+                                    <record id="ekara_bs_line_470_PFG" model="account.report.line">
+                                        <field name="name">10410000 Provision for Gratuity</field>
+                                        <field name="sequence">470</field>
+                                        <field name="code">PFG</field>
+                                        <field name="foldable" eval="True"/>
+                                        <field name="hide_if_zero" eval="False"/>
+                                        <field name="print_on_new_page" eval="False"/>
+                                        <field name="expression_ids">
+                                            <record id="ekara_bs_line_470_PFG_balance" model="account.report.expression">
+                                                <field name="label">balance</field>
+                                                <field name="engine">domain</field>
+                                                <field name="formula">[('account_id.subgroup.name', '=', 'Provision for Gratuity')]</field>
+                                                <field name="date_scope">strict_range</field>
+                                                <field name="subformula">sum</field>
+                                                <field name="blank_if_zero" eval="False"/>
+                                                <field name="green_on_positive" eval="True"/>
+                                            </record>
+                                        </field>
+                                    </record>
+                                    <record id="ekara_bs_line_480_PFE" model="account.report.line">
+                                        <field name="name">10430000 Provision for Expenses</field>
+                                        <field name="sequence">480</field>
+                                        <field name="code">PFE</field>
+                                        <field name="foldable" eval="True"/>
+                                        <field name="hide_if_zero" eval="False"/>
+                                        <field name="print_on_new_page" eval="False"/>
+                                        <field name="expression_ids">
+                                            <record id="ekara_bs_line_480_PFE_balance" model="account.report.expression">
+                                                <field name="label">balance</field>
+                                                <field name="engine">domain</field>
+                                                <field name="formula">[('account_id.subgroup.name', '=', 'Provision for Expenses')]</field>
+                                                <field name="date_scope">strict_range</field>
+                                                <field name="subformula">sum</field>
+                                                <field name="blank_if_zero" eval="False"/>
+                                                <field name="green_on_positive" eval="True"/>
+                                            </record>
+                                        </field>
+                                    </record>
+                                    <record id="ekara_bs_line_490_PFLE" model="account.report.line">
+                                        <field name="name">10420000 Provision for Leave Encashment</field>
+                                        <field name="sequence">490</field>
+                                        <field name="code">PFLE</field>
+                                        <field name="foldable" eval="True"/>
+                                        <field name="hide_if_zero" eval="False"/>
+                                        <field name="print_on_new_page" eval="False"/>
+                                        <field name="expression_ids">
+                                            <record id="ekara_bs_line_490_PFLE_balance" model="account.report.expression">
+                                                <field name="label">balance</field>
+                                                <field name="engine">domain</field>
+                                                <field name="formula">[('account_id.subgroup.name', '=', 'Provision for Leave Encashment')]</field>
+                                                <field name="date_scope">strict_range</field>
+                                                <field name="subformula">sum</field>
+                                                <field name="blank_if_zero" eval="False"/>
+                                                <field name="green_on_positive" eval="True"/>
+                                            </record>
+                                        </field>
+                                    </record>
+                                </field>
+                                <field name="expression_ids">
+                                    <record id="ekara_bs_line_460_PRS_balance" model="account.report.expression">
+                                        <field name="label">balance</field>
+                                        <field name="engine">aggregation</field>
+                                        <field name="formula">PFG.balance + PFLE.balance + PFE.balance</field>
+                                        <field name="date_scope">strict_range</field>
+                                        <field name="blank_if_zero" eval="False"/>
+                                        <field name="green_on_positive" eval="True"/>
+                                    </record>
+                                </field>
+                            </record>
+                            <record id="ekara_bs_line_500_LDD" model="account.report.line">
+                                <field name="name">10500000  Lease Deposits</field>
+                                <field name="sequence">500</field>
+                                <field name="code">LDD</field>
+                                <field name="foldable" eval="True"/>
+                                <field name="hide_if_zero" eval="False"/>
+                                <field name="print_on_new_page" eval="False"/>
+                                <field name="expression_ids">
+                                    <record id="ekara_bs_line_500_LDD_balance" model="account.report.expression">
+                                        <field name="label">balance</field>
+                                        <field name="engine">domain</field>
+                                        <field name="formula">[('account_id.subgroup.name', '=', 'Lease Deposits')]</field>
+                                        <field name="date_scope">strict_range</field>
+                                        <field name="subformula">sum</field>
+                                        <field name="blank_if_zero" eval="False"/>
+                                        <field name="green_on_positive" eval="True"/>
+                                    </record>
+                                </field>
+                            </record>
+                            <record id="ekara_bs_line_510_SC" model="account.report.line">
+                                <field name="name">10320000 Sundry Creditors</field>
+                                <field name="sequence">510</field>
+                                <field name="code">SC</field>
+                                <field name="foldable" eval="True"/>
+                                <field name="hide_if_zero" eval="False"/>
+                                <field name="print_on_new_page" eval="False"/>
+                                <field name="children_ids">
+                                    <record id="ekara_bs_line_520_SCC" model="account.report.line">
+                                        <field name="name">Sundry Creditors</field>
+                                        <field name="sequence">520</field>
+                                        <field name="code">SCC</field>
+                                        <field name="foldable" eval="True"/>
+                                        <field name="hide_if_zero" eval="False"/>
+                                        <field name="print_on_new_page" eval="False"/>
+                                        <field name="expression_ids">
+                                            <record id="ekara_bs_line_520_SCC_balance" model="account.report.expression">
+                                                <field name="label">balance</field>
+                                                <field name="engine">domain</field>
+                                                <field name="formula">[('account_id.subgroup.name', '=', 'Sundry Creditors')]</field>
+                                                <field name="date_scope">strict_range</field>
+                                                <field name="subformula">sum</field>
+                                                <field name="blank_if_zero" eval="False"/>
+                                                <field name="green_on_positive" eval="True"/>
+                                            </record>
+                                        </field>
+                                    </record>
+                                    <record id="ekara_bs_line_530_CRSS" model="account.report.line">
+                                        <field name="name">112110 Creditors</field>
+                                        <field name="sequence">530</field>
+                                        <field name="code">CRSS</field>
+                                        <field name="foldable" eval="True"/>
+                                        <field name="hide_if_zero" eval="False"/>
+                                        <field name="print_on_new_page" eval="False"/>
+                                        <field name="expression_ids">
+                                            <record id="ekara_bs_line_530_CRSS_balance" model="account.report.expression">
+                                                <field name="label">balance</field>
+                                                <field name="engine">domain</field>
+                                                <field name="formula">[('account_id.subgroup.name', '=', 'Creditors')]</field>
+                                                <field name="date_scope">strict_range</field>
+                                                <field name="subformula">sum</field>
+                                                <field name="blank_if_zero" eval="False"/>
+                                                <field name="green_on_positive" eval="True"/>
+                                            </record>
+                                        </field>
+                                    </record>
+                                    <record id="ekara_bs_line_540_RSD" model="account.report.line">
+                                        <field name="name">10327100-Rental Security Deposit</field>
+                                        <field name="sequence">540</field>
+                                        <field name="code">RSD</field>
+                                        <field name="foldable" eval="True"/>
+                                        <field name="hide_if_zero" eval="False"/>
+                                        <field name="print_on_new_page" eval="False"/>
+                                        <field name="expression_ids">
+                                            <record id="ekara_bs_line_540_RSD_balance" model="account.report.expression">
+                                                <field name="label">balance</field>
+                                                <field name="engine">domain</field>
+                                                <field name="formula">[('account_id.subgroup.name', '=', 'Rental Security Deposit')]</field>
+                                                <field name="date_scope">strict_range</field>
+                                                <field name="subformula">sum</field>
+                                                <field name="blank_if_zero" eval="False"/>
+                                                <field name="green_on_positive" eval="True"/>
+                                            </record>
+                                        </field>
+                                    </record>
+                                    <record id="ekara_bs_line_550_CO" model="account.report.line">
+                                        <field name="name">10324000 Creditors (Others)</field>
+                                        <field name="sequence">550</field>
+                                        <field name="code">CO</field>
+                                        <field name="foldable" eval="True"/>
+                                        <field name="hide_if_zero" eval="False"/>
+                                        <field name="print_on_new_page" eval="False"/>
+                                        <field name="expression_ids">
+                                            <record id="ekara_bs_line_550_CO_balance" model="account.report.expression">
+                                                <field name="label">balance</field>
+                                                <field name="engine">domain</field>
+                                                <field name="formula">[('account_id.subgroup.name', '=', 'Creditors (Others)')]</field>
+                                                <field name="date_scope">strict_range</field>
+                                                <field name="subformula">sum</field>
+                                                <field name="blank_if_zero" eval="False"/>
+                                                <field name="green_on_positive" eval="True"/>
+                                            </record>
+                                        </field>
+                                    </record>
+                                    <record id="ekara_bs_line_560_CAL" model="account.report.line">
+                                        <field name="name">10325000-Creditors (Assets - Local)</field>
+                                        <field name="sequence">560</field>
+                                        <field name="code">CAL</field>
+                                        <field name="foldable" eval="True"/>
+                                        <field name="hide_if_zero" eval="False"/>
+                                        <field name="print_on_new_page" eval="False"/>
+                                        <field name="expression_ids">
+                                            <record id="ekara_bs_line_560_CAL_balance" model="account.report.expression">
+                                                <field name="label">balance</field>
+                                                <field name="engine">domain</field>
+                                                <field name="formula">[('account_id.subgroup.name', '=', 'Creditors (Assets - Local)')]</field>
+                                                <field name="date_scope">strict_range</field>
+                                                <field name="subformula">sum</field>
+                                                <field name="blank_if_zero" eval="False"/>
+                                                <field name="green_on_positive" eval="True"/>
+                                            </record>
+                                        </field>
+                                    </record>
+                                    <record id="ekara_bs_line_570_CRP" model="account.report.line">
+                                        <field name="name">10325000 Creditors (Related Parties)</field>
+                                        <field name="sequence">570</field>
+                                        <field name="code">CRP</field>
+                                        <field name="foldable" eval="True"/>
+                                        <field name="hide_if_zero" eval="False"/>
+                                        <field name="print_on_new_page" eval="False"/>
+                                        <field name="expression_ids">
+                                            <record id="ekara_bs_line_570_CRP_balance" model="account.report.expression">
+                                                <field name="label">balance</field>
+                                                <field name="engine">domain</field>
+                                                <field name="formula">[('account_id.subgroup.name', '=', 'Creditors (Related Parties)')]</field>
+                                                <field name="date_scope">strict_range</field>
+                                                <field name="subformula">sum</field>
+                                                <field name="blank_if_zero" eval="False"/>
+                                                <field name="green_on_positive" eval="True"/>
+                                            </record>
+                                        </field>
+                                    </record>
+                                    <record id="ekara_bs_line_580_CEMDR" model="account.report.line">
+                                        <field name="name">10327000-Creditors ( EMD, Retention )</field>
+                                        <field name="sequence">580</field>
+                                        <field name="code">CEMDR</field>
+                                        <field name="foldable" eval="True"/>
+                                        <field name="hide_if_zero" eval="False"/>
+                                        <field name="print_on_new_page" eval="False"/>
+                                        <field name="expression_ids">
+                                            <record id="ekara_bs_line_580_CEMDR_balance" model="account.report.expression">
+                                                <field name="label">balance</field>
+                                                <field name="engine">domain</field>
+                                                <field name="formula">[('account_id.subgroup.name', '=', 'Creditors ( EMD, Retention )')]</field>
+                                                <field name="date_scope">strict_range</field>
+                                                <field name="subformula">sum</field>
+                                                <field name="blank_if_zero" eval="False"/>
+                                                <field name="green_on_positive" eval="True"/>
+                                            </record>
+                                        </field>
+                                    </record>
+                                    <record id="ekara_bs_line_590_CSL" model="account.report.line">
+                                        <field name="name">10323000 Creditors (Supplies - Local)</field>
+                                        <field name="sequence">590</field>
+                                        <field name="code">CSL</field>
+                                        <field name="foldable" eval="True"/>
+                                        <field name="hide_if_zero" eval="False"/>
+                                        <field name="print_on_new_page" eval="False"/>
+                                        <field name="expression_ids">
+                                            <record id="ekara_bs_line_590_CSL_balance" model="account.report.expression">
+                                                <field name="label">balance</field>
+                                                <field name="engine">domain</field>
+                                                <field name="formula">[('account_id.subgroup.name', '=', 'Creditors (Supplies - Local)')]</field>
+                                                <field name="date_scope">strict_range</field>
+                                                <field name="subformula">sum</field>
+                                                <field name="blank_if_zero" eval="False"/>
+                                                <field name="green_on_positive" eval="True"/>
+                                            </record>
+                                        </field>
+                                    </record>
+                                    <record id="ekara_bs_line_600_CEP" model="account.report.line">
+                                        <field name="name">10321000 Creditors (Employee Payables)</field>
+                                        <field name="sequence">600</field>
+                                        <field name="code">CEP</field>
+                                        <field name="foldable" eval="True"/>
+                                        <field name="hide_if_zero" eval="False"/>
+                                        <field name="print_on_new_page" eval="False"/>
+                                        <field name="expression_ids">
+                                            <record id="ekara_bs_line_600_CEP_balance" model="account.report.expression">
+                                                <field name="label">balance</field>
+                                                <field name="engine">domain</field>
+                                                <field name="formula">[('account_id.subgroup.name', '=', 'Creditors (Employee Payables)')]</field>
+                                                <field name="date_scope">strict_range</field>
+                                                <field name="subformula">sum</field>
+                                                <field name="blank_if_zero" eval="False"/>
+                                                <field name="green_on_positive" eval="True"/>
+                                            </record>
+                                        </field>
+                                    </record>
+                                    <record id="ekara_bs_line_610_CSE" model="account.report.line">
+                                        <field name="name">10322000 Creditors (Services, Expenses)</field>
+                                        <field name="sequence">610</field>
+                                        <field name="code">CSE</field>
+                                        <field name="foldable" eval="True"/>
+                                        <field name="hide_if_zero" eval="False"/>
+                                        <field name="print_on_new_page" eval="False"/>
+                                        <field name="expression_ids">
+                                            <record id="ekara_bs_line_610_CSE_balance" model="account.report.expression">
+                                                <field name="label">balance</field>
+                                                <field name="engine">domain</field>
+                                                <field name="formula">[('account_id.subgroup.name', '=', 'Creditors (Services, Expenses)')]</field>
+                                                <field name="date_scope">strict_range</field>
+                                                <field name="subformula">sum</field>
+                                                <field name="blank_if_zero" eval="False"/>
+                                                <field name="green_on_positive" eval="True"/>
+                                            </record>
+                                        </field>
+                                    </record>
+                                </field>
+                                <field name="expression_ids">
+                                    <record id="ekara_bs_line_510_SC_balance" model="account.report.expression">
+                                        <field name="label">balance</field>
+                                        <field name="engine">aggregation</field>
+                                        <field name="formula">CEP.balance + CSE.balance + CSL.balance + CO.balance + CRP.balance + CAL.balance + CEMDR.balance+CRSS.balance+RSD.balance+SCC.balance</field>
+                                        <field name="date_scope">strict_range</field>
+                                        <field name="blank_if_zero" eval="False"/>
+                                        <field name="green_on_positive" eval="True"/>
+                                    </record>
+                                </field>
+                            </record>
+                        </field>
+                        <field name="expression_ids">
+                            <record id="ekara_bs_line_350_CL_balance" model="account.report.expression">
+                                <field name="label">balance</field>
+                                <field name="engine">aggregation</field>
+                                <field name="formula">PRS.balance+SC.balance+DAT.balance+LDD.balance</field>
+                                <field name="date_scope">strict_range</field>
+                                <field name="blank_if_zero" eval="False"/>
+                                <field name="green_on_positive" eval="True"/>
+                            </record>
+                        </field>
+                    </record>
+                    <record id="ekara_bs_line_620_LLI" model="account.report.line">
+                        <field name="name">10200000 Loans (Liability)</field>
+                        <field name="sequence">620</field>
+                        <field name="code">LLI</field>
+                        <field name="foldable" eval="True"/>
+                        <field name="hide_if_zero" eval="False"/>
+                        <field name="print_on_new_page" eval="False"/>
+                        <field name="children_ids">
+                            <record id="ekara_bs_line_630_LL" model="account.report.line">
+                                <field name="name">10200000 Loans (Liability)</field>
+                                <field name="sequence">630</field>
+                                <field name="code">LL</field>
+                                <field name="foldable" eval="True"/>
+                                <field name="hide_if_zero" eval="False"/>
+                                <field name="print_on_new_page" eval="False"/>
+                                <field name="expression_ids">
+                                    <record id="ekara_bs_line_630_LL_balance" model="account.report.expression">
+                                        <field name="label">balance</field>
+                                        <field name="engine">domain</field>
+                                        <field name="formula">[('account_id.subgroup.name', '=', 'Loans (Liability)')]</field>
+                                        <field name="date_scope">strict_range</field>
+                                        <field name="subformula">sum</field>
+                                        <field name="blank_if_zero" eval="False"/>
+                                        <field name="green_on_positive" eval="True"/>
+                                    </record>
+                                </field>
+                            </record>
+                        </field>
+                        <field name="expression_ids">
+                            <record id="ekara_bs_line_620_LLI_balance" model="account.report.expression">
+                                <field name="label">balance</field>
+                                <field name="engine">aggregation</field>
+                                <field name="formula">LL.balance</field>
+                                <field name="date_scope">strict_range</field>
+                                <field name="blank_if_zero" eval="False"/>
+                                <field name="green_on_positive" eval="True"/>
+                            </record>
+                        </field>
+                    </record>
+                    <record id="ekara_bs_line_640_CAC" model="account.report.line">
+                        <field name="name">10000000 Capital Account</field>
+                        <field name="sequence">640</field>
+                        <field name="code">CAC</field>
+                        <field name="foldable" eval="True"/>
+                        <field name="hide_if_zero" eval="False"/>
+                        <field name="print_on_new_page" eval="False"/>
+                        <field name="children_ids">
+                            <record id="ekara_bs_line_650_RS" model="account.report.line">
+                                <field name="name">10010000 Reserves &amp; Surplus</field>
+                                <field name="sequence">650</field>
+                                <field name="code">RS</field>
+                                <field name="foldable" eval="True"/>
+                                <field name="hide_if_zero" eval="False"/>
+                                <field name="print_on_new_page" eval="False"/>
+                                <field name="children_ids">
+                                    <record id="ekara_bs_line_660_SCL" model="account.report.line">
+                                        <field name="name">10010000 Share Capital</field>
+                                        <field name="sequence">660</field>
+                                        <field name="code">SCL</field>
+                                        <field name="foldable" eval="True"/>
+                                        <field name="hide_if_zero" eval="False"/>
+                                        <field name="print_on_new_page" eval="False"/>
+                                        <field name="expression_ids">
+                                            <record id="ekara_bs_line_660_SCL_balance" model="account.report.expression">
+                                                <field name="label">balance</field>
+                                                <field name="engine">domain</field>
+                                                <field name="formula">[('account_id.subgroup.name', '=', 'Share Capital')]</field>
+                                                <field name="date_scope">strict_range</field>
+                                                <field name="subformula">sum</field>
+                                                <field name="blank_if_zero" eval="False"/>
+                                                <field name="green_on_positive" eval="True"/>
+                                            </record>
+                                        </field>
+                                    </record>
+                                    <record id="ekara_bs_line_670_PCA" model="account.report.line">
+                                        <field name="name">10000200 Partners Current Account</field>
+                                        <field name="sequence">670</field>
+                                        <field name="code">PCA</field>
+                                        <field name="foldable" eval="True"/>
+                                        <field name="hide_if_zero" eval="False"/>
+                                        <field name="print_on_new_page" eval="False"/>
+                                        <field name="expression_ids">
+                                            <record id="ekara_bs_line_670_PCA_balance" model="account.report.expression">
+                                                <field name="label">balance</field>
+                                                <field name="engine">domain</field>
+                                                <field name="formula">[('account_id.subgroup.name', '=', 'Partners Current Account')]</field>
+                                                <field name="date_scope">strict_range</field>
+                                                <field name="subformula">sum</field>
+                                                <field name="blank_if_zero" eval="False"/>
+                                                <field name="green_on_positive" eval="True"/>
+                                            </record>
+                                        </field>
+                                    </record>
+                                    <record id="ekara_bs_line_680_RESS" model="account.report.line">
+                                        <field name="name">10020000 Reserves &amp; Surplus</field>
+                                        <field name="sequence">680</field>
+                                        <field name="code">RESS</field>
+                                        <field name="foldable" eval="True"/>
+                                        <field name="hide_if_zero" eval="False"/>
+                                        <field name="print_on_new_page" eval="False"/>
+                                        <field name="expression_ids">
+                                            <record id="ekara_bs_line_680_RESS_balance" model="account.report.expression">
+                                                <field name="label">balance</field>
+                                                <field name="engine">domain</field>
+                                                <field name="formula">[('account_id.subgroup.name', '=', 'Reserves &amp; Surplus')]</field>
+                                                <field name="date_scope">strict_range</field>
+                                                <field name="subformula">sum</field>
+                                                <field name="blank_if_zero" eval="False"/>
+                                                <field name="green_on_positive" eval="True"/>
+                                            </record>
+                                        </field>
+                                    </record>
+                                </field>
+                                <field name="expression_ids">
+                                    <record id="ekara_bs_line_650_RS_balance" model="account.report.expression">
+                                        <field name="label">balance</field>
+                                        <field name="engine">aggregation</field>
+                                        <field name="formula">PCA.balance+RESS.balance +SCL.balance</field>
+                                        <field name="date_scope">strict_range</field>
+                                        <field name="blank_if_zero" eval="False"/>
+                                        <field name="green_on_positive" eval="True"/>
+                                    </record>
+                                </field>
+                            </record>
+                            <record id="ekara_bs_line_690_PCAC" model="account.report.line">
+                                <field name="name">10000100 Partners Capital Accounts</field>
+                                <field name="sequence">690</field>
+                                <field name="code">PCAC</field>
+                                <field name="foldable" eval="True"/>
+                                <field name="hide_if_zero" eval="False"/>
+                                <field name="print_on_new_page" eval="False"/>
+                                <field name="expression_ids">
+                                    <record id="ekara_bs_line_690_PCAC_balance" model="account.report.expression">
+                                        <field name="label">balance</field>
+                                        <field name="engine">domain</field>
+                                        <field name="formula">[('account_id.subgroup.name', '=', 'Partners Capital Accounts')]</field>
+                                        <field name="date_scope">strict_range</field>
+                                        <field name="subformula">sum</field>
+                                        <field name="blank_if_zero" eval="False"/>
+                                        <field name="green_on_positive" eval="True"/>
+                                    </record>
+                                </field>
+                            </record>
+                        </field>
+                        <field name="expression_ids">
+                            <record id="ekara_bs_line_640_CAC_balance" model="account.report.expression">
+                                <field name="label">balance</field>
+                                <field name="engine">aggregation</field>
+                                <field name="formula">RS.balance + PCAC.balance</field>
+                                <field name="date_scope">strict_range</field>
+                                <field name="blank_if_zero" eval="False"/>
+                                <field name="green_on_positive" eval="True"/>
+                            </record>
+                        </field>
+                    </record>
+                    <record id="ekara_bs_line_700_NL" model="account.report.line">
+                        <field name="name">Non-current Liabilities</field>
+                        <field name="sequence">700</field>
+                        <field name="code">NL</field>
+                        <field name="foldable" eval="True"/>
+                        <field name="hide_if_zero" eval="False"/>
+                        <field name="print_on_new_page" eval="False"/>
+                        <field name="expression_ids">
+                            <record id="ekara_bs_line_700_NL_balance" model="account.report.expression">
+                                <field name="label">balance</field>
+                                <field name="engine">domain</field>
+                                <field name="formula">[('account_id.account_type', '=', 'liability_non_current')]</field>
+                                <field name="date_scope">strict_range</field>
+                                <field name="subformula">sum</field>
+                                <field name="blank_if_zero" eval="False"/>
+                                <field name="green_on_positive" eval="True"/>
+                            </record>
+                        </field>
+                    </record>
+                </field>
+                <field name="expression_ids">
+                    <record id="ekara_bs_line_340_L_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">aggregation</field>
+                        <field name="formula">-(CAC.balance + LLI.balance + CL.balance+NL.balance)</field>
+                        <field name="date_scope">strict_range</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="False"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_bs_line_710_EQ" model="account.report.line">
+                <field name="name">EQUITY</field>
+                <field name="sequence">710</field>
+                <field name="hierarchy_level">0</field>
+                <field name="code">EQ</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="children_ids">
+                    <record id="ekara_bs_line_720_UNAFFECTED_EARNINGS" model="account.report.line">
+                        <field name="name">Unallocated Earnings</field>
+                        <field name="sequence">720</field>
+                        <field name="code">UNAFFECTED_EARNINGS</field>
+                        <field name="foldable" eval="False"/>
+                        <field name="hide_if_zero" eval="False"/>
+                        <field name="print_on_new_page" eval="False"/>
+                        <field name="children_ids">
+                            <record id="ekara_bs_line_730_CURR_YEAR_EARNINGS" model="account.report.line">
+                                <field name="name">Current Year Unallocated Earnings</field>
+                                <field name="sequence">730</field>
+                                <field name="code">CURR_YEAR_EARNINGS</field>
+                                <field name="foldable" eval="False"/>
+                                <field name="hide_if_zero" eval="False"/>
+                                <field name="print_on_new_page" eval="False"/>
+                                <field name="children_ids">
+                                    <record id="ekara_bs_line_740_CURR_YEAR_EARNINGS_ALLOC" model="account.report.line">
+                                        <field name="name">Current Year Allocated Earnings</field>
+                                        <field name="sequence">740</field>
+                                        <field name="code">CURR_YEAR_EARNINGS_ALLOC</field>
+                                        <field name="foldable" eval="False"/>
+                                        <field name="hide_if_zero" eval="False"/>
+                                        <field name="print_on_new_page" eval="False"/>
+                                        <field name="expression_ids">
+                                            <record id="ekara_bs_line_740_CURR_YEAR_EARNINGS_ALLOC_balance" model="account.report.expression">
+                                                <field name="label">balance</field>
+                                                <field name="engine">domain</field>
+                                                <field name="formula">[('account_id.account_type', '=', 'equity_unaffected')]</field>
+                                                <field name="date_scope">strict_range</field>
+                                                <field name="subformula">-sum</field>
+                                                <field name="blank_if_zero" eval="False"/>
+                                                <field name="green_on_positive" eval="True"/>
+                                            </record>
+                                        </field>
+                                    </record>
+                                    <record id="ekara_bs_line_750_CURR_YEAR_EARNINGS_PNL" model="account.report.line">
+                                        <field name="name">Current Year Earnings</field>
+                                        <field name="sequence">750</field>
+                                        <field name="code">CURR_YEAR_EARNINGS_PNL</field>
+                                        <field name="foldable" eval="False"/>
+                                        <field name="hide_if_zero" eval="False"/>
+                                        <field name="print_on_new_page" eval="False"/>
+                                        <field name="expression_ids">
+                                            <record id="ekara_bs_line_750_CURR_YEAR_EARNINGS_PNL_balance" model="account.report.expression">
+                                                <field name="label">balance</field>
+                                                <field name="engine">aggregation</field>
+                                                <field name="formula">NEP.balance</field>
+                                                <field name="date_scope">from_fiscalyear</field>
+                                                <field name="subformula">cross_report</field>
+                                                <field name="blank_if_zero" eval="False"/>
+                                                <field name="green_on_positive" eval="True"/>
+                                            </record>
+                                        </field>
+                                    </record>
+                                </field>
+                                <field name="expression_ids">
+                                    <record id="ekara_bs_line_730_CURR_YEAR_EARNINGS_balance" model="account.report.expression">
+                                        <field name="label">balance</field>
+                                        <field name="engine">aggregation</field>
+                                        <field name="formula">CURR_YEAR_EARNINGS_PNL.balance + CURR_YEAR_EARNINGS_ALLOC.balance</field>
+                                        <field name="date_scope">strict_range</field>
+                                        <field name="blank_if_zero" eval="False"/>
+                                        <field name="green_on_positive" eval="True"/>
+                                    </record>
+                                </field>
+                            </record>
+                            <record id="ekara_bs_line_760_PREV_YEAR_EARNINGS" model="account.report.line">
+                                <field name="name">Previous Years Unallocated Earnings</field>
+                                <field name="sequence">760</field>
+                                <field name="code">PREV_YEAR_EARNINGS</field>
+                                <field name="foldable" eval="False"/>
+                                <field name="hide_if_zero" eval="False"/>
+                                <field name="print_on_new_page" eval="False"/>
+                                <field name="expression_ids">
+                                    <record id="ekara_bs_line_760_PREV_YEAR_EARNINGS_allocated_earnings" model="account.report.expression">
+									    <field name="label">allocated_earnings</field>
+									    <field name="engine">domain</field>
+									    <field name="formula">
+									        [('account_id.account_type', '=', 'equity_unaffected')]
+									    </field>
+									    <field name="date_scope">from_beginning</field>
+									    <field name="subformula">-sum</field>
+									</record>
+									<record id="ekara_bs_line_760_PREV_YEAR_EARNINGS_balance_domain"
+									        model="account.report.expression">
+									    <field name="label">balance_domain</field>
+									    <field name="engine">domain</field>
+									    <field name="formula">
+									        [('account_id.account_type', 'in',
+									        ('income', 'income_other', 'expense_direct_cost',
+									        'expense', 'expense_depreciation'))]
+									    </field>
+									    <field name="date_scope">from_beginning</field>
+									    <field name="subformula">-sum</field>
+									</record>
+									<record id="ekara_bs_line_760_PREV_YEAR_EARNINGS_balance"
+									        model="account.report.expression">
+									    <field name="label">balance</field>
+									    <field name="engine">aggregation</field>
+									    <field name="formula">
+									        PREV_YEAR_EARNINGS.balance_domain
+									        + PREV_YEAR_EARNINGS.allocated_earnings
+									        - CURR_YEAR_EARNINGS.balance
+									    </field>
+									    <field name="date_scope">strict_range</field>
+									</record>
+                                </field>
+                            </record>
+                            <record id="ekara_bs_line_770_PL" model="account.report.line">
+                                <field name="name">99999 Profit &amp; Loss A/c</field>
+                                <field name="sequence">770</field>
+                                <field name="code">PL</field>
+                                <field name="foldable" eval="False"/>
+                                <field name="hide_if_zero" eval="False"/>
+                                <field name="print_on_new_page" eval="False"/>
+                                <field name="expression_ids">
+                                    <record id="ekara_bs_line_770_PL_balance" model="account.report.expression">
+                                        <field name="label">balance</field>
+                                        <field name="engine">domain</field>
+                                        <field name="formula">[('account_id.subgroup.name', '=', 'Profit &amp; Loss')]</field>
+                                        <field name="date_scope">strict_range</field>
+                                        <field name="subformula">-sum</field>
+                                        <field name="blank_if_zero" eval="False"/>
+                                        <field name="green_on_positive" eval="True"/>
+                                    </record>
+                                </field>
+                            </record>
+                        </field>
+                        <field name="expression_ids">
+                            <record id="ekara_bs_line_720_UNAFFECTED_EARNINGS_balance" model="account.report.expression">
+                                <field name="label">balance</field>
+                                <field name="engine">aggregation</field>
+                                <field name="formula">CURR_YEAR_EARNINGS.balance + PREV_YEAR_EARNINGS.balance</field>
+                                <field name="date_scope">strict_range</field>
+                                <field name="blank_if_zero" eval="False"/>
+                                <field name="green_on_positive" eval="True"/>
+                            </record>
+                        </field>
+                    </record>
+                    <record id="ekara_bs_line_780_RETAINED_EARNINGS" model="account.report.line">
+                        <field name="name">Retained Earnings</field>
+                        <field name="sequence">780</field>
+                        <field name="code">RETAINED_EARNINGS</field>
+                        <field name="foldable" eval="True"/>
+                        <field name="hide_if_zero" eval="False"/>
+                        <field name="print_on_new_page" eval="False"/>
+                        <field name="groupby">account_id</field>
+                        <field name="expression_ids">
+                            <record id="ekara_bs_line_780_RETAINED_EARNINGS_balance" model="account.report.expression">
+                                <field name="label">balance</field>
+                                <field name="engine">domain</field>
+                                <field name="formula">[('account_id.account_type', '=', 'equity')]</field>
+                                <field name="date_scope">strict_range</field>
+                                <field name="subformula">-sum</field>
+                                <field name="blank_if_zero" eval="False"/>
+                                <field name="green_on_positive" eval="True"/>
+                            </record>
+                        </field>
+                    </record>
+                </field>
+                <field name="expression_ids">
+                    <record id="ekara_bs_line_710_EQ_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">aggregation</field>
+                        <field name="formula">UNAFFECTED_EARNINGS.balance + RETAINED_EARNINGS.balance + PL.balance</field>
+                        <field name="date_scope">strict_range</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_bs_line_790_LE" model="account.report.line">
+                <field name="name">LIABILITIES + EQUITY</field>
+                <field name="sequence">790</field>
+                <field name="hierarchy_level">0</field>
+                <field name="code">LE</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="expression_ids">
+                    <record id="ekara_bs_line_790_LE_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">aggregation</field>
+                        <field name="formula">L.balance + EQ.balance</field>
+                        <field name="date_scope">strict_range</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="False"/>
+                    </record>
+                </field>
+            </record>
+        </field>
+    </record>
+<!-- 
+    <record id="action_account_report_ekara_bs" model="ir.actions.client">
+        <field name="name">Balance Sheets</field>
+        <field name="tag">account_report</field>
+        <field name="path">balance-sheet-ekara</field>
+        <field name="context" eval="{'report_id': ref('accounts_extended.ekara_balance_sheet')}"/>
+    </record>
+    <menuitem id="account_reports.menu_action_account_report_balance_sheet" name="Balance Sheets" action="action_account_report_ekara_bs" parent="account.account_reports_legal_statements_menu" groups="account.group_account_readonly"/> -->
+</odoo>

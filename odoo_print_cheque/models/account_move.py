@@ -60,7 +60,6 @@ class AccountMove(models.Model):
         string="Cheque Amount",
         store=True,
     )
-    partner_id = fields.Many2one('res.partner',string='Beneficiary Name')
     partner_bank_id = fields.Many2one('res.partner.bank', string='Beneficiary Account Name')
     rtgs_addition = fields.Boolean(string='NEFT/RTGS',compute='compute_rtgs')
     x_has_request_approval = fields.Boolean(string="Has Request Approval",default=False)

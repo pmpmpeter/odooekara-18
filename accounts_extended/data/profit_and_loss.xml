@@ -1,0 +1,1895 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="ekara_profit_and_loss" model="account.report">
+        <field name="name">Ekara Profit and Loss</field>
+        <field name="root_report_id" ref="account_reports.profit_and_loss"/>
+        <field name="country_id" ref="base.in"/>
+        <field name="column_ids">
+            <record id="ekara_profit_and_loss_column_balance" model="account.report.column">
+                <field name="name">Balance</field>
+                <field name="expression_label">balance</field>
+            </record>
+        </field>
+        <field name="line_ids">
+            <record id="ekara_pnl_line_000_NEP" model="account.report.line">
+                <field name="name">Net Profit</field>
+                <field name="sequence">10</field>
+                <field name="hierarchy_level">0</field>
+                <field name="code">NEP</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_000_NEP_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">aggregation</field>
+                        <field name="formula">(INC.balance - COS.balance - EXP.balance)</field>
+                        <field name="date_scope">strict_range</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_001_INC" model="account.report.line">
+                <field name="name">Income</field>
+                <field name="sequence">20</field>
+                <field name="hierarchy_level">0</field>
+                <field name="code">INC</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_001_INC_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">aggregation</field>
+                        <field name="formula">DI.balance + INDI.balance + INT.balance + D.balance + OIN.balance + RI.balance + RIMS.balance +IFD.balance +CG.balance</field>
+                        <field name="date_scope">strict_range</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_002_DI" model="account.report.line">
+                <field name="name">40000000 Direct Incomes</field>
+                <field name="sequence">30</field>
+                <field name="hierarchy_level">3</field>
+                <field name="user_groupby">account_id</field>
+                <field name="code">DI</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_001_INC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_002_DI_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [115,112])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">-sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_003_INDI" model="account.report.line">
+                <field name="name">50000000 Indirect Incomes</field>
+                <field name="sequence">40</field>
+                <field name="code">INDI</field>
+                <field name="hierarchy_level">3</field>
+                <field name="user_groupby">account_id</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_001_INC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_003_INDI_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [116,123])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">-sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_004_INT" model="account.report.line">
+                <field name="name">50010000 Interest</field>
+                <field name="sequence">50</field>
+                <field name="hierarchy_level">3</field>
+                <field name="user_groupby">account_id</field>
+                <field name="code">INT</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_001_INC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_004_INT_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [117,208,222,271,326])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">-sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_005_CG" model="account.report.line">
+                <field name="name">50040000 Capital Gains</field>
+                <field name="sequence">60</field>
+                <field name="code">CG</field>
+                <field name="hierarchy_level">3</field>
+                <field name="user_groupby">account_id</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_001_INC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_005_CG_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [220,270])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">-sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_006_D" model="account.report.line">
+                <field name="name">50020000 Dividend</field>
+                <field name="sequence">70</field>
+                <field name="code">D</field>
+                <field name="hierarchy_level">3</field>
+                <field name="user_groupby">account_id</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_001_INC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_006_D_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [118,225,268])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">-sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_007_OIN" model="account.report.line">
+                <field name="name">50030000 Other Income</field>
+                <field name="sequence">80</field>
+                <field name="code">OIN</field>
+                <field name="hierarchy_level">3</field>
+                <field name="user_groupby">account_id</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_001_INC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_007_OIN_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [119,152,224,273])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">-sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_008_GRP" model="account.report.line">
+                <field name="name">Gross Profit</field>
+                <field name="sequence">90</field>
+                <field name="code">GRP</field>
+                <field name="hierarchy_level">3</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_001_INC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_008_GRP_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">aggregation</field>
+                        <field name="formula">INC.balance - COS.balance</field>
+                        <field name="date_scope">strict_range</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_009_COS" model="account.report.line">
+                <field name="name">Cost of Revenue</field>
+                <field name="sequence">100</field>
+                <field name="code">COS</field>
+                <field name="hierarchy_level">5</field>
+                <field name="user_groupby">account_id</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_008_GRP"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_009_COS_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.account_type', '=', 'expense_direct_cost')]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="False"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_010_RI" model="account.report.line">
+                <field name="name">40010000 Rental Income</field>
+                <field name="sequence">110</field>
+                <field name="code">RI</field>
+                <field name="hierarchy_level">3</field>
+                <field name="user_groupby">account_id</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_001_INC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_010_RI_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [41,221,247,269])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">-sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_011_RIMS" model="account.report.line">
+                <field name="name">50030002-Rental Incomes</field>
+                <field name="sequence">120</field>
+                <field name="code">RIMS</field>
+                <field name="hierarchy_level">3</field>
+                <field name="user_groupby">account_id</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_001_INC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_011_RIMS_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', '=', '156')]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">-sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_012_IFD" model="account.report.line">
+                <field name="name">40020000 Interest - Fixed Deposit</field>
+                <field name="sequence">130</field>
+                <field name="code">IFD</field>
+                <field name="hierarchy_level">3</field>
+                <field name="user_groupby">account_id</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_001_INC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_012_IFD_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [143,223,266,272])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">-sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_013_EXP" model="account.report.line">
+                <field name="name">Expenses</field>
+                <field name="sequence">140</field>
+                <field name="code">EXP</field>
+                <field name="hierarchy_level">3</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_001_INC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_013_EXP_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">aggregation</field>
+                        <field name="formula">DIEXP.balance + INDEXP.balance</field>
+                        <field name="date_scope">strict_range</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="False"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_014_DIEXP" model="account.report.line">
+                <field name="name">Direct Expense</field>
+                <field name="sequence">150</field>
+                <field name="code">DIEXP</field>
+                <field name="hierarchy_level">5</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_013_EXP"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_014_DIEXP_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">aggregation</field>
+                        <field name="formula">PC.balance + MF.balance</field>
+                        <field name="date_scope">strict_range</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_015_MF" model="account.report.line">
+                <field name="name">70210000 Management fee</field>
+                <field name="sequence">160</field>
+                <field name="code">MF</field>
+                <field name="hierarchy_level">7</field>
+                <field name="user_groupby">account_id</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_014_DIEXP"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_015_MF_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [203])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_016_PC" model="account.report.line">
+                <field name="name">70100000 Personnel Cost</field>
+                <field name="sequence">170</field>
+                <field name="code">PC</field>
+                <field name="hierarchy_level">7</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_014_DIEXP"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_016_PC_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">aggregation</field>
+                        <field name="formula">SADW.balance + CT.balance + SW.balance + SRAT.balance</field>
+                        <field name="date_scope">strict_range</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_017_GTF" model="account.report.line">
+                <field name="name">200138 Gift to Father</field>
+                <field name="sequence">180</field>
+                <field name="code">GTF</field>
+                <field name="hierarchy_level">9</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_016_PC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_017_GTF_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [201,])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_018_SADW" model="account.report.line">
+                <field name="name">70110000 Salaries and Wages</field>
+                <field name="sequence">190</field>
+                <field name="code">SADW</field>
+                <field name="hierarchy_level">9</field>
+                <field name="user_groupby">account_id</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_016_PC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_018_SADW_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [149,100,318])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_019_CT" model="account.report.line">
+                <field name="name">70120000 Contribution to PF, ESI, Etc.</field>
+                <field name="sequence">200</field>
+                <field name="code">CT</field>
+                <field name="hierarchy_level">9</field>
+                <field name="user_groupby">account_id</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_016_PC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_019_CT_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [25,323])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_020_SW" model="account.report.line">
+                <field name="name">70130000 Staff Welfare</field>
+                <field name="sequence">210</field>
+                <field name="code">SW</field>
+                <field name="hierarchy_level">9</field>
+                <field name="user_groupby">account_id</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_016_PC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_020_SW_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [22,51,322])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_021_SRAT" model="account.report.line">
+                <field name="name">70140000 Staff Recruitment and Training</field>
+                <field name="sequence">220</field>
+                <field name="code">SRAT</field>
+                <field name="hierarchy_level">9</field>
+                <field name="user_groupby">account_id</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_016_PC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_021_SRAT_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', '=', '23')]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_022_INDEXP" model="account.report.line">
+                <field name="name">Indirect Expense</field>
+                <field name="sequence">230</field>
+                <field name="code">INDEXP</field>
+                <field name="hierarchy_level">7</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_014_DIEXP"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_022_INDEXP_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">aggregation</field>
+                        <field name="formula">AC.balance + SAMC.balance + IDEXPFC.balance + DOE.balance + IRE.balance + POEP.balance + PRT.balance + PDG.balance + PPMS.balance + PBW.balance</field>
+                        <field name="date_scope">strict_range</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_023_AC" model="account.report.line">
+                <field name="name">70600000 Administration Cost</field>
+                <field name="sequence">240</field>
+                <field name="code">AC</field>
+                <field name="hierarchy_level">9</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_022_INDEXP"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_023_AC_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">aggregation</field>
+                        <field name="formula">SAH.balance + RAAT.balance + INSU.balance + PAST.balance + CEX.balance + TACO.balance + LAPC.balance + RTA.balance + GE.balance + RENT.balance +S&amp;S.balance + PF&amp;W.balance</field>
+                        <field name="date_scope">strict_range</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_024_SAH" model="account.report.line">
+                <field name="name">70610000 Security and Housekeeping</field>
+                <field name="sequence">250</field>
+                <field name="code">SAH</field>
+                <field name="hierarchy_level">11</field>
+                <field name="user_groupby">account_id</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_023_AC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_024_SAH_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [24,308])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_025_RAAT" model="account.report.line">
+                <field name="name">70640000 Rates and Taxes</field>
+                <field name="sequence">260</field>
+                <field name="code">RAAT</field>
+                <field name="hierarchy_level">11</field>
+                <field name="user_groupby">account_id</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_023_AC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_025_RAAT_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [45,46,95,101,150,248,316])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_026_PF_W" model="account.report.line">
+                <field name="name">70650000 Power, Fuel and Water</field>
+                <field name="sequence">270</field>
+                <field name="code">PF&amp;W</field>
+                <field name="hierarchy_level">11</field>
+                <field name="user_groupby">account_id</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_023_AC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_026_PF_W_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [307])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_027_FMT" model="account.report.line">
+                <field name="name">70690000  Facility Maintenance</field>
+                <field name="sequence">280</field>
+                <field name="code">FMT</field>
+                <field name="hierarchy_level">11</field>
+                <field name="user_groupby">account_id</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_023_AC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_027_FMT_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', '=', '43')]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_028_INSU" model="account.report.line">
+                <field name="name">70700000 Insurance</field>
+                <field name="sequence">290</field>
+                <field name="code">INSU</field>
+                <field name="hierarchy_level">11</field>
+                <field name="user_groupby">account_id</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_023_AC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_028_INSU_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [54,55,102,210,311])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_029_PAST" model="account.report.line">
+                <field name="name">70710000 Printing and Stationery</field>
+                <field name="sequence">300</field>
+                <field name="code">PAST</field>
+                <field name="hierarchy_level">11</field>
+                <field name="user_groupby">account_id</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_023_AC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_029_PAST_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [97,103])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_030_CEX" model="account.report.line">
+                <field name="name">70720000 Communication Expenses</field>
+                <field name="sequence">310</field>
+                <field name="code">CEX</field>
+                <field name="hierarchy_level">11</field>
+                <field name="user_groupby">account_id</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_023_AC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_030_CEX_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [48,98,104,312])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_031_TACO" model="account.report.line">
+                <field name="name">70730000 Travel and Conveyance</field>
+                <field name="sequence">320</field>
+                <field name="code">TACO</field>
+                <field name="hierarchy_level">11</field>
+                <field name="user_groupby">account_id</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_023_AC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_031_TACO_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [49,99,105,206,313])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_032_LAPC" model="account.report.line">
+                <field name="name">70630000 Legal and Professional Charges</field>
+                <field name="sequence">330</field>
+                <field name="code">LAPC</field>
+                <field name="hierarchy_level">11</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_023_AC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_032_LAPC_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [50,106,249,314])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_033_RTA" model="account.report.line">
+                <field name="name">70750000 Remuneration to Auditors</field>
+                <field name="sequence">340</field>
+                <field name="code">RTA</field>
+                <field name="hierarchy_level">11</field>
+                <field name="user_groupby">account_id</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_023_AC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_033_RTA_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in' , [107,252])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_034_GE" model="account.report.line">
+                <field name="name">70760000 General Expenses</field>
+                <field name="sequence">350</field>
+                <field name="code">GE</field>
+                <field name="hierarchy_level">11</field>
+                <field name="user_groupby">account_id</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_023_AC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_034_GE_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [47,108,207,315])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_035_S_S" model="account.report.line">
+                <field name="name">70740000 Software subscription</field>
+                <field name="sequence">360</field>
+                <field name="code">S&amp;S</field>
+                <field name="hierarchy_level">11</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_023_AC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_035_S_S_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', '=', '250')]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_036_RENT" model="account.report.line">
+                <field name="name">70770000 Rent</field>
+                <field name="sequence">370</field>
+                <field name="code">RENT</field>
+                <field name="hierarchy_level">11</field>
+                <field name="user_groupby">account_id</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_023_AC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_036_RENT_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [109,306])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_037_SAMC" model="account.report.line">
+                <field name="name">80000000 Sales and Marketing Cost</field>
+                <field name="sequence">380</field>
+                <field name="code">SAMC</field>
+                <field name="hierarchy_level">9</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_022_INDEXP"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_037_SAMC_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">aggregation</field>
+                        <field name="formula">ADV.balance +OSC.balance</field>
+                        <field name="date_scope">strict_range</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_038_ADV" model="account.report.line">
+                <field name="name">80100000 Advertisement</field>
+                <field name="sequence">390</field>
+                <field name="code">ADV</field>
+                <field name="hierarchy_level">11</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_037_SAMC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_038_ADV_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [325])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_039_OSC" model="account.report.line">
+                <field name="name">80300000 Other Selling Costs</field>
+                <field name="sequence">400</field>
+                <field name="code">OSC</field>
+                <field name="hierarchy_level">11</field>
+                <field name="user_groupby">account_id</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_037_SAMC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_039_OSC_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in' , [110, 251,324])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_040_IDEXPFC" model="account.report.line">
+                <field name="name">Finance Cost</field>
+                <field name="sequence">410</field>
+                <field name="code">IDEXPFC</field>
+                <field name="hierarchy_level">9</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_022_INDEXP"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_040_IDEXPFC_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">aggregation</field>
+                        <field name="formula">FC.balance + DEP.balance + ITFTY.balance +BC.balance</field>
+                        <field name="date_scope">strict_range</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_041_FC" model="account.report.line">
+                <field name="name">80600000 Finance Costs</field>
+                <field name="sequence">420</field>
+                <field name="code">FC</field>
+                <field name="hierarchy_level">11</field>
+                <field name="user_groupby">account_id</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_040_IDEXPFC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_041_FC_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [4, 44,162])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_042_BC" model="account.report.line">
+                <field name="name">80610000 Bank charges</field>
+                <field name="sequence">430</field>
+                <field name="code">BC</field>
+                <field name="hierarchy_level">11</field>
+                <field name="user_groupby">account_id</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_040_IDEXPFC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_042_BC_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [219,317])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_043_DEP" model="account.report.line">
+                <field name="name">90000000 Depreciation</field>
+                <field name="sequence">440</field>
+                <field name="hierarchy_level">11</field>
+                <field name="user_groupby">account_id</field>
+                <field name="code">DEP</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_040_IDEXPFC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_043_DEP_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in' , [42,111,112, 333])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_044_ITFTY" model="account.report.line">
+                <field name="name">95000000 Income-Tax for the year</field>
+                <field name="sequence">450</field>
+                <field name="code">ITFTY</field>
+                <field name="hierarchy_level">11</field>
+                <field name="user_groupby">account_id</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_040_IDEXPFC"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_044_ITFTY_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in' , [209,332])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_045_DOE" model="account.report.line">
+                <field name="name">6000-Direct Operating Expenses</field>
+                <field name="sequence">460</field>
+                <field name="code">DOE</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_022_INDEXP"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_045_DOE_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">aggregation</field>
+                        <field name="formula">PDOE.balance + SAW.balance + RAMO.balance</field>
+                        <field name="date_scope">strict_range</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_046_PDOE" model="account.report.line">
+                <field name="name">60100000-Purchases/Direct Operating Exp</field>
+                <field name="sequence">470</field>
+                <field name="code">PDOE</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_045_DOE"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_046_PDOE_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', '=', '93')]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_047_SAW" model="account.report.line">
+                <field name="name">70110000 Salaries and Wages</field>
+                <field name="sequence">480</field>
+                <field name="code">SAW</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_045_DOE"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_047_SAW_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', '=', '94')]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_048_RAMO" model="account.report.line">
+                <field name="name">70690000-Repairs &amp; Maintenance - Others</field>
+                <field name="sequence">490</field>
+                <field name="code">RAMO</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_045_DOE"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_048_RAMO_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', '=', '96')]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_049_PFW" model="account.report.line">
+                <field name="name">70610000 Power, Fuel and Water</field>
+                <field name="sequence">500</field>
+                <field name="code">PFW</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_045_DOE"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_049_PFW_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', '=', '52')]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_050_PAS" model="account.report.line">
+                <field name="name">70620000 Printing and Stationery</field>
+                <field name="sequence">510</field>
+                <field name="code">PAS</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_045_DOE"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_050_PAS_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', '=', '53')]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_051_IRE" model="account.report.line">
+                <field name="name">100100000 Investment Related Expenses</field>
+                <field name="sequence">520</field>
+                <field name="code">IRE</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_022_INDEXP"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_051_IRE_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">aggregation</field>
+                        <field name="formula">BCP.balance + DCP.balance + SOEP.balance +B&amp;SC.balance + S&amp;TT.balance +STTP.balance +PIMS.balance</field>
+                        <field name="date_scope">strict_range</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_052_BCP" model="account.report.line">
+                <field name="name">100100001 Bank Charges</field>
+                <field name="sequence">530</field>
+                <field name="code">BCP</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_051_IRE"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_052_BCP_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [227,274])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_053_DCP" model="account.report.line">
+                <field name="name">100100002 Demat Charges</field>
+                <field name="sequence">540</field>
+                <field name="code">DCP</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_051_IRE"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_053_DCP_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [228,285])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_054_SOEP" model="account.report.line">
+                <field name="name">100100003 Stampduty &amp; Other Expenses - PMS</field>
+                <field name="sequence">550</field>
+                <field name="code">SOEP</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_051_IRE"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_054_SOEP_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', '=', '229')]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_055_B_SC" model="account.report.line">
+                <field name="name">100100004 Brokerage &amp; Service Charges</field>
+                <field name="sequence">560</field>
+                <field name="code">B&amp;SC</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_051_IRE"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_055_B_SC_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [276])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_056_S_TT" model="account.report.line">
+                <field name="name">100100005 Security Transaction Tax</field>
+                <field name="sequence">570</field>
+                <field name="code">S&amp;TT</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_051_IRE"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_056_S_TT_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [277])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_057_STTP" model="account.report.line">
+                <field name="name">100100006 STT Paid</field>
+                <field name="sequence">580</field>
+                <field name="code">STTP</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_051_IRE"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_057_STTP_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [278])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_058_PIMS" model="account.report.line">
+                <field name="name">100100007 investment management services</field>
+                <field name="sequence">590</field>
+                <field name="code">PIMS</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_051_IRE"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_058_PIMS_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [336])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_059_POEP" model="account.report.line">
+                <field name="name">100200000 Personal &amp; Other  Expenses</field>
+                <field name="sequence">600</field>
+                <field name="code">POEP</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_022_INDEXP"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_059_POEP_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">aggregation</field>
+                        <field name="formula">PDE.balance + PD.balance + PEE.balance + PHEP.balance + PPC.balance + PRM.balance + PSP.balance + PSC.balance + PRO.balance + PDF.balance +EDU.balance + PME.balance + PRP.balance + PV.balance +PCCE.balance +PMC.balance + PTC.balance</field>
+                        <field name="date_scope">strict_range</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_060_PDE" model="account.report.line">
+                <field name="name">100200001 Dining Expenses</field>
+                <field name="sequence">610</field>
+                <field name="code">PDE</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_059_POEP"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_060_PDE_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [230,279])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_061_PD" model="account.report.line">
+                <field name="name">100200002 Drawings</field>
+                <field name="sequence">620</field>
+                <field name="code">PD</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_059_POEP"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_061_PD_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [231,280])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_062_PEE" model="account.report.line">
+                <field name="name">100200003 Electricity Expenses</field>
+                <field name="sequence">630</field>
+                <field name="code">PEE</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_059_POEP"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_062_PEE_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [246,281])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_063_PHEP" model="account.report.line">
+                <field name="name">100200004 Household Expenses</field>
+                <field name="sequence">640</field>
+                <field name="code">PHEP</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_059_POEP"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_063_PHEP_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [232,282])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_064_PPC" model="account.report.line">
+                <field name="name">100200005 Professional Charges</field>
+                <field name="sequence">650</field>
+                <field name="code">PPC</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_059_POEP"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_064_PPC_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [233,283])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_065_PRM" model="account.report.line">
+                <field name="name">100200006 Repair and Maintenance</field>
+                <field name="sequence">660</field>
+                <field name="code">PRM</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_059_POEP"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_065_PRM_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [234,284])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_066_PSP" model="account.report.line">
+                <field name="name">100200007 Salary Paid</field>
+                <field name="sequence">670</field>
+                <field name="code">PSP</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_059_POEP"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_066_PSP_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [235,286])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_067_PSC" model="account.report.line">
+                <field name="name">100200008 Security Charges</field>
+                <field name="sequence">680</field>
+                <field name="code">PSC</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_059_POEP"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_067_PSC_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [236,287])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_068_PRO" model="account.report.line">
+                <field name="name">100200009 Round Off</field>
+                <field name="sequence">690</field>
+                <field name="code">PRO</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_059_POEP"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_068_PRO_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', '=', '237')]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_069_PDF" model="account.report.line">
+                <field name="name">100200011 Gift</field>
+                <field name="sequence">700</field>
+                <field name="code">PDF</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_059_POEP"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_069_PDF_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [238,288])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_070_EDU" model="account.report.line">
+                <field name="name">100200012 Education</field>
+                <field name="sequence">710</field>
+                <field name="code">EDU</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_059_POEP"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_070_EDU_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [294])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_071_PME" model="account.report.line">
+                <field name="name">100200013 Medical Expense</field>
+                <field name="sequence">720</field>
+                <field name="code">PME</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_059_POEP"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_071_PME_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [295,327])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_072_PRP" model="account.report.line">
+                <field name="name">100200014 Rent Paid</field>
+                <field name="sequence">730</field>
+                <field name="code">PRP</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_059_POEP"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_072_PRP_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [296,305])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_073_PV" model="account.report.line">
+                <field name="name">100200015 Vacation</field>
+                <field name="sequence">740</field>
+                <field name="code">PV</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_059_POEP"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_073_PV_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [299])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_074_PCCE" model="account.report.line">
+                <field name="name">100200016 Credit Card Expenses</field>
+                <field name="sequence">750</field>
+                <field name="code">PCCE</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_059_POEP"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_074_PCCE_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [304])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_075_PMC" model="account.report.line">
+                <field name="name">100200017 Maintenance charges</field>
+                <field name="sequence">760</field>
+                <field name="code">PMC</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_059_POEP"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_075_PMC_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [328])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_076_PTC" model="account.report.line">
+                <field name="name">100200018 Transportation charges</field>
+                <field name="sequence">770</field>
+                <field name="code">PTC</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_059_POEP"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_076_PTC_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [329])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_077_PVM" model="account.report.line">
+                <field name="name">100200019 Vehicle Maintenance</field>
+                <field name="sequence">780</field>
+                <field name="code">PVM</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_059_POEP"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_077_PVM_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [330])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_078_PHKE" model="account.report.line">
+                <field name="name">100200020 House Keeping Exp</field>
+                <field name="sequence">790</field>
+                <field name="code">PHKE</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_059_POEP"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_078_PHKE_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [335])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_079_PRT" model="account.report.line">
+                <field name="name">100300000 Rates &amp; Taxes</field>
+                <field name="sequence">800</field>
+                <field name="code">PRT</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_022_INDEXP"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_079_PRT_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">aggregation</field>
+                        <field name="formula">PITP.balance + PPT.balance + PPTP.balance + PSTTP.balance + PTDSI.balance</field>
+                        <field name="date_scope">strict_range</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_080_PITP" model="account.report.line">
+                <field name="name">100300001 Income Tax Paid</field>
+                <field name="sequence">810</field>
+                <field name="code">PITP</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_079_PRT"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_080_PITP_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [240,289])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_081_PPT" model="account.report.line">
+                <field name="name">100300002 Professional Tax</field>
+                <field name="sequence">820</field>
+                <field name="code">PPT</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_079_PRT"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_081_PPT_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [241,290])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_082_PPTP" model="account.report.line">
+                <field name="name">100300003 Property Tax</field>
+                <field name="sequence">830</field>
+                <field name="code">PPTP</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_079_PRT"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_082_PPTP_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [242,291])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_083_PSTTP" model="account.report.line">
+                <field name="name">100300004 STT Paid</field>
+                <field name="sequence">840</field>
+                <field name="code">PSTTP</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_079_PRT"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_083_PSTTP_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', '=', '243')]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_084_PTDSI" model="account.report.line">
+                <field name="name">100300005 TDS - Interest</field>
+                <field name="sequence">850</field>
+                <field name="code">PTDSI</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_079_PRT"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_084_PTDSI_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [244,292])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_085_PDG" model="account.report.line">
+                <field name="name">100400001 Donation - 80G</field>
+                <field name="sequence">860</field>
+                <field name="code">PDG</field>
+                <field name="foldable" eval="True"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_022_INDEXP"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_085_PDG_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [245,293])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_086_PPMS" model="account.report.line">
+                <field name="name">100500000 PMS Expenses</field>
+                <field name="sequence">870</field>
+                <field name="code">PPMS</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_022_INDEXP"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_086_PPMS_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">aggregation</field>
+                        <field name="formula">PCC.balance + PPMSF.balance + RTOPMS.balance</field>
+                        <field name="date_scope">strict_range</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_087_PCC" model="account.report.line">
+                <field name="name">100500001 Custodian Charges</field>
+                <field name="sequence">880</field>
+                <field name="code">PCC</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_086_PPMS"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_087_PCC_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [301])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_088_PPMSF" model="account.report.line">
+                <field name="name">100500002 PMS Fees</field>
+                <field name="sequence">890</field>
+                <field name="code">PPMSF</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_086_PPMS"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_088_PPMSF_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [302])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_089_RTOPMS" model="account.report.line">
+                <field name="name">100500003 Rates and Taxes Others - PMS</field>
+                <field name="sequence">900</field>
+                <field name="code">RTOPMS</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_086_PPMS"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_089_RTOPMS_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [303])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+            <record id="ekara_pnl_line_090_PBW" model="account.report.line">
+                <field name="name">100600000 Balance writeoff</field>
+                <field name="sequence">910</field>
+                <field name="code">PBW</field>
+                <field name="foldable" eval="False"/>
+                <field name="hide_if_zero" eval="False"/>
+                <field name="print_on_new_page" eval="False"/>
+                <field name="parent_id" ref="ekara_pnl_line_022_INDEXP"/>
+                <field name="expression_ids">
+                    <record id="ekara_pnl_line_090_PBW_balance" model="account.report.expression">
+                        <field name="label">balance</field>
+                        <field name="engine">domain</field>
+                        <field name="formula" eval="[('account_id.group_id.id', 'in', [331])]"/>
+                        <field name="date_scope">strict_range</field>
+                        <field name="subformula">sum</field>
+                        <field name="blank_if_zero" eval="False"/>
+                        <field name="green_on_positive" eval="True"/>
+                    </record>
+                </field>
+            </record>
+        </field>
+    </record>
+</odoo>

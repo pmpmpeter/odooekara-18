@@ -451,7 +451,7 @@ class AccountMoveInherit(models.Model):
 
     def button_cancel(self):
         for rec in self:
-            # rec.action_update_budget_cur_figure_minus()
+            rec.action_update_budget_cur_figure_minus()
             # Shortcut to move from posted to cancelled directly
             if rec.state == 'posted':
                 rec.button_draft()
@@ -475,101 +475,208 @@ class AccountMoveInherit(models.Model):
                 'state': 'cancel'
             })
 
-    # def budget_id_selection_validation(self):
-    #     for move in self.filtered(lambda l: not l.journal_id.is_opening_balance and not l.statement_line_id):
-    #         for line1 in move.invoice_line_ids.filtered(lambda l:l.account_id.is_cash_rounding == False):
-    #             if not move.company_id.disable_budget_company:
-    #                 if not move.budget_analytic_id:
-    #                     raise UserError('Warning!! Kindly select a Budget.')
-    #                 if line1.budget_id and not line1.filtered(lambda e: e.analytic_distribution):
-    #                     raise UserError(_("Alert !! Analytic Account not Mapped to %s for Entry -%s")%(
-    #                         line1.account_id.display_name,move.display_name))
+    def budget_id_selection_validation(self):
+        for move in self.filtered(
+            lambda l: not l.journal_id.is_opening_balance and not l.statement_line_id
+        ):
+            for line1 in move.invoice_line_ids.filtered(
+                lambda l: l.account_id.is_cash_rounding == False
+            ):
+                if not move.company_id.disable_budget_company:
+                    if not move.budget_analytic_id:
+                        raise UserError('Warning!! Kindly select a Budget.')
+
+                    if line1.budget_id and not line1.filtered(
+                        lambda e: e.analytic_distribution
+                    ):
+                        raise UserError(
+                            _(
+                                "Alert !! Analytic Account not Mapped to %s for Entry -%s"
+                            ) % (
+                                line1.account_id.display_name,
+                                move.display_name
+                            )
+                        )
 
 
     def budget_code_selection_validation(self):
-        for move in self.filtered(lambda l: not l.journal_id.is_opening_balance):
-            for line1 in move.line_ids.filtered(lambda l:l.account_id.is_cash_rounding == False):
-                # if not move.budget_id:
-                #     raise UserError('Warning!! Kindly select a Budget Code.')
-                # if not move.budget_id.general_budget_id.account_ids:
-                #     raise UserError(_("Budget Code is mandatory.\n"
-                #                       "To proceed without a Budget Code, please enable Disable Budget Code in the respective COA."))
-                # pdb.set_trace()
-                if not line1.filtered(lambda e: e.analytic_distribution):
-                    raise UserError(_("Alert !! Analytic Account not Mapped to %s for Entry -%s")%(
-                        line1.account_id.display_name,move.display_name))
-                # if not line1.filtered(lambda e: {str(move.budget_id.analytic_account_id.id): 100} == e.analytic_distribution):
-                #     raise UserError(_("Alert !! Wrong Analytic Account Mapped to %s.\n%s is mapped to %s Budgetry Position.")%(
-                #         line1.account_id.display_name,move.budget_id.analytic_account_id.display_name,move.budget_id.display_name))
+        for move in self.filtered(
+            lambda l: not l.journal_id.is_opening_balance
+        ):
+            for line1 in move.line_ids.filtered(
+                lambda l: l.account_id.is_cash_rounding == False
+            ):
+                if not move.budget_id:
+                    raise UserError(
+                        'Warning!! Kindly select a Budget Code.'
+                    )
 
-    # @api.onchange('budget_analytic_id')
-    # def update_budget_lines(self):
-    #     for rec in self.line_ids:
-    #         rec.update_budget_code()
+                if not move.budget_id.general_budget_id.item_ids:
+                    raise UserError(
+                        _(
+                            "Budget Code is mandatory.\n"
+                            "To proceed without a Budget Code, please enable "
+                            "Disable Budget Code in the respective COA."
+                        )
+                    )
 
-    # def update_budget_code_id(self):
-    #     for rec in self.line_ids:
-    #             # if rec.move_id.move_type == 'entry':
-    #             if rec.move_id.budget_analytic_id:
-    #                 if rec.account_id:
-    #                     budget_post = self.env['account.budget.post'].sudo().search([('account_ids.name','in',[rec.account_id.name])])
-    #                     budget_id = rec.move_id.budget_analytic_id.budget_analytic_id_line.filtered(lambda l:l.general_budget_id in budget_post)
-    #                     rec.write({'budget_id':budget_id.ids})
+                if not line1.filtered(
+                    lambda e: e.analytic_distribution
+                ):
+                    raise UserError(
+                        _(
+                            "Alert !! Analytic Account not Mapped to %s "
+                            "for Entry -%s"
+                        ) % (
+                            line1.account_id.display_name,
+                            move.display_name
+                        )
+                    )
+
+                if not line1.filtered(
+                    lambda e: {
+                        str(move.budget_id.account_id.id): 100
+                    } == e.analytic_distribution
+                ):
+                    raise UserError(
+                        _(
+                            "Alert !! Wrong Analytic Account Mapped to %s.\n"
+                            "%s is mapped to %s Budgetry Position."
+                        ) % (
+                            line1.account_id.display_name,
+                            move.budget_id.account_id.display_name,
+                            move.budget_id.display_name
+                        )
+                    )
+    @api.onchange('budget_analytic_id')
+    def update_budget_lines(self):
+        for rec in self.line_ids:
+            rec.update_budget_code()
+
+
+    def update_budget_code_id(self):
+        for rec in self.line_ids:
+            if rec.move_id.budget_analytic_id:
+                if rec.account_id:
+                    budget_post = self.env['account.report.budget'].sudo().search([
+                        ('item_ids.account_id.name', 'in', [rec.account_id.name])
+                    ])
+
+                    budget_id = rec.move_id.budget_analytic_id.budget_line_ids.filtered(
+                        lambda l: l.general_budget_id in budget_post
+                    )
+
+                    rec.write({
+                        'budget_id': budget_id.ids
+                    })
 
     def update_actual_cur_figure_server_action(self):
         record_ids = self._context.get('active_ids')
+
         if record_ids:
             month_list = []
-            # budget_list=[]
+
             for rec in record_ids:
                 move = self.env['account.move'].browse(rec)
+
                 month_field = month_field_map.get(move.date.month)
-                # if month_field not in month_list:
-                # # pdb.set_trace()
-                #     setattr(move.budget_id.crr_budget_line_id, month_field, 0)
-                #     print("Get attr", getattr(move.line_ids.budget_id.crr_budget_line_id, month_field))
+
+                if month_field not in month_list:
+                    setattr(
+                        move.budget_id.crr_budget_line_id,
+                        month_field,
+                        0
+                    )
+                    print(
+                        "Get attr",
+                        getattr(
+                            move.line_ids.budget_id.crr_budget_line_id,
+                            month_field
+                        )
+                    )
+
                 month_list.append(month_field)
-                # move.update_budget_code_id()
+
+                move.update_budget_code_id()
+
                 if move.state in ['posted']:
                     if move.budget_update == True:
                         move.write({'budget_update': False})
-                    #     move.action_update_budget_cur_figure_add()
-                    # else:
-                    #     move.action_update_budget_cur_figure_add()
-                # if move.state not in ['posted']:
-                #     move.action_update_budget_cur_figure_minus()
+                        move.action_update_budget_cur_figure_add()
+                    else:
+                        move.action_update_budget_cur_figure_add()
 
-    # def action_update_budget_cur_figure_minus(self):
-    #     for rec in self:
+                if move.state not in ['posted']:
+                    move.action_update_budget_cur_figure_minus()
 
-    #             month_field = month_field_map.get(rec.date.month)
-                
-    #             if rec.state == 'posted':
-    #                 entry = self.env['account.move.line'].sudo().search([
-    #                     ('move_id', '=', rec.id), ('date', '>=', rec.budget_analytic_id.date_from),
-    #                     ('date', '<=', rec.budget_analytic_id.date_to),  # Ensure we fetch lines from this move
-    #                     ('account_id', 'in', rec.budget_analytic_id.budget_analytic_id_line.general_budget_id.account_ids.ids),
-    #                 ]).filtered(lambda e: {str(e.budget_id.analytic_account_id.id): 100} == e.analytic_distribution)
-    #                 for v1 in entry:
-    #                     balance = sum(v1.mapped('balance'))
-    #                     for line in v1.budget_id.crr_budget_line_id:
-    #                         setattr(line, month_field, getattr(line, month_field) - balance)
-    #             rec.write({'budget_update': False})
+    def action_update_budget_cur_figure_minus(self):
+        for rec in self:
 
-    # def action_update_budget_cur_figure_add(self):
-    #     for rec in self.filtered(lambda l: not l.budget_update):
+            month_field = month_field_map.get(rec.date.month)
 
-    #         month_field = month_field_map.get(rec.date.month)
-    #         if month_field:
-    #                 # Budget code is moved to line items.
-    #                 # rec.budget_id_selection_validation()
-    #                 domain12 = [('move_id', '=', rec.id), ('date', '>=', rec.budget_analytic_id.date_from),('date', '<=', rec.budget_analytic_id.date_to),('account_id', 'in', rec.budget_analytic_id.budget_analytic_id_line.general_budget_id.account_ids.ids)]
-    #                 entry = self.env['account.move.line'].sudo().search(domain12).filtered(lambda e: {str(e.budget_id.analytic_account_id.id): 100} == e.analytic_distribution)
-    #                 for v1 in entry:
-    #                     balance = sum(v1.mapped('balance'))
-    #                     for line in v1.budget_id.crr_budget_line_id:
-    #                         setattr(line, month_field, getattr(line, month_field) + balance)
-    #         rec.write({'budget_update': True})
+            if rec.state == 'posted':
+                entry = self.env['account.move.line'].sudo().search([
+                    ('move_id', '=', rec.id),
+                    ('date', '>=', rec.budget_analytic_id.date_from),
+                    ('date', '<=', rec.budget_analytic_id.date_to),
+                    (
+                        'account_id', 'in',
+                        rec.budget_analytic_id.budget_line_ids
+                        .general_budget_id
+                        .item_ids
+                        .account_id.ids
+                    ),
+                ]).filtered(
+                    lambda e: {
+                        str(e.budget_id.account_id.id): 100
+                    } == e.analytic_distribution
+                )
+
+                for v1 in entry:
+                    balance = sum(v1.mapped('balance'))
+
+                    for line in v1.budget_id.crr_budget_line_id:
+                        setattr(
+                            line,
+                            month_field,
+                            getattr(line, month_field) - balance
+                        )
+
+            rec.write({'budget_update': False})
+
+    def action_update_budget_cur_figure_add(self):
+        for rec in self.filtered(lambda l: not l.budget_update):
+
+            month_field = month_field_map.get(rec.date.month)
+            if month_field:
+                rec.budget_id_selection_validation()
+
+                domain12 = [
+                    ('move_id', '=', rec.id),
+                    ('date', '>=', rec.budget_analytic_id.date_from),
+                    ('date', '<=', rec.budget_analytic_id.date_to),
+                    ('account_id', 'in',
+                        rec.budget_analytic_id.budget_line_ids.general_budget_id.item_ids.account_id.ids
+                    )
+                ]
+
+                entry = self.env['account.move.line'].sudo().search(domain12).filtered(
+                    lambda e: {
+                        str(e.budget_id.account_id.id): 100
+                    } == e.analytic_distribution
+                )
+
+                for v1 in entry:
+                    balance = sum(v1.mapped('balance'))
+                    for line in v1.budget_id.crr_budget_line_id:
+                        setattr(
+                            line,
+                            month_field,
+                            getattr(line, month_field) + balance
+                        )
+
+            rec.write({'budget_update': True})
+
 
     def action_update_account_move_tax_grids(self):
         ###Update Tax Grids
@@ -607,11 +714,7 @@ class AccountMoveInherit(models.Model):
             purchase_order = self.line_ids.purchase_line_id.order_id
             if purchase_order:
                 purchase_order.budget_id.reserved_amount -= rec.amount_untaxed
-            # for line in rec.line_ids.filtered(lambda l: l.account_id.account_type in ['asset_fixed', 'expense']):
-            #     if not rec.budget_id:
-            #         raise UserError('Warning!! Kindly select a Budget Code.')
-            # rec.budget_code_selection_validation()
-            # rec.action_update_budget_cur_figure_add()
+            rec.action_update_budget_cur_figure_add()
             rec.action_validate_no_bill()
         res = super(AccountMoveInherit, self).action_post()
         for rec in self:

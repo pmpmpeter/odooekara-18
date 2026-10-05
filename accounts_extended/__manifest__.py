@@ -38,6 +38,8 @@
         'data/budget_sequence.xml',
         'data/mail_template.xml',
         'data/ir_cron.xml',
+        'data/profit_and_loss.xml',
+        'data/balance_sheet.xml',
         'wizard/account_report_view.xml',
         'wizard/budget_revision_reason_view.xml',
         'wizard/crr_report_view.xml',
