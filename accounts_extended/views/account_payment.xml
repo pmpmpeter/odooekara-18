@@ -86,8 +86,7 @@
             </xpath>
             <xpath expr="//group[@name='main_group']" position="after">
                 <notebook>
-                    <page name="cheque_details" string="Cheque Details"
-                          invisible="show_partner_bank_account or payment_type != 'outbound'">
+                    <page name="cheque_details" string="Cheque Details" invisible="payment_type != 'outbound'">
                         <group>
                             <group>
                                 <field name="sr_no" readonly="is_cheque_details_freeze"/>
@@ -117,7 +116,7 @@
                 </notebook>
             </xpath>
             <field name="journal_id" position="before">
-                <field name="show_partner_bank_account" invisible="0"/>
+                <field name="show_partner_bank_account" invisible="1"/>
                 <field name="print_assigned_true" invisible="0"/>
                 <field name="is_fund_requsiting" invisible="1"/>
                 <field name="approval_document" invisible="1"/>
