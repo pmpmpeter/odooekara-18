@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version='1.0' encoding='UTF-8'?>
 <odoo>
     <record id="ekara_profit_and_loss" model="account.report">
         <field name="name">Ekara Profit and Loss</field>
@@ -15,7 +15,7 @@
                 <field name="name">Net Profit</field>
                 <field name="sequence">10</field>
                 <field name="hierarchy_level">0</field>
-                <field name="code">NEP</field>
+                <field name="code">E_NEP</field>
                 <field name="foldable" eval="False"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -23,7 +23,7 @@
                     <record id="ekara_pnl_line_000_NEP_balance" model="account.report.expression">
                         <field name="label">balance</field>
                         <field name="engine">aggregation</field>
-                        <field name="formula">(INC.balance - COS.balance - EXP.balance)</field>
+                        <field name="formula">(E_INC.balance - E_COS.balance - E_EXP.balance)</field>
                         <field name="date_scope">strict_range</field>
                         <field name="blank_if_zero" eval="False"/>
                         <field name="green_on_positive" eval="True"/>
@@ -34,7 +34,7 @@
                 <field name="name">Income</field>
                 <field name="sequence">20</field>
                 <field name="hierarchy_level">0</field>
-                <field name="code">INC</field>
+                <field name="code">E_INC</field>
                 <field name="foldable" eval="False"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -42,7 +42,7 @@
                     <record id="ekara_pnl_line_001_INC_balance" model="account.report.expression">
                         <field name="label">balance</field>
                         <field name="engine">aggregation</field>
-                        <field name="formula">DI.balance + INDI.balance + INT.balance + D.balance + OIN.balance + RI.balance + RIMS.balance +IFD.balance +CG.balance</field>
+                        <field name="formula">E_DI.balance + E_INDI.balance + E_INT.balance + E_D.balance + E_OIN.balance + E_RI.balance + E_RIMS.balance +E_IFD.balance +E_CG.balance</field>
                         <field name="date_scope">strict_range</field>
                         <field name="blank_if_zero" eval="False"/>
                         <field name="green_on_positive" eval="True"/>
@@ -54,7 +54,7 @@
                 <field name="sequence">30</field>
                 <field name="hierarchy_level">3</field>
                 <field name="user_groupby">account_id</field>
-                <field name="code">DI</field>
+                <field name="code">E_DI</field>
                 <field name="foldable" eval="False"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -74,7 +74,7 @@
             <record id="ekara_pnl_line_003_INDI" model="account.report.line">
                 <field name="name">50000000 Indirect Incomes</field>
                 <field name="sequence">40</field>
-                <field name="code">INDI</field>
+                <field name="code">E_INDI</field>
                 <field name="hierarchy_level">3</field>
                 <field name="user_groupby">account_id</field>
                 <field name="foldable" eval="False"/>
@@ -98,7 +98,7 @@
                 <field name="sequence">50</field>
                 <field name="hierarchy_level">3</field>
                 <field name="user_groupby">account_id</field>
-                <field name="code">INT</field>
+                <field name="code">E_INT</field>
                 <field name="foldable" eval="False"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -118,7 +118,7 @@
             <record id="ekara_pnl_line_005_CG" model="account.report.line">
                 <field name="name">50040000 Capital Gains</field>
                 <field name="sequence">60</field>
-                <field name="code">CG</field>
+                <field name="code">E_CG</field>
                 <field name="hierarchy_level">3</field>
                 <field name="user_groupby">account_id</field>
                 <field name="foldable" eval="True"/>
@@ -140,7 +140,7 @@
             <record id="ekara_pnl_line_006_D" model="account.report.line">
                 <field name="name">50020000 Dividend</field>
                 <field name="sequence">70</field>
-                <field name="code">D</field>
+                <field name="code">E_D</field>
                 <field name="hierarchy_level">3</field>
                 <field name="user_groupby">account_id</field>
                 <field name="foldable" eval="False"/>
@@ -162,7 +162,7 @@
             <record id="ekara_pnl_line_007_OIN" model="account.report.line">
                 <field name="name">50030000 Other Income</field>
                 <field name="sequence">80</field>
-                <field name="code">OIN</field>
+                <field name="code">E_OIN</field>
                 <field name="hierarchy_level">3</field>
                 <field name="user_groupby">account_id</field>
                 <field name="foldable" eval="False"/>
@@ -184,7 +184,7 @@
             <record id="ekara_pnl_line_008_GRP" model="account.report.line">
                 <field name="name">Gross Profit</field>
                 <field name="sequence">90</field>
-                <field name="code">GRP</field>
+                <field name="code">E_GRP</field>
                 <field name="hierarchy_level">3</field>
                 <field name="foldable" eval="False"/>
                 <field name="hide_if_zero" eval="False"/>
@@ -194,7 +194,7 @@
                     <record id="ekara_pnl_line_008_GRP_balance" model="account.report.expression">
                         <field name="label">balance</field>
                         <field name="engine">aggregation</field>
-                        <field name="formula">INC.balance - COS.balance</field>
+                        <field name="formula">E_INC.balance - E_COS.balance</field>
                         <field name="date_scope">strict_range</field>
                         <field name="blank_if_zero" eval="False"/>
                         <field name="green_on_positive" eval="True"/>
@@ -204,7 +204,7 @@
             <record id="ekara_pnl_line_009_COS" model="account.report.line">
                 <field name="name">Cost of Revenue</field>
                 <field name="sequence">100</field>
-                <field name="code">COS</field>
+                <field name="code">E_COS</field>
                 <field name="hierarchy_level">5</field>
                 <field name="user_groupby">account_id</field>
                 <field name="foldable" eval="True"/>
@@ -226,7 +226,7 @@
             <record id="ekara_pnl_line_010_RI" model="account.report.line">
                 <field name="name">40010000 Rental Income</field>
                 <field name="sequence">110</field>
-                <field name="code">RI</field>
+                <field name="code">E_RI</field>
                 <field name="hierarchy_level">3</field>
                 <field name="user_groupby">account_id</field>
                 <field name="foldable" eval="True"/>
@@ -248,7 +248,7 @@
             <record id="ekara_pnl_line_011_RIMS" model="account.report.line">
                 <field name="name">50030002-Rental Incomes</field>
                 <field name="sequence">120</field>
-                <field name="code">RIMS</field>
+                <field name="code">E_RIMS</field>
                 <field name="hierarchy_level">3</field>
                 <field name="user_groupby">account_id</field>
                 <field name="foldable" eval="True"/>
@@ -270,7 +270,7 @@
             <record id="ekara_pnl_line_012_IFD" model="account.report.line">
                 <field name="name">40020000 Interest - Fixed Deposit</field>
                 <field name="sequence">130</field>
-                <field name="code">IFD</field>
+                <field name="code">E_IFD</field>
                 <field name="hierarchy_level">3</field>
                 <field name="user_groupby">account_id</field>
                 <field name="foldable" eval="True"/>
@@ -292,7 +292,7 @@
             <record id="ekara_pnl_line_013_EXP" model="account.report.line">
                 <field name="name">Expenses</field>
                 <field name="sequence">140</field>
-                <field name="code">EXP</field>
+                <field name="code">E_EXP</field>
                 <field name="hierarchy_level">3</field>
                 <field name="foldable" eval="False"/>
                 <field name="hide_if_zero" eval="False"/>
@@ -302,7 +302,7 @@
                     <record id="ekara_pnl_line_013_EXP_balance" model="account.report.expression">
                         <field name="label">balance</field>
                         <field name="engine">aggregation</field>
-                        <field name="formula">DIEXP.balance + INDEXP.balance</field>
+                        <field name="formula">E_DIEXP.balance + E_INDEXP.balance</field>
                         <field name="date_scope">strict_range</field>
                         <field name="blank_if_zero" eval="False"/>
                         <field name="green_on_positive" eval="False"/>
@@ -312,7 +312,7 @@
             <record id="ekara_pnl_line_014_DIEXP" model="account.report.line">
                 <field name="name">Direct Expense</field>
                 <field name="sequence">150</field>
-                <field name="code">DIEXP</field>
+                <field name="code">E_DIEXP</field>
                 <field name="hierarchy_level">5</field>
                 <field name="foldable" eval="False"/>
                 <field name="hide_if_zero" eval="False"/>
@@ -322,7 +322,7 @@
                     <record id="ekara_pnl_line_014_DIEXP_balance" model="account.report.expression">
                         <field name="label">balance</field>
                         <field name="engine">aggregation</field>
-                        <field name="formula">PC.balance + MF.balance</field>
+                        <field name="formula">E_PC.balance + E_MF.balance</field>
                         <field name="date_scope">strict_range</field>
                         <field name="blank_if_zero" eval="False"/>
                         <field name="green_on_positive" eval="True"/>
@@ -332,7 +332,7 @@
             <record id="ekara_pnl_line_015_MF" model="account.report.line">
                 <field name="name">70210000 Management fee</field>
                 <field name="sequence">160</field>
-                <field name="code">MF</field>
+                <field name="code">E_MF</field>
                 <field name="hierarchy_level">7</field>
                 <field name="user_groupby">account_id</field>
                 <field name="foldable" eval="False"/>
@@ -354,7 +354,7 @@
             <record id="ekara_pnl_line_016_PC" model="account.report.line">
                 <field name="name">70100000 Personnel Cost</field>
                 <field name="sequence">170</field>
-                <field name="code">PC</field>
+                <field name="code">E_PC</field>
                 <field name="hierarchy_level">7</field>
                 <field name="foldable" eval="True"/>
                 <field name="hide_if_zero" eval="False"/>
@@ -364,7 +364,7 @@
                     <record id="ekara_pnl_line_016_PC_balance" model="account.report.expression">
                         <field name="label">balance</field>
                         <field name="engine">aggregation</field>
-                        <field name="formula">SADW.balance + CT.balance + SW.balance + SRAT.balance</field>
+                        <field name="formula">E_SADW.balance + E_CT.balance + E_SW.balance + E_SRAT.balance</field>
                         <field name="date_scope">strict_range</field>
                         <field name="blank_if_zero" eval="False"/>
                         <field name="green_on_positive" eval="True"/>
@@ -374,7 +374,7 @@
             <record id="ekara_pnl_line_017_GTF" model="account.report.line">
                 <field name="name">200138 Gift to Father</field>
                 <field name="sequence">180</field>
-                <field name="code">GTF</field>
+                <field name="code">E_GTF</field>
                 <field name="hierarchy_level">9</field>
                 <field name="foldable" eval="False"/>
                 <field name="hide_if_zero" eval="False"/>
@@ -395,7 +395,7 @@
             <record id="ekara_pnl_line_018_SADW" model="account.report.line">
                 <field name="name">70110000 Salaries and Wages</field>
                 <field name="sequence">190</field>
-                <field name="code">SADW</field>
+                <field name="code">E_SADW</field>
                 <field name="hierarchy_level">9</field>
                 <field name="user_groupby">account_id</field>
                 <field name="foldable" eval="True"/>
@@ -417,7 +417,7 @@
             <record id="ekara_pnl_line_019_CT" model="account.report.line">
                 <field name="name">70120000 Contribution to PF, ESI, Etc.</field>
                 <field name="sequence">200</field>
-                <field name="code">CT</field>
+                <field name="code">E_CT</field>
                 <field name="hierarchy_level">9</field>
                 <field name="user_groupby">account_id</field>
                 <field name="foldable" eval="True"/>
@@ -439,7 +439,7 @@
             <record id="ekara_pnl_line_020_SW" model="account.report.line">
                 <field name="name">70130000 Staff Welfare</field>
                 <field name="sequence">210</field>
-                <field name="code">SW</field>
+                <field name="code">E_SW</field>
                 <field name="hierarchy_level">9</field>
                 <field name="user_groupby">account_id</field>
                 <field name="foldable" eval="True"/>
@@ -461,7 +461,7 @@
             <record id="ekara_pnl_line_021_SRAT" model="account.report.line">
                 <field name="name">70140000 Staff Recruitment and Training</field>
                 <field name="sequence">220</field>
-                <field name="code">SRAT</field>
+                <field name="code">E_SRAT</field>
                 <field name="hierarchy_level">9</field>
                 <field name="user_groupby">account_id</field>
                 <field name="foldable" eval="True"/>
@@ -483,7 +483,7 @@
             <record id="ekara_pnl_line_022_INDEXP" model="account.report.line">
                 <field name="name">Indirect Expense</field>
                 <field name="sequence">230</field>
-                <field name="code">INDEXP</field>
+                <field name="code">E_INDEXP</field>
                 <field name="hierarchy_level">7</field>
                 <field name="foldable" eval="False"/>
                 <field name="hide_if_zero" eval="False"/>
@@ -493,7 +493,7 @@
                     <record id="ekara_pnl_line_022_INDEXP_balance" model="account.report.expression">
                         <field name="label">balance</field>
                         <field name="engine">aggregation</field>
-                        <field name="formula">AC.balance + SAMC.balance + IDEXPFC.balance + DOE.balance + IRE.balance + POEP.balance + PRT.balance + PDG.balance + PPMS.balance + PBW.balance</field>
+                        <field name="formula">E_AC.balance + E_SAMC.balance + E_IDEXPFC.balance + E_DOE.balance + E_IRE.balance + E_POEP.balance + E_PRT.balance + E_PDG.balance + E_PPMS.balance + E_PBW.balance</field>
                         <field name="date_scope">strict_range</field>
                         <field name="blank_if_zero" eval="False"/>
                         <field name="green_on_positive" eval="True"/>
@@ -503,7 +503,7 @@
             <record id="ekara_pnl_line_023_AC" model="account.report.line">
                 <field name="name">70600000 Administration Cost</field>
                 <field name="sequence">240</field>
-                <field name="code">AC</field>
+                <field name="code">E_AC</field>
                 <field name="hierarchy_level">9</field>
                 <field name="foldable" eval="True"/>
                 <field name="hide_if_zero" eval="False"/>
@@ -513,7 +513,7 @@
                     <record id="ekara_pnl_line_023_AC_balance" model="account.report.expression">
                         <field name="label">balance</field>
                         <field name="engine">aggregation</field>
-                        <field name="formula">SAH.balance + RAAT.balance + INSU.balance + PAST.balance + CEX.balance + TACO.balance + LAPC.balance + RTA.balance + GE.balance + RENT.balance +S&amp;S.balance + PF&amp;W.balance</field>
+                        <field name="formula">E_SAH.balance + E_RAAT.balance + E_INSU.balance + E_PAST.balance + E_CEX.balance + E_TACO.balance + E_LAPC.balance + E_RTA.balance + E_GE.balance + E_RENT.balance +E_S&amp;S.balance + E_PF&amp;W.balance</field>
                         <field name="date_scope">strict_range</field>
                         <field name="blank_if_zero" eval="False"/>
                         <field name="green_on_positive" eval="True"/>
@@ -523,7 +523,7 @@
             <record id="ekara_pnl_line_024_SAH" model="account.report.line">
                 <field name="name">70610000 Security and Housekeeping</field>
                 <field name="sequence">250</field>
-                <field name="code">SAH</field>
+                <field name="code">E_SAH</field>
                 <field name="hierarchy_level">11</field>
                 <field name="user_groupby">account_id</field>
                 <field name="foldable" eval="True"/>
@@ -545,7 +545,7 @@
             <record id="ekara_pnl_line_025_RAAT" model="account.report.line">
                 <field name="name">70640000 Rates and Taxes</field>
                 <field name="sequence">260</field>
-                <field name="code">RAAT</field>
+                <field name="code">E_RAAT</field>
                 <field name="hierarchy_level">11</field>
                 <field name="user_groupby">account_id</field>
                 <field name="foldable" eval="True"/>
@@ -567,7 +567,7 @@
             <record id="ekara_pnl_line_026_PF_W" model="account.report.line">
                 <field name="name">70650000 Power, Fuel and Water</field>
                 <field name="sequence">270</field>
-                <field name="code">PF&amp;W</field>
+                <field name="code">E_PF&amp;W</field>
                 <field name="hierarchy_level">11</field>
                 <field name="user_groupby">account_id</field>
                 <field name="foldable" eval="True"/>
@@ -589,7 +589,7 @@
             <record id="ekara_pnl_line_027_FMT" model="account.report.line">
                 <field name="name">70690000  Facility Maintenance</field>
                 <field name="sequence">280</field>
-                <field name="code">FMT</field>
+                <field name="code">E_FMT</field>
                 <field name="hierarchy_level">11</field>
                 <field name="user_groupby">account_id</field>
                 <field name="foldable" eval="True"/>
@@ -611,7 +611,7 @@
             <record id="ekara_pnl_line_028_INSU" model="account.report.line">
                 <field name="name">70700000 Insurance</field>
                 <field name="sequence">290</field>
-                <field name="code">INSU</field>
+                <field name="code">E_INSU</field>
                 <field name="hierarchy_level">11</field>
                 <field name="user_groupby">account_id</field>
                 <field name="foldable" eval="True"/>
@@ -633,7 +633,7 @@
             <record id="ekara_pnl_line_029_PAST" model="account.report.line">
                 <field name="name">70710000 Printing and Stationery</field>
                 <field name="sequence">300</field>
-                <field name="code">PAST</field>
+                <field name="code">E_PAST</field>
                 <field name="hierarchy_level">11</field>
                 <field name="user_groupby">account_id</field>
                 <field name="foldable" eval="True"/>
@@ -655,7 +655,7 @@
             <record id="ekara_pnl_line_030_CEX" model="account.report.line">
                 <field name="name">70720000 Communication Expenses</field>
                 <field name="sequence">310</field>
-                <field name="code">CEX</field>
+                <field name="code">E_CEX</field>
                 <field name="hierarchy_level">11</field>
                 <field name="user_groupby">account_id</field>
                 <field name="foldable" eval="False"/>
@@ -677,7 +677,7 @@
             <record id="ekara_pnl_line_031_TACO" model="account.report.line">
                 <field name="name">70730000 Travel and Conveyance</field>
                 <field name="sequence">320</field>
-                <field name="code">TACO</field>
+                <field name="code">E_TACO</field>
                 <field name="hierarchy_level">11</field>
                 <field name="user_groupby">account_id</field>
                 <field name="foldable" eval="True"/>
@@ -699,7 +699,7 @@
             <record id="ekara_pnl_line_032_LAPC" model="account.report.line">
                 <field name="name">70630000 Legal and Professional Charges</field>
                 <field name="sequence">330</field>
-                <field name="code">LAPC</field>
+                <field name="code">E_LAPC</field>
                 <field name="hierarchy_level">11</field>
                 <field name="foldable" eval="True"/>
                 <field name="hide_if_zero" eval="False"/>
@@ -720,7 +720,7 @@
             <record id="ekara_pnl_line_033_RTA" model="account.report.line">
                 <field name="name">70750000 Remuneration to Auditors</field>
                 <field name="sequence">340</field>
-                <field name="code">RTA</field>
+                <field name="code">E_RTA</field>
                 <field name="hierarchy_level">11</field>
                 <field name="user_groupby">account_id</field>
                 <field name="foldable" eval="True"/>
@@ -742,7 +742,7 @@
             <record id="ekara_pnl_line_034_GE" model="account.report.line">
                 <field name="name">70760000 General Expenses</field>
                 <field name="sequence">350</field>
-                <field name="code">GE</field>
+                <field name="code">E_GE</field>
                 <field name="hierarchy_level">11</field>
                 <field name="user_groupby">account_id</field>
                 <field name="foldable" eval="True"/>
@@ -764,7 +764,7 @@
             <record id="ekara_pnl_line_035_S_S" model="account.report.line">
                 <field name="name">70740000 Software subscription</field>
                 <field name="sequence">360</field>
-                <field name="code">S&amp;S</field>
+                <field name="code">E_S&amp;S</field>
                 <field name="hierarchy_level">11</field>
                 <field name="foldable" eval="False"/>
                 <field name="hide_if_zero" eval="False"/>
@@ -785,7 +785,7 @@
             <record id="ekara_pnl_line_036_RENT" model="account.report.line">
                 <field name="name">70770000 Rent</field>
                 <field name="sequence">370</field>
-                <field name="code">RENT</field>
+                <field name="code">E_RENT</field>
                 <field name="hierarchy_level">11</field>
                 <field name="user_groupby">account_id</field>
                 <field name="foldable" eval="True"/>
@@ -807,7 +807,7 @@
             <record id="ekara_pnl_line_037_SAMC" model="account.report.line">
                 <field name="name">80000000 Sales and Marketing Cost</field>
                 <field name="sequence">380</field>
-                <field name="code">SAMC</field>
+                <field name="code">E_SAMC</field>
                 <field name="hierarchy_level">9</field>
                 <field name="foldable" eval="True"/>
                 <field name="hide_if_zero" eval="False"/>
@@ -817,7 +817,7 @@
                     <record id="ekara_pnl_line_037_SAMC_balance" model="account.report.expression">
                         <field name="label">balance</field>
                         <field name="engine">aggregation</field>
-                        <field name="formula">ADV.balance +OSC.balance</field>
+                        <field name="formula">E_ADV.balance +E_OSC.balance</field>
                         <field name="date_scope">strict_range</field>
                         <field name="blank_if_zero" eval="False"/>
                         <field name="green_on_positive" eval="True"/>
@@ -827,7 +827,7 @@
             <record id="ekara_pnl_line_038_ADV" model="account.report.line">
                 <field name="name">80100000 Advertisement</field>
                 <field name="sequence">390</field>
-                <field name="code">ADV</field>
+                <field name="code">E_ADV</field>
                 <field name="hierarchy_level">11</field>
                 <field name="foldable" eval="True"/>
                 <field name="hide_if_zero" eval="False"/>
@@ -848,7 +848,7 @@
             <record id="ekara_pnl_line_039_OSC" model="account.report.line">
                 <field name="name">80300000 Other Selling Costs</field>
                 <field name="sequence">400</field>
-                <field name="code">OSC</field>
+                <field name="code">E_OSC</field>
                 <field name="hierarchy_level">11</field>
                 <field name="user_groupby">account_id</field>
                 <field name="foldable" eval="True"/>
@@ -870,7 +870,7 @@
             <record id="ekara_pnl_line_040_IDEXPFC" model="account.report.line">
                 <field name="name">Finance Cost</field>
                 <field name="sequence">410</field>
-                <field name="code">IDEXPFC</field>
+                <field name="code">E_IDEXPFC</field>
                 <field name="hierarchy_level">9</field>
                 <field name="foldable" eval="True"/>
                 <field name="hide_if_zero" eval="False"/>
@@ -880,7 +880,7 @@
                     <record id="ekara_pnl_line_040_IDEXPFC_balance" model="account.report.expression">
                         <field name="label">balance</field>
                         <field name="engine">aggregation</field>
-                        <field name="formula">FC.balance + DEP.balance + ITFTY.balance +BC.balance</field>
+                        <field name="formula">E_FC.balance + E_DEP.balance + E_ITFTY.balance +E_BC.balance</field>
                         <field name="date_scope">strict_range</field>
                         <field name="blank_if_zero" eval="False"/>
                         <field name="green_on_positive" eval="True"/>
@@ -890,7 +890,7 @@
             <record id="ekara_pnl_line_041_FC" model="account.report.line">
                 <field name="name">80600000 Finance Costs</field>
                 <field name="sequence">420</field>
-                <field name="code">FC</field>
+                <field name="code">E_FC</field>
                 <field name="hierarchy_level">11</field>
                 <field name="user_groupby">account_id</field>
                 <field name="foldable" eval="True"/>
@@ -912,7 +912,7 @@
             <record id="ekara_pnl_line_042_BC" model="account.report.line">
                 <field name="name">80610000 Bank charges</field>
                 <field name="sequence">430</field>
-                <field name="code">BC</field>
+                <field name="code">E_BC</field>
                 <field name="hierarchy_level">11</field>
                 <field name="user_groupby">account_id</field>
                 <field name="foldable" eval="True"/>
@@ -936,7 +936,7 @@
                 <field name="sequence">440</field>
                 <field name="hierarchy_level">11</field>
                 <field name="user_groupby">account_id</field>
-                <field name="code">DEP</field>
+                <field name="code">E_DEP</field>
                 <field name="foldable" eval="True"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -956,7 +956,7 @@
             <record id="ekara_pnl_line_044_ITFTY" model="account.report.line">
                 <field name="name">95000000 Income-Tax for the year</field>
                 <field name="sequence">450</field>
-                <field name="code">ITFTY</field>
+                <field name="code">E_ITFTY</field>
                 <field name="hierarchy_level">11</field>
                 <field name="user_groupby">account_id</field>
                 <field name="foldable" eval="True"/>
@@ -978,7 +978,7 @@
             <record id="ekara_pnl_line_045_DOE" model="account.report.line">
                 <field name="name">6000-Direct Operating Expenses</field>
                 <field name="sequence">460</field>
-                <field name="code">DOE</field>
+                <field name="code">E_DOE</field>
                 <field name="foldable" eval="True"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -987,7 +987,7 @@
                     <record id="ekara_pnl_line_045_DOE_balance" model="account.report.expression">
                         <field name="label">balance</field>
                         <field name="engine">aggregation</field>
-                        <field name="formula">PDOE.balance + SAW.balance + RAMO.balance</field>
+                        <field name="formula">E_PDOE.balance + E_SAW.balance + E_RAMO.balance</field>
                         <field name="date_scope">strict_range</field>
                         <field name="blank_if_zero" eval="False"/>
                         <field name="green_on_positive" eval="True"/>
@@ -997,7 +997,7 @@
             <record id="ekara_pnl_line_046_PDOE" model="account.report.line">
                 <field name="name">60100000-Purchases/Direct Operating Exp</field>
                 <field name="sequence">470</field>
-                <field name="code">PDOE</field>
+                <field name="code">E_PDOE</field>
                 <field name="foldable" eval="True"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1017,7 +1017,7 @@
             <record id="ekara_pnl_line_047_SAW" model="account.report.line">
                 <field name="name">70110000 Salaries and Wages</field>
                 <field name="sequence">480</field>
-                <field name="code">SAW</field>
+                <field name="code">E_SAW</field>
                 <field name="foldable" eval="True"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1037,7 +1037,7 @@
             <record id="ekara_pnl_line_048_RAMO" model="account.report.line">
                 <field name="name">70690000-Repairs &amp; Maintenance - Others</field>
                 <field name="sequence">490</field>
-                <field name="code">RAMO</field>
+                <field name="code">E_RAMO</field>
                 <field name="foldable" eval="True"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1057,7 +1057,7 @@
             <record id="ekara_pnl_line_049_PFW" model="account.report.line">
                 <field name="name">70610000 Power, Fuel and Water</field>
                 <field name="sequence">500</field>
-                <field name="code">PFW</field>
+                <field name="code">E_PFW</field>
                 <field name="foldable" eval="True"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1077,7 +1077,7 @@
             <record id="ekara_pnl_line_050_PAS" model="account.report.line">
                 <field name="name">70620000 Printing and Stationery</field>
                 <field name="sequence">510</field>
-                <field name="code">PAS</field>
+                <field name="code">E_PAS</field>
                 <field name="foldable" eval="True"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1097,7 +1097,7 @@
             <record id="ekara_pnl_line_051_IRE" model="account.report.line">
                 <field name="name">100100000 Investment Related Expenses</field>
                 <field name="sequence">520</field>
-                <field name="code">IRE</field>
+                <field name="code">E_IRE</field>
                 <field name="foldable" eval="True"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1106,7 +1106,7 @@
                     <record id="ekara_pnl_line_051_IRE_balance" model="account.report.expression">
                         <field name="label">balance</field>
                         <field name="engine">aggregation</field>
-                        <field name="formula">BCP.balance + DCP.balance + SOEP.balance +B&amp;SC.balance + S&amp;TT.balance +STTP.balance +PIMS.balance</field>
+                        <field name="formula">E_BCP.balance + E_DCP.balance + E_SOEP.balance +E_B&amp;SC.balance + E_S&amp;TT.balance +E_STTP.balance +E_PIMS.balance</field>
                         <field name="date_scope">strict_range</field>
                         <field name="blank_if_zero" eval="False"/>
                         <field name="green_on_positive" eval="True"/>
@@ -1116,7 +1116,7 @@
             <record id="ekara_pnl_line_052_BCP" model="account.report.line">
                 <field name="name">100100001 Bank Charges</field>
                 <field name="sequence">530</field>
-                <field name="code">BCP</field>
+                <field name="code">E_BCP</field>
                 <field name="foldable" eval="True"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1136,7 +1136,7 @@
             <record id="ekara_pnl_line_053_DCP" model="account.report.line">
                 <field name="name">100100002 Demat Charges</field>
                 <field name="sequence">540</field>
-                <field name="code">DCP</field>
+                <field name="code">E_DCP</field>
                 <field name="foldable" eval="True"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1156,7 +1156,7 @@
             <record id="ekara_pnl_line_054_SOEP" model="account.report.line">
                 <field name="name">100100003 Stampduty &amp; Other Expenses - PMS</field>
                 <field name="sequence">550</field>
-                <field name="code">SOEP</field>
+                <field name="code">E_SOEP</field>
                 <field name="foldable" eval="True"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1176,7 +1176,7 @@
             <record id="ekara_pnl_line_055_B_SC" model="account.report.line">
                 <field name="name">100100004 Brokerage &amp; Service Charges</field>
                 <field name="sequence">560</field>
-                <field name="code">B&amp;SC</field>
+                <field name="code">E_B&amp;SC</field>
                 <field name="foldable" eval="False"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1196,7 +1196,7 @@
             <record id="ekara_pnl_line_056_S_TT" model="account.report.line">
                 <field name="name">100100005 Security Transaction Tax</field>
                 <field name="sequence">570</field>
-                <field name="code">S&amp;TT</field>
+                <field name="code">E_S&amp;TT</field>
                 <field name="foldable" eval="False"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1216,7 +1216,7 @@
             <record id="ekara_pnl_line_057_STTP" model="account.report.line">
                 <field name="name">100100006 STT Paid</field>
                 <field name="sequence">580</field>
-                <field name="code">STTP</field>
+                <field name="code">E_STTP</field>
                 <field name="foldable" eval="True"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1236,7 +1236,7 @@
             <record id="ekara_pnl_line_058_PIMS" model="account.report.line">
                 <field name="name">100100007 investment management services</field>
                 <field name="sequence">590</field>
-                <field name="code">PIMS</field>
+                <field name="code">E_PIMS</field>
                 <field name="foldable" eval="False"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1256,7 +1256,7 @@
             <record id="ekara_pnl_line_059_POEP" model="account.report.line">
                 <field name="name">100200000 Personal &amp; Other  Expenses</field>
                 <field name="sequence">600</field>
-                <field name="code">POEP</field>
+                <field name="code">E_POEP</field>
                 <field name="foldable" eval="True"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1265,7 +1265,7 @@
                     <record id="ekara_pnl_line_059_POEP_balance" model="account.report.expression">
                         <field name="label">balance</field>
                         <field name="engine">aggregation</field>
-                        <field name="formula">PDE.balance + PD.balance + PEE.balance + PHEP.balance + PPC.balance + PRM.balance + PSP.balance + PSC.balance + PRO.balance + PDF.balance +EDU.balance + PME.balance + PRP.balance + PV.balance +PCCE.balance +PMC.balance + PTC.balance</field>
+                        <field name="formula">E_PDE.balance + E_PD.balance + E_PEE.balance + E_PHEP.balance + E_PPC.balance + E_PRM.balance + E_PSP.balance + E_PSC.balance + E_PRO.balance + E_PDF.balance +E_EDU.balance + E_PME.balance + E_PRP.balance + E_PV.balance +E_PCCE.balance +E_PMC.balance + E_PTC.balance</field>
                         <field name="date_scope">strict_range</field>
                         <field name="blank_if_zero" eval="False"/>
                         <field name="green_on_positive" eval="True"/>
@@ -1275,7 +1275,7 @@
             <record id="ekara_pnl_line_060_PDE" model="account.report.line">
                 <field name="name">100200001 Dining Expenses</field>
                 <field name="sequence">610</field>
-                <field name="code">PDE</field>
+                <field name="code">E_PDE</field>
                 <field name="foldable" eval="False"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1295,7 +1295,7 @@
             <record id="ekara_pnl_line_061_PD" model="account.report.line">
                 <field name="name">100200002 Drawings</field>
                 <field name="sequence">620</field>
-                <field name="code">PD</field>
+                <field name="code">E_PD</field>
                 <field name="foldable" eval="False"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1315,7 +1315,7 @@
             <record id="ekara_pnl_line_062_PEE" model="account.report.line">
                 <field name="name">100200003 Electricity Expenses</field>
                 <field name="sequence">630</field>
-                <field name="code">PEE</field>
+                <field name="code">E_PEE</field>
                 <field name="foldable" eval="False"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1335,7 +1335,7 @@
             <record id="ekara_pnl_line_063_PHEP" model="account.report.line">
                 <field name="name">100200004 Household Expenses</field>
                 <field name="sequence">640</field>
-                <field name="code">PHEP</field>
+                <field name="code">E_PHEP</field>
                 <field name="foldable" eval="True"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1355,7 +1355,7 @@
             <record id="ekara_pnl_line_064_PPC" model="account.report.line">
                 <field name="name">100200005 Professional Charges</field>
                 <field name="sequence">650</field>
-                <field name="code">PPC</field>
+                <field name="code">E_PPC</field>
                 <field name="foldable" eval="True"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1375,7 +1375,7 @@
             <record id="ekara_pnl_line_065_PRM" model="account.report.line">
                 <field name="name">100200006 Repair and Maintenance</field>
                 <field name="sequence">660</field>
-                <field name="code">PRM</field>
+                <field name="code">E_PRM</field>
                 <field name="foldable" eval="True"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1395,7 +1395,7 @@
             <record id="ekara_pnl_line_066_PSP" model="account.report.line">
                 <field name="name">100200007 Salary Paid</field>
                 <field name="sequence">670</field>
-                <field name="code">PSP</field>
+                <field name="code">E_PSP</field>
                 <field name="foldable" eval="True"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1415,7 +1415,7 @@
             <record id="ekara_pnl_line_067_PSC" model="account.report.line">
                 <field name="name">100200008 Security Charges</field>
                 <field name="sequence">680</field>
-                <field name="code">PSC</field>
+                <field name="code">E_PSC</field>
                 <field name="foldable" eval="True"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1435,7 +1435,7 @@
             <record id="ekara_pnl_line_068_PRO" model="account.report.line">
                 <field name="name">100200009 Round Off</field>
                 <field name="sequence">690</field>
-                <field name="code">PRO</field>
+                <field name="code">E_PRO</field>
                 <field name="foldable" eval="True"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1455,7 +1455,7 @@
             <record id="ekara_pnl_line_069_PDF" model="account.report.line">
                 <field name="name">100200011 Gift</field>
                 <field name="sequence">700</field>
-                <field name="code">PDF</field>
+                <field name="code">E_PDF</field>
                 <field name="foldable" eval="True"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1475,7 +1475,7 @@
             <record id="ekara_pnl_line_070_EDU" model="account.report.line">
                 <field name="name">100200012 Education</field>
                 <field name="sequence">710</field>
-                <field name="code">EDU</field>
+                <field name="code">E_EDU</field>
                 <field name="foldable" eval="True"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1495,7 +1495,7 @@
             <record id="ekara_pnl_line_071_PME" model="account.report.line">
                 <field name="name">100200013 Medical Expense</field>
                 <field name="sequence">720</field>
-                <field name="code">PME</field>
+                <field name="code">E_PME</field>
                 <field name="foldable" eval="False"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1515,7 +1515,7 @@
             <record id="ekara_pnl_line_072_PRP" model="account.report.line">
                 <field name="name">100200014 Rent Paid</field>
                 <field name="sequence">730</field>
-                <field name="code">PRP</field>
+                <field name="code">E_PRP</field>
                 <field name="foldable" eval="False"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1535,7 +1535,7 @@
             <record id="ekara_pnl_line_073_PV" model="account.report.line">
                 <field name="name">100200015 Vacation</field>
                 <field name="sequence">740</field>
-                <field name="code">PV</field>
+                <field name="code">E_PV</field>
                 <field name="foldable" eval="False"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1555,7 +1555,7 @@
             <record id="ekara_pnl_line_074_PCCE" model="account.report.line">
                 <field name="name">100200016 Credit Card Expenses</field>
                 <field name="sequence">750</field>
-                <field name="code">PCCE</field>
+                <field name="code">E_PCCE</field>
                 <field name="foldable" eval="True"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1575,7 +1575,7 @@
             <record id="ekara_pnl_line_075_PMC" model="account.report.line">
                 <field name="name">100200017 Maintenance charges</field>
                 <field name="sequence">760</field>
-                <field name="code">PMC</field>
+                <field name="code">E_PMC</field>
                 <field name="foldable" eval="False"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1595,7 +1595,7 @@
             <record id="ekara_pnl_line_076_PTC" model="account.report.line">
                 <field name="name">100200018 Transportation charges</field>
                 <field name="sequence">770</field>
-                <field name="code">PTC</field>
+                <field name="code">E_PTC</field>
                 <field name="foldable" eval="False"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1615,7 +1615,7 @@
             <record id="ekara_pnl_line_077_PVM" model="account.report.line">
                 <field name="name">100200019 Vehicle Maintenance</field>
                 <field name="sequence">780</field>
-                <field name="code">PVM</field>
+                <field name="code">E_PVM</field>
                 <field name="foldable" eval="False"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1635,7 +1635,7 @@
             <record id="ekara_pnl_line_078_PHKE" model="account.report.line">
                 <field name="name">100200020 House Keeping Exp</field>
                 <field name="sequence">790</field>
-                <field name="code">PHKE</field>
+                <field name="code">E_PHKE</field>
                 <field name="foldable" eval="False"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1655,7 +1655,7 @@
             <record id="ekara_pnl_line_079_PRT" model="account.report.line">
                 <field name="name">100300000 Rates &amp; Taxes</field>
                 <field name="sequence">800</field>
-                <field name="code">PRT</field>
+                <field name="code">E_PRT</field>
                 <field name="foldable" eval="True"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1664,7 +1664,7 @@
                     <record id="ekara_pnl_line_079_PRT_balance" model="account.report.expression">
                         <field name="label">balance</field>
                         <field name="engine">aggregation</field>
-                        <field name="formula">PITP.balance + PPT.balance + PPTP.balance + PSTTP.balance + PTDSI.balance</field>
+                        <field name="formula">E_PITP.balance + E_PPT.balance + E_PPTP.balance + E_PSTTP.balance + E_PTDSI.balance</field>
                         <field name="date_scope">strict_range</field>
                         <field name="blank_if_zero" eval="False"/>
                         <field name="green_on_positive" eval="True"/>
@@ -1674,7 +1674,7 @@
             <record id="ekara_pnl_line_080_PITP" model="account.report.line">
                 <field name="name">100300001 Income Tax Paid</field>
                 <field name="sequence">810</field>
-                <field name="code">PITP</field>
+                <field name="code">E_PITP</field>
                 <field name="foldable" eval="True"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1694,7 +1694,7 @@
             <record id="ekara_pnl_line_081_PPT" model="account.report.line">
                 <field name="name">100300002 Professional Tax</field>
                 <field name="sequence">820</field>
-                <field name="code">PPT</field>
+                <field name="code">E_PPT</field>
                 <field name="foldable" eval="True"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1714,7 +1714,7 @@
             <record id="ekara_pnl_line_082_PPTP" model="account.report.line">
                 <field name="name">100300003 Property Tax</field>
                 <field name="sequence">830</field>
-                <field name="code">PPTP</field>
+                <field name="code">E_PPTP</field>
                 <field name="foldable" eval="False"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1734,7 +1734,7 @@
             <record id="ekara_pnl_line_083_PSTTP" model="account.report.line">
                 <field name="name">100300004 STT Paid</field>
                 <field name="sequence">840</field>
-                <field name="code">PSTTP</field>
+                <field name="code">E_PSTTP</field>
                 <field name="foldable" eval="True"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1754,7 +1754,7 @@
             <record id="ekara_pnl_line_084_PTDSI" model="account.report.line">
                 <field name="name">100300005 TDS - Interest</field>
                 <field name="sequence">850</field>
-                <field name="code">PTDSI</field>
+                <field name="code">E_PTDSI</field>
                 <field name="foldable" eval="True"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1774,7 +1774,7 @@
             <record id="ekara_pnl_line_085_PDG" model="account.report.line">
                 <field name="name">100400001 Donation - 80G</field>
                 <field name="sequence">860</field>
-                <field name="code">PDG</field>
+                <field name="code">E_PDG</field>
                 <field name="foldable" eval="True"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1794,7 +1794,7 @@
             <record id="ekara_pnl_line_086_PPMS" model="account.report.line">
                 <field name="name">100500000 PMS Expenses</field>
                 <field name="sequence">870</field>
-                <field name="code">PPMS</field>
+                <field name="code">E_PPMS</field>
                 <field name="foldable" eval="False"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1803,7 +1803,7 @@
                     <record id="ekara_pnl_line_086_PPMS_balance" model="account.report.expression">
                         <field name="label">balance</field>
                         <field name="engine">aggregation</field>
-                        <field name="formula">PCC.balance + PPMSF.balance + RTOPMS.balance</field>
+                        <field name="formula">E_PCC.balance + E_PPMSF.balance + E_RTOPMS.balance</field>
                         <field name="date_scope">strict_range</field>
                         <field name="blank_if_zero" eval="False"/>
                         <field name="green_on_positive" eval="True"/>
@@ -1813,7 +1813,7 @@
             <record id="ekara_pnl_line_087_PCC" model="account.report.line">
                 <field name="name">100500001 Custodian Charges</field>
                 <field name="sequence">880</field>
-                <field name="code">PCC</field>
+                <field name="code">E_PCC</field>
                 <field name="foldable" eval="False"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1833,7 +1833,7 @@
             <record id="ekara_pnl_line_088_PPMSF" model="account.report.line">
                 <field name="name">100500002 PMS Fees</field>
                 <field name="sequence">890</field>
-                <field name="code">PPMSF</field>
+                <field name="code">E_PPMSF</field>
                 <field name="foldable" eval="False"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1853,7 +1853,7 @@
             <record id="ekara_pnl_line_089_RTOPMS" model="account.report.line">
                 <field name="name">100500003 Rates and Taxes Others - PMS</field>
                 <field name="sequence">900</field>
-                <field name="code">RTOPMS</field>
+                <field name="code">E_RTOPMS</field>
                 <field name="foldable" eval="False"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
@@ -1873,7 +1873,7 @@
             <record id="ekara_pnl_line_090_PBW" model="account.report.line">
                 <field name="name">100600000 Balance writeoff</field>
                 <field name="sequence">910</field>
-                <field name="code">PBW</field>
+                <field name="code">E_PBW</field>
                 <field name="foldable" eval="False"/>
                 <field name="hide_if_zero" eval="False"/>
                 <field name="print_on_new_page" eval="False"/>
