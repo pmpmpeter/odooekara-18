@@ -10,7 +10,7 @@ odoo.tools.config.parse_config([
     "--config=/opt/odoo18/ekara_18_test_5.conf"
 ])
 
-registry = odoo.registry("ekara_18_test_5")
+registry = odoo.registry("ekara_18_test_10")
 
 with registry.cursor() as cr:
     env = api.Environment(cr, SUPERUSER_ID, {})
