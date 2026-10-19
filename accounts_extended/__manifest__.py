@@ -40,6 +40,7 @@
         'data/ir_cron.xml',
         'data/profit_and_loss.xml',
         'data/balance_sheet.xml',
+        'data/executive_summary.xml',
         'wizard/account_report_view.xml',
         'wizard/budget_revision_reason_view.xml',
         'wizard/crr_report_view.xml',

@@ -676,6 +676,7 @@
                                     <record id="ekara_bs_line_370_TP" model="account.report.line">
                                         <field name="name">10311000 Taxes (Payroll)</field>
                                         <field name="sequence">370</field>
+                                        <field name="groupby">account_id</field>
                                         <field name="code">E_TP</field>
                                         <field name="foldable" eval="True"/>
                                         <field name="hide_if_zero" eval="False"/>
@@ -696,6 +697,7 @@
                                         <field name="name">10312000 Taxes (TDS)</field>
                                         <field name="sequence">380</field>
                                         <field name="code">E_TTDS</field>
+                                        <field name="groupby">account_id</field>
                                         <field name="foldable" eval="True"/>
                                         <field name="hide_if_zero" eval="False"/>
                                         <field name="print_on_new_page" eval="False"/>
@@ -722,6 +724,7 @@
                                             <record id="ekara_bs_line_400_GSTO" model="account.report.line">
                                                 <field name="name">10314100-GST-Output</field>
                                                 <field name="sequence">400</field>
+                                                <field name="groupby">account_id</field>
                                                 <field name="code">E_GSTO</field>
                                                 <field name="foldable" eval="True"/>
                                                 <field name="hide_if_zero" eval="False"/>
@@ -741,6 +744,7 @@
                                             <record id="ekara_bs_line_410_DATO" model="account.report.line">
                                                 <field name="name">10317000-Duties &amp; Taxes ( Others )</field>
                                                 <field name="sequence">410</field>
+                                                <field name="groupby">account_id</field>
                                                 <field name="code">E_DATO</field>
                                                 <field name="foldable" eval="True"/>
                                                 <field name="hide_if_zero" eval="False"/>
@@ -760,6 +764,7 @@
                                             <record id="ekara_bs_line_420_GSTI" model="account.report.line">
                                                 <field name="name">10314200-GST-Input</field>
                                                 <field name="sequence">420</field>
+                                                <field name="groupby">account_id</field>
                                                 <field name="code">E_GSTI</field>
                                                 <field name="foldable" eval="True"/>
                                                 <field name="hide_if_zero" eval="False"/>
@@ -779,6 +784,7 @@
                                             <record id="ekara_bs_line_430_GSTDT" model="account.report.line">
                                                 <field name="name">10314400 -GST -Deffred Tax</field>
                                                 <field name="sequence">430</field>
+                                                <field name="groupby">account_id</field>
                                                 <field name="code">E_GSTDT</field>
                                                 <field name="foldable" eval="True"/>
                                                 <field name="hide_if_zero" eval="False"/>
@@ -798,6 +804,7 @@
                                             <record id="ekara_bs_line_440_GSTRCM" model="account.report.line">
                                                 <field name="name">10314300-GST-RCM</field>
                                                 <field name="sequence">440</field>
+                                                <field name="groupby">account_id</field>
                                                 <field name="code">E_GSTRCM</field>
                                                 <field name="foldable" eval="True"/>
                                                 <field name="hide_if_zero" eval="False"/>
@@ -817,6 +824,7 @@
                                             <record id="ekara_bs_line_450_GSTPY" model="account.report.line">
                                                 <field name="name">10316000-GST Payable</field>
                                                 <field name="sequence">450</field>
+                                                <field name="groupby">account_id</field>
                                                 <field name="code">E_GSTPY</field>
                                                 <field name="foldable" eval="True"/>
                                                 <field name="hide_if_zero" eval="False"/>
@@ -1186,6 +1194,7 @@
                             <record id="ekara_bs_line_630_LL" model="account.report.line">
                                 <field name="name">10200000 Loans (Liability)</field>
                                 <field name="sequence">630</field>
+                                <field name="groupby">account_id</field>
                                 <field name="code">E_LL</field>
                                 <field name="foldable" eval="True"/>
                                 <field name="hide_if_zero" eval="False"/>
@@ -1416,7 +1425,7 @@
                                             <record id="ekara_bs_line_750_CURR_YEAR_EARNINGS_PNL_balance" model="account.report.expression">
                                                 <field name="label">balance</field>
                                                 <field name="engine">aggregation</field>
-                                                <field name="formula">NEP.balance</field>
+                                                <field name="formula">E_NEP.balance</field>
                                                 <field name="date_scope">from_fiscalyear</field>
                                                 <field name="subformula">cross_report</field>
                                                 <field name="blank_if_zero" eval="False"/>

@@ -9,6 +9,7 @@ from bisect import bisect_left
 from collections import defaultdict
 import logging
 import re
+import json
 
 _logger = logging.getLogger(__name__)
 
@@ -125,6 +126,53 @@ class AccountAccount(models.Model):
     def _compute_report_code(self):
         for rec in self:
             rec.report_code = rec.code
+
+    def action_update_report_codes(self, company_id):
+        company = self.env['res.company'].browse(company_id).exists()
+
+        if not company:
+            raise ValueError("Invalid company ID: %s" % company_id)
+
+        accounts = self.sudo().with_company(company).search([])
+
+        updated = 0
+        unchanged = 0
+        skipped = 0
+
+        _logger.info(
+            "========== REPORT CODE UPDATE STARTED | Company: %s ==========",
+            company.name
+        )
+
+        for account in accounts:
+            new_code = account.code
+            old_code = account.report_code
+
+            if not new_code:
+                skipped += 1
+                _logger.info(
+                    "SKIPPED | Account ID: %s | No code for company %s",
+                    account.id, company_id
+                )
+                continue
+
+            if old_code != new_code:
+                account.write({'report_code': new_code})
+                updated += 1
+
+                _logger.info(
+                    "UPDATED | Account ID: %s | Old: %s | New: %s",
+                    account.id, old_code, new_code
+                )
+            else:
+                unchanged += 1
+
+        _logger.info(
+            "COMPLETED | Company: %s | Total: %s | Updated: %s | Unchanged: %s | Skipped: %s",
+            company_id, len(accounts), updated, unchanged, skipped
+        )
+
+        return True
 
     @api.model
     def cron_sync_report_code(self):
