@@ -38,46 +38,16 @@ class AccountAccount(models.Model):
                 "Operator %s is not supported for group_id" % operator
             )
 
-        if not value:
-            return [('id', 'in', [])] if operator in ('=', 'in') else []
-
         if isinstance(value, int):
             group_ids = [value]
         else:
-            group_ids = list(value)
+            group_ids = list(value or [])
 
-        groups = self.env['account.group'].browse(group_ids).exists()
+        accounts = self.sudo().with_company(self.env.company).search([])
 
-        if not groups:
-            return [('id', 'in', [])] if operator in ('=', 'in') else []
-
-        # Use the active company's root company,
-        # exactly like Odoo's standard _compute_account_group().
-        root_company = self.env.company.root_id
-
-        accounts = self.with_company(self.env.company).sudo().search([])
-
-        matching_account_ids = []
-
-        for account in accounts:
-            code = account.code
-            if not code:
-                continue
-
-            matching_groups = groups.filtered(
-                lambda group:
-                    group.company_id == root_company
-                    and group.code_prefix_start <= code[:len(group.code_prefix_start)]
-                    and group.code_prefix_end >= code[:len(group.code_prefix_end)]
-            )
-
-            if matching_groups:
-                matching_group = matching_groups.sorted(
-                    key=lambda g: (-len(g.code_prefix_start), g.id)
-                )[0]
-
-                if matching_group.id in group_ids:
-                    matching_account_ids.append(account.id)
+        matching_account_ids = accounts.filtered(
+            lambda account: account.group_id.id in group_ids
+        ).ids
 
         if operator in ('=', 'in'):
             return [('id', 'in', matching_account_ids)]

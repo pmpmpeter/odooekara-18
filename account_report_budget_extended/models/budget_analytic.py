@@ -112,12 +112,20 @@ class BudgetAnalytic(models.Model):
 
     def _compute_crr_line_count(self):
         for rec in self:
-            rec.crr_line_count = len(
-                self.env['cash.management'].search([('budget_id', '=', self.id)]).cash_payment_ids.ids) or 0
-            rec.share_line_count = len(rec.crr_share_ids)
-            entity_ids = self.env.company.tax_entity_ids.ids
-            if entity_ids:
-                rec.tax_entity_ids = [(6, 0, entity_ids)]
+            rec.crr_line_count = 0.0
+            rec.share_line_count = 0.0
+
+            cash_management = self.env['cash.management'].search([
+                ('budget_id', '=', rec.id)
+            ])
+
+            if cash_management:
+                rec.crr_line_count = len(
+                    cash_management.mapped('cash_payment_ids')
+                )
+
+            if rec.crr_share_ids:
+                rec.share_line_count = len(rec.crr_share_ids)
 
     def freeze_april_month(self):
         self.freez_april_month = True
@@ -1275,6 +1283,26 @@ class BudgetAnalytic(models.Model):
     
 class BudgetLines(models.Model):
     _inherit = 'budget.line'
+
+    def action_open_budget_entries(self):
+        if self.analytic_account_id:
+            # if there is an analytic account, then the analytic items are loaded
+            action = self.env['ir.actions.act_window']._for_xml_id('analytic.account_analytic_line_action_entries')
+            action['domain'] = [('auto_account_id', '=', self.analytic_account_id.id),
+                                ('date', '>=', self.date_from),
+                                ('date', '<=', self.date_to)
+                                ]
+            if self.general_budget_id:
+                action['domain'] += [('general_account_id', 'in', self.general_budget_id.account_ids.ids)]
+        else:
+            # otherwise the journal entries booked on the accounts of the budgetary postition are opened
+            action = self.env['ir.actions.act_window']._for_xml_id('account.action_account_moves_all_a')
+            action['domain'] = [('account_id', 'in',
+                                 self.general_budget_id.account_ids.ids),
+                                ('date', '>=', self.date_from),
+                                ('date', '<=', self.date_to)
+                                ]
+        return action
 
     def _compute_achieved_amount(self):
         groups = defaultdict(lambda: defaultdict(set))
