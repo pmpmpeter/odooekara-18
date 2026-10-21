@@ -571,8 +571,8 @@ class BudgetAnalytic(models.Model):
         crr_ids = self.env['crr.budget.line'].sudo().search(
             ['|', ('revision_budget_id', 'in', self.ids), ('budget_id', 'in', self.ids)])
         action = self.env['ir.actions.actions']._for_xml_id(
-            'accounts_extended.action_open_rolling_forecast_odoo') if self.user_type == 'odoo' else self.env[
-            'ir.actions.actions']._for_xml_id('accounts_extended.action_open_rolling_forecast_non_odoo')
+            'account_report_budget_extended.action_open_rolling_forecast_odoo') if self.user_type == 'odoo' else self.env[
+            'ir.actions.actions']._for_xml_id('account_report_budget_extended.action_open_rolling_forecast_non_odoo')
         # action['domain'] = [('id', 'in', crr_ids.ids)]
         return action
 
@@ -581,8 +581,8 @@ class BudgetAnalytic(models.Model):
         # crr_ids = self.env['crr.budget.line'].sudo().search(
         #     [('budget_id', 'in', self.ids)])
         action = self.env['ir.actions.actions']._for_xml_id(
-            'accounts_extended.action_open_budget_vs_actual_odoo') if self.user_type == 'odoo' else self.env[
-            'ir.actions.actions']._for_xml_id('accounts_extended.action_open_budget_vs_actual_non_odoo')
+            'account_report_budget_extended.action_open_budget_vs_actual_odoo') if self.user_type == 'odoo' else self.env[
+            'ir.actions.actions']._for_xml_id('account_report_budget_extended.action_open_budget_vs_actual_non_odoo')
         # action['domain'] = [('budget_id', 'in', self.ids)]
         # action['context'] = {'group_by': False}
         return action
@@ -591,8 +591,8 @@ class BudgetAnalytic(models.Model):
         self.ensure_one()
         crr_ids = self.env['crr.budget.line'].sudo().search([('id', 'in', self.cash_payment_ids.ids)])
         view_id = self.env.ref(
-            'accounts_extended.crr_budget_line_extend1').id if self.user_type == 'odoo' else self.env.ref(
-            'accounts_extended.crr_budget_line_extend2').id
+            'account_report_budget_extended.crr_budget_line_extend1').id if self.user_type == 'odoo' else self.env.ref(
+            'account_report_budget_extended.crr_budget_line_extend2').id
         return {
             'type': 'ir.actions.act_window',
             'name': 'CRR Line Items',
@@ -606,7 +606,7 @@ class BudgetAnalytic(models.Model):
         self.ensure_one()
         share_ids = self.crr_share_ids
         # view_id = self.env.ref(
-        #     'accounts_extended.crr_budget_line_extend1').id
+        #     'account_report_budget_extended.crr_budget_line_extend1').id
         action = {
             'type': 'ir.actions.act_window',
             'name': 'Share Amount',

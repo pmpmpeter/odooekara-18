@@ -111,7 +111,7 @@ class FundManagementCRR(models.Model):
             'type': 'ir.actions.act_window',
             'name': 'CRR Line Items',
             'view_mode': 'list',
-            'view_id': self.env.ref('accounts_extended.crr_budget_line_extend1').id,
+            'view_id': self.env.ref('account_report_budget_extended.crr_budget_line_extend1').id,
             'res_model': 'crr.budget.line',
             'domain': [('id', 'in', crr_ids.ids)],
         }
