@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_bill_root"
+              name="Bill Approval"
+          web_icon="bill_approval_flow_2,static/description/icon.png"
+          sequence="10"/>
+
+    <menuitem id="menu_bill_approval"
+              name="Bill Approvals"
+              parent="menu_bill_root"
+              action="action_bill_approval"
+              sequence="1"/>
+    <menuitem id="menu_bill_approval_history"
+              name="Bills Approved"
+              parent="menu_bill_root"
+              action="action_bill_approved"
+              sequence="1"/>
+    <menuitem id="menu_bill_history"
+              name="Bills History"
+              parent="menu_bill_root"
+              action="action_bill_history"
+              sequence="1"/>
+    <menuitem id="menu_approval_report"
+              name="Approval Report"
+              parent="menu_bill_root"
+              action="action_approval_report"
+              sequence="1"/>
+    <menuitem id="menu_bill_approval_document"
+              name="Bill Document"
+              parent="menu_bill_root"
+              action="action_bill_approval_document"
+              sequence="5"/>
+    <menuitem id="menu_bill_approval_tds_revision"
+              name="TDS Revisions"
+              parent="menu_bill_root"
+              action="action_bill_approval_tds_revision"
+              groups="bill_approval_flow_2.group_tds_revision"
+              sequence="6"/>
+</odoo>

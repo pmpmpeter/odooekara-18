@@ -1,0 +1,22 @@
+{
+    'name': 'Bill Approval',
+    'version': '18.0.1.0.0',
+    'category': 'Accounting',
+    'summary': '3-level group-based bill approval with Bill and Payment creation',
+    'author': 'Custom',
+    'depends': ['account', 'mail', 'l10n_in_withholding'],
+    'data': [
+        'security/security_groups.xml',
+        'security/ir.model.access.csv',
+        'data/flow_sequence.xml',
+        'data/assign_delete_group.xml',
+        'views/bill_approval_views.xml',
+        'views/bills_journals_tds_view.xml',
+	'views/attachment_preview_views.xml',
+        'views/menus.xml',
+        'wizard/flow_action_wizard_views.xml',
+    ],
+    'installable': True,
+    'application': True,
+    'license': 'LGPL-3',
+}

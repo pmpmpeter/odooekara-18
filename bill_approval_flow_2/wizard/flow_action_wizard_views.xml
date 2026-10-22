@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bill_approval_wizard_form" model="ir.ui.view">
+        <field name="name">bill.approval.wizard.form</field>
+        <field name="model">bill.approval.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Action">
+
+                <group invisible="wizard_type not in ('approve_l1','approve_l2','approve_l3')">
+                    <field name="comment" string="Comment (optional)"
+                           placeholder="Add a comment..."/>
+                </group>
+
+                <group invisible="wizard_type != 'reject'">
+                    <field name="comment" string="Rejection Reason"
+                           placeholder="Provide a reason..."
+                           required="wizard_type == 'reject'"/>
+                </group>
+
+                <group string="Bill Details" invisible="wizard_type != 'bill'">
+                    <group>
+                        <field name="journal_type"/>
+                        <field name="partner_id"/>
+                    </group>
+                    <group>
+                        <field name="account_id"/>
+                        <field name="bill_note"/>
+                    </group>
+                </group>
+
+                <group string="Payment Details" invisible="wizard_type != 'payment'">
+                    <group>
+                        <field name="journal_id" required="wizard_type == 'payment'"/>
+                        <field name="amount" required="wizard_type == 'payment'"/>
+                    </group>
+                    <group>
+                        <field name="payment_date"/>
+                        <field name="payment_note"/>
+                    </group>
+                </group>
+
+                <field name="wizard_type" invisible="1"/>
+                <field name="bill_id"     invisible="1"/>
+
+                <footer>
+                    <button name="action_confirm" string="Confirm"
+                            type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>
