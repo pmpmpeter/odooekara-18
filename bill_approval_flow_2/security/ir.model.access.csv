@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bill_approval_user,bill.approval user,model_bill_approval,group_see_own_record,1,1,1,0
+access_bill_approval_step_log,bill.approval.step.log,model_bill_approval_step_log,group_see_own_record,1,1,1,0
+access_bill_approval_wizard,bill.approval.wizard,model_bill_approval_wizard,group_see_own_record,1,1,1,1
+access_bill_approval_document,bill.approval.document,model_bill_approval_document,group_see_own_record,1,1,1,1
+access_bill_approval_delete,bill.approval delete rights,model_bill_approval,group_bill_approval_delete,1,0,0,1
+access_account_move_bill_approval_user,account.move.bill.approval.user,account.model_account_move,base.group_user,1,0,0,0
+access_account_payment_bill_approval_user,account.payment.bill.approval.user,account.model_account_payment,base.group_user,1,0,0,0
+access_bill_approval_user_all_internal,bill.approval all internal users,model_bill_approval,base.group_user,1,1,1,0
+access_bill_approval_step_log_all_internal,bill.approval.step.log all internal users,model_bill_approval_step_log,base.group_user,1,1,1,0
+access_bill_approval_wizard_all_internal,bill.approval.wizard all internal users,model_bill_approval_wizard,base.group_user,1,1,1,0
+access_bill_approval_document_all_internal,bill.approval.document all internal users,model_bill_approval_document,base.group_user,1,1,1,0
+access_bill_approval_tds_revision,bill.approval.tds.revision,model_bill_approval_tds_revision,group_tds_revision,1,1,1,0

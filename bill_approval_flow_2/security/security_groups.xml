@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="module_bill_approval_flow" model="ir.module.category">
+        <field name="name">Bill Approval</field>
+        <field name="sequence">100</field>
+    </record>
+
+    <!-- Level 1 — e.g. Department Head -->
+    <record id="group_bill_approver_l1" model="res.groups">
+        <field name="name">L1 Approver (Department Head)</field>
+        <field name="category_id" ref="module_bill_approval_flow"/>
+    </record>
+
+    <!-- Level 2 — e.g. Finance Manager -->
+    <record id="group_bill_approver_l2" model="res.groups">
+        <field name="name">L2 Approver (Finance Manager)</field>
+        <field name="category_id" ref="module_bill_approval_flow"/>
+    </record>
+
+    <!-- Level 3 — e.g. Director / CFO -->
+    <record id="group_bill_approver_l3" model="res.groups">
+        <field name="name">L3 Approver (Director / CFO)</field>
+        <field name="category_id" ref="module_bill_approval_flow"/>
+    </record>
+    <record id="group_create_entry" model="res.groups">
+        <field name="name">Create Entry</field>
+        <field name="category_id" ref="module_bill_approval_flow"/>
+    </record>
+    <record id="group_see_own_record" model="res.groups">
+        <field name="name">See Own Entry</field>
+        <field name="category_id" ref="module_bill_approval_flow"/>
+    </record>
+
+    <!-- Delete-rights group: restricted to Peter and admin only.
+         Membership is (re)assigned by data/assign_delete_group.xml on
+         every install/upgrade. This group is also added to
+         rule_bill_approval_all_access below, so members can delete ANY
+         bill.approval record, not just ones they personally created. -->
+    <record id="group_bill_approval_delete" model="res.groups">
+        <field name="name">Bill Approval - Delete Rights</field>
+        <field name="category_id" ref="module_bill_approval_flow"/>
+    </record>
+
+    <record id="group_tds_revision" model="res.groups">
+        <field name="name">Bill Approval - TDS Revision</field>
+        <field name="category_id" ref="module_bill_approval_flow"/>
+    </record>
+
+    <record id="rule_bill_approval_own_records" model="ir.rule">
+    <field name="name">Bill Approval - Own Records Only</field>
+    <field name="model_id" ref="model_bill_approval"/>
+    <field name="groups" eval="[
+        (4, ref('bill_approval_flow_2.group_see_own_record')),
+        (4, ref('base.group_user'))
+    ]"/>
+    <field name="domain_force">[('create_uid', '=', user.id)]</field>
+</record>
+    <record id="rule_bill_approval_all_access" model="ir.rule">
+    <field name="name">Bill Approval - All Access</field>
+    <field name="model_id" ref="model_bill_approval"/>
+    <field name="groups" eval="[
+        (4, ref('bill_approval_flow_2.group_bill_approver_l1')),
+        (4, ref('bill_approval_flow_2.group_bill_approver_l2')),
+        (4, ref('bill_approval_flow_2.group_bill_approver_l3')),
+        (4, ref('bill_approval_flow_2.group_create_entry')),
+        (4, ref('bill_approval_flow_2.group_bill_approval_delete'))
+    ]"/>
+    <field name="domain_force">[(1,'=',1)]</field>
+</record>
+    <record id="rule_account_move_bill_approval_read" model="ir.rule">
+        <field name="name">Bill Approval - Read Linked Journal Entries Only</field>
+        <field name="model_id" ref="account.model_account_move"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('approval_id', '!=', False)]</field>
+        <field name="perm_read">1</field>
+        <field name="perm_write">0</field>
+        <field name="perm_create">0</field>
+        <field name="perm_unlink">0</field>
+    </record>
+    <record id="rule_account_payment_bill_approval_read" model="ir.rule">
+        <field name="name">Bill Approval - Read Linked Payments Only</field>
+        <field name="model_id" ref="account.model_account_payment"/>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="domain_force">[('approval_id', '!=', False)]</field>
+        <field name="perm_read">1</field>
+        <field name="perm_write">0</field>
+        <field name="perm_create">0</field>
+        <field name="perm_unlink">0</field>
+    </record>
+</odoo>
