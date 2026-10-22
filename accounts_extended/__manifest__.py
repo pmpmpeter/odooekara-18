@@ -56,6 +56,7 @@
         'report/ekara_invoice_report.xml',
         'report/payment_mail_template.xml',
         # 'views/res_config_settings.xml',
+        'views/account_account_views.xml',
         'views/account_move.xml',
         'views/account_asset_views.xml',
         'views/account_payment.xml',
