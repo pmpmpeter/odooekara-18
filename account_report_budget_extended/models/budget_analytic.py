@@ -1,4 +1,5 @@
 from odoo import api, fields, models, _, Command
+from odoo.tools import SQL
 from odoo.osv import expression
 from odoo.exceptions import UserError, ValidationError, AccessError, RedirectWarning
 from collections import defaultdict
@@ -17,11 +18,12 @@ class BudgetAnalytic(models.Model):
     state = fields.Selection([
         ('draft', 'Draft'),
         ('revision', 'To Revision'),
-        ('confirm', 'Confirmed'),
+        ('revised', "Revised"),
+        ('confirmed', 'Confirmed'),
         ('to approve', 'To Approve'),
         ('validate', 'Validated'),
         ('done', 'Done'),
-        ('cancel', 'Cancelled')
+        ('canceled', 'Cancelled')
     ], 'Status', default='draft', index=True, required=True, readonly=True, copy=False, tracking=True)
     approval_state = fields.Char(string='Approval Status', compute='compute_approval_state', store=True, copy=False,
                                  tracking=True)
@@ -1304,6 +1306,209 @@ class BudgetLines(models.Model):
                                 ]
         return action
 
+    @api.model
+    def _get_accounts_from_line(self, line):
+        # Odoo 18 stores analytic accounts in plan-specific fields.
+        # Return the analytic accounts only when one is configured.
+        project_plan, other_plans = self.env[
+            'account.analytic.plan'
+        ]._get_all_plans()
+
+        for plan in project_plan + other_plans:
+            fname = plan._column_name()
+            analytic_accounts = line[fname]
+
+            if analytic_accounts:
+                return (
+                    'account.analytic.line',
+                    fname,
+                    set(analytic_accounts.ids),
+                )
+
+        # Odoo 18 monthly Financial Budget Items replace
+        # the Odoo 17 budget-position account relationship.
+        accounts = line.general_budget_id.item_ids.mapped('account_id')
+
+        return 'account.move.line', 'account_id', set(accounts.ids)
+
+    
+    @api.model
+    def _get_query_account_analytic_line(
+        self, model, account_fname, date_from, date_to, account_ids
+    ):
+        domain = [
+            ('date', '>=', date_from),
+            ('date', '<=', date_to),
+            (account_fname, 'in', list(account_ids)),
+        ]
+
+        if model == 'account.move.line':
+            fname = '-balance'
+            general_account = 'account_id'
+            domain += [('parent_state', '=', 'posted')]
+        else:
+            fname = 'amount'
+            general_account = 'general_account_id'
+
+        query = self.env[model]._search(domain)
+        query.order = None
+
+        # Odoo 18 uses SQL objects for query construction.
+        account_column = SQL.identifier(
+            query.table,
+            account_fname,
+        )
+        general_column = SQL.identifier(
+            query.table,
+            general_account,
+        )
+
+        amount_expression = (
+            SQL("-balance")
+            if model == 'account.move.line'
+            else SQL("amount")
+        )
+
+        result_query = query.select(
+            SQL("%s", model),
+            SQL("%s", account_fname),
+            SQL("%s", date_from),
+            SQL("%s", date_to),
+            account_column,
+            general_column,
+            SQL("SUM(%s)", amount_expression),
+        )
+
+        result_query = SQL(
+            "%s GROUP BY %s, %s",
+            result_query,
+            account_column,
+            general_column,
+        )
+
+        return result_query
+
+
+    
+    def _compute_all(self):
+        # Preserve standard Odoo 18 calculations,
+        # especially committed_amount and committed_percentage.
+        super()._compute_all()
+
+        # Apply Odoo 17 Practical Amount logic only to budget lines
+        # that have a general budget position.
+        lines = self.filtered(lambda line: line.general_budget_id)
+
+        if not lines:
+            return
+
+        # {(model, field): {(date_from, date_to): account_ids}}
+        groups = defaultdict(lambda: defaultdict(set))
+
+        for line in lines:
+            model, fname, accounts = self._get_accounts_from_line(line)
+
+            if not line.date_from or not line.date_to:
+                continue
+
+            groups[(model, fname)][
+                (line.date_from, line.date_to)
+            ].update(accounts)
+
+        queries = []
+
+        for (model, fname), by_date in groups.items():
+            for (date_from, date_to), account_ids in by_date.items():
+
+                if not account_ids:
+                    continue
+
+                query = self._get_query_account_analytic_line(
+                    model,
+                    fname,
+                    date_from,
+                    date_to,
+                    account_ids,
+                )
+
+                queries.append(query)
+
+        # {(model, fname, date_from, date_to):
+        #    {(analytic_account, general_account): amount}}
+        agg_general = defaultdict(lambda: defaultdict(float))
+
+        # {(model, fname, date_from, date_to):
+        #    {analytic_account: amount}}
+        agg_analytic = defaultdict(lambda: defaultdict(float))
+
+        if queries:
+            self.env.cr.execute(
+                SQL(" UNION ALL ").join(queries)
+            )
+
+            for (
+                model,
+                fname,
+                date_from,
+                date_to,
+                account_id,
+                general_account_id,
+                amount,
+            ) in self.env.cr.fetchall():
+
+                key = (model, fname, date_from, date_to)
+
+                agg_general[key][
+                    (account_id, general_account_id)
+                ] += amount
+
+                agg_analytic[key][account_id] += amount
+
+        for line in lines:
+            model, fname, accounts = self._get_accounts_from_line(line)
+
+            # Odoo 18 financial budget item_ids replaces
+            # Odoo 17 account_ids Many2many.
+            general_accounts = set(
+                line.general_budget_id.item_ids.mapped(
+                    'account_id'
+                ).ids
+            )
+
+            if general_accounts and line.date_from and line.date_to:
+
+                key = (
+                    model,
+                    fname,
+                    line.date_from,
+                    line.date_to,
+                )
+
+                achieved = sum(
+                    agg_general.get(key, {}).get(
+                        (account, general_account),
+                        0.0,
+                    )
+                    for account in accounts
+                    for general_account in general_accounts
+                )
+
+            else:
+                # Preserve Odoo 17 custom logic:
+                # practical_amount = 0 when no general accounts.
+                achieved = 0.0
+
+            # Odoo 17 practical_amount -> Odoo 18 achieved_amount
+            line.achieved_amount = achieved
+
+            # Recalculate achieved percentage using Odoo 18 formula.
+            line.achieved_percentage = (
+                achieved / line.budget_amount
+                if line.budget_amount
+                else 0.0
+            )
+
+
     def _compute_achieved_amount(self):
         groups = defaultdict(lambda: defaultdict(set))
         for line in self:
@@ -1344,10 +1549,12 @@ class BudgetLines(models.Model):
                 raise UserError('You cannot able to delete Consolidated records')
         return super(BudgetLines, self).unlink()
 
+    @api.depends('budget_amount', 'achieved_amount', 'reserved_amount')
     def _compute_balance_amount(self):
         for rec in self:
-            rec.balance_amount = rec.committed_amount - (abs(rec.achieved_amount) + rec.reserved_amount)
-
+            rec.balance_amount = rec.budget_amount - (
+                abs(rec.achieved_amount) + rec.reserved_amount
+            )
     @api.depends('additional_amount')
     def _compute_is_edited(self):
         for rec in self:
