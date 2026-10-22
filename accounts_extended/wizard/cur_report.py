@@ -55,17 +55,7 @@ class AccountCURReportWizard(models.TransientModel):
             else:
                 current = current.replace(month=current.month + 1)
         return months
-    # def get_month_list(self,start, end):
-    #     months = []
-    #     current = start.replace(day=1)  # Start from 1st of month
-    #     while current <= end:
-    #         months.append(current.strftime("%b").upper())  # 'APR', 'MAY'
-    #         # Move to next month
-    #         if current.month == 12:
-    #             current = current.replace(year=current.year + 1, month=1)
-    #         else:
-    #             current = current.replace(month=current.month + 1)
-    #     return months
+    
 
     def _generate_excel_report(self):
         """Generate an Excel file from CRR data, including company and transaction details."""
@@ -132,6 +122,8 @@ class AccountCURReportWizard(models.TransientModel):
 
         records_debit = self.get_cash_bank_utilization_debit(self.start_date, self.end_date, self.company_id)
         records_credit = self.get_cash_bank_utilization_credit(self.start_date, self.end_date, self.company_id)
+        print('[CUR DEBUG] EXCEL DEBIT CATEGORIES', [(x['account_name'], x['account_code'], x['total_debit']) for x in records_debit], flush=True)
+        print('[CUR DEBUG] EXCEL CREDIT CATEGORIES', [(x['account_name'], x['account_code'], x['total_credit']) for x in records_credit], flush=True)
         # record_credit_card = self.credit_card_expenses(self.start_date, self.end_date, self.company_id)
         year = date.today().year
         year_suffix = str(year)[-2:]
@@ -185,7 +177,7 @@ class AccountCURReportWizard(models.TransientModel):
                         SELECT
                         am.journal_id AS journal_id,
                         aj.name->>'en_US' AS account_name,
-                        aa.report_code AS account_code,
+                        aa.code_store ->> (am.company_id::text) AS account_code,
                         SUM(absl.amount) AS balance
                     FROM account_bank_statement_line absl
                     JOIN account_move am ON am.id = absl.move_id
@@ -197,7 +189,7 @@ class AccountCURReportWizard(models.TransientModel):
                 if self.company_id:
                     query9 += " AND am.company_id = %s"
 
-                query9 += " GROUP BY aa.report_code,am.journal_id, aj.name ORDER BY aa.report_code"
+                query9 += " GROUP BY aa.code_store ->> (am.company_id::text), am.journal_id, aj.name ORDER BY account_code"
 
                 if self.company_id:
                     query_params9 = (self.start_date, self.company_id.id)
@@ -220,7 +212,7 @@ class AccountCURReportWizard(models.TransientModel):
                              SELECT
                                 am.journal_id AS journal_id,
                                 aj.name->>'en_US' AS account_name,
-                                aa.report_code AS account_code,
+                                aa.code_store ->> (am.company_id::text) AS account_code,
                                 am.date AS first_date,
                                 absl.amount AS balance
                             FROM account_bank_statement_line absl
@@ -230,7 +222,7 @@ class AccountCURReportWizard(models.TransientModel):
                             WHERE aa.account_type = 'asset_cash'"""
             if self.company_id:
                 first_tx_query += " AND am.company_id = %s"
-                first_tx_query += " GROUP BY aa.report_code,am.journal_id, aj.name,am.date,absl.amount ORDER BY am.date ASC LIMIT 1"
+                first_tx_query += " GROUP BY aa.code_store ->> (am.company_id::text),am.journal_id, aj.name,am.date,absl.amount ORDER BY am.date ASC LIMIT 1"
                 self.env.cr.execute(first_tx_query, (self.company_id.id,))
             else:
                 self.env.cr.execute(first_tx_query)
@@ -242,7 +234,7 @@ class AccountCURReportWizard(models.TransientModel):
                     SELECT
                         am.journal_id AS journal_id,
                         aj.name->>'en_US' AS account_name,
-                        aa.report_code AS account_code,
+                        aa.code_store ->> (am.company_id::text) AS account_code,
                         SUM(absl.amount) AS balance
                     FROM account_bank_statement_line absl
                     JOIN account_move am ON am.id = absl.move_id
@@ -254,7 +246,7 @@ class AccountCURReportWizard(models.TransientModel):
                 if self.company_id:
                     first_balance_query += " AND am.company_id = %s"
 
-                first_balance_query += " GROUP BY am.journal_id, aa.report_code,am.date, aj.name ORDER BY am.date ASC LIMIT 1"
+                first_balance_query += " GROUP BY am.journal_id, aa.code_store ->> (am.company_id::text),am.date, aj.name ORDER BY am.date ASC LIMIT 1"
                 if self.company_id:
                     self.env.cr.execute(first_balance_query, (first_date, self.company_id.id))
                 else:
@@ -278,7 +270,7 @@ class AccountCURReportWizard(models.TransientModel):
                     SELECT
                         am.journal_id AS journal_id,
                         aj.name->>'en_US' AS account_name,
-                        aa.report_code AS account_code,
+                        aa.code_store ->> (am.company_id::text) AS account_code,
                         SUM(absl.amount) AS balance
                     FROM account_bank_statement_line absl
                     JOIN account_move am ON am.id = absl.move_id
@@ -289,7 +281,7 @@ class AccountCURReportWizard(models.TransientModel):
                 """
                 if self.company_id:
                     query81 += " AND am.company_id = %s"
-                query81 += " GROUP BY am.journal_id,aa.report_code, aj.name ORDER BY aa.report_code"
+                query81 += " GROUP BY am.journal_id,aa.code_store ->> (am.company_id::text), aj.name ORDER BY account_code"
 
                 if self.company_id:
                     query_params81 = (month_start, self.company_id.id)
@@ -309,7 +301,7 @@ class AccountCURReportWizard(models.TransientModel):
                     SELECT
                         am.journal_id AS journal_id,
                         aj.name->>'en_US' AS account_name,
-                        aa.report_code AS account_code,
+                        aa.code_store ->> (am.company_id::text) AS account_code,
                         SUM(absl.amount) AS balance
                     FROM account_bank_statement_line absl
                     JOIN account_move am ON am.id = absl.move_id
@@ -320,7 +312,7 @@ class AccountCURReportWizard(models.TransientModel):
                 """
                 if self.company_id:
                     query91 += " AND am.company_id = %s"
-                query91 += " GROUP BY am.journal_id,aa.report_code, aj.name ORDER BY aa.report_code"
+                query91 += " GROUP BY am.journal_id,aa.code_store ->> (am.company_id::text), aj.name ORDER BY account_code"
 
                 if self.company_id:
                     query_params91 = (self.end_date, self.company_id.id)
@@ -365,7 +357,7 @@ class AccountCURReportWizard(models.TransientModel):
                                             SELECT
                                                 am.journal_id AS journal_id,
                                                 aj.name->>'en_US' AS account_name,
-                                                aa.report_code AS account_code,
+                                                aa.code_store ->> (am.company_id::text) AS account_code,
                                                 SUM(absl.amount) AS balance
                                             FROM account_bank_statement_line absl
                                             JOIN account_move am ON am.id = absl.move_id
@@ -376,7 +368,7 @@ class AccountCURReportWizard(models.TransientModel):
                                         """
             if self.company_id:
                 query91 += " AND am.company_id = %s"
-            query91 += " GROUP BY am.journal_id,aa.report_code, aj.name ORDER BY aa.report_code"
+            query91 += " GROUP BY am.journal_id,aa.code_store ->> (am.company_id::text), aj.name ORDER BY account_code"
 
             if self.company_id:
                 query_params91 = (self.end_date, self.company_id.id)
@@ -392,7 +384,7 @@ class AccountCURReportWizard(models.TransientModel):
                                     am.id AS move_id,
                                     am.journal_id AS journal_id,
                                     aj.name->>'en_US' AS account_name,
-                                    aa.report_code AS account_code,
+                                    aa.code_store ->> (am.company_id::text) AS account_code,
                                     am.date AS first_date,
                                     absl.amount AS balance
                                 FROM account_bank_statement_line absl
@@ -403,7 +395,7 @@ class AccountCURReportWizard(models.TransientModel):
                             """
                 if self.company_id:
                     first_tx_query += " AND am.company_id = %s AND aj.id=%s"
-                    first_tx_query += " GROUP BY aa.report_code,am.journal_id,am.id, aj.name,am.date,absl.amount ORDER BY am.date ASC"
+                    first_tx_query += " GROUP BY aa.code_store ->> (am.company_id::text),am.journal_id,am.id, aj.name,am.date,absl.amount ORDER BY am.date ASC"
                     self.env.cr.execute(first_tx_query, (self.company_id.id,acc['journal_id']))
                 else:
                     self.env.cr.execute(first_tx_query)
@@ -420,15 +412,15 @@ class AccountCURReportWizard(models.TransientModel):
                                             SELECT
                                                 am.journal_id AS journal_id,
                                                 aj.name->>'en_US' AS account_name,
-                                                aa.report_code AS account_code,
+                                                aa.code_store ->> (am.company_id::text) AS account_code,
                                                 SUM(absl.amount) AS balance
                                             FROM account_bank_statement_line absl
                                             JOIN account_move am ON am.id = absl.move_id
                                             JOIN account_journal aj ON aj.id = am.journal_id
                                             JOIN account_account aa ON aa.id = aj.default_account_id
                                             WHERE aa.account_type = 'asset_cash' AND am.id = %s
-                                            GROUP BY am.journal_id, aa.report_code, aj.name
-                                            ORDER BY aa.report_code
+                                            GROUP BY am.journal_id, aa.code_store ->> (am.company_id::text), aj.name
+                                            ORDER BY account_code
                                         """
                             # journal_ids = [item['journal_id'] for item in accounts]
                             self.env.cr.execute(first_balance_query, (first_tx['move_id'],))
@@ -450,70 +442,12 @@ class AccountCURReportWizard(models.TransientModel):
             for month,balances in opening_balances.items():
                 col = month_col_map[month]
                 sheet.write(2, col, balances, value_format)
-                # print(opening,"oooooooooooooooooooooooooooooooooooooooo")
-            # first_tx_query = """
-            #     SELECT
-            #         am.id AS move_id,
-            #         am.journal_id AS journal_id,
-            #         aj.name->>'en_US' AS account_name,
-            #         aa.report_code AS account_code,
-            #         am.date AS first_date,
-            #         absl.amount AS balance
-            #     FROM account_bank_statement_line absl
-            #     JOIN account_move am ON am.id = absl.move_id
-            #     JOIN account_journal aj ON aj.id = am.journal_id
-            #     JOIN account_account aa ON aa.id = aj.default_account_id
-            #     WHERE aa.account_type = 'asset_cash'
-            # """
-            # if self.company_id:
-            #     first_tx_query += " AND am.company_id = %s"
-            #     first_tx_query += " GROUP BY aa.report_code,am.journal_id,am.id, aj.name,am.date,absl.amount ORDER BY am.date ASC LIMIT 1"
-            #     self.env.cr.execute(first_tx_query, (self.company_id.id,))
-            # else:
-            #     self.env.cr.execute(first_tx_query)
-            #
-            # first_tx = self.env.cr.dictfetchone()
-            # if first_tx and first_tx.get('first_date'):
-            #     first_date = first_tx['first_date']
-            #     if self.start_date <= first_date <= self.end_date:
-            #         first_month = first_date.strftime('%b').upper()
-            #         if first_month in month_col_map:
-            #             col = month_col_map[first_month]
-            #
-            #             first_balance_query = """
-            #                 SELECT
-            #                     am.journal_id AS journal_id,
-            #                     aj.name->>'en_US' AS account_name,
-            #                     aa.report_code AS account_code,
-            #                     SUM(absl.amount) AS balance
-            #                 FROM account_bank_statement_line absl
-            #                 JOIN account_move am ON am.id = absl.move_id
-            #                 JOIN account_journal aj ON aj.id = am.journal_id
-            #                 JOIN account_account aa ON aa.id = aj.default_account_id
-            #                 WHERE aa.account_type = 'asset_cash' AND am.id = %s
-            #                 GROUP BY am.journal_id, aa.report_code, aj.name
-            #                 ORDER BY aa.report_code
-            #             """
-            #             self.env.cr.execute(first_balance_query, (first_tx['move_id'],))
-            #             first_month_lines = self.env.cr.dictfetchall()
-            #             opening_balance_1 = first_tx.get('balance')
-            #             if first_date:
-            #                 first_month = first_date.strftime('%b').upper()
-            #                 for idx, month in enumerate(month_list):
-            #                     if first_month in month:
-            #                         opening_balances[month] = opening_balance_1 # Adjust offset to your month column
-            #                         sheet.write(2, 2, opening_balance_1, value_format)
-            #             for line in first_month_lines:
-            #                 acc_code = line['account_code']
-            #                 balance = line['balance'] or 0.0
-            #                 if acc_code in account_row_map:
-            #                     row_idx = account_row_map[acc_code]
-            #                     sheet.write(row_idx, col, balance, value_format)
+              
             row_num += 1
         end_balance1 = """SELECT
                     am.journal_id AS journal_id,
                     aj.name->>'en_US' AS account_name,
-                    aa.report_code AS account_code,
+                    aa.code_store ->> (am.company_id::text) AS account_code,
                     SUM(absl.amount) AS balance
                 FROM account_bank_statement_line absl
                 JOIN account_move am ON am.id = absl.move_id
@@ -524,7 +458,7 @@ class AccountCURReportWizard(models.TransientModel):
             """
         if self.company_id:
             end_balance1 += " AND am.company_id = %s"
-            end_balance1 += " GROUP BY am.journal_id,aa.report_code, aj.name ORDER BY aa.report_code"
+            end_balance1 += " GROUP BY am.journal_id,aa.code_store ->> (am.company_id::text), aj.name ORDER BY account_code"
             end_balance_params = (self.end_date, self.company_id.id)
             end_balance_params1 = (self.end_date, self.company_id.id)
         else:
@@ -804,11 +738,7 @@ class AccountCURReportWizard(models.TransientModel):
 
                     sheet.write(row_num, 2, '', value_format1)
                     sheet.write(row_num, 3, '', value_format1)
-                    # row_num += 1
-                    # sheet.write(row_num, 0, '', header_format_num)
-                    # sheet.write(row_num, 1, '', header_format_num)
-                    # sheet.write(row_num, 2, '', header_format_num)
-                    # row_num += 1
+                    
                     partner_month_totals = defaultdict(lambda: defaultdict(float))
                     for detail in account['entries']:
                         if detail.get('debit'):
@@ -866,10 +796,7 @@ class AccountCURReportWizard(models.TransientModel):
                     sheet.write(row_num, 1, account['account_code'], value_format1)
                     sheet.write(row_num, 2, account['total_debit'], value_format1) if account[
                                             'total_debit'] != 0 else sheet.write(row_num, 2, '', value_format)
-                    # row_num +=1
-                    # sheet.write(row_num, 0, '', header_format_num)
-                    # sheet.write(row_num, 1, '', header_format_num)
-                    # sheet.write(row_num, 2, '', header_format_num)
+                  
                     row_num +=1
                     partner_totals = {}
                     for detail in account['entries']:
@@ -1062,7 +989,7 @@ class AccountCURReportWizard(models.TransientModel):
                 SELECT
                     am.journal_id AS journal_id,
                     aj.name->>'en_US' AS account_name,
-                    aa.report_code AS account_code,
+                    aa.code_store ->> (am.company_id::text) AS account_code,
                     SUM(absl.amount) AS balance
                 FROM account_bank_statement_line absl
                 JOIN account_move am ON am.id = absl.move_id
@@ -1074,7 +1001,7 @@ class AccountCURReportWizard(models.TransientModel):
             if self.company_id:
                 end_balance_query += " AND am.company_id = %s"
 
-            end_balance_query += " GROUP BY am.journal_id,aj.name,aa.report_code"
+            end_balance_query += " GROUP BY am.journal_id,aj.name,aa.code_store ->> (am.company_id::text)"
 
             if self.company_id:
                 query_params = (self.end_date, self.company_id.id)
@@ -1147,6 +1074,53 @@ class AccountCURReportWizard(models.TransientModel):
         buffer.seek(0)
         return buffer.read()
 
+    def _get_cur_internal_transfers(self, date_from, date_to, company_id):
+        """Return paired transfers with an outbound bank reconciliation in the period.
+
+        Read-only. One result per outbound payment, avoiding duplicate match groups.
+        """
+        payments = self.env['account.payment'].sudo().search([
+            ('company_id', '=', company_id.id),
+            ('move_id.state', '=', 'posted'),
+            ('payment_type', '=', 'outbound'),
+            ('paired_internal_transfer_payment_id', '!=', False),
+        ])
+        transfers = []
+        for payment in payments:
+            paired = payment.paired_internal_transfer_payment_id
+            if (not paired or paired.payment_type != 'inbound'
+                    or paired.company_id.id != company_id.id
+                    or paired.move_id.state != 'posted'):
+                continue
+            outgoing = payment.move_id.line_ids.filtered(
+                lambda line: line.credit > 0
+                and line.account_id.with_company(company_id).code == '100204'
+            )
+            incoming = paired.move_id.line_ids.filtered(
+                lambda line: line.debit > 0
+                and line.account_id.with_company(company_id).code == '100203'
+            )
+            if len(outgoing) != 1 or len(incoming) != 1:
+                continue
+            statement_dates = [
+                line.statement_line_id.date
+                for line in outgoing._all_reconciled_lines()
+                if line.statement_line_id
+                and line.statement_line_id.date
+                and date_from <= line.statement_line_id.date <= date_to
+            ]
+            if not statement_dates:
+                continue
+            transfers.append({
+                'outgoing': outgoing,
+                'incoming': incoming,
+                'statement_date': min(statement_dates),
+                'payment': payment,
+                'paired_payment': paired,
+            })
+    
+        return transfers
+
     def get_cash_bank_utilization_debit(self, date_from, date_to,company_id):
 
         result = defaultdict(lambda: {
@@ -1157,82 +1131,80 @@ class AccountCURReportWizard(models.TransientModel):
             'total_credit': 0.0,
             'entries': []
         })
-        #internal transfer entry
-        pay_rec = self.env['account.payment'].sudo().search([
-            ('state', '=', 'posted'),
-            # ('is_internal_transfer','=', True),
-            ('company_id', '=', company_id.id),
-            ('move_id.state', '=', 'posted')])
-        groups_by_match = defaultdict(set)
-        seen_matches = set()
-
-        for rec1 in pay_rec:
-            for rec in rec1.move_id.line_ids:
-                reconciled_lines = rec._all_reconciled_lines().filtered(
-                    lambda l: l.matched_debit_ids or l.matched_credit_ids
+        # Paired internal transfers: exactly one debit per outbound payment.
+        cur_transfers = self._get_cur_internal_transfers(date_from, date_to, company_id)
+        for transfer in cur_transfers:
+            r = transfer['incoming']
+            key = ('Internal Bank Transfer', r.move_id.expense_type)
+            result[key]['account_name'] = 'Internal Bank Transfer'
+            result[key]['account_code'] = r.account_id.with_company(company_id).code
+            result[key]['expense_type'] = r.move_id.expense_type
+            result[key]['total_debit'] += r.debit
+            result[key]['entries'].append({
+                'move_name': r.move_id.name,
+                'mov_id': r.id,
+                'partner_id': r.move_id.journal_id.name,
+                'debit': r.debit,
+                'date': r.date,
+                'statement_date': transfer['statement_date'],
+            })
+        # Odoo 17 parity: a transfer whose INBOUND bank line is reconciled
+        # to a bank statement also contributes its paired OUTBOUND clearing
+        # debit to the separate Credit Card category. This is additive:
+        # do not remove the transfer from Internal Bank Transfer.
+        # Check the inbound bank statement separately from the outbound
+        # statement used by _get_cur_internal_transfers().
+        seen_credit_card_lines = set()
+        for transfer in cur_transfers:
+            incoming = transfer['incoming']
+            inbound_statement_dates = [
+                line.statement_line_id.date
+                for line in incoming._all_reconciled_lines()
+                if line.statement_line_id
+                and line.statement_line_id.date
+                and date_from <= line.statement_line_id.date <= date_to
+            ]
+            if not inbound_statement_dates:
+                continue
+            outbound_payment = transfer['payment']
+            # Preserve Odoo 17 exclusion: transfers into credit-card bank
+            # journals must not be counted again as 'Credit Card' outflows.
+            paired_payment = transfer['paired_payment']
+            if paired_payment.journal_id.is_credit_card_bank:
+                print(
+                    f'[CUR DEBUG] CREDIT CARD SKIP payment={outbound_payment.id} '
+                    f'destination_journal={paired_payment.journal_id.name} '
+                    f'reason=is_credit_card_bank',
+                    flush=True,
                 )
-                for line in reconciled_lines:
-                    if line.matching_number and line.matching_number not in seen_matches:
-                        # store all lines of this matching_number once
-                        groups_by_match[line.matching_number].update(
-                            reconciled_lines.ids
-                        )
-                        seen_matches.add(line.matching_number)
-        groups_by_match = {k: list(v) for k, v in groups_by_match.items()}
-
-        for match_no, ids in groups_by_match.items():
-            groups_with_statement = []
-            move_lines = self.env['account.move.line'].browse(ids)
-            if any(l.statement_line_id and date_from <= l.date <= date_to for l in move_lines):
-                groups_with_statement.append(ids)
-
-                for g in groups_with_statement:
-                    r1 = self.env['account.move.line'].browse(g)
-                    if not all(line.account_id.code == '100801' for line in r1):
-                        # continue
-                        for r in r1:
-                            if not r.statement_line_id and not r.move_id.journal_id.is_credit_card_bank:
-                                r = r.move_id.payment_id.paired_internal_transfer_payment_id.move_id.line_ids.filtered(
-                                    lambda l: l.debit > 0)
-                                if r.move_id.payment_id.payment_type != 'outbound':
-                                    key = ('Internal Bank Transfer', r.move_id.expense_type)
-                                    result[key]['account_name'] = 'Internal Bank Transfer'
-                                    result[key]['account_code'] = r.account_id.code
-                                    result[key]['expense_type'] = r.move_id.expense_type
-                                    result[key]['total_debit'] += r.debit
-                                    result[key]['entries'].append({
-                                        'move_name': r.move_id.name,
-                                        'mov_id': r.id,
-                                        'partner_id': (
-                                            r.move_id.journal_id.name
-                                            # if r.move_id.payment_id and r.move_id.payment_id.is_internal_transfer
-                                            if r.move_id.payment_id
-                                            else r.partner_id.name if r.partner_id
-                                            else r.account_id.name
-                                        ),
-                                        'debit': r.debit,
-                                        'date': r.date,
-                                    })
-                                else:
-                                    key = ('Credit Card', r.move_id.expense_type)
-                                    result[key]['account_name'] = 'Credit Card'
-                                    result[key]['account_code'] = r.account_id.code
-                                    result[key]['expense_type'] = r.move_id.expense_type
-                                    result[key]['total_debit'] += r.debit
-                                    result[key]['entries'].append({
-                                        'move_name': r.move_id.name,
-                                        'mov_id': r.id,
-                                        'partner_id': (
-                                            r.move_id.journal_id.name
-                                            # if r.move_id.payment_id and r.move_id.payment_id.is_internal_transfer
-                                            if r.move_id.payment_id
-                                            else r.partner_id.name if r.partner_id
-                                            else r.account_id.name
-                                        ),
-                                        'debit': r.debit,
-                                        'date': r.date,
-                                    })
-                                # print(result,'kkkkkkkkkkkkkkkkkkkkkkkkkkkkkzzzzzzzzzzzzzzz')
+                continue
+            clearing_debits = outbound_payment.move_id.line_ids.filtered(
+                lambda line: line.debit > 0
+                and line.account_id.with_company(company_id).code == '100801'
+            )
+            for line in clearing_debits:
+                if line.id in seen_credit_card_lines:
+                    continue
+                seen_credit_card_lines.add(line.id)
+                key = ('Credit Card', line.move_id.expense_type)
+                result[key]['account_name'] = 'Credit Card'
+                result[key]['account_code'] = line.account_id.with_company(company_id).code
+                result[key]['expense_type'] = line.move_id.expense_type
+                result[key]['total_debit'] += line.debit
+                result[key]['entries'].append({
+                    'move_name': line.move_id.name,
+                    'mov_id': line.id,
+                    'partner_id': line.move_id.journal_id.name,
+                    'debit': line.debit,
+                    'date': line.date,
+                    'statement_date': min(inbound_statement_dates),
+                })
+                print(
+                    f'[CUR DEBUG] CREDIT CARD ADD payment={outbound_payment.id} '
+                    f'line={line.id} amount={line.debit} '
+                    f'statement_date={min(inbound_statement_dates)}',
+                    flush=True,
+                )
         moves = self.env['account.move.line'].sudo().search([
             ('move_id.state', '=', 'posted'),
             ('move_id.journal_id.type', 'in', ('bank', 'cash')),
@@ -1282,18 +1254,12 @@ class AccountCURReportWizard(models.TransientModel):
 
                         if move_line.journal_id.type in ('bank', 'cash'):
                             for rec in move_line.line_ids:
-
-                                payments = rec.move_id.matched_payment_ids
-                                is_credit_payment = any(
-                                    payment.is_credit_payment for payment in payments
-                                )
-
-                                if (
-                                    rec.debit > 0
-                                    and rec.account_id.code not in ('100202', '100203', '100204')
-                                ):
+                                if rec.debit > 0 and rec.account_id.with_company(company_id).code not in ('100202','100203','100204'):
+                                    # if not rec.move_id.origin_payment_id.is_credit_payment and not rec.move_id.origin_payment_id.paired_internal_transfer_payment_id and not rec.move_id.is_payment_approval and not rec.move_id.journal_id.is_credit_card_bank:
+                                    payment = rec.move_id.origin_payment_id
                                     if (
-                                        not is_credit_payment
+                                        not (payment and payment.is_credit_payment)
+                                        and not (payment and payment.paired_internal_transfer_payment_id)
                                         and not rec.move_id.is_payment_approval
                                         and not rec.move_id.journal_id.is_credit_card_bank
                                     ):
@@ -1302,7 +1268,7 @@ class AccountCURReportWizard(models.TransientModel):
                                         key = (rec.account_id.id, line.move_id.expense_type)
 
                                         result[key]['account_name'] = rec.account_id.name
-                                        result[key]['account_code'] = rec.account_id.code
+                                        result[key]['account_code'] = rec.account_id.with_company(company_id).code
                                         result[key]['expense_type'] = rec.move_id.expense_type
                                         result[key]['total_debit'] += rec.debit
 
@@ -1311,7 +1277,7 @@ class AccountCURReportWizard(models.TransientModel):
                                             'mov_id': rec.id,
                                             'partner_id': (
                                                 rec.move_id.journal_id.name
-                                                if payments
+                                                if rec.move_id.origin_payment_id and rec.move_id.origin_payment_id.paired_internal_transfer_payment_id
                                                 else rec.partner_id.name
                                                 if rec.partner_id
                                                 else rec.account_id.name
@@ -1323,8 +1289,8 @@ class AccountCURReportWizard(models.TransientModel):
 
                                 elif (
                                     rec.debit > 0
-                                    and rec.account_id.code == '100203'
-                                    and not payments
+                                    and rec.account_id.with_company(company_id).code == '100203'
+                                    and not rec.move_id.origin_payment_id
                                 ):
                                     skip_entry = False
 
@@ -1353,7 +1319,7 @@ class AccountCURReportWizard(models.TransientModel):
                                     key = (rec.account_id.id, line.move_id.expense_type)
 
                                     result[key]['account_name'] = rec.account_id.name
-                                    result[key]['account_code'] = rec.account_id.code
+                                    result[key]['account_code'] = rec.account_id.with_company(company_id).code
                                     result[key]['expense_type'] = rec.move_id.expense_type
                                     result[key]['total_debit'] += rec.debit
 
@@ -1362,7 +1328,7 @@ class AccountCURReportWizard(models.TransientModel):
                                         'mov_id': rec.id,
                                         'partner_id': (
                                             rec.move_id.journal_id.name
-                                            if payments
+                                            if rec.move_id.origin_payment_id and rec.move_id.origin_payment_id.paired_internal_transfer_payment_id
                                             else rec.partner_id.name
                                             if rec.partner_id
                                             else rec.account_id.name
@@ -1371,126 +1337,11 @@ class AccountCURReportWizard(models.TransientModel):
                                         'date': rec.date,
                                         'statement_date': stmt_date,
                                     })
-        #outstanding entries
-        # for rec in outstanding:
-        #     if rec.debit > 0 and rec.account_id.account_type != 'asset_cash' and rec.move_id.has_reconciled_entries:
-        #          print(rec.move_id.name,'zzzzzzzzzzzzzzzz')
-        #          key = (rec.account_id.id, rec.move_id.expense_type)
-        #          result[key]['account_name'] = rec.account_id.name
-        #          result[key]['account_code'] = rec.account_id.code
-        #          result[key]['expense_type'] = rec.move_id.expense_type
-        #          result[key]['total_debit'] += rec.debit
-        #          result[key]['entries'].append({
-        #                             'move_name':rec.move_id.name,
-        #                             'mov_id':rec.id,
-        #                             'partner_id':  rec.move_id.journal_id.name if rec.move_id.payment_id and rec.move_id.payment_id.is_internal_transfer
-        #                                               else rec.partner_id.name if rec.partner_id
-        #                                               else rec.account_id.name,
-        #                             'debit': rec.debit,
-        #                             'date': rec.date,
-        #                         })
-
-        #Misc entries
-
-        # mis = self.env['account.move.line'].sudo().search([
-        #     ('move_id.state', '=', 'posted'),
-        #     ('move_id.move_type','=','entry'),
-        #     ('move_id.journal_id.type', '=','general'),
-        #     ('move_id.company_id','=',company_id.id),
-        # ])
-        # grouped = defaultdict(list)
-        # for line in mis:
-        #     if line.matching_number:
-        #         same_group = self.env['account.move.line'].sudo().search([
-        #             ('matching_number', '=', line.matching_number)
-        #         ])
-        #         grouped[line.matching_number].extend(same_group)
-        # filtered_groups = {
-        #     match_no: lines
-        #     for match_no, lines in grouped.items()
-        #     if any(l.statement_line_id for l in lines)
-        # }
-        # # stop
-        # for match,recs in list(filtered_groups.items()):
-        #     for rec in recs:
-        #         if not rec.statement_line_id and rec.matching_number:
-        #             if (date_from <= rec.date <= date_to):
-        #                 move = rec.move_id
-        #                 for r in move.line_ids:
-        #                     if r.debit > 0:
-        #                         print(r.debit,'kkkkkkkkkkkkkkkkkkkkkkkkkkkkk')
-        #                         key = (r.account_id.id, r.move_id.expense_type)
-        #                         result[key]['account_name'] = r.account_id.name
-        #                         result[key]['account_code'] = r.account_id.code
-        #                         result[key]['expense_type'] = r.move_id.expense_type
-        #                         result[key]['total_debit'] += r.debit
-        #                         result[key]['entries'].append({
-        #                             'move_name': r.move_id.name,
-        #                             'mov_id': r.id,
-        #                             'partner_id': r.move_id.journal_id.name if r.move_id.payment_id and r.move_id.payment_id.is_internal_transfer
-        #                             else r.partner_id.name if r.partner_id
-        #                             else r.account_id.name,
-        #                             'debit': r.debit,
-        #                             'date': r.date,
-        #                         })
-
-        #Credit Card Expense
-        # credit_card_expense = self.env['account.move.line'].sudo().search([
-        #     ('move_id.state', '=', 'posted'),
-        #     ('move_id.journal_id.type', 'in', ('bank', 'cash')),
-        #     ('move_id.company_id', '=', company_id.id),
-        #     ('move_id.is_payment_approval', '=', True),
-        # ])
-        # for rec in credit_card_expense:
-        #     if rec.matching_number:
-        #         move_line = self.env['account.move.line'].sudo().search(
-        #             [('matching_number', '=', rec.matching_number), ('id', '!=', rec.id)])
-        #         for move_line1 in move_line:
-        #             if (date_from <= move_line1.date <= date_to) and move_line1.statement_line_id:
-        #                 for r in rec.move_id.line_ids:
-        #                     if r.debit > 0:
-        #                         key = (r.account_id.id, r.move_id.expense_type)
-        #                         result[key]['account_name'] = r.account_id.name
-        #                         result[key]['account_code'] = r.account_id.code
-        #                         result[key]['expense_type'] = r.move_id.expense_type
-        #                         result[key]['total_debit'] += r.debit
-        #                         result[key]['entries'].append({
-        #                             'move_name': r.move_id.name,
-        #                             'mov_id': r.id,
-        #                             'partner_id': r.move_id.journal_id.name if r.move_id.payment_id and r.move_id.payment_id.is_internal_transfer
-        #                             else r.partner_id.name if r.partner_id
-        #                             else r.account_id.name,
-        #                             'debit': r.debit,
-        #                             'date': r.date,
-        #                             'statement_date': move_line.statement_line_id.date
-        #                         })
-        #FD Entries
-        # fd_entry = self.env['account.move.line'].sudo().search([
-        #     ('move_id.state', '=', 'posted'),
-        #     ('move_id.move_type', '=', 'entry'),
-        #     ('move_id.journal_id.type', 'in', ('bank','cash')),
-        #     ('move_id.company_id', '=', company_id.id)])
-        # for rec in fd_entry.move_id:
-        #     if (date_from <= rec.date <= date_to):
-        #         if not rec.has_reconciled_entries:
-        #             for r in rec.line_ids:
-        #                 if not r.matching_number and r.account_id.group_id.code_prefix_start == '30602':
-        #                     if r.debit > 0:
-        #                         key = (r.account_id.id, r.move_id.expense_type)
-        #                         result[key]['account_name'] = r.account_id.name
-        #                         result[key]['account_code'] = r.account_id.code
-        #                         result[key]['expense_type'] = r.move_id.expense_type
-        #                         result[key]['total_debit'] += r.debit
-        #                         result[key]['entries'].append({
-        #                             'move_name': r.move_id.name,
-        #                             'mov_id': r.id,
-        #                             'partner_id': r.move_id.journal_id.name if r.move_id.payment_id and r.move_id.payment_id.is_internal_transfer
-        #                             else r.partner_id.name if r.partner_id
-        #                             else r.account_id.name,
-        #                             'debit': r.debit,
-        #                             'date': r.date,
-        #                         })
+        
+        print('[CUR DEBUG] FUNCTION RESULT', 'DEBIT', [(v['account_name'], v['account_code'], v.get('total_debit', v.get('total_credit')), len(v['entries'])) for v in result.values()], flush=True)
         return list(result.values())
+
+
 
     def get_cash_bank_utilization_credit(self, date_from, date_to,company_id):
         """
@@ -1550,21 +1401,14 @@ class AccountCURReportWizard(models.TransientModel):
 
                         if move_line.journal_id.type in ('bank', 'cash'):
                             for rec in move_line.line_ids:
-
-                                payments = rec.move_id.matched_payment_ids
-
-                                if (
-                                    rec.credit > 0
-                                    and rec.account_id.code not in ('100203', '100204', '100801')
-                                ):
-                                    if rec.account_id.account_type != 'asset_cash':
-
+                                if rec.credit > 0 and rec.account_id.with_company(company_id).code not in ('100203','100204','100801'):
+                                    if not rec.move_id.origin_payment_id.paired_internal_transfer_payment_id and rec.account_id.account_type not in ('asset_cash'):
                                         l.add((rec.move_id.name, rec.id))
 
                                         key = (rec.account_id.id, line.move_id.expense_type)
 
                                         result[key]['account_name'] = rec.account_id.name
-                                        result[key]['account_code'] = rec.account_id.code
+                                        result[key]['account_code'] = rec.account_id.with_company(company_id).code
                                         result[key]['expense_type'] = rec.move_id.expense_type
                                         result[key]['total_credit'] += rec.credit
 
@@ -1572,8 +1416,7 @@ class AccountCURReportWizard(models.TransientModel):
                                             'move_name': rec.move_id.name,
                                             'mov_id': rec.id,
                                             'partner_id': (
-                                                rec.move_id.journal_id.name
-                                                if payments
+                                                rec.move_id.journal_id.name if rec.move_id.origin_payment_id and rec.move_id.origin_payment_id.paired_internal_transfer_payment_id
                                                 else rec.partner_id.name
                                                 if rec.partner_id
                                                 else rec.account_id.name
@@ -1585,8 +1428,8 @@ class AccountCURReportWizard(models.TransientModel):
 
                                 elif (
                                     rec.credit > 0
-                                    and rec.account_id.code == '100204'
-                                    and not rec.move_id.matched_payment_ids
+                                    and rec.account_id.with_company(company_id).code == '100204'
+                                    and not rec.move_id.origin_payment_id
                                 ):
                                     skip_entry = False
 
@@ -1615,7 +1458,7 @@ class AccountCURReportWizard(models.TransientModel):
                                     key = (rec.account_id.id, line.move_id.expense_type)
 
                                     result[key]['account_name'] = rec.account_id.name
-                                    result[key]['account_code'] = rec.account_id.code
+                                    result[key]['account_code'] = rec.account_id.with_company(company_id).code
                                     result[key]['expense_type'] = rec.move_id.expense_type
                                     result[key]['total_credit'] += rec.credit
 
@@ -1624,7 +1467,7 @@ class AccountCURReportWizard(models.TransientModel):
                                         'mov_id': rec.id,
                                         'partner_id': (
                                             rec.move_id.journal_id.name
-                                            if rec.move_id.matched_payment_ids
+                                            if rec.move_id.origin_payment_id and rec.move_id.origin_payment_id.paired_internal_transfer_payment_id
                                             else rec.partner_id.name
                                             if rec.partner_id
                                             else rec.account_id.name
@@ -1633,53 +1476,23 @@ class AccountCURReportWizard(models.TransientModel):
                                         'date': rec.date,
                                         'statement_date': stmt_date,
                                     })
-        #Bank To Bank Transfer
-        pay_rec = self.env['account.payment'].sudo().search([
-            ('state', '=', 'posted'),
-            # ('is_internal_transfer','=', True),
-            ('company_id', '=', company_id.id),
-            ('move_id.state', '=', 'posted')])
-        groups_by_match = defaultdict(set)
-        seen_matches = set()
-        for rec1 in pay_rec:
-            for rec in rec1.move_id.line_ids:
-                reconciled_lines = rec._all_reconciled_lines().filtered(
-                    lambda l: l.matched_debit_ids or l.matched_credit_ids
-                )
-                for line in reconciled_lines:
-                    if line.matching_number and line.matching_number not in seen_matches:
-                        groups_by_match[line.matching_number].update(
-                            reconciled_lines.ids
-                        )
-                        seen_matches.add(line.matching_number)
-        groups_by_match = {k: list(v) for k, v in groups_by_match.items()}
-
-        for match_no, ids in groups_by_match.items():
-            groups_with_statement = []
-            move_lines = self.env['account.move.line'].browse(ids)
-            if any(l.statement_line_id and date_from <= l.date <= date_to for l in move_lines):
-                groups_with_statement.append(ids)
-                for g in groups_with_statement:
-                    r1 =  self.env['account.move.line'].browse(g)
-                    for r in r1:
-                        if not all(line.account_id.code == '100801' for line in r1):
-                            # continue
-                            if not r.statement_line_id and r.credit > 0 and not r.move_id.journal_id.is_credit_card_bank:
-                                # if r.move_id.payment_id.payment_type != 'inbound':
-                                        key = (r.account_id.id, r.move_id.expense_type)
-                                        result[key]['account_name'] = 'Internal Bank Transfer'
-                                        result[key]['account_code'] = r.account_id.code
-                                        result[key]['expense_type'] = r.move_id.expense_type
-                                        result[key]['total_credit'] += r.credit
-                                        result[key]['entries'].append({
-                                            'move_name': r.move_id.name,
-                                            'mov_id': r.id,
-                                            'partner_id': r.move_id.journal_id.name if r.move_id.payment_id and r.move_id.payment_id.is_internal_transfer
-                                            else r.partner_id.name if r.partner_id
-                                            else r.account_id.name,
-                                            'credit': r.credit,
-                                            'date': r.date,
-                                        })
+        # Paired internal transfers: exactly one credit per outbound payment.
+        for transfer in self._get_cur_internal_transfers(date_from, date_to, company_id):
+            r = transfer['outgoing']
+            key = ('Internal Bank Transfer', r.move_id.expense_type)
+            result[key]['account_name'] = 'Internal Bank Transfer'
+            result[key]['account_code'] = r.account_id.with_company(company_id).code
+            result[key]['expense_type'] = r.move_id.expense_type
+            result[key]['total_credit'] += r.credit
+            result[key]['entries'].append({
+                'move_name': r.move_id.name,
+                'mov_id': r.id,
+                'partner_id': r.move_id.journal_id.name,
+                'credit': r.credit,
+                'date': r.date,
+                'statement_date': transfer['statement_date'],
+            })
+        print('[CUR DEBUG] FUNCTION RESULT', 'CREDIT', [(v['account_name'], v['account_code'], v.get('total_debit', v.get('total_credit')), len(v['entries'])) for v in result.values()], flush=True)
         return list(result.values())
 
     def credit_card_expenses(self, date_from, date_to,company_id):
@@ -1709,13 +1522,13 @@ class AccountCURReportWizard(models.TransientModel):
                             if r.debit > 0:
                                 key = (r.account_id.id, r.move_id.expense_type)
                                 result[key]['account_name'] = r.account_id.name
-                                result[key]['account_code'] = r.account_id.code
+                                result[key]['account_code'] = r.account_id.with_company(company_id).code
                                 result[key]['expense_type'] = r.move_id.expense_type
                                 result[key]['total_debit'] += r.debit
                                 result[key]['entries'].append({
                                     'move_name': r.move_id.name,
                                     'mov_id': r.id,
-                                    'partner_id': r.move_id.journal_id.name if r.move_id.payment_id
+                                    'partner_id': r.move_id.journal_id.name if r.move_id.origin_payment_id and r.move_id.origin_payment_id.paired_internal_transfer_payment_id
                                     else r.partner_id.name if r.partner_id
                                     else r.account_id.name,
                                     'debit': r.debit,
