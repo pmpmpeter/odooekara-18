@@ -1146,7 +1146,7 @@ class AccountCURReportWizard(models.TransientModel):
                 'partner_id': r.move_id.journal_id.name,
                 'debit': r.debit,
                 'date': r.date,
-                'statement_date': transfer['statement_date'],
+                'statement_date': transfer['statement_date'] if not self.groupby_month else False,
             })
         # Odoo 17 parity: a transfer whose INBOUND bank line is reconciled
         # to a bank statement also contributes its paired OUTBOUND clearing
@@ -1490,7 +1490,7 @@ class AccountCURReportWizard(models.TransientModel):
                 'partner_id': r.move_id.journal_id.name,
                 'credit': r.credit,
                 'date': r.date,
-                'statement_date': transfer['statement_date'],
+                'statement_date': transfer['statement_date'] if not self.groupby_month else False,
             })
         print('[CUR DEBUG] FUNCTION RESULT', 'CREDIT', [(v['account_name'], v['account_code'], v.get('total_debit', v.get('total_credit')), len(v['entries'])) for v in result.values()], flush=True)
         return list(result.values())
